@@ -6,6 +6,7 @@
 
 </br>
 
+
 <div style="text-align: center;">
   <h1>QLogicae Logis</h1>
   <p style="font-style: italic;">The project management tool for QLogicae projects</p>

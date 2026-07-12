@@ -14,7 +14,7 @@ dist/
 .build/
 build/
 reports/
-*reports/
+.reports/
 
 
 .ruff_cache/
