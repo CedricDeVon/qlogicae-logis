@@ -1,7 +1,7 @@
 </br>
 
 <div style="width: 100%; display: flex; justify-content: center;">
-    <image alt="The QLogicae Logo" src="./project/asset/qlogicae1.png" width="256px">
+    <image alt="the qlogicae logo" src="./project/asset/qlogicae1.png" width="256px">
 </div>
 
 </br>
@@ -11,6 +11,9 @@
   <h1>QLogicae Logis</h1>
   <p style="font-style: italic;">The project management tool for QLogicae projects</p>
 <div style="margin: 32px 64px;">
+
+![Version](https://img.shields.io/badge/Version-v1.0.2-blue)
+![License: MIT](https://img.shields.io/badge/License-MIT-red)
 
   </div>
 </div>

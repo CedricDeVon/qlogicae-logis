@@ -15,6 +15,7 @@ from qlogicae_logis.v1.target_cache_value import TargetCacheValue
 
 def handle_manager_callback():
     workspace_manager.singleton.handle_workspace_selections_setup()
+    workspace_manager.singleton.handle_target_filesystem_setup()
 
     workspace_selections = (
         value_cache_manager.singleton.get_one_value(
@@ -125,7 +126,7 @@ def handle_target_root():
         f"{current_root_full_path}/workspace/private/temporary/intermediate/filesystem/root"
     )
 
-    for current_scope_name in workspace_filesystem_manager.singleton.scope_selections:
+    for current_scope_name in workspace_filesystem_manager.singleton.scope_selections:        
         filesystem_manager.singleton.copy_filesystem_path(
             f"{current_root_full_path}/workspace/{current_scope_name}/target/all/filesystem",
             f"{current_root_full_path}/workspace/private/temporary/intermediate/filesystem/root",
@@ -284,7 +285,7 @@ def handle_target_project_selection(project_name):
         filesystem_manager.singleton.copy_filesystem_path(
             f"{current_root_full_path}/workspace/{current_scope_name}/target/project/filesystem",
             f"{current_root_full_path}/workspace/private/temporary/intermediate/filesystem/{project_name}",
-        )
+        )        
         filesystem_manager.singleton.copy_filesystem_path(
             f"{current_root_full_path}/workspace/{
                 current_scope_name

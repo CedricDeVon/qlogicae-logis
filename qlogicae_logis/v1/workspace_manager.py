@@ -72,7 +72,7 @@ class WorkspaceManager(AbstractManager[WorkspaceManagerConfigurations]):
         )
 
         gitignore_file = FileEntityFileSystemTreeSetupOptions(
-            name=".gitignore", content="*"
+            name=".gitignore", content="private/**/*"
         )
 
         configuration_workspace_file = FileEntityFileSystemTreeSetupOptions(
@@ -87,32 +87,6 @@ class WorkspaceManager(AbstractManager[WorkspaceManagerConfigurations]):
         target_selection_filesystem_sub_tree = FolderEntityFileSystemTreeSetupOptions(
             name="filesystem",
             entities=[],
-        )
-
-        target_sub_tree = FolderEntityFileSystemTreeSetupOptions(
-            name="target",
-            entities=[
-                FolderEntityFileSystemTreeSetupOptions(
-                    name="all",
-                    entities=[target_selection_filesystem_sub_tree],
-                ),
-                FolderEntityFileSystemTreeSetupOptions(
-                    name="project",
-                    entities=[
-                        target_selection_filesystem_sub_tree,
-                        FolderEntityFileSystemTreeSetupOptions(
-                            name="selection",
-                            entities=[],
-                        ),
-                    ],
-                ),
-                FolderEntityFileSystemTreeSetupOptions(
-                    name="root",
-                    entities=[
-                        target_selection_filesystem_sub_tree,
-                    ],
-                ),
-            ],
         )
 
         temporary_sub_tree = FolderEntityFileSystemTreeSetupOptions(
@@ -138,21 +112,16 @@ class WorkspaceManager(AbstractManager[WorkspaceManagerConfigurations]):
                             name="private",
                             entities=[
                                 configuration_sub_tree,
-                                target_sub_tree,
-                                temporary_sub_tree,
-                                gitignore_file,
+                                temporary_sub_tree
                             ],
                         ),
                         FolderEntityFileSystemTreeSetupOptions(
                             name="public",
-                            entities=[configuration_sub_tree, target_sub_tree],
+                            entities=[configuration_sub_tree],
                         ),
+                        gitignore_file
                     ],
-                ),
-                FolderEntityFileSystemTreeSetupOptions(
-                    name="project",
-                    entities=[],
-                ),
+                ),                
                 FolderEntityFileSystemTreeSetupOptions(
                     name="selection",
                     entities=[],
@@ -327,6 +296,17 @@ class WorkspaceManager(AbstractManager[WorkspaceManagerConfigurations]):
         return True
 
     def handle_value_cache_macros_setup(self) -> bool:
+        current_root_full_path = value_cache_manager.singleton.get_one_value(
+            ["current-root-full-path"],
+            output_type=TargetCacheValue.FOLDER_PATH,
+        )
+        
+        value_cache_manager.singleton.set_one_value(
+            ["current-root-selection-full-path"],
+            f"{current_root_full_path}/selection",
+            output_type=TargetCacheValue.FOLDER_PATH,
+        )
+
         time_zone = (
             value_cache_manager.singleton.get_one_value(
                 [
@@ -351,6 +331,40 @@ class WorkspaceManager(AbstractManager[WorkspaceManagerConfigurations]):
         value_cache_manager.singleton.set_one_value(
             ["current-year"], time_manager.singleton.current_year
         )
+
+        return True
+
+    def handle_target_filesystem_setup(self) -> bool:
+        project_workspace_selections = (
+            value_cache_manager.singleton.get_one_value(
+                ["project-workspace-selections"],
+                output_type=TargetCacheValue.DEFINED,
+            )
+            or {}
+        )
+
+        default_workspace_selections = (
+            value_cache_manager.singleton.get_one_value(
+                ["default-workspace-selections"],
+                output_type=TargetCacheValue.DEFINED,
+            )
+            or {}
+        )
+
+        current_root_full_path = value_cache_manager.singleton.get_one_value(
+            ["current-root-full-path"],
+            output_type=TargetCacheValue.FOLDER_PATH,
+        )
+
+        current_path = ''    
+        for current_scope_name in workspace_filesystem_manager.singleton.scope_selections:
+            for current_project_workspace_selection in project_workspace_selections:
+                current_path = Path(f"{current_root_full_path}/workspace/{current_scope_name}/target/project/selection/{current_project_workspace_selection}/filesystem")
+                current_path.mkdir(parents=True, exist_ok=True)
+
+            for current_default_workspace_selection in default_workspace_selections:
+                current_path = Path(f"{current_root_full_path}/workspace/{current_scope_name}/target/{current_default_workspace_selection}/filesystem")
+                current_path.mkdir(parents=True, exist_ok=True)
 
         return True
 
