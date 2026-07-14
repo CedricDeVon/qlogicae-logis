@@ -168,23 +168,25 @@ def handle_filesystem_parsing(
 
         for file_name in files:
             current_path = current_root / file_name
+            # print(current_path)
 
             try:
                 file_data = current_path.read_text(
                     encoding=file_io_manager.singleton.file_encoding,
                 )
             except UnicodeDecodeError:
-                continue
+                pass
+            else:
+                parsed_file_data = macros_manager.singleton.parse_one(
+                    file_data,
+                    workspace_macros,
+                )
 
-            parsed_file_data = macros_manager.singleton.parse_one(
-                file_data,
-                workspace_macros,
-            )
-
-            current_path.write_text(
-                parsed_file_data,
-                encoding=file_io_manager.singleton.file_encoding,
-            )
+                if parsed_file_data != file_data:
+                    current_path.write_text(
+                        parsed_file_data,
+                        encoding=file_io_manager.singleton.file_encoding,
+                    )
 
             parsed_name = macros_manager.singleton.parse_one(
                 current_path.name,
@@ -192,10 +194,8 @@ def handle_filesystem_parsing(
             )
 
             if parsed_name != current_path.name:
-                current_path.rename(
-                    current_path.with_name(
-                        parsed_name,
-                    )
+                current_path = current_path.rename(
+                    current_path.with_name(parsed_name),
                 )
 
         for directory_name in directories:
