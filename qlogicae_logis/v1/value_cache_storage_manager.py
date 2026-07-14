@@ -1,5 +1,7 @@
 from collections.abc import Mapping
 from typing import Any
+import yaml
+
 
 from qlogicae_cor.v1.abstract_manager import AbstractManager
 
@@ -169,14 +171,13 @@ class ValueCacheStorageManager(AbstractManager[ValueCacheStorageManagerConfigura
 
         return True
 
-    def display_one_item(self, key: str) -> bool:
+    def display_one_item(self, key: str) -> bool:        
         print(f"- {key}: {self._collection[key]}")
 
         return True
 
-    def display_all_items(self) -> bool:
-        for item in self._collection.items():
-            self.display_one_item(item[0])
+    def display_all_items(self) -> bool:        
+        print(yaml.dump(self._collection, sort_keys=False)) 
 
         return True
 

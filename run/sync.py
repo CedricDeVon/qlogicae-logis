@@ -168,7 +168,6 @@ def handle_filesystem_parsing(
 
         for file_name in files:
             current_path = current_root / file_name
-            # print(current_path)
 
             try:
                 file_data = current_path.read_text(
