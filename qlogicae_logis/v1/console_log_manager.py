@@ -14,19 +14,19 @@ class ConsoleLogManager(AbstractManager[ConsoleLogManagerConfigurations]):
     def __init__(self) -> None:
         super().__init__(ConsoleLogManagerConfigurations())
 
-        self.logger = logging.getLogger("console-logger")
+        self._logger = logging.getLogger("console-logger")
 
-        self.logger.setLevel(logging.DEBUG)
+        self._logger.setLevel(logging.DEBUG)
 
-        self.logger.propagate = False
+        self._logger.propagate = False
 
-        self.logger.handlers.clear()
+        self._logger.handlers.clear()
 
         handler = logging.StreamHandler()
 
         handler.setFormatter(LogFormat())
 
-        self.logger.addHandler(handler)
+        self._logger.addHandler(handler)
 
         self._options = LogOptions()
 
@@ -47,7 +47,7 @@ class ConsoleLogManager(AbstractManager[ConsoleLogManagerConfigurations]):
         message = str(message).strip()
 
         if options.is_verbose_enabled:
-            self.logger.log(
+            self._logger.log(
                 options.log_level,
                 message,
                 stacklevel=options.stack_level,

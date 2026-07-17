@@ -14,5 +14,5 @@ class TimeUnit(Enum):
     YEAR = 9
     DECADE = 10
     CENTURY = 11
-    MILLENIUM = 12
+    MILLENNIUM = 12
     NONE = 13

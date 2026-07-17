@@ -4,7 +4,9 @@ from typing import Any
 from qlogicae_cor.v1.abstract_manager import AbstractManager
 
 from qlogicae_logis.v1 import json_manager
-from qlogicae_logis.v1.json_text_manager_configurations import JsonTextManagerConfigurations
+from qlogicae_logis.v1.json_text_manager_configurations import (
+    JsonTextManagerConfigurations,
+)
 
 
 class JsonTextManager(AbstractManager[JsonTextManagerConfigurations]):

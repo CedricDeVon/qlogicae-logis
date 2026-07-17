@@ -4,7 +4,9 @@ import yaml
 from qlogicae_cor.v1.abstract_manager import AbstractManager
 
 from qlogicae_logis.v1 import yaml_manager
-from qlogicae_logis.v1.yaml_text_manager_configurations import YamlTextManagerConfigurations
+from qlogicae_logis.v1.yaml_text_manager_configurations import (
+    YamlTextManagerConfigurations,
+)
 
 
 class YamlTextManager(AbstractManager[YamlTextManagerConfigurations]):

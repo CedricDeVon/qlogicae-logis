@@ -5,7 +5,9 @@ from qlogicae_cor.v1.abstract_manager import AbstractManager
 
 from qlogicae_logis.v1 import time_manager
 from qlogicae_logis.v1.time_unit import TimeUnit
-from qlogicae_logis.v1.timestamp_manager_configurations import TimestampManagerConfigurations
+from qlogicae_logis.v1.timestamp_manager_configurations import (
+    TimestampManagerConfigurations,
+)
 
 
 class TimestampManager(AbstractManager[TimestampManagerConfigurations]):

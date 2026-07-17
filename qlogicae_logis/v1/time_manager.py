@@ -6,6 +6,7 @@ from qlogicae_cor.v1.abstract_manager import AbstractManager
 from qlogicae_logis.v1 import time_zone_enum_manager
 from qlogicae_logis.v1.enum_conversion_output import EnumConversionOutput
 from qlogicae_logis.v1.time_manager_configurations import TimeManagerConfigurations
+from qlogicae_logis.v1.time_unit import TimeUnit
 
 
 class TimeManager(AbstractManager[TimeManagerConfigurations]):
@@ -81,6 +82,65 @@ class TimeManager(AbstractManager[TimeManagerConfigurations]):
     @property
     def current_millenium(self) -> int:
         return (self.current_year - 1) // 1000 + 1
+
+    def calculate_elapsed_time(
+        self, start, time_unit: TimeUnit = TimeUnit.SECOND
+    ) -> float:
+        return self.convert_time_unit(time.time_ns() - start, time_unit)
+
+    def calculate_duration_time(
+        self, start, end, time_unit: TimeUnit = TimeUnit.SECOND
+    ) -> float:
+        return self.convert_time_unit(end - start, time_unit)
+
+    def convert_time_unit(
+        self, value: float, time_unit: TimeUnit = TimeUnit.SECOND
+    ) -> float:
+        if value < 0:
+            raise ValueError("timer has not been stopped or timestamps are invalid.")
+
+        match time_unit:
+            case TimeUnit.NANOSECOND:
+                return float(value)
+
+            case TimeUnit.MICROSECOND:
+                return value / 1e3
+
+            case TimeUnit.MILLISECOND:
+                return value / 1e6
+
+            case TimeUnit.SECOND:
+                return value / 1e9
+
+            case TimeUnit.MINUTE:
+                return value / 60e9
+
+            case TimeUnit.HOUR:
+                return value / 3600e9
+
+            case TimeUnit.DAY:
+                return value / 86400e9
+
+            case TimeUnit.WEEK:
+                return value / 604800e9
+
+            case TimeUnit.MONTH:
+                return value / 2629746e9
+
+            case TimeUnit.YEAR:
+                return value / 31556952e9
+
+            case TimeUnit.DECADE:
+                return value / 315569520e9
+
+            case TimeUnit.CENTURY:
+                return value / 3155695200e9
+
+            case TimeUnit.MILLENIUM:
+                return value / 31556952000e9
+
+            case _:
+                return value
 
 
 singleton = TimeManager()

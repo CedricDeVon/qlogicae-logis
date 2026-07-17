@@ -67,8 +67,8 @@ class TimeUnitEnumManager(AbstractManager[TimeUnitEnumManagerConfigurations]):
             case TimeUnit.CENTURY:
                 return "century"
 
-            case TimeUnit.MILLENIUM:
-                return "millenium"
+            case TimeUnit.MILLENNIUM:
+                return "millennium"
 
             case _:
                 return "none"
@@ -78,6 +78,9 @@ class TimeUnitEnumManager(AbstractManager[TimeUnitEnumManagerConfigurations]):
         value: str,
     ) -> TimeUnit:
         match value.lower():
+            case "nanosecond":
+                return TimeUnit.NANOSECOND
+
             case "nanosecond":
                 return TimeUnit.NANOSECOND
 
@@ -114,8 +117,47 @@ class TimeUnitEnumManager(AbstractManager[TimeUnitEnumManagerConfigurations]):
             case "century":
                 return TimeUnit.CENTURY
 
-            case "millenium":
-                return TimeUnit.MILLENIUM
+            case "millennium":
+                return TimeUnit.MILLENNIUM
+
+            case "ns":
+                return TimeUnit.NANOSECOND
+
+            case "us":
+                return TimeUnit.MICROSECOND
+
+            case "ms":
+                return TimeUnit.MILLISECOND
+
+            case "sec":
+                return TimeUnit.SECOND
+
+            case "min":
+                return TimeUnit.MINUTE
+
+            case "hr":
+                return TimeUnit.HOUR
+
+            case "d":
+                return TimeUnit.DAY
+
+            case "wk":
+                return TimeUnit.WEEK
+
+            case "mon":
+                return TimeUnit.MONTH
+
+            case "yr":
+                return TimeUnit.YEAR
+
+            case "deca":
+                return TimeUnit.DECADE
+
+            case "cen":
+                return TimeUnit.CENTURY
+
+            case "mil":
+                return TimeUnit.MILLENNIUM
 
             case _:
                 return TimeUnit.NONE
