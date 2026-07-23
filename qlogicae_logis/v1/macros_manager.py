@@ -2,9 +2,13 @@ import re
 from collections.abc import Mapping
 from typing import Any
 
-from qlogicae_cor.v1.abstract_manager import AbstractManager
+from qlogicae_cor.v1.abstract_manager import (
+    AbstractManager,
+)
 
-from qlogicae_logis.v1.macros_manager_configurations import MacrosManagerConfigurations
+from qlogicae_logis.v1.macros_manager_configurations import (
+    MacrosManagerConfigurations,
+)
 
 
 class MacrosManager(AbstractManager[MacrosManagerConfigurations]):
@@ -14,41 +18,122 @@ class MacrosManager(AbstractManager[MacrosManagerConfigurations]):
         self.pattern = re.compile(r"\$\{\{\s*([A-Za-z0-9._-]+)\s*\}\}")
 
     def resolve_many(self, values: Any) -> Mapping[str, Any]:
-        cache = {}
+        cache: dict[str, Any] = {}
 
-        return {key: self.resolve_one(key, values, cache, set()) for key in values}
+        for root in values:
+            if root in cache:
+                continue
 
-    def resolve_one(self, key: Any, values: Any, cache: Any, stack: Any) -> str:
+            stack: list[str] = [root]
+            visiting: set[str] = set()
+
+            while stack:
+                key = stack[-1]
+
+                if key in cache:
+                    stack.pop()
+                    visiting.discard(key)
+                    continue
+
+                if key not in values:
+                    raise Exception(f"key path '{key}' is an unknown macros")
+
+                value = values[key]
+
+                if not isinstance(value, str):
+                    cache[key] = value
+                    stack.pop()
+                    visiting.discard(key)
+                    continue
+
+                if key not in visiting:
+                    visiting.add(key)
+
+                unresolved: list[str] = []
+
+                for match in self.pattern.finditer(value):
+                    dependency = match.group(1)
+
+                    if dependency in cache:
+                        continue
+
+                    if dependency in visiting:
+                        raise Exception(
+                            f"key path '{dependency}' is a circular reference"
+                        )
+
+                    unresolved.append(dependency)
+
+                if unresolved:
+                    stack.extend(reversed(unresolved))
+                    continue
+
+                def replace(
+                    match: re.Match[str],
+                ) -> str:
+                    dependency = match.group(1)
+                    return str(cache[dependency])
+
+                cache[key] = self.pattern.sub(replace, value)
+
+                stack.pop()
+                visiting.remove(key)
+
+        return cache
+
+    def resolve_one(
+        self,
+        key: Any,
+        values: Any,
+        cache: dict[Any, Any],
+        stack: set[Any],
+    ) -> Any:
         if key in cache:
             return cache[key]
 
-        if key in stack:
-            raise Exception(f"key path '{key}' is a circular reference")
+        frames: list[tuple[Any, bool]] = [(key, False)]
 
-        if key not in values:
-            raise Exception(f"key path '{key}' is an unknown macros")
+        while frames:
+            current_key, expanded = frames.pop()
 
-        stack.add(key)
+            if current_key in cache:
+                continue
 
-        value = values[key]
+            if not expanded:
+                if current_key in stack:
+                    raise Exception(f"key path '{current_key}' is a circular reference")
 
-        if not isinstance(value, str):
-            cache[key] = value
-            stack.remove(key)
-            return value
+                if current_key not in values:
+                    raise Exception(f"key path '{current_key}' is an unknown macros")
 
-        def handle_parse_one(match):
-            referenced_key = match.group(1)
+                value = values[current_key]
 
-            return self.resolve_one(referenced_key, values, cache, stack)
+                if not isinstance(value, str):
+                    cache[current_key] = value
+                    continue
 
-        resolved = self.pattern.sub(handle_parse_one, value)
+                stack.add(current_key)
 
-        stack.remove(key)
+                frames.append((current_key, True))
 
-        cache[key] = resolved
+                for match in self.pattern.finditer(value):
+                    dependency = match.group(1)
 
-        return resolved
+                    if dependency not in cache:
+                        frames.append((dependency, False))
+
+            else:
+                value = values[current_key]
+
+                resolved = self.pattern.sub(
+                    lambda match: str(cache[match.group(1)]),
+                    value,
+                )
+
+                cache[current_key] = resolved
+                stack.remove(current_key)
+
+        return cache[key]
 
     def parse_many(self, values: Any, resolved: Any) -> str:
         return self.parse_one(values, resolved)

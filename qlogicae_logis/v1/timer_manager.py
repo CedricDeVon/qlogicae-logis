@@ -1,8 +1,12 @@
-from qlogicae_cor.v1.abstract_manager import AbstractManager
+from qlogicae_cor.v1.abstract_manager import (
+    AbstractManager,
+)
 
 from qlogicae_logis.v1 import time_manager
 from qlogicae_logis.v1.time_unit import TimeUnit
-from qlogicae_logis.v1.timer_manager_configurations import TimerManagerConfigurations
+from qlogicae_logis.v1.timer_manager_configurations import (
+    TimerManagerConfigurations,
+)
 
 
 class TimerManager(AbstractManager[TimerManagerConfigurations]):
@@ -42,12 +46,18 @@ class TimerManager(AbstractManager[TimerManagerConfigurations]):
 
         return True
 
-    def calculate_elapsed_time(self, time_unit: TimeUnit = TimeUnit.SECOND) -> float:
+    def calculate_elapsed_time(
+        self,
+        time_unit: TimeUnit = TimeUnit.SECOND,
+    ) -> float:
         return time_manager.singleton.convert_time_unit(
             time_manager.singleton.current_nanosecond - self._start_timestamp
         )
 
-    def calculate_duration_time(self, time_unit: TimeUnit = TimeUnit.SECOND) -> float:
+    def calculate_duration_time(
+        self,
+        time_unit: TimeUnit = TimeUnit.SECOND,
+    ) -> float:
         return time_manager.singleton.convert_time_unit(
             self._stop_timestamp - self._start_timestamp
         )

@@ -1,16 +1,26 @@
 import logging
 import queue
-from logging.handlers import QueueHandler, QueueListener
+from logging.handlers import (
+    QueueHandler,
+    QueueListener,
+)
 from pathlib import Path
 
-from qlogicae_cor.v1.abstract_manager import AbstractManager
+from qlogicae_cor.v1.abstract_manager import (
+    AbstractManager,
+)
 
-from qlogicae_logis.v1 import file_io_manager, log_options_manager
+from qlogicae_logis.v1 import (
+    file_io_manager,
+    log_options_manager,
+)
 from qlogicae_logis.v1.file_log_manager_configurations import (
     FileLogManagerConfigurations,
 )
 from qlogicae_logis.v1.log_format import LogFormat
-from qlogicae_logis.v1.log_options import LogOptions
+from qlogicae_logis.v1.log_options import (
+    LogOptions,
+)
 
 
 class FileLogManager(AbstractManager[FileLogManagerConfigurations]):
@@ -134,7 +144,10 @@ class FileLogManager(AbstractManager[FileLogManagerConfigurations]):
     def rebuild_listener(self) -> bool:
         self.listener.stop()
 
-        self.listener = QueueListener(self.log_queue, *self.file_handlers.values())
+        self.listener = QueueListener(
+            self.log_queue,
+            *self.file_handlers.values(),
+        )
 
         self.listener.start()
 
@@ -149,7 +162,8 @@ class FileLogManager(AbstractManager[FileLogManagerConfigurations]):
         path.parent.mkdir(parents=True, exist_ok=True)
 
         handler = logging.FileHandler(
-            path, encoding=file_io_manager.singleton.file_encoding
+            path,
+            encoding=file_io_manager.singleton.file_encoding,
         )
 
         handler.setFormatter(LogFormat())

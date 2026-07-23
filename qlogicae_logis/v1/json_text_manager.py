@@ -1,7 +1,9 @@
 import json
 from typing import Any
 
-from qlogicae_cor.v1.abstract_manager import AbstractManager
+from qlogicae_cor.v1.abstract_manager import (
+    AbstractManager,
+)
 
 from qlogicae_logis.v1 import json_manager
 from qlogicae_logis.v1.json_text_manager_configurations import (
@@ -18,7 +20,7 @@ class JsonTextManager(AbstractManager[JsonTextManagerConfigurations]):
             json.loads(value)
             return True
 
-        except json.JSONDecodeError:
+        except Exception:
             return False
 
     def convert_to_object(self, value: str) -> Any:

@@ -1,7 +1,9 @@
 import shutil
 from pathlib import Path
 
-from qlogicae_cor.v1.abstract_manager import AbstractManager
+from qlogicae_cor.v1.abstract_manager import (
+    AbstractManager,
+)
 
 from qlogicae_logis.v1.file_entity_filesystem_tree_setup_options import (
     FileEntityFileSystemTreeSetupOptions,
@@ -93,7 +95,29 @@ class FileSystemManager(AbstractManager[FileSystemManagerConfigurations]):
         return True
 
     def copy_filesystem_path(self, first_path, second_path):
-        shutil.copytree(first_path, second_path, dirs_exist_ok=True)
+        first_path = Path(first_path)
+        second_path = Path(second_path)
+
+        if first_path.is_dir():
+            shutil.copytree(
+                first_path,
+                second_path,
+                dirs_exist_ok=True,
+            )
+
+        elif first_path.is_file():
+            second_path.parent.mkdir(
+                parents=True,
+                exist_ok=True,
+            )
+
+            shutil.copy2(
+                first_path,
+                second_path,
+            )
+
+        else:
+            return False
 
         return True
 
@@ -120,13 +144,22 @@ class FileSystemManager(AbstractManager[FileSystemManagerConfigurations]):
         for entity in options.entities or []:
             entity_path = parent_path / entity.name
 
-            if isinstance(entity, FolderEntityFileSystemTreeSetupOptions):
+            if isinstance(
+                entity,
+                FolderEntityFileSystemTreeSetupOptions,
+            ):
                 entity_path.mkdir(parents=True, exist_ok=True)
                 self.setup_filesystem_tree(entity_path, entity)
 
-            elif isinstance(entity, FileEntityFileSystemTreeSetupOptions):
+            elif isinstance(
+                entity,
+                FileEntityFileSystemTreeSetupOptions,
+            ):
                 if not entity_path.exists():
-                    entity_path.write_text(entity.content, encoding=entity.encoding)
+                    entity_path.write_text(
+                        entity.content,
+                        encoding=entity.encoding,
+                    )
 
 
 singleton = FileSystemManager()

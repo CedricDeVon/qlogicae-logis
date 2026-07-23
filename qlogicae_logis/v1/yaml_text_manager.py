@@ -1,7 +1,9 @@
 from typing import Any
 
 import yaml
-from qlogicae_cor.v1.abstract_manager import AbstractManager
+from qlogicae_cor.v1.abstract_manager import (
+    AbstractManager,
+)
 
 from qlogicae_logis.v1 import yaml_manager
 from qlogicae_logis.v1.yaml_text_manager_configurations import (
@@ -19,7 +21,7 @@ class YamlTextManager(AbstractManager[YamlTextManagerConfigurations]):
 
             return True
 
-        except yaml.YAMLError:
+        except Exception:
             return False
 
     def convert_to_object(self, value: str) -> Any:

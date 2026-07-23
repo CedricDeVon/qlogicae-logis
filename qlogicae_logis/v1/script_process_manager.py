@@ -1,10 +1,16 @@
 import shlex
 import subprocess
 
-from qlogicae_cor.v1.abstract_manager import AbstractManager
+from qlogicae_cor.v1.abstract_manager import (
+    AbstractManager,
+)
 
-from qlogicae_logis.v1 import text_encoding_manager
-from qlogicae_logis.v1.script_process import ScriptProcess
+from qlogicae_logis.v1 import (
+    text_encoding_manager,
+)
+from qlogicae_logis.v1.script_process import (
+    ScriptProcess,
+)
 from qlogicae_logis.v1.script_process_manager_configurations import (
     ScriptProcessManagerConfigurations,
 )

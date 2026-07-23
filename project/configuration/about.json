@@ -8,13 +8,13 @@
 
         "project-version": {
             "name": "Project Version",
-            "value": "v1.0.4",
+            "value": "v1.1.0",
             "is-tabular": true
         },
 
         "project-description": {
             "name": "Description",
-            "value": "The project management tool for QLogicae projects",
+            "value": "The project orchestration tool for QLogicae projects",
             "is-tabular": false
         },
 

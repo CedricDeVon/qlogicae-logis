@@ -1,8 +1,12 @@
 from typing import Any
 
-from qlogicae_cor.v1.abstract_manager import AbstractManager
+from qlogicae_cor.v1.abstract_manager import (
+    AbstractManager,
+)
 
-from qlogicae_logis.v1.enum_conversion_output import EnumConversionOutput
+from qlogicae_logis.v1.enum_conversion_output import (
+    EnumConversionOutput,
+)
 from qlogicae_logis.v1.time_unit import TimeUnit
 from qlogicae_logis.v1.time_unit_enum_manager_configurations import (
     TimeUnitEnumManagerConfigurations,
@@ -14,7 +18,9 @@ class TimeUnitEnumManager(AbstractManager[TimeUnitEnumManagerConfigurations]):
         super().__init__(TimeUnitEnumManagerConfigurations())
 
     def convert_value(
-        self, value, conversion_output_type=EnumConversionOutput.STRING
+        self,
+        value,
+        conversion_output_type=EnumConversionOutput.STRING,
     ) -> Any:
         match conversion_output_type:
             case EnumConversionOutput.STRING:

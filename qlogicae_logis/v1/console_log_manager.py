@@ -1,13 +1,17 @@
 import logging
 
-from qlogicae_cor.v1.abstract_manager import AbstractManager
+from qlogicae_cor.v1.abstract_manager import (
+    AbstractManager,
+)
 
 from qlogicae_logis.v1 import log_options_manager
 from qlogicae_logis.v1.console_log_manager_configurations import (
     ConsoleLogManagerConfigurations,
 )
 from qlogicae_logis.v1.log_format import LogFormat
-from qlogicae_logis.v1.log_options import LogOptions
+from qlogicae_logis.v1.log_options import (
+    LogOptions,
+)
 
 
 class ConsoleLogManager(AbstractManager[ConsoleLogManagerConfigurations]):

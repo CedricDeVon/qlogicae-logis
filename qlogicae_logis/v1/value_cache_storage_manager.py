@@ -2,7 +2,9 @@ import json
 from collections.abc import Mapping
 from typing import Any
 
-from qlogicae_cor.v1.abstract_manager import AbstractManager
+from qlogicae_cor.v1.abstract_manager import (
+    AbstractManager,
+)
 
 from qlogicae_logis.v1.value_cache_storage_manager_configurations import (
     ValueCacheStorageManagerConfigurations,
@@ -86,6 +88,8 @@ class ValueCacheStorageManager(AbstractManager[ValueCacheStorageManagerConfigura
                     if not create_missing:
                         raise KeyError(f"key path '{keys}' not found")
 
+                    cache[key] = {}
+
                 elif not isinstance(cache[key], (dict, list)):
                     raise TypeError(
                         f"key path '{keys}' does not reference a dictionary or list"
@@ -121,6 +125,8 @@ class ValueCacheStorageManager(AbstractManager[ValueCacheStorageManagerConfigura
 
         else:
             raise TypeError("destination is neither a dictionary nor a list")
+
+        return True
 
     def remove_one_value(self, keys: list[str]) -> bool:
         if not keys:

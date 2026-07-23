@@ -9,10 +9,10 @@
 
 <div style="text-align: center;">
   <h1>QLogicae Logis</h1>
-  <p style="font-style: italic;">The project management tool for QLogicae projects</p>
+  <p style="font-style: italic;">The project orchestration tool for QLogicae projects</p>
 <div style="margin: 32px 64px;">
 
-![Version](https://img.shields.io/badge/Version-v1.0.4-blue)
+![Version](https://img.shields.io/badge/Version-v1.1.0-blue)
 ![License: MIT](https://img.shields.io/badge/License-MIT-red)
 
   </div>

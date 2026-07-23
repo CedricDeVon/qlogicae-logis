@@ -1,7 +1,9 @@
 import time
 from datetime import UTC, datetime
 
-from qlogicae_cor.v1.abstract_manager import AbstractManager
+from qlogicae_cor.v1.abstract_manager import (
+    AbstractManager,
+)
 
 from qlogicae_logis.v1 import time_manager
 from qlogicae_logis.v1.time_unit import TimeUnit
@@ -23,10 +25,25 @@ class TimestampManager(AbstractManager[TimestampManagerConfigurations]):
                 f'{
                     datetime.fromtimestamp(
                         timestamp_nanoseconds / 1_000_000_000,
-                        time_manager.singleton.current_time_zone,
+                        time_manager.singleton.current_time_zone_type,
+                    ):%Y-%m-%dT%H-%M-%S}'
+                f'-{timestamp_nanoseconds % 1_000_000_000:09d}'
+                f'{"Z" if time_manager.singleton.current_time_zone_type is UTC else ""}'
+            )
+        }"
+
+    def current_standard_filesystem_timestamp(self) -> str:
+        timestamp_nanoseconds = time.time_ns()
+
+        return f"{
+            (
+                f'{
+                    datetime.fromtimestamp(
+                        timestamp_nanoseconds / 1_000_000_000,
+                        time_manager.singleton.current_time_zone_type,
                     ):%Y-%m-%dT%H:%M:%S}'
-                f'.{timestamp_nanoseconds % 1_000_000_000:09d}'
-                f'{"Z" if time_manager.singleton.current_time_zone is UTC else ""}'
+                f'-{timestamp_nanoseconds % 1_000_000_000:09d}'
+                f'{"Z" if time_manager.singleton.current_time_zone_type is UTC else ""}'
             )
         }"
 
@@ -35,10 +52,10 @@ class TimestampManager(AbstractManager[TimestampManagerConfigurations]):
 
         timestamp = datetime.fromtimestamp(
             timestamp_nanoseconds / 1_000_000_000,
-            time_manager.singleton.current_time_zone,
+            time_manager.singleton.current_time_zone_type,
         )
 
-        suffix = "Z" if time_manager.singleton.current_time_zone is UTC else ""
+        suffix = "Z" if time_manager.singleton.current_time_zone_type is UTC else ""
 
         match time_unit:
             case TimeUnit.NONE:

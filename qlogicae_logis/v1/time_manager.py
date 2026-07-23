@@ -1,11 +1,19 @@
 import time
 from datetime import date, datetime
 
-from qlogicae_cor.v1.abstract_manager import AbstractManager
+from qlogicae_cor.v1.abstract_manager import (
+    AbstractManager,
+)
 
-from qlogicae_logis.v1 import time_zone_enum_manager
-from qlogicae_logis.v1.enum_conversion_output import EnumConversionOutput
-from qlogicae_logis.v1.time_manager_configurations import TimeManagerConfigurations
+from qlogicae_logis.v1 import (
+    time_zone_enum_manager,
+)
+from qlogicae_logis.v1.enum_conversion_output import (
+    EnumConversionOutput,
+)
+from qlogicae_logis.v1.time_manager_configurations import (
+    TimeManagerConfigurations,
+)
 from qlogicae_logis.v1.time_unit import TimeUnit
 
 
@@ -13,19 +21,24 @@ class TimeManager(AbstractManager[TimeManagerConfigurations]):
     def __init__(self) -> None:
         super().__init__(TimeManagerConfigurations())
 
-        self._current_time_zone = time_zone_enum_manager.singleton.convert_value(
-            "local", EnumConversionOutput.CUSTOM
-        )
+        self._current_time_zone = "local"
 
     @property
     def current_time_zone(self):
         return self._current_time_zone
 
     @current_time_zone.setter
-    def current_time_zone(self, value) -> bool:
+    def current_time_zone(self, value: str) -> bool:
         self._current_time_zone = value
 
         return True
+
+    @property
+    def current_time_zone_type(self):
+        return time_zone_enum_manager.singleton.convert_value(
+            self._current_time_zone,
+            EnumConversionOutput.CUSTOM,
+        )
 
     @property
     def current_iso8601_date(self) -> str:
@@ -45,19 +58,19 @@ class TimeManager(AbstractManager[TimeManagerConfigurations]):
 
     @property
     def current_second(self) -> int:
-        return datetime.now(self._current_time_zone).second
+        return datetime.now(self.current_time_zone_type).second
 
     @property
     def current_minute(self) -> int:
-        return datetime.now(self._current_time_zone).minute
+        return datetime.now(self.current_time_zone_type).minute
 
     @property
     def current_hour(self) -> int:
-        return datetime.now(self._current_time_zone).hour
+        return datetime.now(self.current_time_zone_type).hour
 
     @property
     def current_day(self) -> int:
-        return datetime.now(self._current_time_zone).day
+        return datetime.now(self.current_time_zone_type).day
 
     @property
     def current_week(self) -> int:
@@ -65,11 +78,11 @@ class TimeManager(AbstractManager[TimeManagerConfigurations]):
 
     @property
     def current_month(self) -> int:
-        return datetime.now(self._current_time_zone).month
+        return datetime.now(self.current_time_zone_type).month
 
     @property
     def current_year(self) -> int:
-        return datetime.now(self._current_time_zone).year
+        return datetime.now(self.current_time_zone_type).year
 
     @property
     def current_decade(self) -> int:
@@ -84,17 +97,24 @@ class TimeManager(AbstractManager[TimeManagerConfigurations]):
         return (self.current_year - 1) // 1000 + 1
 
     def calculate_elapsed_time(
-        self, start, time_unit: TimeUnit = TimeUnit.SECOND
+        self,
+        start,
+        time_unit: TimeUnit = TimeUnit.SECOND,
     ) -> float:
         return self.convert_time_unit(time.time_ns() - start, time_unit)
 
     def calculate_duration_time(
-        self, start, end, time_unit: TimeUnit = TimeUnit.SECOND
+        self,
+        start,
+        end,
+        time_unit: TimeUnit = TimeUnit.SECOND,
     ) -> float:
         return self.convert_time_unit(end - start, time_unit)
 
     def convert_time_unit(
-        self, value: float, time_unit: TimeUnit = TimeUnit.SECOND
+        self,
+        value: float,
+        time_unit: TimeUnit = TimeUnit.SECOND,
     ) -> float:
         if value < 0:
             raise ValueError("timer has not been stopped or timestamps are invalid.")

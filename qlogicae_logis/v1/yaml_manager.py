@@ -1,26 +1,40 @@
 from typing import Any
 
-from qlogicae_cor.v1.abstract_manager import AbstractManager
+from qlogicae_cor.v1.abstract_manager import (
+    AbstractManager,
+)
 
-from qlogicae_logis.v1.yaml_manager_configurations import YamlManagerConfigurations
+from qlogicae_logis.v1.yaml_manager_configurations import (
+    YamlManagerConfigurations,
+)
 
 
 class YamlManager(AbstractManager[YamlManagerConfigurations]):
     def __init__(self) -> None:
         super().__init__(YamlManagerConfigurations())
 
-        self._valid_suffixes: set[str] = {".yaml", ".yml"}
+        self._valid_file_extensions: set[str] = {
+            ".yaml",
+            ".yml",
+        }
         self._is_key_sorting_enabled: bool = False
         self._is_default_flow_state_enabled: bool = False
         self._is_unicode_enabled: bool = True
         self._indent_count: int = 4
 
     @property
-    def valid_suffixes(self) -> set[str]:
-        return self._valid_suffixes
+    def valid_file_extensions(self) -> set[str]:
+        return self._valid_file_extensions
 
-    def is_valid_file_extensions(self, file: Any) -> bool:
-        return any(suffix in self._valid_suffixes for suffix in self._valid_suffixes)
+    def is_valid(self, file_path: Any) -> bool:
+        try:
+            if file_path.suffix.lower() not in self.valid_file_extensions:
+                return False
+
+            return True
+
+        except Exception:
+            return False
 
     @property
     def is_key_sorting_enabled(self) -> bool:
@@ -33,7 +47,9 @@ class YamlManager(AbstractManager[YamlManagerConfigurations]):
         return True
 
     @property
-    def is_default_flow_state_enabled(self) -> bool:
+    def is_default_flow_state_enabled(
+        self,
+    ) -> bool:
         return self._is_default_flow_state_enabled
 
     @is_default_flow_state_enabled.setter

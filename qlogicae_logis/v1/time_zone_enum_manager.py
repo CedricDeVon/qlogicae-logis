@@ -1,9 +1,13 @@
 from datetime import UTC, datetime
 from typing import Any
 
-from qlogicae_cor.v1.abstract_manager import AbstractManager
+from qlogicae_cor.v1.abstract_manager import (
+    AbstractManager,
+)
 
-from qlogicae_logis.v1.enum_conversion_output import EnumConversionOutput
+from qlogicae_logis.v1.enum_conversion_output import (
+    EnumConversionOutput,
+)
 from qlogicae_logis.v1.time_zone import TimeZone
 from qlogicae_logis.v1.time_zone_enum_manager_configurations import (
     TimeZoneEnumManagerConfigurations,
@@ -15,7 +19,9 @@ class TimeZoneEnumManager(AbstractManager[TimeZoneEnumManagerConfigurations]):
         super().__init__(TimeZoneEnumManagerConfigurations())
 
     def convert_value(
-        self, value, conversion_output_type=EnumConversionOutput.STRING
+        self,
+        value,
+        conversion_output_type=EnumConversionOutput.STRING,
     ) -> Any:
         match conversion_output_type:
             case EnumConversionOutput.STRING:
