@@ -1355,7 +1355,8 @@ class CliCommandManager(AbstractManager[CliCommandManagerConfigurations]):
                                 ],
                             )
                         ],
-                    )
+                    ),
+                    selection_sub_tree,
                 ]
             )
             filesystem_manager.singleton.setup_filesystem_tree(

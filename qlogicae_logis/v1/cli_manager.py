@@ -567,6 +567,30 @@ class CliManager(AbstractManager[CliManagerConfigurations]):
                 handle_logs_setup},
         ]
 
+    def handle_pre_workflow_minimum_command_generation(self):
+        return [
+            {
+                "callback": workspace_manager.
+                    singleton.
+                    handle_timestamp_console_execution_start_setup
+            },
+            {
+                "callback": workspace_manager.
+                    singleton.
+                    handle_current_root_filesystem_paths_setup
+            },
+            {
+                "callback": workspace_manager.
+                    singleton.
+                    handle_executing_console_filesystem_paths_setup
+            },
+            {
+                "callback": workspace_manager.
+                    singleton.
+                    handle_current_root_filesystem_navigation_setup
+            }
+        ]
+
     def handle_pre_template_command_generation(self):
         return [
             {

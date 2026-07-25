@@ -381,7 +381,7 @@ class WorkspaceManager(AbstractManager[WorkspaceManagerConfigurations]):
         value_cache_manager.singleton.set_one_value(
             ["current-root-selection-full-path"],
             Path(f"{current_root_full_path}/selection"),
-            output_type=TargetCacheValue.FOLDER_PATH,
+            output_type=TargetCacheValue.DEFINED,
         )
 
         time_zone = (
