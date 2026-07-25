@@ -1,0 +1,92 @@
+name: Quality Assurance
+
+on:
+    push:
+    pull_request:
+
+defaults:
+    run:
+        shell: bash
+
+jobs:
+    unit-testing:
+        name: V1 | Unit Testing
+        runs-on: ubuntu-latest
+
+        defaults:
+            run:
+                working-directory: .
+
+        strategy:
+            fail-fast: false
+            matrix:
+                python-version:
+                    - "3.14"
+                    - "3.13"
+                    - "3.12"
+
+        steps:
+            - uses: actions/checkout@v4
+
+            - run: sleep 15
+
+            - name: Setup Python
+              uses: actions/setup-python@v5
+              with:
+                python-version: ${{ matrix.python-version }}
+
+            - name: Install Hatch
+              run: |
+                python -m pip install --upgrade pip
+                pip install hatch
+
+            - name: Install Dev Dependencies
+              run: python3 -m pip install -r requirements.txt
+
+            - name: Create Hatch environment
+              run: hatch env create
+
+            - name: Run unit tests              
+              run: hatch run github-workflow-test-unit
+
+    e2e-testing:
+      name: V1 | End-To-End Testing | About Command
+      runs-on: ubuntu-latest
+
+      defaults:
+          run:
+              working-directory: ./test/qlogicae_logis/v1/e2e
+
+      strategy:
+          fail-fast: false
+          matrix:
+              python-version:
+                  - "3.14"
+                  - "3.13"
+                  - "3.12"
+
+      steps:
+          - uses: actions/checkout@v4
+
+          - name: PyPi Wait
+            run: sleep 30
+
+          - name: Setup Python
+            uses: actions/setup-python@v5
+            with:
+                python-version: ${{ matrix.python-version }}
+
+          - name: Setup Virtual Environment
+            run: python3 -m venv .venv
+
+          - name: Activate Virtual Environment
+            run: source .venv/bin/activate
+
+          - name: Install Package
+            run: pip install qlogicae-logis
+
+          - name: Run 'about me'
+            run: qlogicae-logis about me
+
+          - name: Run 'about version'
+            run: qlogicae-logis about version

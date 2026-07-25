@@ -231,19 +231,3 @@ def excluded() -> bool:
     cli_manager.singleton.handle_filesystem_clean_list_excluded()
 
     return True
-
-
-
-# @app_filesystem.command(
-#     name="selection",
-#     help="",
-# )
-# def selection(
-#     targets: list[str] = typer.Argument(
-#         ...,
-#         help="List of cleaning targets.",
-#     ),
-# ) -> bool:
-
-#     return True
-
