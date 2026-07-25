@@ -1,6 +1,6 @@
 [project]
 name = "qlogicae-logis"
-version = "1.1.5"
+version = "1.1.6"
 description = "The project orchestration tool for QLogicae projects"
 readme = { file = "README.md", content-type = "text/markdown" }
 requires-python = ">=3.12"
@@ -38,6 +38,8 @@ dependencies = [
     "rich>=15,<16",
     "textual>=8,<9",
     "typer>=0.26,<1",
+    "tomli_w>=1.2.0,<2",
+    "tomlkit>=0.15.0,<1"
 ]
 
 
