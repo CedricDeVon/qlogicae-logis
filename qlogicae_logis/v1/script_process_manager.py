@@ -20,6 +20,26 @@ class ScriptProcessManager(AbstractManager[ScriptProcessManagerConfigurations]):
     def __init__(self) -> None:
         super().__init__(ScriptProcessManagerConfigurations())
 
+        self._default_script_process = "shell"
+        self._valid_script_processes = { "shell", "subprocess" }
+
+    @property
+    def default_script_process(self) -> str:
+        return self._default_script_process
+
+    @property
+    def valid_script_processes(self) -> set(str):
+        return self._valid_script_processes
+
+    @default_script_process.setter
+    def default_script_process(self, value) -> bool:
+        if value not in self._valid_script_processes:
+            return False
+
+        self._default_script_process = value
+
+        return True
+
     def execute_command(
         self,
         command: str,

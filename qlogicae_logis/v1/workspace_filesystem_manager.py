@@ -35,10 +35,10 @@ class WorkspaceFilesystemManager(
         return self._scope_selections
 
     @property
-    def root_workspace_filesystem_path(
+    def root_application_filesystem_path(
         self,
     ) -> str:
-        return Path(__file__).resolve().parent.parent.parent.parent.parent.parent.parent
+        return Path(__file__).resolve().parent.parent.parent
 
     def read_file(self, file_path: Any) -> Any:
         if yaml_manager.singleton.is_valid(file_path):

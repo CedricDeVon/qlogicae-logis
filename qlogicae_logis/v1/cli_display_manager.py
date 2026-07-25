@@ -55,6 +55,33 @@ class CliDisplayManager(AbstractManager[CliDisplayManagerConfigurations]):
             TimeElapsedColumn(),
         )
 
+    def render_directly(self, data: dict[str, Any] | None = None) -> bool:
+        if not data:
+            return False
+
+        progress_items = (data["items"] if "items" in data else []) or []
+
+        for task in progress_items:
+            task_callback = (
+                task["callback"] if task and "callback" in task else None
+            )
+            task_arguments = (
+                task["arguments"] if task and "arguments" in task else {}
+            )
+            task_delay = (task["delay"] if task and "delay" in task else {}) or {}
+            task_delay_in_seconds = (
+                task_delay["value"] if task_delay and "value" in task_delay else 0
+            ) or 0
+
+            if task_delay_in_seconds:
+                time.sleep(task_delay_in_seconds)
+
+            if task_callback:
+                task_callback(**task_arguments)
+
+        return True
+
+
     def render_progress_bar(self, data: dict[str, Any] | None = None) -> bool:
         if not data:
             return False
@@ -81,22 +108,25 @@ class CliDisplayManager(AbstractManager[CliDisplayManagerConfigurations]):
             for index, task in enumerate(progress_items):
                 task_message = (
                     task["message"] if task and "message" in task else "Loading"
-                )
+                ) or "Loading"
                 task_callback = (
                     task["callback"] if task and "callback" in task else None
                 )
                 task_arguments = (
                     task["arguments"] if task and "arguments" in task else {}
-                )
+                ) or {}
                 task_delay = (task["delay"] if task and "delay" in task else {}) or {}
                 task_delay_in_seconds = (
                     task_delay["value"] if task_delay and "value" in task_delay else 0
-                )
+                ) or 0
 
                 progress_bar.update(
                     progress_bar_task,
                     description=task_message,
                 )
+
+                if task_delay_in_seconds:
+                    time.sleep(task_delay_in_seconds)
 
                 if task_callback:
                     task_callback(**task_arguments)
@@ -109,9 +139,6 @@ class CliDisplayManager(AbstractManager[CliDisplayManagerConfigurations]):
                     ),
                     elapsed=f"{(time.perf_counter() - time_start):.2f}s",
                 )
-
-                if task_delay_in_seconds:
-                    time.sleep(task_delay_in_seconds)
 
         return True
 

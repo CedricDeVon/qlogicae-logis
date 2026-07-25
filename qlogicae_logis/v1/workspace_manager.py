@@ -1,7 +1,7 @@
 from collections.abc import Callable
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from typing import Any
-from concurrent.futures import ThreadPoolExecutor
 
 from qlogicae_cor.v1.abstract_manager import (
     AbstractManager,
@@ -10,21 +10,16 @@ from qlogicae_cor.v1.abstract_manager import (
 from qlogicae_logis.v1 import (
     console_log_manager,
     file_log_manager,
-    filesystem_manager,
     log_manager,
     macros_manager,
     object_merge_manager,
-    timestamp_manager,
     system_manager,
     time_manager,
+    timestamp_manager,
     value_cache_manager,
     workspace_export_manager,
     workspace_filesystem_manager,
     workspace_system_manager,
-)
-from qlogicae_logis.v1.filesystem_manager import (
-    FileEntityFileSystemTreeSetupOptions,
-    FolderEntityFileSystemTreeSetupOptions,
 )
 from qlogicae_logis.v1.log_options import (
     LogOptions,
@@ -84,11 +79,9 @@ class WorkspaceManager(AbstractManager[WorkspaceManagerConfigurations]):
     def debug_value_cache(self) -> bool:
         self.setup()
 
-        self.handle_workspace_base_filesystem_replenishment_setup()
-        self.handle_workspace_selection_filesystem_replenishment_setup()
         self.handle_toolset_configuration_file_data_extraction_setup()
         self.handle_toolset_configuration_data_setup()
-        self.handle_clean_command_setup()
+        self.handle_filesystem_clean_command_setup()
         self.handle_workspace_command_setup()
 
         value_cache_manager.singleton.display_all_items()
@@ -261,6 +254,11 @@ class WorkspaceManager(AbstractManager[WorkspaceManagerConfigurations]):
             output_type=TargetCacheValue.FOLDER_PATH,
         )
         value_cache_manager.singleton.set_one_value(
+            ["root-application-full-path"],
+            workspace_filesystem_manager.singleton.root_application_filesystem_path,
+            output_type=TargetCacheValue.FOLDER_PATH,
+        )
+        value_cache_manager.singleton.set_one_value(
             ["original-executing-console-full-path"],
             system_manager.singleton.current_executing_console_filesystem_path,
             output_type=TargetCacheValue.FOLDER_PATH,
@@ -277,351 +275,6 @@ class WorkspaceManager(AbstractManager[WorkspaceManagerConfigurations]):
         self,
     ) -> bool:
         workspace_system_manager.singleton.navigate_to_root()
-
-        return True
-
-    def handle_workspace_base_filesystem_replenishment_setup(
-        self,
-    ) -> bool:
-        current_root_full_path = value_cache_manager.singleton.get_one_value(
-            ["current-root-full-path"],
-            output_type=TargetCacheValue.FOLDER_PATH,
-        )
-
-        workspace_gitignore_file = FileEntityFileSystemTreeSetupOptions(
-            name=".gitignore",
-            content="private/**/*",
-        )
-
-        workspace_private_gitignore_file = FileEntityFileSystemTreeSetupOptions(
-            name=".gitignore", content="*"
-        )
-
-        configuration_workspace_root_file = FileEntityFileSystemTreeSetupOptions(
-            name="root.yaml",
-            content="data:\n\nmetadata:\n",
-        )
-
-        configuration_workspace_group_file = FileEntityFileSystemTreeSetupOptions(
-            name="group.yaml",
-            content="data:\n\nmetadata:\n",
-        )
-
-        configuration_workspace_project_file = FileEntityFileSystemTreeSetupOptions(
-            name="project.yaml",
-            content="data:\n\nmetadata:\n",
-        )
-
-        selection_sub_tree = FolderEntityFileSystemTreeSetupOptions(
-            name="selection",
-            entities=[],
-        )
-        filesystem_sub_tree = FolderEntityFileSystemTreeSetupOptions(
-            name="filesystem",
-            entities=[],
-        )
-        specific_sub_tree = FolderEntityFileSystemTreeSetupOptions(
-            name="specific",
-            entities=[],
-        )
-        fragment_sub_tree = FolderEntityFileSystemTreeSetupOptions(
-            name="fragment",
-            entities=[specific_sub_tree],
-        )
-        target_sub_tree = FolderEntityFileSystemTreeSetupOptions(
-            name="target",
-            entities=[],
-        )
-        log_sub_tree = FolderEntityFileSystemTreeSetupOptions(
-            name="log",
-            entities=[],
-        )
-
-        configuration_workspace_sub_tree = FolderEntityFileSystemTreeSetupOptions(
-            name="configuration",
-            entities=[
-                FolderEntityFileSystemTreeSetupOptions(
-                    name="workspace",
-                    entities=[
-                        FolderEntityFileSystemTreeSetupOptions(
-                            name="group",
-                            entities=[
-                                selection_sub_tree,
-                                configuration_workspace_group_file,
-                            ],
-                        ),
-                        FolderEntityFileSystemTreeSetupOptions(
-                            name="project",
-                            entities=[
-                                selection_sub_tree,
-                                configuration_workspace_project_file,
-                            ],
-                        ),
-                        configuration_workspace_root_file,
-                    ],
-                ),
-            ],
-        )
-
-        template_workspace_sub_tree = FolderEntityFileSystemTreeSetupOptions(
-            name="template",
-            entities=[
-                FolderEntityFileSystemTreeSetupOptions(
-                    name="all",
-                    entities=[
-                        filesystem_sub_tree,
-                        fragment_sub_tree,
-                    ],
-                ),
-                FolderEntityFileSystemTreeSetupOptions(
-                    name="group",
-                    entities=[
-                        selection_sub_tree,
-                        filesystem_sub_tree,
-                        fragment_sub_tree,
-                    ],
-                ),
-                FolderEntityFileSystemTreeSetupOptions(
-                    name="project",
-                    entities=[
-                        selection_sub_tree,
-                        filesystem_sub_tree,
-                        fragment_sub_tree,
-                    ],
-                ),
-                FolderEntityFileSystemTreeSetupOptions(
-                    name="root",
-                    entities=[
-                        filesystem_sub_tree,
-                        fragment_sub_tree,
-                    ],
-                ),
-            ],
-        )
-
-        temporary_workspace_sub_tree = FolderEntityFileSystemTreeSetupOptions(
-            name="temporary",
-            entities=[
-                FolderEntityFileSystemTreeSetupOptions(
-                    name="export",
-                    entities=[
-                        target_sub_tree,
-                    ],
-                ),
-                FolderEntityFileSystemTreeSetupOptions(
-                    name="template",
-                    entities=[
-                        filesystem_sub_tree,
-                        fragment_sub_tree,
-                    ],
-                ),
-                log_sub_tree,
-            ],
-        )
-
-        root_filesystem_tree = FolderEntityFileSystemTreeSetupOptions(
-            entities=[
-                FolderEntityFileSystemTreeSetupOptions(
-                    name="workspace",
-                    entities=[
-                        FolderEntityFileSystemTreeSetupOptions(
-                            name="private",
-                            entities=[
-                                configuration_workspace_sub_tree,
-                                template_workspace_sub_tree,
-                                temporary_workspace_sub_tree,
-                                workspace_private_gitignore_file,
-                            ],
-                        ),
-                        FolderEntityFileSystemTreeSetupOptions(
-                            name="public",
-                            entities=[
-                                configuration_workspace_sub_tree,
-                                template_workspace_sub_tree,
-                            ],
-                        ),
-                        workspace_gitignore_file,
-                    ],
-                ),
-                selection_sub_tree,
-            ]
-        )
-
-        filesystem_manager.singleton.setup_filesystem_tree(
-            current_root_full_path,
-            root_filesystem_tree,
-        )
-
-    def handle_workspace_selection_filesystem_replenishment_setup(
-        self,
-    ) -> bool:
-        current_root_full_path = value_cache_manager.singleton.get_one_value(
-            ["current-root-full-path"],
-            output_type=TargetCacheValue.FOLDER_PATH,
-        )
-        project_workspace_selections = (
-            value_cache_manager.singleton.get_one_value(
-                ["project-workspace-selections"],
-                output_type=TargetCacheValue.ANY,
-            )
-            or {}
-        )
-        group_workspace_selections = (
-            value_cache_manager.singleton.get_one_value(
-                ["group-workspace-selections"],
-                output_type=TargetCacheValue.ANY,
-            )
-            or {}
-        )
-
-        filesystem_sub_tree = FolderEntityFileSystemTreeSetupOptions(
-            name="filesystem",
-            entities=[],
-        )
-        specific_sub_tree = FolderEntityFileSystemTreeSetupOptions(
-            name="specific",
-            entities=[],
-        )
-        fragment_sub_tree = FolderEntityFileSystemTreeSetupOptions(
-            name="fragment",
-            entities=[specific_sub_tree],
-        )
-
-        for current_scope in [
-            "private",
-            "public",
-        ]:
-            for current_workspace_selection in project_workspace_selections:
-                target_filesystem_sub_tree = FolderEntityFileSystemTreeSetupOptions(
-                    entities=[
-                        FolderEntityFileSystemTreeSetupOptions(
-                            name="workspace",
-                            entities=[
-                                FolderEntityFileSystemTreeSetupOptions(
-                                    name=current_scope,
-                                    entities=[
-                                        FolderEntityFileSystemTreeSetupOptions(
-                                            name="configuration",
-                                            entities=[
-                                                FolderEntityFileSystemTreeSetupOptions(
-                                                    name="workspace",
-                                                    entities=[
-                                                        FolderEntityFileSystemTreeSetupOptions(
-                                                            name="project",
-                                                            entities=[
-                                                                FolderEntityFileSystemTreeSetupOptions(
-                                                                    name="selection",
-                                                                    entities=[
-                                                                        FileEntityFileSystemTreeSetupOptions(
-                                                                            name=f"{current_workspace_selection}.yaml",
-                                                                            content="data:\n\nmetadata:\n",
-                                                                        )
-                                                                    ],
-                                                                )
-                                                            ],
-                                                        )
-                                                    ],
-                                                )
-                                            ],
-                                        ),
-                                        FolderEntityFileSystemTreeSetupOptions(
-                                            name="template",
-                                            entities=[
-                                                FolderEntityFileSystemTreeSetupOptions(
-                                                    name="project",
-                                                    entities=[
-                                                        FolderEntityFileSystemTreeSetupOptions(
-                                                            name="selection",
-                                                            entities=[
-                                                                FolderEntityFileSystemTreeSetupOptions(
-                                                                    name=current_workspace_selection,
-                                                                    entities=[
-                                                                        filesystem_sub_tree,
-                                                                        fragment_sub_tree,
-                                                                    ],
-                                                                )
-                                                            ],
-                                                        )
-                                                    ],
-                                                )
-                                            ],
-                                        ),
-                                    ],
-                                )
-                            ],
-                        )
-                    ]
-                )
-                filesystem_manager.singleton.setup_filesystem_tree(
-                    current_root_full_path,
-                    target_filesystem_sub_tree,
-                )
-
-            for current_workspace_selection in group_workspace_selections:
-                target_filesystem_sub_tree = FolderEntityFileSystemTreeSetupOptions(
-                    entities=[
-                        FolderEntityFileSystemTreeSetupOptions(
-                            name="workspace",
-                            entities=[
-                                FolderEntityFileSystemTreeSetupOptions(
-                                    name=current_scope,
-                                    entities=[
-                                        FolderEntityFileSystemTreeSetupOptions(
-                                            name="configuration",
-                                            entities=[
-                                                FolderEntityFileSystemTreeSetupOptions(
-                                                    name="workspace",
-                                                    entities=[
-                                                        FolderEntityFileSystemTreeSetupOptions(
-                                                            name="group",
-                                                            entities=[
-                                                                FolderEntityFileSystemTreeSetupOptions(
-                                                                    name="selection",
-                                                                    entities=[
-                                                                        FileEntityFileSystemTreeSetupOptions(
-                                                                            name=f"{current_workspace_selection}.yaml",
-                                                                            content="data:\n\nmetadata:\n",
-                                                                        )
-                                                                    ],
-                                                                )
-                                                            ],
-                                                        )
-                                                    ],
-                                                )
-                                            ],
-                                        ),
-                                        FolderEntityFileSystemTreeSetupOptions(
-                                            name="template",
-                                            entities=[
-                                                FolderEntityFileSystemTreeSetupOptions(
-                                                    name="group",
-                                                    entities=[
-                                                        FolderEntityFileSystemTreeSetupOptions(
-                                                            name="selection",
-                                                            entities=[
-                                                                FolderEntityFileSystemTreeSetupOptions(
-                                                                    name=current_workspace_selection,
-                                                                    entities=[
-                                                                        filesystem_sub_tree,
-                                                                        fragment_sub_tree,
-                                                                    ],
-                                                                )
-                                                            ],
-                                                        )
-                                                    ],
-                                                )
-                                            ],
-                                        ),
-                                    ],
-                                )
-                            ],
-                        )
-                    ]
-                )
-                filesystem_manager.singleton.setup_filesystem_tree(
-                    current_root_full_path,
-                    target_filesystem_sub_tree,
-                )
 
         return True
 
@@ -1047,7 +700,7 @@ class WorkspaceManager(AbstractManager[WorkspaceManagerConfigurations]):
     ) -> bool:
         original_executing_console_full_path = (
             value_cache_manager.singleton.get_one_value(
-                ["original-executing-console-full-path"],
+                ["root-application-full-path"],
                 output_type=TargetCacheValue.FOLDER_PATH,
             )
         )
@@ -1236,7 +889,7 @@ class WorkspaceManager(AbstractManager[WorkspaceManagerConfigurations]):
 
         return True
 
-    def handle_clean_command_setup(self) -> bool:
+    def handle_filesystem_clean_command_setup(self) -> bool:
         current_root_full_path = value_cache_manager.singleton.get_one_value(
             ["current-root-full-path"],
             output_type=TargetCacheValue.FOLDER_PATH,
@@ -1264,6 +917,7 @@ class WorkspaceManager(AbstractManager[WorkspaceManagerConfigurations]):
                     "workspace",
                     "data",
                     "command",
+                    "filesystem",
                     "clean",
                 ],
                 output_type=TargetCacheValue.ANY,
@@ -1289,7 +943,7 @@ class WorkspaceManager(AbstractManager[WorkspaceManagerConfigurations]):
         workspace_data_command_clean_default_exclude_is_enabled_value = (
             workspace_data_command_clean_default_exclude_is_enabled["value"]
             if "value" in workspace_data_command_clean_default_exclude_is_enabled
-            else {}
+            else True
         )
 
         workspace_data_command_clean_include = (
@@ -1298,9 +952,9 @@ class WorkspaceManager(AbstractManager[WorkspaceManagerConfigurations]):
             else {}
         ) or {}
 
-        workspace_data_command_clean_excluded = (
-            workspace_data_command_clean["excluded"]
-            if "excluded" in workspace_data_command_clean
+        workspace_data_command_clean_exclude = (
+            workspace_data_command_clean["exclude"]
+            if "exclude" in workspace_data_command_clean
             else {}
         ) or {}
 
@@ -1311,25 +965,25 @@ class WorkspaceManager(AbstractManager[WorkspaceManagerConfigurations]):
         ) or {}
 
         workspace_data_command_clean_exclude_targets = (
-            workspace_data_command_clean_excluded["targets"]
-            if "targets" in workspace_data_command_clean_excluded
+            workspace_data_command_clean_exclude["targets"]
+            if "targets" in workspace_data_command_clean_exclude
             else []
         ) or []
 
         workspace_data_command_clean_exclude_targets = {
-            item["full-path"] if "full-path" in item else ""
+            Path(item["full-path"]) if "full-path" in item else ""
             for item in workspace_data_command_clean_exclude_targets
         }
         if workspace_data_command_clean_default_exclude_is_enabled_value:
             workspace_data_command_clean_exclude_targets = (
                 workspace_data_command_clean_exclude_targets
                 | {
-                    f"{current_root_full_path}",
-                    f"{current_root_full_path}/workspace",
-                    f"{current_root_selection_full_path}",
+                    Path(f"{current_root_full_path}"),
+                    Path(f"{current_root_full_path}/workspace"),
+                    Path(f"{current_root_selection_full_path}"),
                 }
                 | {
-                    f"{item['full-path']}"
+                    Path(f"{item['full-path']}")
                     if "full-path" in item
                     else current_root_full_path
                     for _key, item in project_workspace_selections.items()

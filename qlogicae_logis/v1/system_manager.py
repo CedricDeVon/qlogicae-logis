@@ -31,12 +31,6 @@ class SystemManager(AbstractManager[SystemManagerConfigurations]):
     ) -> str:
         return platform.machine()
 
-    @property
-    def script_executable_filesystem_path(
-        self,
-    ) -> str:
-        pass
-
     @current_executing_console_filesystem_path.setter
     def current_executing_console_filesystem_path(
         self,

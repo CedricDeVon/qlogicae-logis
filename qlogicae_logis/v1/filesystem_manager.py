@@ -125,10 +125,15 @@ class FileSystemManager(AbstractManager[FileSystemManagerConfigurations]):
         source = Path(first_path)
         destination = Path(second_path)
 
-        destination.mkdir(parents=True, exist_ok=True)
+        destination.parent.mkdir(
+            parents=True,
+            exist_ok=True,
+        )
 
-        for path in source.iterdir():
-            shutil.move(path, destination / path.name)
+        shutil.move(
+            str(source),
+            str(destination),
+        )
 
         return True
 
@@ -160,6 +165,26 @@ class FileSystemManager(AbstractManager[FileSystemManagerConfigurations]):
                         entity.content,
                         encoding=entity.encoding,
                     )
+
+    def rename_filesystem_entity(
+        self,
+        source: str | Path,
+        destination: str | Path,
+    ) -> bool:
+        Path(source).rename(destination)
+
+        return True
+
+    def setup_filesystem_tree_path(
+        self,
+        directory: str | Path,
+    ) -> bool:
+        Path(directory).mkdir(
+            parents=True,
+            exist_ok=True,
+        )
+
+        return True
 
 
 singleton = FileSystemManager()

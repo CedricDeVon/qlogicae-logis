@@ -2,7 +2,7 @@ import typer
 
 from qlogicae_logis.v1.cli import (
     about,
-    clean,
+    filesystem,
     template,
     workflow,
     workspace,
@@ -31,9 +31,9 @@ cli_application.add_typer(
     help="Manage workspaces.",
 )
 cli_application.add_typer(
-    clean.app_clean,
-    name="clean",
-    help="Clean filesystem.",
+    filesystem.app_filesystem,
+    name="filesystem",
+    help="Filesystem management.",
 )
 
 

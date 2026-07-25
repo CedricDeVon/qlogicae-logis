@@ -1,16 +1,14 @@
 import time
+from collections.abc import Callable
+from concurrent.futures import ThreadPoolExecutor
+from itertools import chain, repeat
 from pathlib import Path
 from zipfile import ZipFile
-from itertools import chain
-from concurrent.futures import ThreadPoolExecutor
-from collections.abc import Callable
 
 from qlogicae_cor.v1.abstract_manager import AbstractManager
 
 from qlogicae_logis.v1 import (
     cli_display_manager,
-    console_log_manager,
-    file_io_manager,
     file_log_manager,
     filesystem_compression_manager,
     filesystem_manager,
@@ -24,12 +22,15 @@ from qlogicae_logis.v1 import (
     value_cache_manager,
     workspace_export_manager,
     workspace_filesystem_manager,
-    workspace_manager,
 )
 from qlogicae_logis.v1.cli_command_manager_configurations import (
     CliCommandManagerConfigurations,
 )
 from qlogicae_logis.v1.enum_conversion_output import EnumConversionOutput
+from qlogicae_logis.v1.filesystem_manager import (
+    FileEntityFileSystemTreeSetupOptions,
+    FolderEntityFileSystemTreeSetupOptions,
+)
 from qlogicae_logis.v1.target_cache_value import TargetCacheValue
 
 
@@ -42,12 +43,22 @@ class CliCommandManager(AbstractManager[CliCommandManagerConfigurations]):
                 self.handle_about_version_command,
             "command-about-me":
                 self.handle_about_me_command,
-            "command-clean-list-included":
-                self.handle_clean_list_included_command,
-            "command-clean-list-excluded":
-                self.handle_clean_list_excluded_command,
-            "command-clean-selection":
-                self.handle_clean_selection_command,
+            "command-filesystem-copy":
+                self.handle_filesystem_copy_command,
+            "command-filesystem-move":
+                self.handle_filesystem_move_command,
+            "command-filesystem-rename":
+                self.handle_filesystem_rename_command,
+            "command-filesystem-tree-setup":
+                self.handle_filesystem_tree_setup_command,
+            "command-filesystem-clean-list-included":
+                self.handle_filesystem_clean_list_included_command,
+            "command-filesystem-clean-list-excluded":
+                self.handle_filesystem_clean_list_excluded_command,
+            "command-filesystem-clean-selection":
+                self.handle_filesystem_clean_selection_command,
+            "command-filesystem-clean-path":
+                self.handle_filesystem_clean_path_command,
             "command-workspace-setup":
                 self.handle_workspace_setup_command,
             "command-workspace-export":
@@ -166,9 +177,194 @@ class CliCommandManager(AbstractManager[CliCommandManagerConfigurations]):
 
         return True
 
-    def handle_clean_selection_command(self, **kwargs) -> bool:
+    def handle_filesystem_copy_command(self, **kwargs) -> bool:
         file_log_manager.singleton.log_info(
-        "'clean selection' - start"
+            "'filesystem copy' - start"
+        )
+
+        source_path = kwargs.get("source_path", None)
+        target_paths = kwargs.get("target_paths", [])
+
+        if not source_path or not len(target_paths):
+            log_manager.singleton.log_warning(
+                "'filesystem copy' - invalid arguments"
+            )
+            return False
+
+        source_path = Path(
+            source_path
+        )
+
+        for target_path in target_paths:
+            if not target_path:
+                continue
+
+            target_path = Path(
+                target_path
+            )
+
+            filesystem_manager.singleton.copy_filesystem_path(
+                source_path,
+                target_path
+            )
+
+        file_log_manager.singleton.log_info(
+            "'filesystem copy' - complete"
+        )
+
+        return True
+
+    def handle_filesystem_move_command(self, **kwargs) -> bool:
+        file_log_manager.singleton.log_info(
+            "'filesystem move' - start"
+        )
+
+        source_path = kwargs.get("source_path", None)
+        target_path = kwargs.get("target_path", None)
+
+        if not source_path or not target_path:
+            log_manager.singleton.log_warning(
+                "'filesystem move' - invalid arguments"
+            )
+            return False
+
+        source_path = Path(
+            source_path
+        )
+        target_path = Path(
+            target_path
+        )
+
+        filesystem_manager.singleton.move_filesystem_path(
+            source_path,
+            target_path
+        )
+
+        file_log_manager.singleton.log_info(
+            "'filesystem move' - complete"
+        )
+
+        return True
+
+    def handle_filesystem_rename_command(self, **kwargs) -> bool:
+        file_log_manager.singleton.log_info(
+            "'filesystem rename' - start"
+        )
+
+        old_path = kwargs.get("old_path", None)
+        new_path = kwargs.get("new_path", None)
+
+        if not old_path or not new_path:
+            log_manager.singleton.log_warning(
+                "'filesystem rename' - invalid arguments"
+            )
+            return False
+
+        old_path = Path(
+            old_path
+        )
+        new_path = Path(
+            new_path
+        )
+
+        filesystem_manager.singleton.rename_filesystem_entity(
+            old_path,
+            new_path
+        )
+
+        file_log_manager.singleton.log_info(
+            "'filesystem rename' - complete"
+        )
+
+        return True
+
+    def handle_filesystem_tree_setup_command(self, **kwargs) -> bool:
+        file_log_manager.singleton.log_info(
+            "'filesystem tree setup' - start"
+        )
+
+        target_paths = kwargs.get("target_paths", [])
+
+        if not target_paths or not len(target_paths):
+            log_manager.singleton.log_warning(
+                "'filesystem tree setup' - invalid arguments"
+            )
+            return False
+
+        for target_path in target_paths:
+            if not target_path:
+                log_manager.singleton.log_warning(
+                    "'filesystem tree setup' - invalid arguments"
+                )
+                continue
+
+            target_path = Path(
+                target_path
+            )
+
+            filesystem_manager.singleton.setup_filesystem_tree_path(
+                target_path
+            )
+
+        file_log_manager.singleton.log_info(
+            "'filesystem tree setup' - complete"
+        )
+
+        return True
+
+    def handle_filesystem_clean_path_command(self, **kwargs) -> bool:
+        file_log_manager.singleton.log_info(
+            "'filesystem clean path' - start"
+        )
+
+        target_paths = kwargs.get("target_paths", [])
+
+        if not target_paths or not len(target_paths):
+            log_manager.singleton.log_warning(
+                "'filesystem clean path' - invalid arguments"
+            )
+            return False
+
+        clean_exclude_selections = (
+            value_cache_manager.singleton.get_one_value(
+                ["clean-exclude-selections"],
+                output_type=TargetCacheValue.ANY,
+            )
+            or {}
+        )
+
+        for target_path in target_paths:
+            if not target_path:
+                log_manager.singleton.log_warning(
+                    "'filesystem clean path' - invalid arguments"
+                )
+                continue
+
+            target_path = Path(
+                target_path
+            )
+
+            if target_path in clean_exclude_selections:
+                log_manager.singleton.log_warning(
+                    f"'filesystem clean path' - "
+                    f"'{target_path}' "
+                    "is a blacklisted filesystem path"
+                )
+                continue
+
+            filesystem_manager.singleton.clean_filesystem_path(
+                target_path
+            )
+
+        file_log_manager.singleton.log_info(
+            "'filesystem clean path' - complete"
+        )
+
+        return True
+
+    def handle_filesystem_clean_selection_command(self, **kwargs) -> bool:
+        file_log_manager.singleton.log_info(
+        "'filesystem clean selection' - start"
     )
         targets = kwargs.get("targets", [])
 
@@ -194,6 +390,7 @@ class CliCommandManager(AbstractManager[CliCommandManagerConfigurations]):
                     "workspace",
                     "data",
                     "command",
+                    "filesystem",
                     "clean",
                     "is-enabled",
                     "value",
@@ -204,7 +401,7 @@ class CliCommandManager(AbstractManager[CliCommandManagerConfigurations]):
 
         if not is_enabled:
             log_manager.singleton.log_warning(
-                "'clean selection' - workspace property "
+                "'filesystem clean selection' - workspace property "
                 "'data.command.clean.is-enabled.value' "
                 "has been set to 'false'"
             )
@@ -218,7 +415,7 @@ class CliCommandManager(AbstractManager[CliCommandManagerConfigurations]):
                 or target not in clean_include_selections
             ):
                 log_manager.singleton.log_warning(
-                    f"'clean selection' - '{target}' "
+                    f"'filesystem clean selection' - '{target}' "
                     "is not an item within the "
                     "'data.command.clean.include' workspace property"
                 )
@@ -230,7 +427,7 @@ class CliCommandManager(AbstractManager[CliCommandManagerConfigurations]):
                     or "full-path" not in current_item_target
                 ):
                     log_manager.singleton.log_warning(
-                        "'clean selection' - workspace property "
+                        "'filesystem clean selection' - workspace property "
                         "'data.command.clean.include.targets' "
                         "items must include a 'full-path' "
                         "filesystem property"
@@ -247,7 +444,7 @@ class CliCommandManager(AbstractManager[CliCommandManagerConfigurations]):
                     in clean_exclude_selections
                 ):
                     log_manager.singleton.log_warning(
-                        f"'clean selection' - "
+                        f"'filesystem clean selection' - "
                         f"'{current_filesystem_path}' "
                         "is a blacklisted filesystem path"
                     )
@@ -273,13 +470,13 @@ class CliCommandManager(AbstractManager[CliCommandManagerConfigurations]):
             )
 
         file_log_manager.singleton.log_info(
-            "'clean selection' - complete"
+            "'filesystem clean selection' - complete"
         )
 
         return True
 
-    def handle_clean_list_included_command(self) -> bool:
-        file_log_manager.singleton.log_info("'clean list included' - start")
+    def handle_filesystem_clean_list_included_command(self) -> bool:
+        file_log_manager.singleton.log_info("'filesystem clean list included' - start")
 
         clean_include_selections = (
             value_cache_manager.singleton.get_one_value(
@@ -304,9 +501,9 @@ class CliCommandManager(AbstractManager[CliCommandManagerConfigurations]):
                     or "full-path" not in clean_include_target_item
                 ):
                     log_manager.singleton.log_warning(
-                        "'clean list included' - workspace property "
+                        "'filesystem clean list included' - workspace property "
                         "'data.command.clean.include."
-                        f"targets.{clean_include_target_key}' "
+                        "targets' "
                         "items must include a 'full-path' "
                         "filesystem property"
                     )
@@ -325,13 +522,13 @@ class CliCommandManager(AbstractManager[CliCommandManagerConfigurations]):
         )
 
         file_log_manager.singleton.log_info(
-            "'clean list included' - complete"
+            "'filesystem clean list included' - complete"
         )
 
         return True
 
-    def handle_clean_list_excluded_command(self) -> bool:
-        file_log_manager.singleton.log_info("'clean list excluded' - start")
+    def handle_filesystem_clean_list_excluded_command(self) -> bool:
+        file_log_manager.singleton.log_info("'filesystem clean list excluded' - start")
 
         clean_exclude_selections = list(
             value_cache_manager.singleton.get_one_value(
@@ -352,7 +549,7 @@ class CliCommandManager(AbstractManager[CliCommandManagerConfigurations]):
         )
 
         file_log_manager.singleton.log_info(
-            "'clean list excluded' - complete"
+            "'filesystem clean list excluded' - complete"
         )
 
         return True
@@ -362,7 +559,7 @@ class CliCommandManager(AbstractManager[CliCommandManagerConfigurations]):
             value = (
                 filesystem_compression_manager.singleton.get_zip_format_compression(
                     input_value
-                )   
+                )
             )
 
             return value
@@ -604,7 +801,7 @@ class CliCommandManager(AbstractManager[CliCommandManagerConfigurations]):
                 export_data_group["selection"]
                 if "selection" in export_data_group else {}
             ) or {}
-                        
+
             with ThreadPoolExecutor(
                 max_workers=min(
                     32,
@@ -747,7 +944,7 @@ class CliCommandManager(AbstractManager[CliCommandManagerConfigurations]):
             filesystem_manager.singleton.clean_filesystem_path(
                 f"{current_root_full_path}/workspace/private/temporary/export"
             )
-                
+
         tasks: list[tuple[Callable[[str], None], str]] = []
 
         for target in targets:
@@ -826,8 +1023,345 @@ class CliCommandManager(AbstractManager[CliCommandManagerConfigurations]):
     def handle_workspace_setup_command(self) -> bool:
         file_log_manager.singleton.log_info("'workspace setup' - start")
 
-        workspace_manager.singleton.handle_workspace_base_filesystem_replenishment_setup()
-        workspace_manager.singleton.handle_workspace_selection_filesystem_replenishment_setup()
+        current_root_full_path = value_cache_manager.singleton.get_one_value(
+            ["current-root-full-path"],
+            output_type=TargetCacheValue.FOLDER_PATH,
+        )
+
+        project_workspace_selections = (
+            value_cache_manager.singleton.get_one_value(
+                ["project-workspace-selections"],
+                output_type=TargetCacheValue.ANY,
+            )
+            or {}
+        )
+
+        group_workspace_selections = (
+            value_cache_manager.singleton.get_one_value(
+                ["group-workspace-selections"],
+                output_type=TargetCacheValue.ANY,
+            )
+            or {}
+        )
+
+        scope_selections = ["private", "public"]
+
+        filesystem_sub_tree = FolderEntityFileSystemTreeSetupOptions(
+            name="filesystem",
+            entities=[],
+        )
+
+        specific_sub_tree = FolderEntityFileSystemTreeSetupOptions(
+            name="specific",
+            entities=[],
+        )
+
+        fragment_sub_tree = FolderEntityFileSystemTreeSetupOptions(
+            name="fragment",
+            entities=[specific_sub_tree],
+        )
+
+        workspace_gitignore_file = FileEntityFileSystemTreeSetupOptions(
+            name=".gitignore",
+            content="private/**/*",
+        )
+
+        workspace_private_gitignore_file = FileEntityFileSystemTreeSetupOptions(
+            name=".gitignore", content="*"
+        )
+
+        configuration_workspace_root_file = FileEntityFileSystemTreeSetupOptions(
+            name="root.yaml",
+            content="data:\n\nmetadata:\n",
+        )
+
+        configuration_workspace_group_file = FileEntityFileSystemTreeSetupOptions(
+            name="group.yaml",
+            content="data:\n\nmetadata:\n",
+        )
+
+        configuration_workspace_project_file = FileEntityFileSystemTreeSetupOptions(
+            name="project.yaml",
+            content="data:\n\nmetadata:\n",
+        )
+
+        selection_sub_tree = FolderEntityFileSystemTreeSetupOptions(
+            name="selection",
+            entities=[],
+        )
+
+        filesystem_sub_tree = FolderEntityFileSystemTreeSetupOptions(
+            name="filesystem",
+            entities=[],
+        )
+
+        specific_sub_tree = FolderEntityFileSystemTreeSetupOptions(
+            name="specific",
+            entities=[],
+        )
+
+        fragment_sub_tree = FolderEntityFileSystemTreeSetupOptions(
+            name="fragment",
+            entities=[specific_sub_tree],
+        )
+
+        target_sub_tree = FolderEntityFileSystemTreeSetupOptions(
+            name="target",
+            entities=[],
+        )
+
+        log_sub_tree = FolderEntityFileSystemTreeSetupOptions(
+            name="log",
+            entities=[],
+        )
+
+        configuration_workspace_sub_tree = FolderEntityFileSystemTreeSetupOptions(
+            name="configuration",
+            entities=[
+                FolderEntityFileSystemTreeSetupOptions(
+                    name="workspace",
+                    entities=[
+                        FolderEntityFileSystemTreeSetupOptions(
+                            name="group",
+                            entities=[
+                                selection_sub_tree,
+                                configuration_workspace_group_file,
+                            ],
+                        ),
+                        FolderEntityFileSystemTreeSetupOptions(
+                            name="project",
+                            entities=[
+                                selection_sub_tree,
+                                configuration_workspace_project_file,
+                            ],
+                        ),
+                        configuration_workspace_root_file,
+                    ],
+                ),
+            ],
+        )
+
+        template_workspace_sub_tree = FolderEntityFileSystemTreeSetupOptions(
+            name="template",
+            entities=[
+                FolderEntityFileSystemTreeSetupOptions(
+                    name="all",
+                    entities=[
+                        filesystem_sub_tree,
+                        fragment_sub_tree,
+                    ],
+                ),
+                FolderEntityFileSystemTreeSetupOptions(
+                    name="group",
+                    entities=[
+                        selection_sub_tree,
+                        filesystem_sub_tree,
+                        fragment_sub_tree,
+                    ],
+                ),
+                FolderEntityFileSystemTreeSetupOptions(
+                    name="project",
+                    entities=[
+                        selection_sub_tree,
+                        filesystem_sub_tree,
+                        fragment_sub_tree,
+                    ],
+                ),
+                FolderEntityFileSystemTreeSetupOptions(
+                    name="root",
+                    entities=[
+                        filesystem_sub_tree,
+                        fragment_sub_tree,
+                    ],
+                ),
+            ],
+        )
+
+        temporary_workspace_sub_tree = FolderEntityFileSystemTreeSetupOptions(
+            name="temporary",
+            entities=[
+                FolderEntityFileSystemTreeSetupOptions(
+                    name="export",
+                    entities=[
+                        target_sub_tree,
+                    ],
+                ),
+                FolderEntityFileSystemTreeSetupOptions(
+                    name="template",
+                    entities=[
+                        filesystem_sub_tree,
+                        fragment_sub_tree,
+                    ],
+                ),
+                log_sub_tree,
+            ],
+        )
+
+        root_filesystem_tree = FolderEntityFileSystemTreeSetupOptions(
+            entities=[
+                FolderEntityFileSystemTreeSetupOptions(
+                    name="workspace",
+                    entities=[
+                        FolderEntityFileSystemTreeSetupOptions(
+                            name="private",
+                            entities=[
+                                configuration_workspace_sub_tree,
+                                template_workspace_sub_tree,
+                                temporary_workspace_sub_tree,
+                                workspace_private_gitignore_file,
+                            ],
+                        ),
+                        FolderEntityFileSystemTreeSetupOptions(
+                            name="public",
+                            entities=[
+                                configuration_workspace_sub_tree,
+                                template_workspace_sub_tree,
+                            ],
+                        ),
+                        workspace_gitignore_file,
+                    ],
+                ),
+                selection_sub_tree,
+            ]
+        )
+
+        filesystem_manager.singleton.setup_filesystem_tree(
+            current_root_full_path,
+            root_filesystem_tree,
+        )
+
+        for current_scope in scope_selections:
+            for current_workspace_selection in project_workspace_selections:
+                target_filesystem_sub_tree = FolderEntityFileSystemTreeSetupOptions(
+                    entities=[
+                        FolderEntityFileSystemTreeSetupOptions(
+                            name="workspace",
+                            entities=[
+                                FolderEntityFileSystemTreeSetupOptions(
+                                    name=current_scope,
+                                    entities=[
+                                        FolderEntityFileSystemTreeSetupOptions(
+                                            name="configuration",
+                                            entities=[
+                                                FolderEntityFileSystemTreeSetupOptions(
+                                                    name="workspace",
+                                                    entities=[
+                                                        FolderEntityFileSystemTreeSetupOptions(
+                                                            name="project",
+                                                            entities=[
+                                                                FolderEntityFileSystemTreeSetupOptions(
+                                                                    name="selection",
+                                                                    entities=[
+                                                                        FileEntityFileSystemTreeSetupOptions(
+                                                                            name=f"{current_workspace_selection}.yaml",
+                                                                            content="data:\n\nmetadata:\n",
+                                                                        )
+                                                                    ],
+                                                                )
+                                                            ],
+                                                        )
+                                                    ],
+                                                )
+                                            ],
+                                        ),
+                                        FolderEntityFileSystemTreeSetupOptions(
+                                            name="template",
+                                            entities=[
+                                                FolderEntityFileSystemTreeSetupOptions(
+                                                    name="project",
+                                                    entities=[
+                                                        FolderEntityFileSystemTreeSetupOptions(
+                                                            name="selection",
+                                                            entities=[
+                                                                FolderEntityFileSystemTreeSetupOptions(
+                                                                    name=current_workspace_selection,
+                                                                    entities=[
+                                                                        filesystem_sub_tree,
+                                                                        fragment_sub_tree,
+                                                                    ],
+                                                                )
+                                                            ],
+                                                        )
+                                                    ],
+                                                )
+                                            ],
+                                        ),
+                                    ],
+                                )
+                            ],
+                        )
+                    ]
+                )
+                filesystem_manager.singleton.setup_filesystem_tree(
+                    current_root_full_path,
+                    target_filesystem_sub_tree,
+                )
+
+        for current_workspace_selection in group_workspace_selections:
+            target_filesystem_sub_tree = FolderEntityFileSystemTreeSetupOptions(
+                entities=[
+                    FolderEntityFileSystemTreeSetupOptions(
+                        name="workspace",
+                        entities=[
+                            FolderEntityFileSystemTreeSetupOptions(
+                                name=current_scope,
+                                entities=[
+                                    FolderEntityFileSystemTreeSetupOptions(
+                                        name="configuration",
+                                        entities=[
+                                            FolderEntityFileSystemTreeSetupOptions(
+                                                name="workspace",
+                                                entities=[
+                                                    FolderEntityFileSystemTreeSetupOptions(
+                                                        name="group",
+                                                        entities=[
+                                                            FolderEntityFileSystemTreeSetupOptions(
+                                                                name="selection",
+                                                                entities=[
+                                                                    FileEntityFileSystemTreeSetupOptions(
+                                                                        name=f"{current_workspace_selection}.yaml",
+                                                                        content="data:\n\nmetadata:\n",
+                                                                    )
+                                                                ],
+                                                            )
+                                                        ],
+                                                    )
+                                                ],
+                                            )
+                                        ],
+                                    ),
+                                    FolderEntityFileSystemTreeSetupOptions(
+                                        name="template",
+                                        entities=[
+                                            FolderEntityFileSystemTreeSetupOptions(
+                                                name="group",
+                                                entities=[
+                                                    FolderEntityFileSystemTreeSetupOptions(
+                                                        name="selection",
+                                                        entities=[
+                                                            FolderEntityFileSystemTreeSetupOptions(
+                                                                name=current_workspace_selection,
+                                                                entities=[
+                                                                    filesystem_sub_tree,
+                                                                    fragment_sub_tree,
+                                                                ],
+                                                            )
+                                                        ],
+                                                    )
+                                                ],
+                                            )
+                                        ],
+                                    ),
+                                ],
+                            )
+                        ],
+                    )
+                ]
+            )
+            filesystem_manager.singleton.setup_filesystem_tree(
+                current_root_full_path,
+                target_filesystem_sub_tree,
+            )
 
         file_log_manager.singleton.log_info("'workspace setup' - complete")
 
@@ -867,7 +1401,7 @@ class CliCommandManager(AbstractManager[CliCommandManagerConfigurations]):
         )
 
         cli_display_manager.singleton.render_one(output_content)
-                
+
 
         file_log_manager.singleton.log_info("'workspace list exports' - complete")
 
@@ -905,6 +1439,18 @@ class CliCommandManager(AbstractManager[CliCommandManagerConfigurations]):
                 )
                 return False
 
+            # workflow_data_name = (
+            #     workflow_data["name"]
+            #     if workflow_data and "name" in workflow_data
+            #     else {}
+            # ) or {}
+            # workflow_data_name_value = (
+            #     workflow_data_name["value"]
+            #     if workflow_data_name
+            #     and "value" in workflow_data_name
+            #     else "Workflow Selection"
+            # ) or "Workflow Selection"
+
             workflow_data_delay = (
                 workflow_data["delay"]
                 if workflow_data and "delay" in workflow_data
@@ -926,13 +1472,31 @@ class CliCommandManager(AbstractManager[CliCommandManagerConfigurations]):
                 workflow_data_process["value"]
                 if workflow_data_process and "value"
                     in workflow_data_process
-                else "subprocess"
-            ) or "subprocess"
+                else script_process_manager.singleton.default_script_process
+            ) or script_process_manager.singleton.default_script_process
             workflow_data_process_override = (
                 workflow_data_process["override"]
                 if workflow_data_process and "override" in workflow_data_process
                 else False
             )
+
+            workflow_data_is_atomic = (
+                workflow_data["is_atomic"]
+                if workflow_data and "is_atomic" in workflow_data
+                else {}
+            ) or {}
+            workflow_data_is_atomic_value = (
+                workflow_data_is_atomic["value"]
+                if workflow_data_is_atomic and "value"
+                    in workflow_data_is_atomic
+                else True
+            )
+            workflow_data_is_atomic_override = (
+                workflow_data_is_atomic["override"]
+                if workflow_data_is_atomic and "override" in workflow_data_is_atomic
+                else False
+            )
+
             workflow_selection_data_enter_full_path = (
                 workflow_selection_data["enter-full-path"]
                 if workflow_selection_data and "enter-full-path"
@@ -999,6 +1563,18 @@ class CliCommandManager(AbstractManager[CliCommandManagerConfigurations]):
                     )
                     return False
 
+                # command_name = (
+                #     command["name"]
+                #     if command and "name" in command
+                #     else {}
+                # ) or {}
+                # command_name_value = (
+                #     command_name["value"]
+                #     if command_name
+                #     and "value" in command_name
+                #     else "Selection Command"
+                # ) or "Selection Command"
+
                 current_args = (
                     command["argument"]
                     if command and "argument" in command else {}
@@ -1010,12 +1586,25 @@ class CliCommandManager(AbstractManager[CliCommandManagerConfigurations]):
                 current_process_value = (
                     current_process["value"]
                     if current_process
-                    and "value" in current_process else "subprocess"
-                ) or "subprocess"
+                    and "value" in current_process
+                    else script_process_manager.singleton.default_script_process
+                ) or script_process_manager.singleton.default_script_process
                 if workflow_data_process_override:
                     current_process_value = (
                         workflow_data_process_value
                     )
+
+                current_run_is_atomic = (
+                    current_run["is_atomic"]
+                    if current_run and "is_atomic" in current_run
+                    else {}
+                ) or {}
+                current_run_is_atomic_value = (
+                    current_run_is_atomic["value"]
+                    if current_run_is_atomic and "value"
+                        in current_run_is_atomic
+                    else True
+                )
 
                 current_run_delay = (
                     command["delay"]
@@ -1053,10 +1642,23 @@ class CliCommandManager(AbstractManager[CliCommandManagerConfigurations]):
                         script_process_type=current_process_value,
                     )
 
+                    if (
+                        workflow_data_is_atomic_value
+                        if workflow_data_is_atomic_override
+                        else current_run_is_atomic_value
+                    ):
+                        if (
+                            current_process_value == (
+                                script_process_manager.singleton.default_script_process
+                            )
+                            and cli_output.returncode
+                        ):
+                            return False
+
                     file_log_manager.singleton.log_info(cli_output)
-                    console_log_manager.singleton.log_info(
-                        cli_output.stdout or cli_output.stderr or ""
-                    )
+                    # console_log_manager.singleton.log_info(
+                    #     cli_output.stdout or cli_output.stderr or ""
+                    # )
 
             return True
 
@@ -1103,8 +1705,8 @@ class CliCommandManager(AbstractManager[CliCommandManagerConfigurations]):
             if target not in workflow_data_selection:
                 log_manager.singleton.log_warning(
                     "'workflow run' - workspace property "
-                    "'data.workflow.selection.[...]' "
-                    "does not exist"
+                    f"'data.workflow.selection.{target}' "
+                    "script does not exist"
                 )
                 return False
 
@@ -1173,7 +1775,7 @@ class CliCommandManager(AbstractManager[CliCommandManagerConfigurations]):
             or {}
         )
         project_workspace_selections.sort()
-        
+
         output_content = "\n".join(
             chain(
                 (
@@ -1269,8 +1871,9 @@ class CliCommandManager(AbstractManager[CliCommandManagerConfigurations]):
             with ThreadPoolExecutor(max_workers=2) as executor:
                 list(
                     executor.map(
-                        handle_filesystem_parsing,
+                        macros_manager.singleton.parse_filesystem,
                         parse_paths,
+                        repeat(workspace_macros),
                     )
                 )
 
@@ -1340,7 +1943,7 @@ class CliCommandManager(AbstractManager[CliCommandManagerConfigurations]):
                 "'template filesystem apply' - 'group' "
                 "setup execution start"
             )
-                       
+
             with ThreadPoolExecutor(
                 max_workers=min(32, len(group_workspace_selections) or 1),
             ) as executor:
@@ -1400,8 +2003,9 @@ class CliCommandManager(AbstractManager[CliCommandManagerConfigurations]):
                     )
 
             for current_template_type in ["filesystem", "fragment"]:
-                handle_filesystem_parsing(
-                    f"{current_root_full_path}/workspace/private/temporary/template/{current_template_type}/{group_name}"
+                macros_manager.singleton.parse_filesystem(
+                    f"{current_root_full_path}/workspace/private/temporary/template/{current_template_type}/{group_name}",
+                    workspace_macros
                 )
 
             for current_target in group_targets:
@@ -1496,8 +2100,9 @@ class CliCommandManager(AbstractManager[CliCommandManagerConfigurations]):
                     )
 
             for current_template_type in ["filesystem", "fragment"]:
-                handle_filesystem_parsing(
-                    f"{current_root_full_path}/workspace/private/temporary/template/{current_template_type}/{project_name}"
+                macros_manager.singleton.parse_filesystem(
+                    f"{current_root_full_path}/workspace/private/temporary/template/{current_template_type}/{project_name}",
+                    workspace_macros
                 )
 
             filesystem_manager.singleton.copy_filesystem_path(
@@ -1541,68 +2146,9 @@ class CliCommandManager(AbstractManager[CliCommandManagerConfigurations]):
 
             return True
 
-        def handle_filesystem_parsing(
-            filesystem_path,
-        ):
-            root = Path(filesystem_path)
-
-            for current_root, directories, files in root.walk(
-                top_down=False,
-            ):
-                current_root = Path(current_root)
-
-                for file_name in files:
-                    current_path = current_root / file_name
-
-                    try:
-                        file_data = current_path.read_text(
-                            encoding=file_io_manager.singleton.file_encoding,
-                        )
-                    except UnicodeDecodeError:
-                        pass
-                    else:
-                        parsed_file_data = macros_manager.singleton.parse_one(
-                            file_data,
-                            workspace_macros,
-                        )
-
-                        if parsed_file_data != file_data:
-                            current_path.write_text(
-                                parsed_file_data,
-                                encoding=file_io_manager.singleton.file_encoding,
-                            )
-
-                    parsed_name = macros_manager.singleton.parse_one(
-                        current_path.name,
-                        workspace_macros,
-                    )
-
-                    if parsed_name != current_path.name:
-                        current_path = current_path.rename(
-                            current_path.with_name(parsed_name),
-                        )
-
-                for directory_name in directories:
-                    current_path = current_root / directory_name
-
-                    parsed_name = macros_manager.singleton.parse_one(
-                        current_path.name,
-                        workspace_macros,
-                    )
-
-                    if parsed_name != current_path.name:
-                        current_path.rename(
-                            current_path.with_name(
-                                parsed_name,
-                            )
-                        )
-
-            return True
-
-
         file_log_manager.singleton.log_info(
-                    "'template filesystem apply' - start"
-                )
+            "'template filesystem apply' - start"
+        )
 
         targets = kwargs.get("targets", None)
 
@@ -1624,7 +2170,7 @@ class CliCommandManager(AbstractManager[CliCommandManagerConfigurations]):
             and "is-enabled" in workspace_data_command_template
             else {}
         ) or {}
-        
+
         workspace_data_command_template_is_enabled_value = (
             workspace_data_command_template_is_enabled["value"]
             if workspace_data_command_template_is_enabled
@@ -1758,7 +2304,6 @@ class CliCommandManager(AbstractManager[CliCommandManagerConfigurations]):
                 task[0]()
             else:
                 task[0](task[1])
-
 
         file_log_manager.singleton.log_info(
             "'template filesystem apply' - complete"

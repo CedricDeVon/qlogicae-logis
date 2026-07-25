@@ -24,11 +24,9 @@ class CliManager(AbstractManager[CliManagerConfigurations]):
             ]
 
         self.handle_tasks(
-            [
-                *self.handle_pre_about_command_generation(),
-                *handle_command_generation(),
-                *self.handle_post_command_generation(),
-            ]
+            [*self.handle_pre_about_command_generation()],
+            [*handle_command_generation()],
+            [*self.handle_post_command_generation()],
         )
 
         return True
@@ -42,19 +40,114 @@ class CliManager(AbstractManager[CliManagerConfigurations]):
             ]
 
         self.handle_tasks(
-            [
-                *self.handle_pre_about_command_generation(),
-                *handle_command_generation(),
-                *self.handle_post_command_generation(),
-            ]
+            [*self.handle_pre_about_command_generation()],
+            [*handle_command_generation()],
+            [*self.handle_post_command_generation()],
         )
 
         return True
 
-    def handle_clean_selection(self, targets) -> bool:
+    def handle_filesystem_copy(self, **kwargs) -> bool:
+        def handle_command_generation():
+            return [
+                {
+                    "callback": (
+                        cli_command_manager.singleton.handle_filesystem_copy_command
+                    ),
+                    "arguments": kwargs
+                },
+            ]
+
+        self.handle_tasks(
+            [*self.handle_pre_filesystem_command_generation()],
+            [*handle_command_generation()],
+            [*self.handle_post_command_generation()],
+        )
+
+        return True
+
+    def handle_filesystem_move(self, **kwargs) -> bool:
+        def handle_command_generation():
+            return [
+                {
+                    "callback": (
+                        cli_command_manager.singleton.handle_filesystem_move_command
+                    ),
+                    "arguments": kwargs
+                },
+            ]
+
+        self.handle_tasks(
+            [*self.handle_pre_filesystem_command_generation()],
+            [*handle_command_generation()],
+            [*self.handle_post_command_generation()],
+        )
+
+        return True
+
+    def handle_filesystem_rename(self, **kwargs) -> bool:
+        def handle_command_generation():
+            return [
+                {
+                    "callback": (
+                        cli_command_manager.singleton.handle_filesystem_rename_command
+                    ),
+                    "arguments": kwargs
+                },
+            ]
+
+        self.handle_tasks(
+            [*self.handle_pre_filesystem_command_generation()],
+            [*handle_command_generation()],
+            [*self.handle_post_command_generation()],
+        )
+
+        return True
+
+    def handle_filesystem_tree_setup(self, **kwargs) -> bool:
+        def handle_command_generation():
+            return [
+                {
+                    "callback": (
+                        cli_command_manager.singleton.handle_filesystem_tree_setup_command
+                    ),
+                    "arguments": kwargs
+                },
+            ]
+
+        self.handle_tasks(
+            [*self.handle_pre_filesystem_command_generation()],
+            [*handle_command_generation()],
+            [*self.handle_post_command_generation()],
+        )
+
+        return True
+
+    def handle_filesystem_clean_path(self, **kwargs) -> bool:
+        def handle_command_generation():
+            return [
+                {
+                    "callback": (
+                        cli_command_manager.singleton.handle_filesystem_clean_path_command
+                    ),
+                    "arguments": kwargs
+                },
+            ]
+
+        self.handle_tasks(
+            [*self.handle_pre_filesystem_clean_command_generation()],
+            [*handle_command_generation()],
+            [*self.handle_post_command_generation()],
+        )
+
+        return True
+
+    def handle_filesystem_clean_selection(self, targets) -> bool:
         def handle_command_generation():
             sub_tasks = []
-            callback = cli_command_manager.singleton.handle_clean_selection_command
+            callback = (
+                cli_command_manager.singleton.handle_filesystem_clean_selection_command
+            )
             for current_target in targets:
                 sub_tasks.append(
                     {
@@ -70,41 +163,43 @@ class CliManager(AbstractManager[CliManagerConfigurations]):
             return sub_tasks
 
         self.handle_tasks(
-            [
-                *self.handle_pre_clean_command_generation(),
-                *handle_command_generation(),
-                *self.handle_post_command_generation(),
-            ]
+            [*self.handle_pre_filesystem_clean_command_generation()],
+            [*handle_command_generation()],
+            [*self.handle_post_command_generation()],
         )
 
         return True
 
-    def handle_clean_list_included(self) -> bool:
+    def handle_filesystem_clean_list_included(self) -> bool:
         def handle_command_generation():
-            callback = cli_command_manager.singleton.handle_clean_list_included_command
+            callback = (
+                cli_command_manager
+                    .singleton
+                    .handle_filesystem_clean_list_included_command
+            )
             return [{"callback": callback}]
 
         self.handle_tasks(
-            [
-                *self.handle_pre_clean_command_generation(),
-                *handle_command_generation(),
-                *self.handle_post_command_generation(),
-            ]
+            [*self.handle_pre_filesystem_clean_command_generation()],
+            [*handle_command_generation()],
+            [*self.handle_post_command_generation()],
         )
 
         return True
 
-    def handle_clean_list_excluded(self) -> bool:
+    def handle_filesystem_clean_list_excluded(self) -> bool:
         def handle_command_generation():
-            callback = cli_command_manager.singleton.handle_clean_list_excluded_command
+            callback = (
+                cli_command_manager
+                    .singleton
+                    .handle_filesystem_clean_list_excluded_command
+            )
             return [{"callback": callback}]
 
         self.handle_tasks(
-            [
-                *self.handle_pre_clean_command_generation(),
-                *handle_command_generation(),
-                *self.handle_post_command_generation(),
-            ]
+            [*self.handle_pre_filesystem_clean_command_generation()],
+            [*handle_command_generation()],
+            [*self.handle_post_command_generation()],
         )
 
         return True
@@ -113,7 +208,9 @@ class CliManager(AbstractManager[CliManagerConfigurations]):
         def handle_command_generation():
             sub_tasks = []
             callback = (
-                cli_command_manager.singleton.handle_workspace_export_command
+                cli_command_manager
+                    .singleton
+                    .handle_workspace_export_command
             )
             for current_target in targets:
                 sub_tasks.append(
@@ -128,11 +225,9 @@ class CliManager(AbstractManager[CliManagerConfigurations]):
             return sub_tasks
 
         self.handle_tasks(
-            [
-                *self.handle_pre_workspace_command_generation(),
-                *handle_command_generation(),
-                *self.handle_post_command_generation(),
-            ]
+            [*self.handle_pre_workspace_command_generation()],
+            [*handle_command_generation()],
+            [*self.handle_post_command_generation()],
         )
 
         return True
@@ -151,11 +246,9 @@ class CliManager(AbstractManager[CliManagerConfigurations]):
             ]
 
         self.handle_tasks(
-            [
-                *self.handle_pre_workspace_command_generation(),
-                *handle_command_generation(),
-                *self.handle_post_command_generation(),
-            ]
+            [*self.handle_pre_workspace_command_generation()],
+            [*handle_command_generation()],
+            [*self.handle_post_command_generation()],
         )
 
         return True
@@ -168,11 +261,9 @@ class CliManager(AbstractManager[CliManagerConfigurations]):
             return [{"callback": callback}]
 
         self.handle_tasks(
-            [
-                *self.handle_pre_workspace_command_generation(),
-                *handle_command_generation(),
-                *self.handle_post_command_generation(),
-            ]
+            [*self.handle_pre_workspace_command_generation()],
+            [*handle_command_generation()],
+            [*self.handle_post_command_generation()],
         )
 
         return True
@@ -183,11 +274,9 @@ class CliManager(AbstractManager[CliManagerConfigurations]):
             return [{"callback": callback}]
 
         self.handle_tasks(
-            [
-                *self.handle_pre_workspace_command_generation(),
-                *handle_command_generation(),
-                *self.handle_post_command_generation(),
-            ]
+            [*self.handle_pre_workspace_command_generation()],
+            [*handle_command_generation()],
+            [*self.handle_post_command_generation()],
         )
 
         return True
@@ -209,11 +298,9 @@ class CliManager(AbstractManager[CliManagerConfigurations]):
             return sub_tasks
 
         self.handle_tasks(
-            [
-                *self.handle_pre_template_command_generation(),
-                *handle_command_generation(),
-                *self.handle_post_command_generation(),
-            ]
+            [*self.handle_pre_template_command_generation()],
+            [*handle_command_generation()],
+            [*self.handle_post_command_generation()],
         )
 
         return True
@@ -226,11 +313,9 @@ class CliManager(AbstractManager[CliManagerConfigurations]):
             return [{"callback": callback}]
 
         self.handle_tasks(
-            [
-                *self.handle_pre_workflow_command_generation(),
-                *handle_command_generation(),
-                *self.handle_post_command_generation(),
-            ]
+            [*self.handle_pre_workflow_command_generation()],
+            [*handle_command_generation()],
+            [*self.handle_post_command_generation()],
         )
 
         return True
@@ -243,11 +328,9 @@ class CliManager(AbstractManager[CliManagerConfigurations]):
             return [{"callback": callback}]
 
         self.handle_tasks(
-            [
-                *self.handle_pre_workflow_command_generation(),
-                *handle_command_generation(),
-                *self.handle_post_command_generation(),
-            ]
+            [*self.handle_pre_workflow_command_generation()],
+            [*handle_command_generation()],
+            [*self.handle_post_command_generation()],
         )
 
         return True
@@ -271,11 +354,9 @@ class CliManager(AbstractManager[CliManagerConfigurations]):
             return sub_tasks
 
         self.handle_tasks(
-            [
-                *self.handle_pre_template_command_generation(),
-                *handle_command_generation(),
-                *self.handle_post_command_generation(),
-            ]
+            [*self.handle_pre_template_command_generation()],
+            [*handle_command_generation()],
+            [*self.handle_post_command_generation()],
         )
 
         return True
@@ -314,7 +395,48 @@ class CliManager(AbstractManager[CliManagerConfigurations]):
             },
         ]
 
-    def handle_pre_clean_command_generation(self):
+    def handle_pre_filesystem_command_generation(self):
+        return [
+            {
+                "callback": workspace_manager.
+                    singleton.
+                    handle_timestamp_console_execution_start_setup
+            },
+            {
+                "callback": workspace_manager.
+                    singleton.
+                    handle_current_root_filesystem_paths_setup
+            },
+            {
+                "callback": workspace_manager.
+                    singleton.
+                    handle_executing_console_filesystem_paths_setup
+            },
+            {
+                "callback": workspace_manager.
+                    singleton.
+                    handle_current_root_filesystem_navigation_setup
+            },
+            {
+                "callback": workspace_manager.
+                    singleton.
+                    handle_workspace_configuration_file_data_extraction_setup
+            },
+            {"callback": workspace_manager.
+                singleton.
+                handle_workspace_selection_setup},
+            {"callback": workspace_manager.
+                singleton.
+                handle_value_cache_macros_setup},
+            {"callback": workspace_manager.
+                singleton.
+                handle_macros_parsing_setup},
+            {"callback": workspace_manager.
+                singleton.
+                handle_logs_setup},
+        ]
+
+    def handle_pre_filesystem_clean_command_generation(self):
         return [
             {
                 "callback": workspace_manager.
@@ -356,7 +478,7 @@ class CliManager(AbstractManager[CliManagerConfigurations]):
             {
                 "callback": (workspace_manager.
                     singleton.
-                    handle_clean_command_setup),
+                    handle_filesystem_clean_command_setup),
             },
         ]
 
@@ -486,8 +608,12 @@ class CliManager(AbstractManager[CliManagerConfigurations]):
                 handle_logs_setup},
         ]
 
-    def handle_tasks(self, items) -> bool:
-        cli_display_manager.singleton.render_progress_bar({"items": items})
+    def handle_tasks(self, pre_tasks, on_tasks, post_tasks) -> bool:
+        cli_display_manager.singleton.render_progress_bar({"items": pre_tasks})
+
+        cli_display_manager.singleton.render_directly({"items": on_tasks})
+
+        cli_display_manager.singleton.render_progress_bar({"items": post_tasks})
 
         return True
 
