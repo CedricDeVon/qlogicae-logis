@@ -1,6 +1,6 @@
 [project]
 name = "qlogicae-logis"
-version = "1.1.3"
+version = "1.1.4"
 description = "The project orchestration tool for QLogicae projects"
 readme = { file = "README.md", content-type = "text/markdown" }
 requires-python = ">=3.12"
@@ -32,6 +32,7 @@ classifiers = [
 ]
 dependencies = [
     "pydantic>=2.13,<3",
+    "pyfiglet>=1.0.4,<2",
     "PyYAML>=6.0,<7",
     "qlogicae-cor>=1.0.8,<2",
     "rich>=15,<16",
