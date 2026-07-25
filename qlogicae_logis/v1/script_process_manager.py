@@ -28,7 +28,7 @@ class ScriptProcessManager(AbstractManager[ScriptProcessManagerConfigurations]):
         return self._default_script_process
 
     @property
-    def valid_script_processes(self) -> set(str):
+    def valid_script_processes(self) -> set[str]:
         return self._valid_script_processes
 
     @default_script_process.setter
