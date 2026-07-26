@@ -13,6 +13,7 @@ distlib==0.4.3
 distro==1.9.0
 docutils==0.23
 filelock==3.29.7
+GPUtil==1.4.0
 h11==0.16.0
 hatch==1.17.1
 hatchling==1.31.0
@@ -61,7 +62,7 @@ pytest-benchmark==5.2.3
 pytest-cov==7.1.0
 python-discovery==1.4.4
 PyYAML==6.0.3
-qlogicae-cor==1.0.8
+qlogicae-cor==1.0.11
 readme_renderer==45.0
 requests==2.34.2
 requests-toolbelt==1.0.0
@@ -78,6 +79,7 @@ trove-classifiers==2026.6.1.19
 truststore==0.10.4
 twine==6.2.0
 typer==0.26.8
+types-PyYAML==6.0.12.20260724
 typing-inspection==0.4.2
 typing_extensions==4.16.0
 uc-micro-py==2.0.0

@@ -1,6 +1,6 @@
 [project]
 name = "qlogicae-logis"
-version = "1.1.15"
+version = "1.1.16"
 description = "The project orchestration tool for QLogicae projects"
 readme = { file = "README.md", content-type = "text/markdown" }
 requires-python = ">=3.12"
@@ -190,10 +190,10 @@ packages = ["qlogicae_logis"]
 
 
 [tool.hatch.envs.default.scripts]
-lint = """
+test-lint = """
     ruff check qlogicae_logis
 """
-type-check = """
+test-type-check = """
     mypy
 """
 test-unit = """
@@ -208,12 +208,12 @@ test-unit = """
 """
 test-benchmark-memory-usage-create = """
     scalene run --html --outfile output/test/benchmark/scalene.html test/qlogicae_logis/v1/benchmark/test_full_setup_memory_usage.py ;
-    memray run -o output/test/benchmark/memray.bin -m test.qlogicae_logis.v1.benchmark.test_full_setup_memory_usage
 """
+# memray run -o output/test/benchmark/memray.bin -m test.qlogicae_logis.v1.benchmark.test_full_setup_memory_usage
 test-benchmark-memory-usage-view = """
     scalene view output/test/benchmark/scalene.json
-    memray tree output/test/benchmark/memray.bin
 """
+# memray tree output/test/benchmark/memray.bin
 test-pip-deployment = """
     twine check output/build/release/dist/*
 """
@@ -227,9 +227,13 @@ github-workflow-setup = """
     mkdir -p output/test/unit &&
     mkdir -p output/test/benchmark
 """
-github-workflow-lint = """
+github-workflow-test-type-check = """
     hatch run github-workflow-setup &&
-    hatch run lint
+    hatch run test-type-check
+"""
+github-workflow-test-lint = """
+    hatch run github-workflow-setup &&
+    hatch run test-lint
 """
 github-workflow-test-unit = """
     hatch run github-workflow-setup &&
