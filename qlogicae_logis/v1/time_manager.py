@@ -1,5 +1,6 @@
 import time
 from datetime import date, datetime
+from typing import Any
 
 from qlogicae_cor.v1.abstract_manager import (
     AbstractManager,
@@ -21,20 +22,18 @@ class TimeManager(AbstractManager[TimeManagerConfigurations]):
     def __init__(self) -> None:
         super().__init__(TimeManagerConfigurations())
 
-        self._current_time_zone = "local"
+        self._current_time_zone: str = "local"
 
     @property
-    def current_time_zone(self):
+    def current_time_zone(self) -> str:
         return self._current_time_zone
 
     @current_time_zone.setter
-    def current_time_zone(self, value: str) -> bool:
+    def current_time_zone(self, value: str) -> None:
         self._current_time_zone = value
 
-        return True
-
     @property
-    def current_time_zone_type(self):
+    def current_time_zone_type(self) -> Any:
         return time_zone_enum_manager.singleton.convert_value(
             self._current_time_zone,
             EnumConversionOutput.CUSTOM,
@@ -98,15 +97,15 @@ class TimeManager(AbstractManager[TimeManagerConfigurations]):
 
     def calculate_elapsed_time(
         self,
-        start,
+        start: float,
         time_unit: TimeUnit = TimeUnit.SECOND,
     ) -> float:
         return self.convert_time_unit(time.time_ns() - start, time_unit)
 
     def calculate_duration_time(
         self,
-        start,
-        end,
+        start: float,
+        end: float,
         time_unit: TimeUnit = TimeUnit.SECOND,
     ) -> float:
         return self.convert_time_unit(end - start, time_unit)
@@ -156,7 +155,7 @@ class TimeManager(AbstractManager[TimeManagerConfigurations]):
             case TimeUnit.CENTURY:
                 return value / 3155695200e9
 
-            case TimeUnit.MILLENIUM:
+            case TimeUnit.MILLENNIUM:
                 return value / 31556952000e9
 
             case _:

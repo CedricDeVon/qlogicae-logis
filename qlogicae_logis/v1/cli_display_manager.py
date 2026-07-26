@@ -5,7 +5,7 @@ from pyfiglet import Figlet
 from qlogicae_cor.v1.abstract_manager import (
     AbstractManager,
 )
-from rich.console import Console
+from rich.console import Console, RenderableType
 from rich.live import Live
 from rich.padding import Padding
 from rich.progress import (
@@ -27,14 +27,14 @@ class CliDisplayManager(AbstractManager[CliDisplayManagerConfigurations]):
     def __init__(self) -> None:
         super().__init__(CliDisplayManagerConfigurations())
 
-        self._console = Console()
+        self._console: Console = Console()
 
     @property
-    def console(self):
+    def console(self) -> Console:
         return self._console
 
     @property
-    def table(self):
+    def table(self) -> Table:
         return Table(
             show_header=False,
             box=None,
@@ -43,7 +43,7 @@ class CliDisplayManager(AbstractManager[CliDisplayManagerConfigurations]):
         )
 
     @property
-    def progress_bar(self):
+    def progress_bar(self) -> Progress:
         return Progress(
             SpinnerColumn("dots", style="bold bright_green"),
             TextColumn("[green]{task.description}"),
@@ -142,9 +142,9 @@ class CliDisplayManager(AbstractManager[CliDisplayManagerConfigurations]):
 
         return True
 
-    def setup_table(self, data: dict[str, Any] | None = None):
+    def setup_table(self, data: dict[str, Any] | None = None) -> Padding:
         if not data:
-            return False
+            return self.setup_padding()
 
         cli_table = self.table
         cli_table_headers = (data["headers"] if "headers" in data else []) or []
@@ -172,14 +172,14 @@ class CliDisplayManager(AbstractManager[CliDisplayManagerConfigurations]):
 
         return self.setup_padding(cli_table)
 
-    def setup_horizontal_rule(self):
+    def setup_horizontal_rule(self) -> Padding:
         return Padding(Rule(style="bold green"), (0, 2))
 
     def setup_branding(
         self,
         brand_name: str,
         brand_description: str,
-    ):
+    ) -> Padding:
         brand_name = brand_name or "Brand"
         brand_description = brand_description or "Description"
 
@@ -187,13 +187,17 @@ class CliDisplayManager(AbstractManager[CliDisplayManagerConfigurations]):
             f"[white]{Figlet(font='slant').renderText(brand_name)}[/]\n[white]{brand_description}[/]"
         )
 
-    def setup_duration_text(self, text=""):
+    def setup_duration_text(self, text: str="") -> Padding:
         return self.setup_padding(f"[dim]{text} seconds[/]")
 
-    def setup_end_padding(self):
+    def setup_end_padding(self) -> Padding:
         return self.setup_padding("", 0, 4)
 
-    def setup_padding(self, text="", vertical=1, horizontal=4):
+    def setup_padding(self,
+        text: RenderableType = "",
+        vertical: int=1,
+        horizontal: int=4
+    ) -> Padding:
         return Padding(
             text,
             (vertical, horizontal),
@@ -204,7 +208,7 @@ class CliDisplayManager(AbstractManager[CliDisplayManagerConfigurations]):
 
         return True
 
-    def render_many(self, items: list[Any] | None = None):
+    def render_many(self, items: list[Any] | None = None) -> bool:
         if not items:
             return False
 

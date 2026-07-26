@@ -1,4 +1,3 @@
-from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from typing import Any
@@ -49,16 +48,12 @@ class WorkspaceManager(AbstractManager[WorkspaceManagerConfigurations]):
             start=console_execution_start
         )
 
-    def handle(self, callback: Callable[[None], None]) -> bool:
-        self.setup()
-
-        callback()
-
-        self.shutdown()
+    def shutdown(self) -> bool:
+        log_manager.singleton.shutdown()
 
         return True
 
-    def setup(self) -> bool:
+    def debug_value_cache(self) -> bool:
         self.handle_timestamp_console_execution_start_setup()
         self.handle_current_root_filesystem_paths_setup()
         self.handle_executing_console_filesystem_paths_setup()
@@ -68,16 +63,6 @@ class WorkspaceManager(AbstractManager[WorkspaceManagerConfigurations]):
         self.handle_value_cache_macros_setup()
         self.handle_macros_parsing_setup()
         self.handle_logs_setup()
-
-        return True
-
-    def shutdown(self) -> bool:
-        log_manager.singleton.shutdown()
-
-        return True
-
-    def debug_value_cache(self) -> bool:
-        self.setup()
 
         self.handle_toolset_configuration_file_data_extraction_setup()
         self.handle_toolset_configuration_data_setup()
@@ -289,7 +274,7 @@ class WorkspaceManager(AbstractManager[WorkspaceManagerConfigurations]):
         def handle_path_1(root: str, scope: str) -> str:
             return f"{root}/workspace/{scope}/configuration/workspace"
 
-        workspace_data = {}
+        workspace_data: Any = {}
         workspace_filesystem_paths: list[Path] = []
 
         scope_selections = ["private", "public"]
@@ -331,7 +316,7 @@ class WorkspaceManager(AbstractManager[WorkspaceManagerConfigurations]):
                     if path.is_file()
                 )
 
-        def read_workspace_file(path: Path) -> dict:
+        def read_workspace_file(path: Path) -> Any:
             return (
                 workspace_filesystem_manager.singleton.read_file(path)
                 or {}
@@ -500,7 +485,7 @@ class WorkspaceManager(AbstractManager[WorkspaceManagerConfigurations]):
             else {}
         ) or {}
 
-        resolved_macros = {
+        resolved_macros: Any = {
             key: f"{
                 value_cache_manager.singleton.get_one_value(
                     [key],
@@ -717,7 +702,7 @@ class WorkspaceManager(AbstractManager[WorkspaceManagerConfigurations]):
 
         def read_configuration_file(
             path: Path,
-        ) -> tuple[Path, dict]:
+        ) -> tuple[Path, Any]:
             return (
                 path,
                 (

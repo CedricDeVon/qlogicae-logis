@@ -37,33 +37,27 @@ class JsonManager(AbstractManager[JsonManagerConfigurations]):
         return self._is_ascii_format_enabled
 
     @is_ascii_format_enabled.setter
-    def is_ascii_format_enabled(self, value: bool) -> bool:
+    def is_ascii_format_enabled(self, value: bool) -> None:
         self._is_ascii_format_enabled = value
-
-        return True
 
     @property
     def indent_count(self) -> int:
         return self._indent_count
 
     @indent_count.setter
-    def indent_count(self, value: int) -> bool:
+    def indent_count(self, value: int) -> None:
         if value < 0:
             raise Exception("indent_count must be non-negative.")
 
         self._indent_count = value
-
-        return True
 
     @property
     def is_key_sortable(self) -> bool:
         return self._is_key_sortable
 
     @is_key_sortable.setter
-    def is_key_sortable(self, value: bool) -> bool:
+    def is_key_sortable(self, value: bool) -> None:
         self._indent_count = value
-
-        return True
 
 
 singleton = JsonManager()

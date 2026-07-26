@@ -1,4 +1,5 @@
 import logging
+from typing import Any
 
 from qlogicae_cor.v1.abstract_manager import (
     AbstractManager,
@@ -18,8 +19,8 @@ class LogOptionsManager(AbstractManager[LogOptionsManagerConfigurations]):
 
     def generate_modified_defaults(
         self,
-        default_log_options,
-        log_level=logging.DEBUG,
+        default_log_options: LogOptions,
+        log_level: Any =logging.DEBUG,
     ) -> LogOptions:
         return LogOptions(
             is_enabled=default_log_options.is_enabled,

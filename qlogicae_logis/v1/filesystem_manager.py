@@ -20,7 +20,9 @@ class FileSystemManager(AbstractManager[FileSystemManagerConfigurations]):
     def __init__(self) -> None:
         super().__init__(FileSystemManagerConfigurations())
 
-    def throw_if_filesystem_path_invalid(self, value):
+    def throw_if_filesystem_path_invalid(self,
+        value: str | Path,
+    ) -> None | bool:
         path = Path(value)
 
         if not path.exists():
@@ -28,7 +30,9 @@ class FileSystemManager(AbstractManager[FileSystemManagerConfigurations]):
 
         return False
 
-    def throw_if_file_path_invalid(self, value):
+    def throw_if_file_path_invalid(self,
+        value: str | Path,
+    ) -> None | bool:
         path = Path(value)
 
         if not path.is_file():
@@ -36,7 +40,9 @@ class FileSystemManager(AbstractManager[FileSystemManagerConfigurations]):
 
         return False
 
-    def throw_if_folder_path_invalid(self, value):
+    def throw_if_folder_path_invalid(self,
+        value: str | Path,
+    ) -> None | bool:
         path = Path(value)
 
         if not path.is_dir():
@@ -44,7 +50,9 @@ class FileSystemManager(AbstractManager[FileSystemManagerConfigurations]):
 
         return False
 
-    def is_filesystem_path_valid(self, value):
+    def is_filesystem_path_valid(self,
+            value: str | Path,
+    ) -> None | bool:
         path = Path(value)
 
         if not path.exists():
@@ -52,7 +60,9 @@ class FileSystemManager(AbstractManager[FileSystemManagerConfigurations]):
 
         return True
 
-    def is_file_path_valid(self, value):
+    def is_file_path_valid(self,
+            value: str | Path,
+    ) -> None | bool:
         path = Path(value)
 
         if not path.is_file():
@@ -60,7 +70,9 @@ class FileSystemManager(AbstractManager[FileSystemManagerConfigurations]):
 
         return True
 
-    def is_folder_path_valid(self, value):
+    def is_folder_path_valid(self,
+            value: str | Path,
+    ) -> None | bool:
         path = Path(value)
 
         if not path.is_dir():
@@ -68,7 +80,7 @@ class FileSystemManager(AbstractManager[FileSystemManagerConfigurations]):
 
         return True
 
-    def clean_filesystem_path(self, path):
+    def clean_filesystem_path(self, path: str | Path) -> bool:
         directory = Path(path).resolve()
 
         protected_paths = {
@@ -94,7 +106,10 @@ class FileSystemManager(AbstractManager[FileSystemManagerConfigurations]):
 
         return True
 
-    def copy_filesystem_path(self, first_path, second_path):
+    def copy_filesystem_path(self,
+        first_path: str | Path,
+        second_path: str | Path
+    ) -> bool:
         first_path = Path(first_path)
         second_path = Path(second_path)
 
@@ -121,7 +136,10 @@ class FileSystemManager(AbstractManager[FileSystemManagerConfigurations]):
 
         return True
 
-    def move_filesystem_path(self, first_path, second_path):
+    def move_filesystem_path(self,
+        first_path: str | Path,
+        second_path: str | Path
+    ) -> bool:
         source = Path(first_path)
         destination = Path(second_path)
 
@@ -141,7 +159,7 @@ class FileSystemManager(AbstractManager[FileSystemManagerConfigurations]):
         self,
         parent_path: Path,
         options: FolderEntityFileSystemTreeSetupOptions,
-    ):
+    ) -> None:
         if not parent_path.exists():
             raise Exception(f"filesystem path '{parent_path}' is invalid")
 

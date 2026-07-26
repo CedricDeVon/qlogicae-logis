@@ -1,3 +1,5 @@
+from pathlib import Path
+from typing import Any
 
 from qlogicae_cor.v1.abstract_manager import AbstractManager
 
@@ -16,7 +18,7 @@ class CliManager(AbstractManager[CliManagerConfigurations]):
         super().__init__(CliManagerConfigurations())
 
     def handle_about_version(self) -> bool:
-        def handle_command_generation():
+        def handle_command_generation() -> list[Any]:
             return [
                 {"callback": (
                     cli_command_manager.singleton.handle_about_version_command
@@ -32,7 +34,7 @@ class CliManager(AbstractManager[CliManagerConfigurations]):
         return True
 
     def handle_about_me(self) -> bool:
-        def handle_command_generation():
+        def handle_command_generation() -> list[Any]:
             return [
                 {"callback": (
                     cli_command_manager.singleton.handle_about_me_command
@@ -47,8 +49,8 @@ class CliManager(AbstractManager[CliManagerConfigurations]):
 
         return True
 
-    def handle_filesystem_copy(self, **kwargs) -> bool:
-        def handle_command_generation():
+    def handle_filesystem_copy(self, **kwargs: Any) -> bool:
+        def handle_command_generation() -> list[Any]:
             return [
                 {
                     "callback": (
@@ -66,8 +68,8 @@ class CliManager(AbstractManager[CliManagerConfigurations]):
 
         return True
 
-    def handle_filesystem_move(self, **kwargs) -> bool:
-        def handle_command_generation():
+    def handle_filesystem_move(self, **kwargs: Any) -> bool:
+        def handle_command_generation() -> list[Any]:
             return [
                 {
                     "callback": (
@@ -85,8 +87,8 @@ class CliManager(AbstractManager[CliManagerConfigurations]):
 
         return True
 
-    def handle_filesystem_rename(self, **kwargs) -> bool:
-        def handle_command_generation():
+    def handle_filesystem_rename(self, **kwargs: Any) -> bool:
+        def handle_command_generation() -> list[Any]:
             return [
                 {
                     "callback": (
@@ -104,8 +106,8 @@ class CliManager(AbstractManager[CliManagerConfigurations]):
 
         return True
 
-    def handle_filesystem_tree_setup(self, **kwargs) -> bool:
-        def handle_command_generation():
+    def handle_filesystem_tree_setup(self, **kwargs: Any) -> bool:
+        def handle_command_generation() -> list[Any]:
             return [
                 {
                     "callback": (
@@ -123,8 +125,8 @@ class CliManager(AbstractManager[CliManagerConfigurations]):
 
         return True
 
-    def handle_filesystem_clean_path(self, **kwargs) -> bool:
-        def handle_command_generation():
+    def handle_filesystem_clean_path(self, **kwargs: Any) -> bool:
+        def handle_command_generation() -> list[Any]:
             return [
                 {
                     "callback": (
@@ -142,8 +144,8 @@ class CliManager(AbstractManager[CliManagerConfigurations]):
 
         return True
 
-    def handle_filesystem_clean_selection(self, targets) -> bool:
-        def handle_command_generation():
+    def handle_filesystem_clean_selection(self, targets: Any) -> bool:
+        def handle_command_generation() -> list[Any]:
             sub_tasks = []
             callback = (
                 cli_command_manager.singleton.handle_filesystem_clean_selection_command
@@ -171,7 +173,7 @@ class CliManager(AbstractManager[CliManagerConfigurations]):
         return True
 
     def handle_filesystem_clean_list_included(self) -> bool:
-        def handle_command_generation():
+        def handle_command_generation() -> list[Any]:
             callback = (
                 cli_command_manager
                     .singleton
@@ -188,7 +190,7 @@ class CliManager(AbstractManager[CliManagerConfigurations]):
         return True
 
     def handle_filesystem_clean_list_excluded(self) -> bool:
-        def handle_command_generation():
+        def handle_command_generation() -> list[Any]:
             callback = (
                 cli_command_manager
                     .singleton
@@ -204,8 +206,8 @@ class CliManager(AbstractManager[CliManagerConfigurations]):
 
         return True
 
-    def handle_workspace_export(self, targets) -> bool:
-        def handle_command_generation():
+    def handle_workspace_export(self, targets: Any) -> bool:
+        def handle_command_generation() -> list[Any]:
             sub_tasks = []
             callback = (
                 cli_command_manager
@@ -232,8 +234,8 @@ class CliManager(AbstractManager[CliManagerConfigurations]):
 
         return True
 
-    def handle_workspace_import(self, input_path, output_path) -> bool:
-        def handle_command_generation():
+    def handle_workspace_import(self, input_path: Path, output_path: Path) -> bool:
+        def handle_command_generation() -> list[Any]:
             callback = cli_command_manager.singleton.handle_workspace_import_command
             return [
                 {
@@ -254,7 +256,7 @@ class CliManager(AbstractManager[CliManagerConfigurations]):
         return True
 
     def handle_workspace_list_exports(self) -> bool:
-        def handle_command_generation():
+        def handle_command_generation() -> list[Any]:
             callback = (
                 cli_command_manager.singleton.handle_workspace_list_exports_command
             )
@@ -269,7 +271,7 @@ class CliManager(AbstractManager[CliManagerConfigurations]):
         return True
 
     def handle_workspace_setup(self) -> bool:
-        def handle_command_generation():
+        def handle_command_generation() -> list[Any]:
             callback = cli_command_manager.singleton.handle_workspace_setup_command
             return [{"callback": callback}]
 
@@ -281,8 +283,8 @@ class CliManager(AbstractManager[CliManagerConfigurations]):
 
         return True
 
-    def handle_workflow_run(self, targets) -> bool:
-        def handle_command_generation():
+    def handle_workflow_run(self, targets: Any) -> bool:
+        def handle_command_generation() -> list[Any]:
             sub_tasks = []
             callback = cli_command_manager.singleton.handle_workflow_run_command
             for current_target in targets:
@@ -306,7 +308,7 @@ class CliManager(AbstractManager[CliManagerConfigurations]):
         return True
 
     def handle_workflow_list_selections(self) -> bool:
-        def handle_command_generation():
+        def handle_command_generation() -> list[Any]:
             callback = (
                 cli_command_manager.singleton.handle_workflow_list_selections_command
             )
@@ -321,7 +323,7 @@ class CliManager(AbstractManager[CliManagerConfigurations]):
         return True
 
     def handle_template_list_selections(self) -> bool:
-        def handle_command_generation():
+        def handle_command_generation() -> list[Any]:
             callback = (
                 cli_command_manager.singleton.handle_template_list_selections_command
             )
@@ -335,8 +337,8 @@ class CliManager(AbstractManager[CliManagerConfigurations]):
 
         return True
 
-    def handle_template_apply(self, targets) -> bool:
-        def handle_command_generation():
+    def handle_template_apply(self, targets: Any) -> bool:
+        def handle_command_generation() -> list[Any]:
             sub_tasks = []
             callback = (
                 cli_command_manager.singleton.handle_template_apply_command
@@ -361,7 +363,7 @@ class CliManager(AbstractManager[CliManagerConfigurations]):
 
         return True
 
-    def handle_pre_about_command_generation(self):
+    def handle_pre_about_command_generation(self) -> list[Any]:
         return [
             {
                 "callback": workspace_manager.
@@ -395,7 +397,7 @@ class CliManager(AbstractManager[CliManagerConfigurations]):
             },
         ]
 
-    def handle_pre_filesystem_command_generation(self):
+    def handle_pre_filesystem_command_generation(self) -> list[Any]:
         return [
             {
                 "callback": workspace_manager.
@@ -436,7 +438,7 @@ class CliManager(AbstractManager[CliManagerConfigurations]):
                 handle_logs_setup},
         ]
 
-    def handle_pre_filesystem_clean_command_generation(self):
+    def handle_pre_filesystem_clean_command_generation(self) -> list[Any]:
         return [
             {
                 "callback": workspace_manager.
@@ -482,7 +484,7 @@ class CliManager(AbstractManager[CliManagerConfigurations]):
             },
         ]
 
-    def handle_pre_workspace_command_generation(self):
+    def handle_pre_workspace_command_generation(self) -> list[Any]:
         return [
             {
                 "callback": workspace_manager.
@@ -526,7 +528,7 @@ class CliManager(AbstractManager[CliManagerConfigurations]):
                 handle_workspace_command_setup},
         ]
 
-    def handle_pre_workflow_command_generation(self):
+    def handle_pre_workflow_command_generation(self) -> list[Any]:
         return [
             {
                 "callback": workspace_manager.
@@ -567,7 +569,7 @@ class CliManager(AbstractManager[CliManagerConfigurations]):
                 handle_logs_setup},
         ]
 
-    def handle_pre_workflow_minimum_command_generation(self):
+    def handle_pre_workflow_minimum_command_generation(self) -> list[Any]:
         return [
             {
                 "callback": workspace_manager.
@@ -591,7 +593,7 @@ class CliManager(AbstractManager[CliManagerConfigurations]):
             }
         ]
 
-    def handle_pre_template_command_generation(self):
+    def handle_pre_template_command_generation(self) -> list[Any]:
         return [
             {
                 "callback": workspace_manager.
@@ -632,7 +634,11 @@ class CliManager(AbstractManager[CliManagerConfigurations]):
                 handle_logs_setup},
         ]
 
-    def handle_tasks(self, pre_tasks, on_tasks, post_tasks) -> bool:
+    def handle_tasks(self,
+        pre_tasks: list[Any],
+        on_tasks: list[Any],
+        post_tasks: list[Any]
+    ) -> bool:
         cli_display_manager.singleton.render_progress_bar({"items": pre_tasks})
 
         cli_display_manager.singleton.render_directly({"items": on_tasks})
@@ -641,7 +647,7 @@ class CliManager(AbstractManager[CliManagerConfigurations]):
 
         return True
 
-    def handle_post_command_generation(self) -> bool:
+    def handle_post_command_generation(self) -> list[Any]:
         return [{"callback": workspace_manager.singleton.shutdown}]
 
 

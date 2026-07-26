@@ -14,7 +14,7 @@ class TextEncodingManager(AbstractManager[TextEncodingManagerConfigurations]):
         self._encoding: str = "utf-8"
 
     @property
-    def encoding(self) -> set[str]:
+    def encoding(self) -> str:
         return self._encoding
 
 

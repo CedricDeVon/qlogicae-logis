@@ -19,15 +19,19 @@ class MacrosManager(AbstractManager[MacrosManagerConfigurations]):
     def __init__(self) -> None:
         super().__init__(MacrosManagerConfigurations())
 
-        self._identifier_pattern = re.compile(r"^[A-Za-z0-9._-]+$")
-        self._macros_pattern = re.compile(r"\$\{\{\s*([A-Za-z0-9._-]+)\s*\}\}")
+        self._identifier_pattern: re.Pattern[str] = (
+            re.compile(r"^[A-Za-z0-9._-]+$")
+        )
+        self._macros_pattern: re.Pattern[str] = (
+            re.compile(r"\$\{\{\s*([A-Za-z0-9._-]+)\s*\}\}")
+        )
 
     @property
-    def identifier_pattern(self):
+    def identifier_pattern(self) -> re.Pattern[str]:
         return self._identifier_pattern
 
     @property
-    def macros_pattern(self):
+    def macros_pattern(self) -> re.Pattern[str]:
         return self._macros_pattern
 
     def resolve_many(self, values: Any) -> Mapping[str, Any]:
@@ -213,9 +217,9 @@ class MacrosManager(AbstractManager[MacrosManagerConfigurations]):
 
     def parse_filesystem(
         self,
-        filesystem_path,
-        workspace_macros
-    ):
+        filesystem_path: str | Path,
+        workspace_macros: Any
+    ) -> bool:
         root = Path(filesystem_path)
 
         for current_root, directories, files in root.walk(

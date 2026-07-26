@@ -232,7 +232,7 @@ class TestValueCacheStorageManager:
     ) -> None:
         assert populated_manager.remove_one_value(
             ["root", "value"]
-        ) is None
+        ) is True
 
         assert "value" not in populated_manager.collection["root"]
 

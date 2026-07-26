@@ -21,8 +21,10 @@ class ScriptProcessEnumManager(AbstractManager[ScriptProcessEnumManagerConfigura
 
     def convert_value(
         self,
-        value,
-        conversion_output_type=EnumConversionOutput.STRING,
+        value: Any,
+        conversion_output_type: EnumConversionOutput = (
+            EnumConversionOutput.STRING
+        ),
     ) -> Any:
         match conversion_output_type:
             case EnumConversionOutput.STRING:
@@ -34,7 +36,7 @@ class ScriptProcessEnumManager(AbstractManager[ScriptProcessEnumManagerConfigura
             case _:
                 return EnumConversionOutput.NONE
 
-    def convert_from_enum_to_string(self, value):
+    def convert_from_enum_to_string(self, value: ScriptProcess) -> str:
         match value:
             case ScriptProcess.SHELL:
                 return "shell"
@@ -45,7 +47,7 @@ class ScriptProcessEnumManager(AbstractManager[ScriptProcessEnumManagerConfigura
             case _:
                 return "none"
 
-    def convert_from_string_to_enum(self, value):
+    def convert_from_string_to_enum(self, value: str) -> ScriptProcess:
         match value.lower():
             case "shell":
                 return ScriptProcess.SHELL

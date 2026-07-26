@@ -43,7 +43,7 @@ class TextFileIoManager(AbstractManager[TextFileIoManagerConfigurations]):
             ) as file:
                 Path(file).write_text(
                     str(data),
-                    encoding=self.file_encoding,
+                    encoding=text_encoding_manager.singleton.encoding,
                 )
 
             return True

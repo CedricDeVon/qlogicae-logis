@@ -61,18 +61,26 @@ class ValueCacheManager(AbstractManager[ValueCacheManagerConfigurations]):
     ) -> bool:
         match output_type:
             case TargetCacheValue.FILESYSTEM_PATH:
-                return filesystem_manager.singleton.throw_if_filesystem_path_invalid(
+                filesystem_manager.singleton.throw_if_filesystem_path_invalid(
                     value
                 )
 
+                return True
+
             case TargetCacheValue.FILE_PATH:
-                return filesystem_manager.singleton.throw_if_file_path_invalid(value)
+                filesystem_manager.singleton.throw_if_file_path_invalid(value)
+
+                return True
 
             case TargetCacheValue.FOLDER_PATH:
-                return filesystem_manager.singleton.throw_if_folder_path_invalid(value)
+                filesystem_manager.singleton.throw_if_folder_path_invalid(value)
+
+                return True
 
             case TargetCacheValue.DEFINED:
-                return self.throw_if_undefined(value)
+                self.throw_if_undefined(value)
+
+                return True
 
             case _:
                 return False

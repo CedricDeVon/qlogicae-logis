@@ -1,5 +1,4 @@
 import json
-from collections.abc import Mapping
 from typing import Any
 
 from qlogicae_cor.v1.abstract_manager import (
@@ -15,10 +14,10 @@ class ValueCacheStorageManager(AbstractManager[ValueCacheStorageManagerConfigura
     def __init__(self) -> None:
         super().__init__(ValueCacheStorageManagerConfigurations())
 
-        self._collection: Mapping[str, Any] = {}
+        self._collection: dict[str, Any] = {}
 
     @property
-    def collection(self) -> Mapping[str, Any]:
+    def collection(self) -> dict[str, Any]:
         return self._collection
 
     def is_key_found(self, keys: list[str]) -> bool:
@@ -170,6 +169,8 @@ class ValueCacheStorageManager(AbstractManager[ValueCacheStorageManagerConfigura
 
         else:
             raise TypeError("destination is neither a dictionary nor a list")
+
+        return True
 
     def clear_all_values(self) -> bool:
         self._collection.clear()

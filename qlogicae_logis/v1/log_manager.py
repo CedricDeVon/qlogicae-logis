@@ -103,7 +103,7 @@ class LogManager(AbstractManager[LogManagerConfigurations]):
             ),
         )
 
-    def shutdown(self):
+    def shutdown(self) -> bool:
         file_log_manager.singleton.shutdown()
 
         return True

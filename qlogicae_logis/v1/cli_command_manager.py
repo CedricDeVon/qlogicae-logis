@@ -3,6 +3,7 @@ from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor
 from itertools import chain, repeat
 from pathlib import Path
+from typing import Any
 from zipfile import ZipFile
 
 from qlogicae_cor.v1.abstract_manager import AbstractManager
@@ -27,8 +28,10 @@ from qlogicae_logis.v1.cli_command_manager_configurations import (
     CliCommandManagerConfigurations,
 )
 from qlogicae_logis.v1.enum_conversion_output import EnumConversionOutput
-from qlogicae_logis.v1.filesystem_manager import (
+from qlogicae_logis.v1.file_entity_filesystem_tree_setup_options import (
     FileEntityFileSystemTreeSetupOptions,
+)
+from qlogicae_logis.v1.folder_entity_filesystem_tree_setup_options import (
     FolderEntityFileSystemTreeSetupOptions,
 )
 from qlogicae_logis.v1.target_cache_value import TargetCacheValue
@@ -38,7 +41,7 @@ class CliCommandManager(AbstractManager[CliCommandManagerConfigurations]):
     def __init__(self) -> None:
         super().__init__(CliCommandManagerConfigurations())
 
-        self._commands = {
+        self._commands: dict[str, Any] = {
             "command-about-version":
                 self.handle_about_version_command,
             "command-about-me":
@@ -78,11 +81,11 @@ class CliCommandManager(AbstractManager[CliCommandManagerConfigurations]):
         }
 
     @property
-    def commands(self):
+    def commands(self) -> dict[str, Any]:
         return self._commands
 
     def handle_about_version_command(self) -> bool:
-        toolset_about = (
+        toolset_about: Any = (
             value_cache_manager.singleton.get_one_value(
                 [
                     "toolset-about",
@@ -92,13 +95,13 @@ class CliCommandManager(AbstractManager[CliCommandManagerConfigurations]):
             or {}
         )
 
-        toolset_about_version = (
+        toolset_about_version: Any = (
             toolset_about["project-version"]
             if toolset_about and "project-version"
             else placeholder_value_manager.singleton.none
         ) or placeholder_value_manager.singleton.none
 
-        toolset_about_version_value = (
+        toolset_about_version_value: Any = (
             toolset_about_version["value"]
             if toolset_about_version and "value" in toolset_about_version
             else placeholder_value_manager.singleton.none
@@ -177,7 +180,7 @@ class CliCommandManager(AbstractManager[CliCommandManagerConfigurations]):
 
         return True
 
-    def handle_filesystem_copy_command(self, **kwargs) -> bool:
+    def handle_filesystem_copy_command(self, **kwargs: Any) -> bool:
         file_log_manager.singleton.log_info(
             "'filesystem copy' - start"
         )
@@ -214,7 +217,7 @@ class CliCommandManager(AbstractManager[CliCommandManagerConfigurations]):
 
         return True
 
-    def handle_filesystem_move_command(self, **kwargs) -> bool:
+    def handle_filesystem_move_command(self, **kwargs: Any) -> bool:
         file_log_manager.singleton.log_info(
             "'filesystem move' - start"
         )
@@ -246,7 +249,7 @@ class CliCommandManager(AbstractManager[CliCommandManagerConfigurations]):
 
         return True
 
-    def handle_filesystem_rename_command(self, **kwargs) -> bool:
+    def handle_filesystem_rename_command(self, **kwargs: Any) -> bool:
         file_log_manager.singleton.log_info(
             "'filesystem rename' - start"
         )
@@ -278,7 +281,7 @@ class CliCommandManager(AbstractManager[CliCommandManagerConfigurations]):
 
         return True
 
-    def handle_filesystem_tree_setup_command(self, **kwargs) -> bool:
+    def handle_filesystem_tree_setup_command(self, **kwargs: Any) -> bool:
         file_log_manager.singleton.log_info(
             "'filesystem tree setup' - start"
         )
@@ -312,7 +315,7 @@ class CliCommandManager(AbstractManager[CliCommandManagerConfigurations]):
 
         return True
 
-    def handle_filesystem_clean_path_command(self, **kwargs) -> bool:
+    def handle_filesystem_clean_path_command(self, **kwargs: Any) -> bool:
         file_log_manager.singleton.log_info(
             "'filesystem clean path' - start"
         )
@@ -362,7 +365,7 @@ class CliCommandManager(AbstractManager[CliCommandManagerConfigurations]):
 
         return True
 
-    def handle_filesystem_clean_selection_command(self, **kwargs) -> bool:
+    def handle_filesystem_clean_selection_command(self, **kwargs: Any) -> bool:
         file_log_manager.singleton.log_info(
         "'filesystem clean selection' - start"
     )
@@ -554,8 +557,8 @@ class CliCommandManager(AbstractManager[CliCommandManagerConfigurations]):
 
         return True
 
-    def handle_workspace_export_command(self, targets) -> bool:
-        def handle_a(input_value):
+    def handle_workspace_export_command(self, targets: Any) -> bool:
+        def handle_a(input_value: Any) -> Any:
             value = (
                 filesystem_compression_manager.singleton.get_zip_format_compression(
                     input_value
@@ -945,7 +948,7 @@ class CliCommandManager(AbstractManager[CliCommandManagerConfigurations]):
                 f"{current_root_full_path}/workspace/private/temporary/export"
             )
 
-        tasks: list[tuple[Callable[[str], None], str]] = []
+        tasks: list[tuple[Callable[[str], bool], str]] = []
 
         for target in targets:
             if target == "all":
@@ -998,7 +1001,7 @@ class CliCommandManager(AbstractManager[CliCommandManagerConfigurations]):
 
         return True
 
-    def handle_workspace_import_command(self, **kwargs) -> bool:
+    def handle_workspace_import_command(self, **kwargs: Any) -> bool:
         file_log_manager.singleton.log_info("'workspace import' - start")
 
         input_path = kwargs.get("input_path", None)
@@ -1408,7 +1411,7 @@ class CliCommandManager(AbstractManager[CliCommandManagerConfigurations]):
 
         return True
 
-    def handle_workflow_run_command(self, **kwargs) -> bool:
+    def handle_workflow_run_command(self, **kwargs: Any) -> bool:
         def handle_workflow_run_target(target_name: str) -> bool:
             if target_name not in workflow_data_selection:
                 log_manager.singleton.log_warning(
@@ -1802,8 +1805,8 @@ class CliCommandManager(AbstractManager[CliCommandManagerConfigurations]):
 
         return True
 
-    def handle_template_apply_command(self, **kwargs) -> bool:
-        def handle_target_root():
+    def handle_template_apply_command(self, **kwargs: Any) -> bool:
+        def handle_target_root() -> bool:
             file_log_manager.singleton.log_info(
                 "'template filesystem apply' - 'root' setup execution start"
             )
@@ -1939,7 +1942,7 @@ class CliCommandManager(AbstractManager[CliCommandManagerConfigurations]):
             return True
 
 
-        def handle_target_group():
+        def handle_target_group() -> bool:
             file_log_manager.singleton.log_info(
                 "'template filesystem apply' - 'group' "
                 "setup execution start"
@@ -1963,7 +1966,7 @@ class CliCommandManager(AbstractManager[CliCommandManagerConfigurations]):
             return True
 
 
-        def handle_target_group_selection(group_name):
+        def handle_target_group_selection(group_name: str) -> bool:
             file_log_manager.singleton.log_info(
                 f"'template filesystem apply' - '{group_name}' "
                 "setup execution start"
@@ -2035,7 +2038,7 @@ class CliCommandManager(AbstractManager[CliCommandManagerConfigurations]):
 
             return True
 
-        def handle_target_project():
+        def handle_target_project() -> bool:
             file_log_manager.singleton.log_info(
                 "'template filesystem apply' - 'project' "
                 "setup execution start"
@@ -2058,7 +2061,7 @@ class CliCommandManager(AbstractManager[CliCommandManagerConfigurations]):
 
             return True
 
-        def handle_target_project_selection(project_name):
+        def handle_target_project_selection(project_name: str) -> bool:
             file_log_manager.singleton.log_info(
                 f"'template filesystem apply' - '{project_name}' "
                 "setup execution start"
@@ -2151,7 +2154,7 @@ class CliCommandManager(AbstractManager[CliCommandManagerConfigurations]):
             "'template filesystem apply' - start"
         )
 
-        targets = kwargs.get("targets", None)
+        targets: Any = kwargs.get("targets", None)
 
         workspace_data_command_template = (
             value_cache_manager.singleton.get_one_value(
@@ -2250,7 +2253,7 @@ class CliCommandManager(AbstractManager[CliCommandManagerConfigurations]):
                 f"{current_root_full_path}/workspace/private/temporary/template"
             )
 
-        tasks = []
+        tasks: list[Any] = []
 
         for target in targets:
             if (

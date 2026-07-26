@@ -20,7 +20,7 @@ class YamlFileIoManager(AbstractManager[YamlFileIoManagerConfigurations]):
 
     def read_file(self, file_path: Any) -> Any:
         try:
-            output_data = {}
+            output_data: Any = {}
             with file_path.open(
                 mode="r",
                 encoding=text_encoding_manager.singleton.encoding,

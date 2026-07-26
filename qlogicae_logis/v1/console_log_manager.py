@@ -32,21 +32,19 @@ class ConsoleLogManager(AbstractManager[ConsoleLogManagerConfigurations]):
 
         self._logger.addHandler(handler)
 
-        self._options = LogOptions()
+        self._options: LogOptions = LogOptions()
 
     @property
     def options(self) -> LogOptions:
         return self._options
 
     @options.setter
-    def options(self, value) -> bool:
+    def options(self, value: LogOptions) -> None:
         self._options = value
-
-        return True
 
     def log(self, message: str, options: LogOptions) -> str:
         if not options.is_enabled:
-            return
+            return ""
 
         message = str(message).strip()
 

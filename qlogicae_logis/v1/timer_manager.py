@@ -17,11 +17,11 @@ class TimerManager(AbstractManager[TimerManagerConfigurations]):
         self._stop_timestamp = 0
 
     @property
-    def start_timestamp(self):
+    def start_timestamp(self) -> float:
         return self._start_timestamp
 
     @property
-    def stop_timestamp(self):
+    def stop_timestamp(self) -> float:
         return self._stop_timestamp
 
     def start_time(self) -> bool:

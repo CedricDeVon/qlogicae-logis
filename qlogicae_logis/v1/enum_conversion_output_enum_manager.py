@@ -20,8 +20,10 @@ class EnumConversionOutputEnumManager(
 
     def convert_value(
         self,
-        value,
-        conversion_output_type=EnumConversionOutput.STRING,
+        value: Any,
+        conversion_output_type: EnumConversionOutput = (
+            EnumConversionOutput.STRING
+        ),
     ) -> Any:
         match conversion_output_type:
             case EnumConversionOutput.STRING:

@@ -41,10 +41,8 @@ class YamlManager(AbstractManager[YamlManagerConfigurations]):
         return self._is_key_sorting_enabled
 
     @is_key_sorting_enabled.setter
-    def is_key_sorting_enabled(self, value: bool) -> bool:
+    def is_key_sorting_enabled(self, value: bool) -> None:
         self._is_key_sorting_enabled = value
-
-        return True
 
     @property
     def is_default_flow_state_enabled(
@@ -53,33 +51,26 @@ class YamlManager(AbstractManager[YamlManagerConfigurations]):
         return self._is_default_flow_state_enabled
 
     @is_default_flow_state_enabled.setter
-    def is_default_flow_state_enabled(self, value: bool) -> bool:
+    def is_default_flow_state_enabled(self, value: bool) -> None:
         self._is_default_flow_state_enabled = value
-
-        return True
 
     @property
     def is_unicode_enabled(self) -> bool:
         return self._is_unicode_enabled
 
     @is_unicode_enabled.setter
-    def is_unicode_enabled(self, value: bool) -> bool:
+    def is_unicode_enabled(self, value: bool) -> None:
         self._is_unicode_enabled = value
-
-        return True
 
     @property
     def indent_count(self) -> int:
         return self._indent_count
 
     @indent_count.setter
-    def indent_count(self, value: int) -> bool:
+    def indent_count(self, value: int) -> None:
         if value < 0:
             raise Exception("indent_count must be non-negative.")
-
         self._indent_count = value
-
-        return True
 
 
 singleton = YamlManager()

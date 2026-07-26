@@ -20,8 +20,10 @@ class TimeZoneEnumManager(AbstractManager[TimeZoneEnumManagerConfigurations]):
 
     def convert_value(
         self,
-        value,
-        conversion_output_type=EnumConversionOutput.STRING,
+        value: Any,
+        conversion_output_type: EnumConversionOutput = (
+            EnumConversionOutput.STRING
+        ),
     ) -> Any:
         match conversion_output_type:
             case EnumConversionOutput.STRING:
@@ -67,7 +69,7 @@ class TimeZoneEnumManager(AbstractManager[TimeZoneEnumManagerConfigurations]):
     def convert_from_string_to_timezone(
         self,
         value: str,
-    ) -> TimeZone:
+    ) -> Any:
         match value.lower():
             case "utc":
                 return UTC

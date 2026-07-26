@@ -16,7 +16,7 @@ class TextManager(AbstractManager[TextManagerConfigurations]):
         self._valid_file_extensions: set[str] = {".txt"}
 
     @property
-    def valid_file_extensions(self, file: Any) -> bool:
+    def valid_file_extensions(self) -> set[str]:
         return self._valid_file_extensions
 
     def is_valid(self, file: Any) -> bool:

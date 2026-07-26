@@ -5,6 +5,7 @@ from logging.handlers import (
     QueueListener,
 )
 from pathlib import Path
+from typing import Any
 
 from qlogicae_cor.v1.abstract_manager import (
     AbstractManager,
@@ -35,9 +36,9 @@ class FileLogManager(AbstractManager[FileLogManagerConfigurations]):
 
         self.logger.handlers.clear()
 
-        self.file_handlers = {}
+        self.file_handlers: Any = {}
 
-        self.log_queue = queue.Queue()
+        self.log_queue: queue.Queue[logging.LogRecord] = queue.Queue()
 
         self.queue_handler = QueueHandler(self.log_queue)
 
@@ -54,12 +55,10 @@ class FileLogManager(AbstractManager[FileLogManagerConfigurations]):
         return self._options
 
     @options.setter
-    def options(self, value) -> bool:
+    def options(self, value: LogOptions) -> None:
         self._options = value
 
-        return True
-
-    def log(self, message: str, options: LogOptions) -> str:
+    def log(self, message: Any, options: LogOptions) -> Any:
         if not options.is_enabled:
             return message
 
@@ -83,8 +82,8 @@ class FileLogManager(AbstractManager[FileLogManagerConfigurations]):
 
     def log_debug(
         self,
-        message: str,
-    ) -> str:
+        message: Any,
+    ) -> Any:
         return self.log(
             message,
             log_options_manager.singleton.generate_modified_defaults(
@@ -95,8 +94,8 @@ class FileLogManager(AbstractManager[FileLogManagerConfigurations]):
 
     def log_info(
         self,
-        message: str,
-    ) -> str:
+        message: Any,
+    ) -> Any:
         return self.log(
             message,
             log_options_manager.singleton.generate_modified_defaults(
@@ -107,8 +106,8 @@ class FileLogManager(AbstractManager[FileLogManagerConfigurations]):
 
     def log_warning(
         self,
-        message: str,
-    ) -> str:
+        message: Any,
+    ) -> Any:
         return self.log(
             message,
             log_options_manager.singleton.generate_modified_defaults(
@@ -119,8 +118,8 @@ class FileLogManager(AbstractManager[FileLogManagerConfigurations]):
 
     def log_error(
         self,
-        message: str,
-    ) -> str:
+        message: Any,
+    ) -> Any:
         return self.log(
             message,
             log_options_manager.singleton.generate_modified_defaults(
@@ -131,8 +130,8 @@ class FileLogManager(AbstractManager[FileLogManagerConfigurations]):
 
     def log_critical(
         self,
-        message: str,
-    ) -> str:
+        message: Any,
+    ) -> Any:
         return self.log(
             message,
             log_options_manager.singleton.generate_modified_defaults(

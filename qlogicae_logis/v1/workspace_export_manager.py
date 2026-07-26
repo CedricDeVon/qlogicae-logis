@@ -20,10 +20,8 @@ class WorkspaceExportManager(
         return self._default_export_selection
 
     @default_export_selection.setter
-    def default_export_selection(self, value) -> bool:
+    def default_export_selection(self, value: str) -> None:
         self._default_export_selection = value
-
-        return True
 
 
 singleton = WorkspaceExportManager()

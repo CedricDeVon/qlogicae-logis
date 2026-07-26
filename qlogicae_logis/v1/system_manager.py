@@ -21,21 +21,11 @@ class SystemManager(AbstractManager[SystemManagerConfigurations]):
     ) -> Path:
         return Path.cwd()
 
-    @property
-    def operating_system_name(self) -> str:
-        return platform.system()
-
-    @property
-    def operating_system_architecture(
-        self,
-    ) -> str:
-        return platform.machine()
-
     @current_executing_console_filesystem_path.setter
     def current_executing_console_filesystem_path(
         self,
         value: Path,
-    ) -> bool:
+    ) -> None:
         path = Path(value).expanduser().resolve()
 
         if not path.exists():
@@ -50,7 +40,16 @@ class SystemManager(AbstractManager[SystemManagerConfigurations]):
 
         os.chdir(path)
 
-        return True
+    @property
+    def operating_system_name(self) -> str:
+        return platform.system()
+
+    @property
+    def operating_system_architecture(
+        self,
+    ) -> str:
+        return platform.machine()
+
 
 
 singleton = SystemManager()

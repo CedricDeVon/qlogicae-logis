@@ -1,3 +1,5 @@
+from collections.abc import Set
+
 from qlogicae_cor.v1.abstract_manager import (
     AbstractManager,
 )
@@ -11,10 +13,10 @@ class WorkspaceLogManager(AbstractManager[WorkspaceLogManagerConfigurations]):
     def __init__(self) -> None:
         super().__init__(WorkspaceLogManagerConfigurations())
 
-        self._log_targets = {"file", "console"}
+        self._log_targets: Set[str] = {"file", "console"}
 
     @property
-    def log_targets(self):
+    def log_targets(self) -> Set[str]:
         return self._log_targets
 
 

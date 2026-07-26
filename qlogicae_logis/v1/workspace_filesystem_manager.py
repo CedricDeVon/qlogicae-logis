@@ -37,7 +37,7 @@ class WorkspaceFilesystemManager(
     @property
     def root_application_filesystem_path(
         self,
-    ) -> str:
+    ) -> Path:
         return Path(__file__).resolve().parent.parent.parent
 
     def read_file(self, file_path: Any) -> Any:
