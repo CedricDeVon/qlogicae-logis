@@ -955,25 +955,57 @@ class WorkspaceManager(AbstractManager[WorkspaceManagerConfigurations]):
             else []
         ) or []
 
-        workspace_data_command_clean_exclude_targets = {
-            Path(item["full-path"]) if "full-path" in item else ""
-            for item in workspace_data_command_clean_exclude_targets
-        }
+        selection_targets = [
+            { "full-path": Path(f"{item['full-path']}") }
+            if item and "full-path" in item
+            else current_root_full_path
+            for _key, item in project_workspace_selections.items()
+        ]
+
+        workspace_data_command_clean_exclude_targets = [
+            *workspace_data_command_clean_exclude_targets,
+            *selection_targets
+        ]
         if workspace_data_command_clean_default_exclude_is_enabled_value:
-            workspace_data_command_clean_exclude_targets = (
-                workspace_data_command_clean_exclude_targets
-                | {
-                    Path(f"{current_root_full_path}"),
-                    Path(f"{current_root_full_path}/workspace"),
-                    Path(f"{current_root_selection_full_path}"),
-                }
-                | {
-                    Path(f"{item['full-path']}")
-                    if "full-path" in item
+            workspace_data_command_clean_exclude_targets = [
+                *workspace_data_command_clean_exclude_targets,
+                {"full-path": Path(current_root_full_path)},
+                {"full-path": Path(f"{current_root_full_path}/workspace")},
+                {"full-path": Path(current_root_selection_full_path)},
+            ]
+
+        def handle(clean_targets: Any) -> Any:
+            if not clean_targets:
+                return set()
+
+            parsed_targets: set[Path] = set()
+            for target in clean_targets:
+                full_path = Path(
+                    target["full-path"]
+                    if target and "full-path" in target
                     else current_root_full_path
-                    for _key, item in project_workspace_selections.items()
-                }
-            )
+                )
+                pattern = (
+                    target["pattern"]
+                    if target and "pattern" in target
+                    else ""
+                )
+
+                if pattern:
+                    matches = list(full_path.glob(pattern))
+
+                    if matches:
+                        parsed_targets.update(matches)
+                    else:
+                        parsed_targets.add(full_path)
+                else:
+                    parsed_targets.add(full_path)
+
+            return parsed_targets
+
+        workspace_data_command_clean_exclude_targets = handle(
+            workspace_data_command_clean_exclude_targets
+        )
 
         value_cache_manager.singleton.set_one_value(
             ["clean-include-selections"],

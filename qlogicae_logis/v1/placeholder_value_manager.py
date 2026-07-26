@@ -8,6 +8,13 @@ from qlogicae_logis.v1.placeholder_value_manager_configurations import (
 
 
 class PlaceholderValueManager(AbstractManager[PlaceholderValueManagerConfigurations]):
+    __slots__ = (
+        "_none",
+        "_not_a_number",
+        "_redacted",
+        "_expunged",
+    )
+
     def __init__(self) -> None:
         super().__init__(PlaceholderValueManagerConfigurations())
 

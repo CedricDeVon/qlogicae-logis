@@ -16,6 +16,11 @@ from qlogicae_logis.v1.macros_manager_configurations import (
 
 
 class MacrosManager(AbstractManager[MacrosManagerConfigurations]):
+    __slots__ = (
+        "_identifier_pattern",
+        "_macros_pattern",
+    )
+
     def __init__(self) -> None:
         super().__init__(MacrosManagerConfigurations())
 

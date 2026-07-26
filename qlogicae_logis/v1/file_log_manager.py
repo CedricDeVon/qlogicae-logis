@@ -25,6 +25,15 @@ from qlogicae_logis.v1.log_options import (
 
 
 class FileLogManager(AbstractManager[FileLogManagerConfigurations]):
+    __slots__ = (
+        "logger",
+        "file_handlers",
+        "log_queue",
+        "queue_handler",
+        "listener",
+        "_options",
+    )
+
     def __init__(self) -> None:
         super().__init__(FileLogManagerConfigurations())
 

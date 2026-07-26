@@ -24,6 +24,8 @@ from qlogicae_logis.v1.cli_display_manager_configurations import (
 
 
 class CliDisplayManager(AbstractManager[CliDisplayManagerConfigurations]):
+    __slots__ = ("_console")
+
     def __init__(self) -> None:
         super().__init__(CliDisplayManagerConfigurations())
 

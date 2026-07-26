@@ -15,6 +15,8 @@ from qlogicae_logis.v1.log_options import (
 
 
 class ConsoleLogManager(AbstractManager[ConsoleLogManagerConfigurations]):
+    __slots__ = ("_logger", "_options")
+
     def __init__(self) -> None:
         super().__init__(ConsoleLogManagerConfigurations())
 

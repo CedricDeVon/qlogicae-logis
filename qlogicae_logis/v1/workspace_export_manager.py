@@ -10,6 +10,10 @@ from qlogicae_logis.v1.workspace_export_manager_configurations import (
 class WorkspaceExportManager(
     AbstractManager[WorkspaceExportManagerConfigurations]
 ):
+    __slots__ = (
+        "_default_export_selection",
+    )
+
     def __init__(self) -> None:
         super().__init__(WorkspaceExportManagerConfigurations())
 

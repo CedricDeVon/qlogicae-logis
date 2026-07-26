@@ -18,6 +18,11 @@ from qlogicae_logis.v1.script_process_manager_configurations import (
 
 
 class ScriptProcessManager(AbstractManager[ScriptProcessManagerConfigurations]):
+    __slots__ = (
+        "_default_script_process",
+        "_valid_script_processes",
+    )
+
     def __init__(self) -> None:
         super().__init__(ScriptProcessManagerConfigurations())
 

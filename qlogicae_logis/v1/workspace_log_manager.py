@@ -10,6 +10,10 @@ from qlogicae_logis.v1.workspace_log_manager_configurations import (
 
 
 class WorkspaceLogManager(AbstractManager[WorkspaceLogManagerConfigurations]):
+    __slots__ = (
+        "_log_targets",
+    )
+
     def __init__(self) -> None:
         super().__init__(WorkspaceLogManagerConfigurations())
 

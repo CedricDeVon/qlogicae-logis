@@ -10,6 +10,14 @@ from qlogicae_logis.v1.yaml_manager_configurations import (
 
 
 class YamlManager(AbstractManager[YamlManagerConfigurations]):
+    __slots__ = (
+        "_valid_file_extensions",
+        "_is_key_sorting_enabled",
+        "_is_default_flow_state_enabled",
+        "_is_unicode_enabled",
+        "_indent_count",
+    )
+
     def __init__(self) -> None:
         super().__init__(YamlManagerConfigurations())
 

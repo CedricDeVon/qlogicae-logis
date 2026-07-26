@@ -22,6 +22,10 @@ from qlogicae_logis.v1.workspace_filesystem_manager_configurations import (
 class WorkspaceFilesystemManager(
     AbstractManager[WorkspaceFilesystemManagerConfigurations]
 ):
+    __slots__ = (
+        "_scope_selections",
+    )
+
     def __init__(self) -> None:
         super().__init__(WorkspaceFilesystemManagerConfigurations())
 

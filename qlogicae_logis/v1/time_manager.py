@@ -19,6 +19,10 @@ from qlogicae_logis.v1.time_unit import TimeUnit
 
 
 class TimeManager(AbstractManager[TimeManagerConfigurations]):
+    __slots__ = (
+        "_current_time_zone",
+    )
+
     def __init__(self) -> None:
         super().__init__(TimeManagerConfigurations())
 

@@ -38,6 +38,8 @@ from qlogicae_logis.v1.target_cache_value import TargetCacheValue
 
 
 class CliCommandManager(AbstractManager[CliCommandManagerConfigurations]):
+    __slots__ = ("_commands")
+
     def __init__(self) -> None:
         super().__init__(CliCommandManagerConfigurations())
 

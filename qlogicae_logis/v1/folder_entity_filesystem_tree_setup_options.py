@@ -6,3 +6,4 @@ from typing import Any
 class FolderEntityFileSystemTreeSetupOptions:
     name: str = "folder"
     entities: list[Any] = field(default_factory=list)
+

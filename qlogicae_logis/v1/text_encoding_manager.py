@@ -8,6 +8,10 @@ from qlogicae_logis.v1.text_encoding_manager_configurations import (
 
 
 class TextEncodingManager(AbstractManager[TextEncodingManagerConfigurations]):
+    __slots__ = (
+        "_encoding",
+    )
+
     def __init__(self) -> None:
         super().__init__(TextEncodingManagerConfigurations())
 

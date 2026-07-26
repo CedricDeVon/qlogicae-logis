@@ -10,6 +10,10 @@ from qlogicae_logis.v1.text_manager_configurations import (
 
 
 class TextManager(AbstractManager[TextManagerConfigurations]):
+    __slots__ = (
+        "_valid_file_extensions",
+    )
+
     def __init__(self) -> None:
         super().__init__(TextManagerConfigurations())
 

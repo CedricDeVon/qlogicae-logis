@@ -10,6 +10,11 @@ from qlogicae_logis.v1.timer_manager_configurations import (
 
 
 class TimerManager(AbstractManager[TimerManagerConfigurations]):
+    __slots__ = (
+        "_start_timestamp",
+        "_stop_timestamp"
+    )
+
     def __init__(self) -> None:
         super().__init__(TimerManagerConfigurations())
 

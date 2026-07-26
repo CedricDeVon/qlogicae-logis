@@ -10,6 +10,13 @@ from qlogicae_logis.v1.json_manager_configurations import (
 
 
 class JsonManager(AbstractManager[JsonManagerConfigurations]):
+    __slots__ = (
+        "_valid_file_extensions",
+        "_is_ascii_format_enabled",
+        "_indent_count",
+        "_is_key_sortable",
+    )
+
     def __init__(self) -> None:
         super().__init__(JsonManagerConfigurations())
 
