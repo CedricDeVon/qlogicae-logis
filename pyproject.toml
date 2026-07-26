@@ -1,6 +1,6 @@
 [project]
 name = "qlogicae-logis"
-version = "1.1.19"
+version = "1.1.20"
 description = "The project orchestration tool for QLogicae projects"
 readme = { file = "README.md", content-type = "text/markdown" }
 requires-python = ">=3.12"
@@ -95,7 +95,6 @@ include = [
     "LICENSE",
     "README.md",
     "SECURITY.md",
-    "project/**/*",
     "qlogicae_logis/**/*",
 ]
 exclude = [

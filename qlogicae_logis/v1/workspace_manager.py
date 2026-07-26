@@ -691,7 +691,7 @@ class WorkspaceManager(AbstractManager[WorkspaceManagerConfigurations]):
         )
 
         configuration_directory = Path(
-            f"{original_executing_console_full_path}/project/configuration"
+            f"{original_executing_console_full_path}/qlogicae_logis/v1/cli/project/configuration"
         )
 
         configuration_files = [
