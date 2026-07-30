@@ -1,6 +1,6 @@
 [project]
 name = "qlogicae-logis"
-version = "1.1.21"
+version = "1.1.22"
 description = "The project orchestration tool for QLogicae projects"
 readme = { file = "README.md", content-type = "text/markdown" }
 requires-python = ">=3.12"
@@ -59,6 +59,7 @@ dev = [
 
 [project.scripts]
 qlogicae-logis = "qlogicae_logis.v1.cli.app:main"
+qlogicae-logis-v1 = "qlogicae_logis.v1.cli.app:main"
 
 
 [project.urls]
@@ -92,10 +93,8 @@ branch = true
 
 [tool.hatch.build]
 include = [
-    "LICENSE",
-    "README.md",
-    "SECURITY.md",
     "qlogicae_logis/**/*",
+    "qlogicae_logis/py.typed",
 ]
 exclude = [
     "**/__pycache__",
@@ -106,6 +105,8 @@ exclude = [
     ".vscode",
     "requirements.txt",
     "output",
+    "docs/**",
+    "project/**",
 ]
 
 [tool.coverage.report]

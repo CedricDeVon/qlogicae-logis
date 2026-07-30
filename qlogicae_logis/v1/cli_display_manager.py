@@ -83,7 +83,6 @@ class CliDisplayManager(AbstractManager[CliDisplayManagerConfigurations]):
 
         return True
 
-
     def render_progress_bar(self, data: dict[str, Any] | None = None) -> bool:
         if not data:
             return False
