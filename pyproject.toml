@@ -1,6 +1,6 @@
 [project]
 name = "qlogicae-logis"
-version = "1.1.22"
+version = "1.1.23"
 description = "The project orchestration tool for QLogicae projects"
 readme = { file = "README.md", content-type = "text/markdown" }
 requires-python = ">=3.12"
@@ -60,6 +60,7 @@ dev = [
 [project.scripts]
 qlogicae-logis = "qlogicae_logis.v1.cli.app:main"
 qlogicae-logis-v1 = "qlogicae_logis.v1.cli.app:main"
+qlogicae-logis-v2 = "qlogicae_logis.v2.console.app:main"
 
 
 [project.urls]
@@ -148,7 +149,8 @@ select = [
     "B", # flake8-bugbear
     "PTH", # pathlib
 ]
-ignore = [    
+ignore = [        
+    "E731",
     "B008",
     "S607",    
     "S101", # allow assert statements    
@@ -187,12 +189,11 @@ packages = ["qlogicae_logis"]
 
 [tool.hatch.build.targets.wheel.force-include]
 "qlogicae_logis/py.typed" = "qlogicae_logis/py.typed"
-"qlogicae_logis/v1/cli/project/configuration/about.json" = "qlogicae_logis/v1/cli/project/configuration/about.json"
 
 
 [tool.hatch.envs.default.scripts]
 test-lint = """
-    ruff check qlogicae_logis
+    ruff check qlogicae_logis --fix
 """
 test-type-check = """
     mypy
@@ -208,13 +209,13 @@ test-unit = """
         --junitxml=\"output/test/unit/junit.xml\" \
 """
 test-benchmark-memory-usage-create = """
-    scalene run --html --outfile output/test/benchmark/scalene.html test/qlogicae_logis/v1/benchmark/test_full_setup_memory_usage.py ;
+    memray run -o output/test/benchmark/memray-1.bin -m test.qlogicae_logis.v2.benchmark.memory_usage.test_usage ;
 """
-# memray run -o output/test/benchmark/memray.bin -m test.qlogicae_logis.v1.benchmark.test_full_setup_memory_usage
+# memray run -o output/test/benchmark/memray-2.bin -m test.qlogicae_logis.v2.benchmark.memory_usage.test_dynamic
 test-benchmark-memory-usage-view = """
-    scalene view output/test/benchmark/scalene.json
+    memray tree output/test/benchmark/memray-1.bin
 """
-# memray tree output/test/benchmark/memray.bin
+# memray tree output/test/benchmark/memray-2.bin
 test-pip-deployment = """
     twine check output/build/release/dist/*
 """
@@ -247,3 +248,9 @@ github-workflow-test-benchmark-memory-usage-view = """
     hatch run github-workflow-setup &&
     hatch run test-benchmark-memory-usage-view
 """
+
+# scalene run --html --outfile output/test/benchmark/scalene.html test/qlogicae_logis/v2/benchmark/memory_usage/test_static.py
+# memray run -o output/test/benchmark/memray.bin -m test.qlogicae_logis.v2.benchmark.memory_usage.test_static
+# scalene view output/test/benchmark/scalene.json
+# memray tree output/test/benchmark/memray.bin
+#     scalene view output/test/benchmark/scalene.json

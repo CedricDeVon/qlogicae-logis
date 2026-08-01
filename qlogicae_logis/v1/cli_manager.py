@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import Any
 
-from qlogicae_cor.v1.abstract_manager import AbstractManager
+from qlogicae_cor.v1.library.abstract_manager import AbstractManager
 
 from qlogicae_logis.v1 import (
     cli_command_manager,

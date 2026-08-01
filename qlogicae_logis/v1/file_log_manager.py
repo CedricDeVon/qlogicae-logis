@@ -7,7 +7,7 @@ from logging.handlers import (
 from pathlib import Path
 from typing import Any
 
-from qlogicae_cor.v1.abstract_manager import (
+from qlogicae_cor.v1.library.abstract_manager import (
     AbstractManager,
 )
 
