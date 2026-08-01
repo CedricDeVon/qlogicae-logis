@@ -20,11 +20,11 @@ def _handle_dynamic_imports() -> None:
 
     from qlogicae_cor.v1.library import placeholder_value_manager, singleton_manager
 
-    from qlogicae_logis.v2.project.configuration import about
     from qlogicae_logis.v2.library import (
         console_component_manager,
         console_display_manager,
     )
+    from qlogicae_logis.v2.project.configuration import about
 
     _about_data = about.DATA
     _about_metadata = about.METADATA
