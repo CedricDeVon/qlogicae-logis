@@ -4,12 +4,13 @@ from typing import Any
 
 import typer
 
-app_workflow = typer.Typer()
-app_workflow_list = typer.Typer()
-app_workflow.add_typer(
-    app_workflow_list,
-    name="list",
-    help="Show list information.",
+app_debug = typer.Typer()
+app_debug_view = typer.Typer()
+
+app_debug.add_typer(
+    app_debug_view,
+    name="view",
+    help="View debug.",
 )
 
 
@@ -38,32 +39,28 @@ def _handle_dynamic_imports() -> None:
 
     _handle_dynamic_imports = lambda: None
 
-@app_workflow_list.command(
-    name="selections",
-    help="Show a list of defined workflows.",
+@app_debug_view.command(
+    name="value-cache",
+    help="View value cache.",
 )
-def selections() -> bool:
-    _handle_dynamic_imports()
-
-    _SingletonManager.get_singleton(
-        _CommandManager
-    ).run_command_workflow_list_selections()
-
-    return True
-
-
-@app_workflow.command(name="run", help="Run workflow selections.")
-def run(
-    targets: list[str] = typer.Argument(
-        ...,
-        help="List of workflows.",
+def value_cache(
+    targets: list[str] = typer.Option(
+        [],
+        "--key-path",
+        "-kp",
+        exists=True,
+        file_okay=True,
+        dir_okay=True,
+        readable=True,
+        resolve_path=True,
+        help="Value cache key path.",
     ),
 ) -> bool:
     _handle_dynamic_imports()
 
     _SingletonManager.get_singleton(
         _CommandManager
-    ).run_command_workflow_run(
+    ).run_command_debug_view_value_cache(
         targets=targets
     )
 

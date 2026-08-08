@@ -188,7 +188,7 @@ def test_parse_property(
 # rootdir: /home/cedricdevon/workspace/qlogicae
 # configfile: pyproject.toml
 # plugins: cov-7.1.0, anyio-4.14.1, benchmark-5.2.3
-# collected 2 items                                                                                                                                                                                                                           
+# collected 2 items
 
 # test/qlogicae_logis/v1/benchmark/runtime/test_text_io_read.py::test_parse[sample_data0-0-parse_json] PASSED                                                                                                                           [ 50%]
 # test/qlogicae_logis/v1/benchmark/runtime/test_text_io_read.py::test_parse_property[sample_data0-0-parse_json_property] PASSED                                                                                                         [100%]
@@ -404,7 +404,7 @@ def test_parse_property(
 # rootdir: /home/cedricdevon/workspace/qlogicae
 # configfile: pyproject.toml
 # plugins: cov-7.1.0, anyio-4.14.1, benchmark-5.2.3
-# collected 2 items                                                                                                                                                                                                                           
+# collected 2 items
 
 # test/qlogicae_logis/v1/benchmark/runtime/test_text_io_read.py::test_parse[sample_data0-1-parse_yaml] PASSED                                                                                                                           [ 50%]
 # test/qlogicae_logis/v1/benchmark/runtime/test_text_io_read.py::test_parse_property[sample_data0-1-parse_yaml_property] PASSED                                                                                                         [100%]

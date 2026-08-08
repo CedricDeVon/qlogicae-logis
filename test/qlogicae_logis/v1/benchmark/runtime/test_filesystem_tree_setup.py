@@ -207,7 +207,7 @@ def test_os_tree_creation(
 # rootdir: /home/cedricdevon/workspace/qlogicae
 # configfile: pyproject.toml
 # plugins: cov-7.1.0, anyio-4.14.1, benchmark-5.2.3
-# collected 2 items                                                                                                                                                                                                        
+# collected 2 items
 
 # test/qlogicae_logis/v1/benchmark/runtime/test_filesystem_tree_setup.py::test_pathlib_tree_creation PASSED                                                                                                          [ 50%]
 # test/qlogicae_logis/v1/benchmark/runtime/test_filesystem_tree_setup.py::test_os_tree_creation PASSED                                                                                                               [100%]

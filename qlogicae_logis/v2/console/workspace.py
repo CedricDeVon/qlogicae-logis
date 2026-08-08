@@ -1,4 +1,6 @@
-from pathlib import Path
+from __future__ import annotations
+
+from typing import Any
 
 import typer
 
@@ -11,16 +13,49 @@ app_workspace.add_typer(
 )
 
 
+_SingletonManager: Any = None
+_CommandManager: Any = None
+
+def _handle_dynamic_imports() -> None:
+    global _handle_dynamic_imports
+    global _SingletonManager
+    global _CommandManager
+
+    from qlogicae_cor.v1.library import (
+        singleton_manager,
+    )
+
+    from qlogicae_logis.v2.library import (
+        command_manager,
+    )
+
+    _SingletonManager = (
+        singleton_manager.SingletonManager
+    )
+    _CommandManager = (
+        command_manager.CommandManager
+    )
+
+    _handle_dynamic_imports = lambda: None
+
 @app_workspace.command(
     name="export",
     help="Create workspaces archive file.",
 )
 def export(
     targets: list[str] = typer.Argument(
-        ...,
+        [],
         help="List of export targets.",
     ),
 ) -> bool:
+    _handle_dynamic_imports()
+
+    _SingletonManager.get_singleton(
+        _CommandManager
+    ).run_command_workspace_export(
+        targets=targets
+    )
+
     return True
 
 
@@ -29,6 +64,12 @@ def export(
     help="List of exportable workspaces.",
 )
 def exports() -> bool:
+    _handle_dynamic_imports()
+
+    _SingletonManager.get_singleton(
+        _CommandManager
+    ).run_command_workspace_list_exports()
+
     return True
 
 
@@ -37,8 +78,8 @@ def exports() -> bool:
     help="Extract workspace archive file.",
 )
 def import_(
-    input_path: Path = typer.Option(
-        Path("qlogicae-workspace"),
+    input_path: str = typer.Option(
+        "",
         "--input",
         "-i",
         exists=True,
@@ -48,8 +89,8 @@ def import_(
         resolve_path=True,
         help="Input filesystem path of exported workspace archive.",
     ),
-    output_path: Path = typer.Option(
-        Path(),
+    output_path: str = typer.Option(
+        "",
         "--output",
         "-o",
         file_okay=False,
@@ -58,6 +99,15 @@ def import_(
         help="Output filesystem path from exported workspace archive content.",
     ),
 ) -> bool:
+    _handle_dynamic_imports()
+
+    _SingletonManager.get_singleton(
+        _CommandManager
+    ).run_command_workspace_import(
+        input_path=input_path,
+        output_path=output_path
+    )
+
     return True
 
 
@@ -66,4 +116,10 @@ def import_(
     help="Initial or filesystem replenishment.",
 )
 def setup() -> bool:
+    _handle_dynamic_imports()
+
+    _SingletonManager.get_singleton(
+        _CommandManager
+    ).run_command_workspace_setup()
+
     return True

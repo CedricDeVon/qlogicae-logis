@@ -6,6 +6,7 @@ from qlogicae_logis.v1.value_cache_storage_manager import (
     ValueCacheStorageManager,
 )
 
+
 class TestValueCacheStorageManager:
     @pytest.fixture
     def manager(self) -> ValueCacheStorageManager:

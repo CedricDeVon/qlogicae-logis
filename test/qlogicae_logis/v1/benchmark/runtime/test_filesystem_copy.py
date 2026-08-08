@@ -174,7 +174,7 @@ def test_copytree_copy2(
 # rootdir: /home/cedricdevon/workspace/qlogicae
 # configfile: pyproject.toml
 # plugins: cov-7.1.0, anyio-4.14.1, benchmark-5.2.3
-# collected 3 items                                                                                                                                                                                                        
+# collected 3 items
 
 # test/qlogicae_logis/v1/benchmark/runtime/test_filesystem_copy.py::test_copytree_copyfile PASSED                                                                                                                    [ 33%]
 # test/qlogicae_logis/v1/benchmark/runtime/test_filesystem_copy.py::test_copytree_copy PASSED                                                                                                                        [ 66%]

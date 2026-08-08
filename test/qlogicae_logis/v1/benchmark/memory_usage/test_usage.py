@@ -1,9 +1,8 @@
-import sys
 from pympler import asizeof
 
 from qlogicae_logis.v1.cli_command_manager import CliCommandManager
 from qlogicae_logis.v1.cli_command_manager_configurations import (
-    CliCommandManagerConfigurations
+    CliCommandManagerConfigurations,
 )
 from qlogicae_logis.v1.cli_display_manager import CliDisplayManager
 from qlogicae_logis.v1.cli_display_manager_configurations import (

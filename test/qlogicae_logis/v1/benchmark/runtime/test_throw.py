@@ -115,7 +115,7 @@ def test_concat(
 # rootdir: /home/cedricdevon/workspace/qlogicae
 # configfile: pyproject.toml
 # plugins: cov-7.1.0, anyio-4.14.1, benchmark-5.2.3
-# collected 4 items                                                                                                                                                                                                                           
+# collected 4 items
 
 # test/qlogicae_logis/v1/benchmark/runtime/test_throw.py::test_concat[2_parts_10_chars-concat_no_throw] PASSED                                                                                                                          [ 25%]
 # test/qlogicae_logis/v1/benchmark/runtime/test_throw.py::test_concat[2_parts_10_chars-concat_throw] PASSED                                                                                                                             [ 50%]

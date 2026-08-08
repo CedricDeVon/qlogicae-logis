@@ -124,7 +124,7 @@ def test_sum(
 # rootdir: /home/cedricdevon/workspace/qlogicae
 # configfile: pyproject.toml
 # plugins: cov-7.1.0, anyio-4.14.1, benchmark-5.2.3
-# collected 12 items                                                                                                                                                                                              
+# collected 12 items
 
 # test/qlogicae_logis/v1/benchmark/runtime/test_arguments.py::test_sum[1_2-sum_positional] PASSED                                                                                                           [  8%]
 # test/qlogicae_logis/v1/benchmark/runtime/test_arguments.py::test_sum[1_2-sum_args] PASSED                                                                                                                 [ 16%]

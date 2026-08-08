@@ -221,7 +221,7 @@ def test_glob_glob(
 # rootdir: /home/cedricdevon/workspace/qlogicae
 # configfile: pyproject.toml
 # plugins: cov-7.1.0, anyio-4.14.1, benchmark-5.2.3
-# collected 5 items                                                                                                                                                                                                        
+# collected 5 items
 
 # test/qlogicae_logis/v1/benchmark/runtime/test_filesystem_iteration.py::test_pathlib_rglob PASSED                                                                                                                   [ 20%]
 # test/qlogicae_logis/v1/benchmark/runtime/test_filesystem_iteration.py::test_pathlib_glob PASSED                                                                                                                    [ 40%]

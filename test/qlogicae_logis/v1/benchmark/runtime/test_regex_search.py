@@ -171,7 +171,7 @@ def test_search(
 # rootdir: /home/cedricdevon/workspace/qlogicae
 # configfile: pyproject.toml
 # plugins: cov-7.1.0, anyio-4.14.1, benchmark-5.2.3
-# collected 24 items                                                                                                                                                                                                       
+# collected 24 items
 
 # test/qlogicae_logis/v1/benchmark/runtime/test_regex.py::test_search[10_chars_beginning-search_re] PASSED                                                                                                           [  4%]
 # test/qlogicae_logis/v1/benchmark/runtime/test_regex.py::test_search[10_chars_beginning-search_regex] PASSED                                                                                                        [  8%]

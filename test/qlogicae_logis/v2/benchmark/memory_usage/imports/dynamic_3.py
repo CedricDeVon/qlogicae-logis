@@ -55,7 +55,7 @@ def _initialize() -> None:
     xml = _xml
     yaml = _yaml
 
-    _initialize = lambda: None 
+    _initialize = lambda: None
 
 
 class Manager:

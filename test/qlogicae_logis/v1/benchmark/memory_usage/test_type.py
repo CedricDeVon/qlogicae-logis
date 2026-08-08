@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-import sys
 import functools
 import re
+import sys
 import types
 import weakref
 from array import array
@@ -17,13 +17,14 @@ from collections import (
     deque,
 )
 from dataclasses import dataclass
-from datetime import date, datetime, time, timedelta, timezone
+from datetime import UTC, date, datetime, time, timedelta
 from decimal import Decimal
 from enum import Enum, Flag, IntEnum, IntFlag, StrEnum, auto
 from fractions import Fraction
 from io import BytesIO, FileIO, StringIO
 from pathlib import Path
 from types import MappingProxyType, SimpleNamespace
+
 from pympler import asizeof
 
 
@@ -220,7 +221,7 @@ OBJECTS = {
     "time": time(),
     "datetime": datetime.now(),
     "timedelta": timedelta(days=1),
-    "timezone": timezone.utc,
+    "timezone": UTC,
 
     "BytesIO": BytesIO(b"hello"),
     "BytesIOEmpty": BytesIO(),
@@ -228,10 +229,10 @@ OBJECTS = {
     "StringIOEmpty": StringIO(),
     "FileIO": FileIO(__file__, "rb"),
     "BufferedReader": FileIO(__file__, "rb"),
-    "TextIO": open(__file__, "r", encoding="utf-8"),
+    "TextIO": open(__file__, encoding="utf-8"),
 
     "Path": Path.cwd(),
-    "PathCurrent": Path("."),
+    "PathCurrent": Path(),
     "PathParent": Path(".."),
     "PathRoot": Path("/"),
     "PathHome": Path.home(),

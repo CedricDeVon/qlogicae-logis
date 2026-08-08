@@ -6,24 +6,26 @@ import typer
 
 app_about = typer.Typer()
 
-
 _SingletonManager: Any = None
-_ConsoleAboutManager: Any = None
+_CommandManager: Any = None
 
 def _handle_dynamic_imports() -> None:
     global _handle_dynamic_imports
     global _SingletonManager
-    global _ConsoleAboutManager
+    global _CommandManager
 
-    from qlogicae_cor.v1.library import singleton_manager
+    from qlogicae_cor.v1.library import (
+        singleton_manager,
+    )
 
-    from qlogicae_logis.v2.library.console_about_manager import ConsoleAboutManager
+    from qlogicae_logis.v2.library import command_manager
+
 
     _SingletonManager = (
         singleton_manager.SingletonManager
     )
-    _ConsoleAboutManager = (
-        ConsoleAboutManager
+    _CommandManager = (
+        command_manager.CommandManager
     )
 
     _handle_dynamic_imports = lambda: None
@@ -34,8 +36,8 @@ def version() -> bool:
     _handle_dynamic_imports()
 
     _SingletonManager.get_singleton(
-        _ConsoleAboutManager
-    ).render_version()
+        _CommandManager
+    ).run_command_about_version()
 
     return True
 
@@ -45,7 +47,7 @@ def me() -> bool:
     _handle_dynamic_imports()
 
     _SingletonManager.get_singleton(
-        _ConsoleAboutManager
-    ).render_me()
+        _CommandManager
+    ).run_command_about_me()
 
     return True

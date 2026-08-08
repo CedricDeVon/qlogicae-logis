@@ -140,7 +140,7 @@ def test_lookup(
 # rootdir: /home/cedricdevon/workspace/qlogicae
 # configfile: pyproject.toml
 # plugins: cov-7.1.0, anyio-4.14.1, benchmark-5.2.3
-# collected 6 items                                                                                                                                                                                                                           
+# collected 6 items
 
 # test/qlogicae_logis/v1/benchmark/runtime/test_cache.py::test_lookup[1_levels-lookup] PASSED                                                                                                                                           [ 16%]
 # test/qlogicae_logis/v1/benchmark/runtime/test_cache.py::test_lookup[1_levels-cached_lookup] PASSED                                                                                                                                    [ 33%]

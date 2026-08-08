@@ -213,7 +213,7 @@ def test_os_access(
 # rootdir: /home/cedricdevon/workspace/qlogicae
 # configfile: pyproject.toml
 # plugins: cov-7.1.0, anyio-4.14.1, benchmark-5.2.3
-# collected 10 items                                                                                                                                                                                                       
+# collected 10 items
 
 # test/qlogicae_logis/v1/benchmark/runtime/test_filesystem_path.py::test_pathlib_exists[existing-True] PASSED                                                                                                        [ 10%]
 # test/qlogicae_logis/v1/benchmark/runtime/test_filesystem_path.py::test_pathlib_exists[nonexistent-False] PASSED                                                                                                    [ 20%]

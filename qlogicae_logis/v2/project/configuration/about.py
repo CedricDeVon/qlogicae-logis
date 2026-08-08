@@ -8,7 +8,7 @@ DATA: dict[str, dict[str, Any]]= {
     },
     "project-version": {
         "name": "Project Version",
-        "value": "v1.1.28",
+        "value": "v2.0.0",
         "is-tabular": True,
     },
     "project-description": {
@@ -56,3 +56,6 @@ DATA: dict[str, dict[str, Any]]= {
 METADATA: dict[str, dict[str, Any]] = {    
 
 }
+
+
+

@@ -109,7 +109,7 @@ def test_concat(
 # rootdir: /home/cedricdevon/workspace/qlogicae
 # configfile: pyproject.toml
 # plugins: cov-7.1.0, anyio-4.14.1, benchmark-5.2.3
-# collected 12 items                                                                                                                                                                                                                          
+# collected 12 items
 
 # test/qlogicae_logis/v1/benchmark/runtime/test_throw.py::test_concat[2_parts_10_chars-concat_no_try] PASSED                                                                                                                            [  8%]
 # test/qlogicae_logis/v1/benchmark/runtime/test_throw.py::test_concat[2_parts_10_chars-concat_try] PASSED                                                                                                                               [ 16%]
@@ -152,4 +152,4 @@ def test_concat(
 #   Outliers: 1 Standard Deviation from Mean; 1.5 IQR (InterQuartile Range) from 1st Quartile and 3rd Quartile.
 #   OPS: Operations Per Second, computed as 1 / Mean
 # ====================================================================================================== 12 passed in 138.23s (0:02:18) =======================================================================================================
-# (.venv) cedricdevon@cedricdevon-Inspiron-3501:~/workspace/qlogicae$ 
+# (.venv) cedricdevon@cedricdevon-Inspiron-3501:~/workspace/qlogicae$

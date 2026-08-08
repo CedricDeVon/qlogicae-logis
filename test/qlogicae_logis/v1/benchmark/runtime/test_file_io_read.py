@@ -8,7 +8,6 @@ from typing import Any
 import pytest
 import yaml
 
-
 ROUNDS = 30
 ITERATIONS = 1_000
 WARMUP_ROUNDS = 10
@@ -101,7 +100,7 @@ def test_read(
 # rootdir: /home/cedricdevon/workspace/qlogicae
 # configfile: pyproject.toml
 # plugins: cov-7.1.0, anyio-4.14.1, benchmark-5.2.3
-# collected 9 items                                                                                                                                                                                                                           
+# collected 9 items
 
 # test/qlogicae_logis/v1/benchmark/runtime/test_file_io_read.py::test_read[1-json-0-read_json] PASSED                                                                                                                                   [ 11%]
 # test/qlogicae_logis/v1/benchmark/runtime/test_file_io_read.py::test_read[1-text-1-read_text] PASSED                                                                                                                                   [ 22%]

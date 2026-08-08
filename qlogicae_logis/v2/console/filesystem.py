@@ -1,4 +1,7 @@
+from __future__ import annotations
+
 from pathlib import Path
+from typing import Any
 
 import typer
 
@@ -23,6 +26,31 @@ app_filesystem_clean.add_typer(
     help="Show list information.",
 )
 
+
+_SingletonManager: Any = None
+_CommandManager: Any = None
+
+def _handle_dynamic_imports() -> None:
+    global _handle_dynamic_imports
+    global _SingletonManager
+    global _CommandManager
+
+    from qlogicae_cor.v1.library import (
+        singleton_manager,
+    )
+
+    from qlogicae_logis.v2.library import (
+        command_manager,
+    )
+
+    _SingletonManager = (
+        singleton_manager.SingletonManager
+    )
+    _CommandManager = (
+        command_manager.CommandManager
+    )
+
+    _handle_dynamic_imports = lambda: None
 
 @app_filesystem.command(
     name="copy",
@@ -58,6 +86,16 @@ def copy(
         help="",
     ),
 ) -> bool:
+    _handle_dynamic_imports()
+
+    _SingletonManager.get_singleton(
+        _CommandManager
+    ).run_command_filesystem_copy(
+        source_path=source_path,
+        target_paths=target_paths,
+        overwrite=overwrite,
+    )
+
     return True
 
 
@@ -95,6 +133,16 @@ def move(
         help="",
     ),
 ) -> bool:
+    _handle_dynamic_imports()
+
+    _SingletonManager.get_singleton(
+        _CommandManager
+    ).run_command_filesystem_move(
+        source_path=source_path,
+        target_path=target_path,
+        overwrite=overwrite,
+    )
+
     return True
 
 
@@ -126,6 +174,15 @@ def rename(
         help="New file or folder name.",
     ),
 ) -> bool:
+    _handle_dynamic_imports()
+
+    _SingletonManager.get_singleton(
+        _CommandManager
+    ).run_command_filesystem_rename(
+        old_path=old_path,
+        new_path=new_path,
+    )
+
     return True
 
 
@@ -146,6 +203,14 @@ def setup(
         help="Multiple folder paths",
     ),
 ) -> bool:
+    _handle_dynamic_imports()
+
+    _SingletonManager.get_singleton(
+        _CommandManager
+    ).run_command_filesystem_tree_setup(
+        target_paths=target_paths
+    )
+
     return True
 
 
@@ -166,6 +231,14 @@ def path(
         help="List of cleaning filesystem paths.",
     ),
 ) -> bool:
+    _handle_dynamic_imports()
+
+    _SingletonManager.get_singleton(
+        _CommandManager
+    ).run_command_filesystem_clean_path(
+        target_paths=target_paths
+    )
+
     return True
 
 
@@ -179,6 +252,14 @@ def selection(
         help="List of cleaning targets.",
     ),
 ) -> bool:
+    _handle_dynamic_imports()
+
+    _SingletonManager.get_singleton(
+        _CommandManager
+    ).run_command_filesystem_clean_selection(
+        targets=targets
+    )
+
     return True
 
 
@@ -187,6 +268,12 @@ def selection(
     help="Show selections and whitelisted filesystem paths.",
 )
 def included() -> bool:
+    _handle_dynamic_imports()
+
+    _SingletonManager.get_singleton(
+        _CommandManager
+    ).run_command_filesystem_clean_list_included()
+
     return True
 
 
@@ -195,4 +282,10 @@ def included() -> bool:
     help="Show blacklisted filesystem paths.",
 )
 def excluded() -> bool:
+    _handle_dynamic_imports()
+
+    _SingletonManager.get_singleton(
+        _CommandManager
+    ).run_command_filesystem_clean_list_excluded()
+
     return True

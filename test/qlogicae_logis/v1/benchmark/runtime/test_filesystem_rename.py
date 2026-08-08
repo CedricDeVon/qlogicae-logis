@@ -216,7 +216,7 @@ def test_os_replace(
 # rootdir: /home/cedricdevon/workspace/qlogicae
 # configfile: pyproject.toml
 # plugins: cov-7.1.0, anyio-4.14.1, benchmark-5.2.3
-# collected 4 items                                                                                                                                                                                                        
+# collected 4 items
 
 # test/qlogicae_logis/v1/benchmark/runtime/test_filesystem_rename.py::test_pathlib_rename PASSED                                                                                                                     [ 25%]
 # test/qlogicae_logis/v1/benchmark/runtime/test_filesystem_rename.py::test_pathlib_replace PASSED                                                                                                                    [ 50%]

@@ -18,6 +18,7 @@ import ssl
 import tkinter
 import urllib.request
 import xml.etree.ElementTree
+
 import yaml
 
 
@@ -60,17 +61,6 @@ def _initialize() -> None:
     global _xml
     global _yaml
 
-    import asyncio
-    import email
-    import inspect
-    import logging
-    import multiprocessing
-    import sqlite3
-    import ssl
-    import tkinter
-    import urllib.request
-    import xml.etree.ElementTree
-    import yaml
 
     _asyncio = asyncio
     _email = email
@@ -100,17 +90,6 @@ def import_every_call_sum(
     a: int,
     b: int,
 ) -> int:
-    import asyncio
-    import email
-    import inspect
-    import logging
-    import multiprocessing
-    import sqlite3
-    import ssl
-    import tkinter
-    import urllib.request
-    import xml.etree.ElementTree
-    import yaml
 
     return a + b
 
