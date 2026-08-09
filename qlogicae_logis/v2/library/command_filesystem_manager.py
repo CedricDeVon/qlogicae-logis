@@ -550,27 +550,37 @@ class CommandFilesystemManager:
                     _DatabaseManager
                 ).company_name
             }"
-        ).glob("**/*")
+        )
         selection_paths = _Path(
             f"{root_path}/selection"
-        ).iterdir()
+        )
 
         outputs.update(
             f"{path}"
             for path
             in root_path.parents
         )
-        outputs.update(
-            f"{path}"
-            for path
-            in qlogicae_paths
-            if path.is_dir()
-        )
-        outputs.update(
-            f"{path}"
-            for path
-            in selection_paths
-        )
+
+        if qlogicae_paths.is_dir():
+            qlogicae_paths = (
+                qlogicae_paths.glob("**/*")
+            )
+
+            outputs.update(
+                f"{path}"
+                for path
+                in qlogicae_paths
+                if path.is_dir()
+            )
+
+        if selection_paths.is_dir():
+            selection_paths = selection_paths.iterdir()
+        
+            outputs.update(
+                f"{path}"
+                for path
+                in selection_paths
+            )
 
         return outputs
 
