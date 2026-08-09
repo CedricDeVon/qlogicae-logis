@@ -8,7 +8,7 @@ DATA: dict[str, dict[str, Any]]= {
     },
     "project-version": {
         "name": "Project Version",
-        "value": "v2.0.6",
+        "value": "v2.0.7",
         "is-tabular": True,
     },
     "project-description": {

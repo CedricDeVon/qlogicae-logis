@@ -288,7 +288,7 @@ data:
           value: The project orchestration tool for QLogicae projects
 
         qlogicae-logis-current-version-number:
-          value: 2.0.6
+          value: 2.0.7
 
         qlogicae-logis-active-major-version-number:
           value: 2

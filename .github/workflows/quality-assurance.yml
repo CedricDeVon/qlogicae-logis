@@ -217,12 +217,12 @@ jobs:
 
 
     v2-e2e-testing-cache-command:
-      name: V2 | End-To-End Testing | Cache Command
+      name: V2 | End-To-End Testing | Debug Command
       runs-on: ubuntu-latest
 
       defaults:
           run:
-              working-directory: ./test/qlogicae_logis/v2/e2e/github/workspace/cache
+              working-directory: ./test/qlogicae_logis/v2/e2e/github/workspace/debug
 
       strategy:
           fail-fast: false
@@ -255,8 +255,8 @@ jobs:
           - name: Run 'workspace setup'
             run: qlogicae-logis workspace setup 
 
-          - name: Run 'cache view runtime'
-            run: qlogicae-logis cache view runtime 
+          - name: Run 'debug view value-cache'
+            run: qlogicae-logis debug view value-cache 
 
 
     v2-e2e-testing-filesystem-command:
