@@ -192,6 +192,9 @@ class CommandWorkspaceManager:
         filesystem_manager = _SingletonManager.get_singleton(
             _FilesystemManager
         )
+        command_utility_manager = _SingletonManager.get_singleton(
+            _CommandUtilityManager
+        )
 
         root_filesystem_path = (
             database_manager
@@ -209,7 +212,7 @@ class CommandWorkspaceManager:
         )
 
         default_filesystem_accessibility_types = (
-            database_manager
+            command_utility_manager
                 .default_filesystem_accessibility_types
         )
         default_content = (

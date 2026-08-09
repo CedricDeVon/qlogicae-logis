@@ -3,52 +3,52 @@ from typing import Any
 DATA: dict[str, dict[str, Any]]= {
     "brand-name": {
         "name": "Brand Name",
-        "value": "QLogicae Logis",
+        "value": "${{ qlogicae-logis-display-brand-name }}",
         "is-tabular": False,
     },
     "project-version": {
         "name": "Project Version",
-        "value": "v2.0.6",
+        "value": "${{ qlogicae-logis-current-version-label }}",
         "is-tabular": True,
     },
     "project-description": {
         "name": "Description",
-        "value": "The project orchestration tool for QLogicae projects",
+        "value": "${{ qlogicae-logis-base-description }}",
         "is-tabular": False,
     },
     "project-name": {
         "name": "Project Name",
-        "value": "Logis",
+        "value": "${{ qlogicae-logis-display-project-name }}",
         "is-tabular": True,
     },
     "company-name": {
         "name": "Company Name",
-        "value": "QLogicae",
+        "value": "${{ main-company-display-name }}",
         "is-tabular": True,
     },
     "workspace-name": {
         "name": "Workspace Name",
-        "value": "qlogicae-logis",
+        "value": "${{ qlogicae-logis-base-brand-name }}",
         "is-tabular": False,
     },
     "author-name": {
         "name": "Author Name",
-        "value": "Vaughn Cedric L. Araneta",
+        "value": "${{ main-author-full-name }}",
         "is-tabular": True,
     },
     "author-email": {
         "name": "Author Email",
-        "value": "vaughncedriclipardoaraneta@gmail.com",
+        "value": "${{ main-author-base-email }}",
         "is-tabular": True,
     },
     "repository-link": {
         "name": "Repository Link",
-        "value": "https://github.com/CedricDeVon/qlogicae-logis",
+        "value": "${{ qlogicae-logis-base-repository-link }}",
         "is-tabular": True,
     },
     "repository-keywords": {
         "name": "Repository Keywords",
-        "value": ["qlogicae", "logis"],
+        "value": ["${{ main-company-base-name }}", "${{ qlogicae-logis-base-project-name }}"],
         "is-tabular": True,
     },
 }

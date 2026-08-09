@@ -1,0 +1,12 @@
+data:
+  selection:
+    group:
+      targets:
+        qlogicae-cor:
+          targets:
+            qlogicae-cor-root:
+            qlogicae-cor-typescript:
+            qlogicae-cor-python:
+            qlogicae-cor-rust:
+
+metadata:

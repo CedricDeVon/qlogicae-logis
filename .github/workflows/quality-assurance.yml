@@ -9,8 +9,8 @@ defaults:
         shell: bash
 
 jobs:
-    v1-type-check-testing:
-        name: V1 | Type Check
+    v2-type-check-testing:
+        name: V2 | Type Check
         runs-on: ubuntu-latest
 
         defaults:
@@ -47,8 +47,8 @@ jobs:
             - name: Run Scripts        
               run: hatch run github-workflow-test-type-check
 
-    v1-lint-testing:
-        name: V1 | Lint
+    v2-lint-testing:
+        name: V2 | Lint
         runs-on: ubuntu-latest
 
         defaults:
@@ -85,8 +85,8 @@ jobs:
             - name: Run Scripts        
               run: hatch run github-workflow-test-lint
 
-    # v1-unit-testing:
-    #     name: V1 | Unit Testing
+    # v2-unit-testing:
+    #     name: V2 | Unit Testing
     #     runs-on: ubuntu-latest
 
     #     defaults:
@@ -124,8 +124,8 @@ jobs:
     #           run: hatch run github-workflow-test-unit
 
 
-    v1-e2e-testing-about-command:
-      name: V1 | End-To-End Testing | About Command
+    v2-e2e-testing-about-command:
+      name: V2 | End-To-End Testing | About Command
       runs-on: ubuntu-latest
 
       defaults:
@@ -167,8 +167,8 @@ jobs:
             run: qlogicae-logis about version
 
 
-    v1-e2e-testing-workspace-command:
-      name: V1 | End-To-End Testing | Workspace Command
+    v2-e2e-testing-workspace-command:
+      name: V2 | End-To-End Testing | Workspace Command
       runs-on: ubuntu-latest
 
       defaults:
@@ -216,8 +216,8 @@ jobs:
             run: qlogicae-logis workspace import 
 
 
-    v1-e2e-testing-cache-command:
-      name: V1 | End-To-End Testing | Cache Command
+    v2-e2e-testing-cache-command:
+      name: V2 | End-To-End Testing | Cache Command
       runs-on: ubuntu-latest
 
       defaults:
@@ -259,8 +259,8 @@ jobs:
             run: qlogicae-logis cache view runtime 
 
 
-    v1-e2e-testing-filesystem-command:
-      name: V1 | End-To-End Testing | Filesystem Command
+    v2-e2e-testing-filesystem-command:
+      name: V2 | End-To-End Testing | Filesystem Command
       runs-on: ubuntu-latest
 
       defaults:
@@ -305,8 +305,8 @@ jobs:
             run: qlogicae-logis filesystem clean list excluded
 
 
-    v1-e2e-testing-workflow-command:
-      name: V1 | End-To-End Testing | Workflow Command
+    v2-e2e-testing-workflow-command:
+      name: V2 | End-To-End Testing | Workflow Command
       runs-on: ubuntu-latest
 
       defaults:
@@ -348,8 +348,8 @@ jobs:
             run: qlogicae-logis workflow list selections 
 
 
-    v1-e2e-testing-template-command:
-      name: V1 | End-To-End Testing | Template Command
+    v2-e2e-testing-template-command:
+      name: V2 | End-To-End Testing | Template Command
       runs-on: ubuntu-latest
 
       defaults:
