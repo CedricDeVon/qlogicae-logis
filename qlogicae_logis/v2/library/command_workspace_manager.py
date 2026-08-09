@@ -7,7 +7,6 @@ _chain: Any = None
 _ZipFile: Any = None
 _Callable: Any = None
 _LogManager: Any = None
-_MacrosManager: Any = None
 _DatabaseManager: Any = None
 _SingletonManager: Any = None
 _FilesystemManager: Any = None
@@ -26,7 +25,6 @@ def _handle_dynamic_imports() -> None:
     global _ZipFile
     global _Callable
     global _LogManager
-    global _MacrosManager
     global _DatabaseManager
     global _SingletonManager
     global _FilesystemManager
@@ -51,7 +49,6 @@ def _handle_dynamic_imports() -> None:
         filesystem_compression_manager,
         filesystem_manager,
         folder_entity_filesystem_tree_setup_options,
-        macros_manager,
         singleton_manager,
     )
 
@@ -73,9 +70,6 @@ def _handle_dynamic_imports() -> None:
     )
     _DatabaseManager = (
         database_manager.DatabaseManager
-    )
-    _MacrosManager = (
-        macros_manager.MacrosManager
     )
     _LogManager = (
         log_manager.LogManager
@@ -171,23 +165,14 @@ class CommandWorkspaceManager:
         self,
         **kwargs: Any
     ) -> bool:
-        database_manager = _SingletonManager.get_singleton(
-            _DatabaseManager
-        )
-
         input_path = kwargs.get("input_path", "")
         output_path = kwargs.get("output_path", "")
-
-        root_filesystem_path = (
-            database_manager
-                .root_filesystem_path
-        )
 
         if not input_path:
             input_path = self.default_workspace_export_file
 
         if not output_path:
-            output_path = root_filesystem_path
+            output_path = f"{_Path().resolve()}"
 
         _SingletonManager.get_singleton(
             _FilesystemCompressionManager
@@ -639,9 +624,8 @@ class CommandWorkspaceManager:
                 else root_filesystem_path
             ) or root_filesystem_path
             export_data_selection_output_full_path_value = (
-                macros_manager.parse_many(
-                    export_data_selection_output_full_path_value,
-                    workspace_macros
+                command_utility_manager.parse_many(
+                    export_data_selection_output_full_path_value
                 )
             )
 
@@ -795,10 +779,9 @@ class CommandWorkspaceManager:
                     continue
 
                 tmp_input_path = (
-                    macros_manager.parse_many(
+                    command_utility_manager.parse_many(
                         f"{export_data_selection_input_root_path_value}/"
                         f"/{current_export_data_selection_input_relative_path_value}",
-                        workspace_macros
                     )
                 )
 
@@ -818,9 +801,8 @@ class CommandWorkspaceManager:
                     )
             )
             destination = _Path(
-                macros_manager.parse_many(
-                    f"{export_data_selection_output_full_path_value}/{target}.zip",
-                    workspace_macros
+                command_utility_manager.parse_many(
+                    f"{export_data_selection_output_full_path_value}/{target}.zip"
                 )
             )
 
@@ -939,16 +921,9 @@ class CommandWorkspaceManager:
         filesystem_compression_manager = _SingletonManager.get_singleton(
             _FilesystemCompressionManager
         )
-        macros_manager = _SingletonManager.get_singleton(
-            _MacrosManager
-        )
         root_filesystem_path = (
             database_manager
                 .root_filesystem_path
-        )
-        workspace_macros = (
-            database_manager
-                .workspace_macros
         )
         export_default_filesystem_include_is_enabled_value = (
             database_manager
@@ -1024,7 +999,7 @@ class CommandWorkspaceManager:
         with _ThreadPoolExecutor(
             max_workers=min(32, len(tasks) or 1),
         ) as executor:
-            list(
+            tuple(
                 executor.map(
                     lambda task: task[0](task[1]),
                     tasks,

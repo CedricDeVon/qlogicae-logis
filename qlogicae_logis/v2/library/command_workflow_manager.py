@@ -5,13 +5,13 @@ from typing import Any
 _time: Any = None
 _LogManager: Any = None
 _SystemManager: Any = None
-_MacrosManager: Any = None
 _DatabaseManager: Any = None
 _SingletonManager: Any = None
 _EnumConversionValue: Any = None
 _ScriptProcessManager: Any = None
 _CommandStorageManager: Any = None
 _ConsoleDisplayManager: Any = None
+_CommandUtilityManager: Any = None
 _ScriptProcessEnumManager: Any = None
 
 def _handle_dynamic_imports() -> None:
@@ -19,13 +19,13 @@ def _handle_dynamic_imports() -> None:
     global _time
     global _LogManager
     global _SystemManager
-    global _MacrosManager
     global _DatabaseManager
     global _SingletonManager
     global _EnumConversionValue
     global _ScriptProcessManager
     global _CommandStorageManager
     global _ConsoleDisplayManager
+    global _CommandUtilityManager
     global _ScriptProcessEnumManager
 
     import time
@@ -33,7 +33,6 @@ def _handle_dynamic_imports() -> None:
     from qlogicae_cor.v1.library import (
         console_display_manager,
         enum_conversion_value,
-        macros_manager,
         script_process_enum_manager,
         script_process_manager,
         singleton_manager,
@@ -42,6 +41,7 @@ def _handle_dynamic_imports() -> None:
 
     from qlogicae_logis.v2.library import (
         command_storage_manager,
+        command_utility_manager,
         database_manager,
         log_manager,
     )
@@ -52,9 +52,6 @@ def _handle_dynamic_imports() -> None:
     )
     _SystemManager = (
         system_manager.SystemManager
-    )
-    _MacrosManager = (
-        macros_manager.MacrosManager
     )
     _DatabaseManager = (
         database_manager.DatabaseManager
@@ -73,6 +70,9 @@ def _handle_dynamic_imports() -> None:
     )
     _ScriptProcessManager = (
         script_process_manager.ScriptProcessManager
+    )
+    _CommandUtilityManager = (
+        command_utility_manager.CommandUtilityManager
     )
     _ScriptProcessEnumManager = (
         script_process_enum_manager.ScriptProcessEnumManager
@@ -145,16 +145,16 @@ class CommandWorkflowManager:
                 )
                 return False
 
-            workflow_selection_data_commands = (
-                workflow_selection_data["commands"]
-                if workflow_selection_data and "commands"
+            workflow_selection_data_scripts = (
+                workflow_selection_data["scripts"]
+                if workflow_selection_data and "scripts"
                     in workflow_selection_data
                 else []
             ) or []
-            if not len(workflow_selection_data_commands):
+            if not len(workflow_selection_data_scripts):
                 log_manager.full_log_warning(
                     f"workspace property "
-                    f"'data.workflow.targets.{target_name}.commands' "
+                    f"'data.workflow.targets.{target_name}.scripts' "
                     "is an empty list"
                 )
                 return False
@@ -233,7 +233,7 @@ class CommandWorkflowManager:
             if workflow_data_delay_value and workflow_data_delay_value > 0:
                 _time.sleep(workflow_data_delay_value)
 
-            for command in workflow_selection_data_commands:
+            for command in workflow_selection_data_scripts:
                 if "run" not in command:
                     log_manager.full_log_warning(
                         f"a command within the '{target_name}'"
@@ -264,7 +264,7 @@ class CommandWorkflowManager:
                 if not current_command_is_enabled_value or not current_run_value:
                     log_manager.full_log_warning(
                         f"workspace property "
-                        f"'data.workflow.targets.{target_name}.commands."
+                        f"'data.workflow.targets.{target_name}.scripts."
                         f"'{current_run}'' has been set "
                         "to 'false'"
                     )
@@ -392,8 +392,8 @@ class CommandWorkflowManager:
         command_storage_manager = _SingletonManager.get_singleton(
             _CommandStorageManager
         )
-        macros_manager = _SingletonManager.get_singleton(
-            _MacrosManager
+        command_utility_manager = _SingletonManager.get_singleton(
+            _CommandUtilityManager
         )
         system_manager = _SingletonManager.get_singleton(
             _SystemManager
@@ -411,10 +411,6 @@ class CommandWorkflowManager:
         )
         commands = (
             command_storage_manager.commands
-        )
-        workspace_macros = (
-            database_manager
-                .workspace_macros
         )
         workspace_data_workflow = (
             database_manager
@@ -434,9 +430,8 @@ class CommandWorkflowManager:
         )
         if workspace_data_macros_default_on_parse_is_enabled_value:
             workspace_data_workflow_selection = (
-                macros_manager.parse_many(
+                command_utility_manager.parse_many(
                     workspace_data_workflow_selection,
-                    workspace_macros
                 )
             )
 
@@ -447,7 +442,7 @@ class CommandWorkflowManager:
                     f"'data.workflow.selection.{target}' "
                     "script does not exist"
                 )
-                return False
+                continue
 
             handle_workflow_run_target(target)
 

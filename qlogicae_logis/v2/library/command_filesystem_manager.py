@@ -5,24 +5,24 @@ from typing import Any
 _Path: Any = None
 _chain: Any = None
 _LogManager: Any = None
-_MacrosManager: Any = None
 _DatabaseManager: Any = None
 _SingletonManager: Any = None
 _FilesystemManager: Any = None
 _ThreadPoolExecutor: Any = None
 _ConsoleDisplayManager: Any = None
+_CommandUtilityManager: Any = None
 
 def _handle_dynamic_imports() -> None:
     global _handle_dynamic_imports
     global _Path
     global _chain
     global _LogManager
-    global _MacrosManager
     global _DatabaseManager
     global _SingletonManager
     global _FilesystemManager
     global _ThreadPoolExecutor
     global _ConsoleDisplayManager
+    global _CommandUtilityManager
 
     from concurrent.futures import ThreadPoolExecutor
     from itertools import chain
@@ -31,11 +31,11 @@ def _handle_dynamic_imports() -> None:
     from qlogicae_cor.v1.library import (
         console_display_manager,
         filesystem_manager,
-        macros_manager,
         singleton_manager,
     )
 
     from qlogicae_logis.v2.library import (
+        command_utility_manager,
         database_manager,
         log_manager,
     )
@@ -51,9 +51,6 @@ def _handle_dynamic_imports() -> None:
     _ConsoleDisplayManager = (
         console_display_manager.ConsoleDisplayManager
     )
-    _MacrosManager = (
-        macros_manager.MacrosManager
-    )
     _LogManager = (
         log_manager.LogManager
     )
@@ -62,6 +59,9 @@ def _handle_dynamic_imports() -> None:
     )
     _ThreadPoolExecutor = (
         ThreadPoolExecutor
+    )
+    _CommandUtilityManager = (
+        command_utility_manager.CommandUtilityManager
     )
 
     _handle_dynamic_imports = lambda: None
@@ -80,15 +80,11 @@ class CommandFilesystemManager:
         console_display_manager = _SingletonManager.get_singleton(
             _ConsoleDisplayManager
         )
-        macros_manager = _SingletonManager.get_singleton(
-            _MacrosManager
+        command_utility_manager = _SingletonManager.get_singleton(
+            _CommandUtilityManager
         )
 
         outputs: list[str] = []
-        workspace_macros = (
-            database_manager
-                .workspace_macros
-        )
         filesystem_clean_selection_include_items = list(
             database_manager
                 .filesystem_clean_selection_include.items()
@@ -131,9 +127,8 @@ class CommandFilesystemManager:
                     continue
 
                 if workspace_data_macros_default_on_parse_is_enabled_value:
-                    sub_item = macros_manager.parse_many(
-                        sub_item,
-                        workspace_macros
+                    sub_item = command_utility_manager.parse_many(
+                        sub_item
                     )
 
                 outputs.append(
@@ -153,15 +148,11 @@ class CommandFilesystemManager:
         console_display_manager = _SingletonManager.get_singleton(
             _ConsoleDisplayManager
         )
-        macros_manager = _SingletonManager.get_singleton(
-            _MacrosManager
+        command_utility_manager = _SingletonManager.get_singleton(
+            _CommandUtilityManager
         )
 
 
-        workspace_macros = (
-            database_manager
-                .workspace_macros
-        )
         filesystem_clean_selection_exclude_items = list(
             database_manager
                 .filesystem_clean_selection_exclude
@@ -178,9 +169,8 @@ class CommandFilesystemManager:
         if workspace_data_macros_default_on_parse_is_enabled_value:
             outputs = tuple(
                 f"[green]{
-                    macros_manager.parse_many(
-                        item,
-                        workspace_macros
+                    command_utility_manager.parse_many(
+                        item
                     )
                 }[/]"
                 for item
@@ -462,8 +452,8 @@ class CommandFilesystemManager:
         filesystem_manager = _SingletonManager.get_singleton(
             _FilesystemManager
         )
-        macros_manager = _SingletonManager.get_singleton(
-            _MacrosManager
+        command_utility_manager = _SingletonManager.get_singleton(
+            _CommandUtilityManager
         )
         filesystem_paths: list[str] = []
         filesystem_clean_selection_include = (
@@ -477,10 +467,6 @@ class CommandFilesystemManager:
         workspace_data_macros_default_on_parse_is_enabled_value = (
             database_manager
                 .workspace_data_macros_default_on_parse_is_enabled_value
-        )
-        workspace_macros = (
-            database_manager
-                .workspace_macros
         )
 
         for target in targets:
@@ -525,9 +511,8 @@ class CommandFilesystemManager:
 
                 if workspace_data_macros_default_on_parse_is_enabled_value:
                     current_filesystem_path = (
-                        macros_manager.parse_many(
-                            current_filesystem_path,
-                            workspace_macros
+                        command_utility_manager.parse_many(
+                            current_filesystem_path
                         )
                     )
 
@@ -544,7 +529,7 @@ class CommandFilesystemManager:
         with _ThreadPoolExecutor(
             max_workers=max_workers,
         ) as executor:
-            list(
+            tuple(
                 executor.map(
                     filesystem_manager.clean_filesystem_path,
                     filesystem_paths,
@@ -683,7 +668,7 @@ class CommandFilesystemManager:
             )
 
             if pattern:
-                matches = list(
+                matches = tuple(
                     _Path(
                         filesystem_path
                     ).glob(pattern)

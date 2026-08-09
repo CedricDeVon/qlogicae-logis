@@ -8,7 +8,6 @@ _repeat: Any = None
 _Callable: Any = None
 _LogManager: Any = None
 _SystemManager: Any = None
-_MacrosManager: Any = None
 _DatabaseManager: Any = None
 _SingletonManager: Any = None
 _FilesystemManager: Any = None
@@ -26,7 +25,6 @@ def _handle_dynamic_imports() -> None:
     global _Callable
     global _LogManager
     global _SystemManager
-    global _MacrosManager
     global _DatabaseManager
     global _SingletonManager
     global _FilesystemManager
@@ -45,7 +43,6 @@ def _handle_dynamic_imports() -> None:
         console_display_manager,
         data_file_io_manager,
         filesystem_manager,
-        macros_manager,
         object_merge_manager,
         singleton_manager,
         system_manager,
@@ -66,9 +63,6 @@ def _handle_dynamic_imports() -> None:
     )
     _ObjectMergeManager = (
         object_merge_manager.ObjectMergeManager
-    )
-    _MacrosManager = (
-        macros_manager.MacrosManager
     )
     _DataFileIoManager = (
         data_file_io_manager.DataFileIoManager
@@ -193,7 +187,7 @@ class CommandTemplateManager:
             with _ThreadPoolExecutor(
                 max_workers=min(32, len(copy_tasks) or 1),
             ) as executor:
-                list(executor.map(copy_task, copy_tasks))
+                tuple(executor.map(copy_task, copy_tasks))
 
             parse_paths = [
                 _Path(temporary_template_output_filesystem_path)
@@ -203,11 +197,10 @@ class CommandTemplateManager:
             ]
 
             with _ThreadPoolExecutor(max_workers=2) as executor:
-                list(
+                tuple(
                     executor.map(
-                        macros_manager.parse_filesystem,
+                        command_utility_manager.parse_filesystem,
                         parse_paths,
-                        _repeat(workspace_macros),
                     )
                 )
 
@@ -259,7 +252,7 @@ class CommandTemplateManager:
             with _ThreadPoolExecutor(
                 max_workers=min(32, len(relative_paths) or 1),
             ) as executor:
-                list(
+                tuple(
                     executor.map(
                         merge_fragment,
                         relative_paths,
@@ -282,7 +275,7 @@ class CommandTemplateManager:
             with _ThreadPoolExecutor(
                 max_workers=min(32, len(workspace_selection_group) or 1),
             ) as executor:
-                list(
+                tuple(
                     executor.map(
                         handle_target_group_selection,
                         workspace_selection_group,
@@ -332,9 +325,8 @@ class CommandTemplateManager:
                     )
 
             for current_template_type in default_template_types:
-                macros_manager.parse_filesystem(
-                    f"{temporary_template_output_filesystem_path}/{current_template_type}/{group_name}",
-                    workspace_macros
+                command_utility_manager.parse_filesystem(
+                    f"{temporary_template_output_filesystem_path}/{current_template_type}/{group_name}"
                 )
 
             for current_target in group_targets:
@@ -372,7 +364,7 @@ class CommandTemplateManager:
             with _ThreadPoolExecutor(
                 max_workers=min(32, len(workspace_selection_project) or 1),
             ) as executor:
-                list(
+                tuple(
                     executor.map(
                         handle_target_project_selection,
                         workspace_selection_project,
@@ -394,15 +386,14 @@ class CommandTemplateManager:
 
             selection_project_target_full_paths = (
                 database_manager
-                    .setup_workspace_data_selection_project_targets_name_filesystem_path(
+                    .setup_workspace_data_selection_project_targets_name_filesystem_path_value(
                         project_name
                     )
             )
             selection_project_target_full_paths = (
-                macros_manager
+                command_utility_manager
                     .parse_many(
-                        selection_project_target_full_paths,
-                        workspace_macros
+                        selection_project_target_full_paths
                     )
             )
 
@@ -428,9 +419,8 @@ class CommandTemplateManager:
                     )
 
             for current_template_type in default_template_types:
-                macros_manager.parse_filesystem(
-                    f"{temporary_template_output_filesystem_path}/{current_template_type}/{project_name}",
-                    workspace_macros
+                command_utility_manager.parse_filesystem(
+                    f"{temporary_template_output_filesystem_path}/{current_template_type}/{project_name}"
                 )
 
             filesystem_manager.copy_filesystem_path(
@@ -500,9 +490,6 @@ class CommandTemplateManager:
         filesystem_manager = _SingletonManager.get_singleton(
             _FilesystemManager
         )
-        macros_manager = _SingletonManager.get_singleton(
-            _MacrosManager
-        )
         object_merge_manager = _SingletonManager.get_singleton(
             _ObjectMergeManager
         )
@@ -510,10 +497,6 @@ class CommandTemplateManager:
             _DataFileIoManager
         )
 
-        workspace_macros = (
-            database_manager
-                .workspace_macros
-        )
         default_filesystem_accessibility_types = (
             command_utility_manager
                 .default_filesystem_accessibility_types

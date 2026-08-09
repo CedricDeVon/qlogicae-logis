@@ -78,10 +78,8 @@ class CommandDebugManager:
             )
             if workspace_data_macros_default_on_parse_is_enabled_value:
                 data = (
-                    command_utility_manager.parse_value(
+                    command_utility_manager.parse_many(
                         data,
-                        database_manager
-                            .workspace_macros
                     )
                 )
 

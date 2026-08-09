@@ -323,10 +323,6 @@ class CommandUtilityManager:
             )
         )
 
-        # print(
-        #     database_manager.workspace_data
-        # )
-
         return True
 
     def run_command_value_cache_macros_setup(
@@ -386,7 +382,6 @@ class CommandUtilityManager:
             _MacrosManager
         )
 
-
         workspace_data_macros_default_value_cache_is_enabled_value = (
             database_manager
                 .workspace_data_macros_default_value_cache_is_enabled_value
@@ -415,7 +410,9 @@ class CommandUtilityManager:
             self.setup_macros(
                 database_manager.read_value_cache,
                 value_cache_macros,
-                file_macros
+                file_macros,
+                database_manager.workspace_macros,
+                database_manager.workspace_macros_dynamic
             )
         )
 
@@ -430,7 +427,6 @@ class CommandUtilityManager:
                     )
                 }
             )
-
 
         return True
 
@@ -797,12 +793,14 @@ class CommandUtilityManager:
         callback: Any,
         value_cache_macros: Any,
         file_macros: Any,
+        plugin_static_macros: Any,
+        plugin_dynamic_macros: Any,
     ) -> Any:
         macros_manager = _SingletonManager.get_singleton(
             _MacrosManager
         )
 
-        return macros_manager.resolve_many(
+        macros = (
             {
                 key: f"{
                     callback(
@@ -813,14 +811,28 @@ class CommandUtilityManager:
             } | {
                 key: f"{item['value']}"
                 for key, item in file_macros.items()
+            } | {
+                key: f"{item}"
+                for key, item in plugin_static_macros.items()
             } or {}
-        ) or {}
+        )
 
-    def parse_value(
+        return (
+            (macros_manager.resolve_many(
+                macros_manager.parse_many(
+                    macros,
+                    plugin_dynamic_macros
+                )
+            ) or {}) | plugin_dynamic_macros
+        )
+
+    def parse_many(
         self,
         value: object,
-        resolved_macros: Any,
     ) -> Any:
+        database_manager = _SingletonManager.get_singleton(
+            _DatabaseManager
+        )
         macros_manager = _SingletonManager.get_singleton(
             _MacrosManager
         )
@@ -828,7 +840,27 @@ class CommandUtilityManager:
         return (
             macros_manager.parse_many(
                 value,
-                resolved_macros
+                database_manager
+                    .workspace_macros
+            )
+        )
+
+    def parse_filesystem(
+        self,
+        value: object,
+    ) -> Any:
+        database_manager = _SingletonManager.get_singleton(
+            _DatabaseManager
+        )
+        macros_manager = _SingletonManager.get_singleton(
+            _MacrosManager
+        )
+
+        return (
+            macros_manager.parse_filesystem(
+                value,
+                database_manager
+                    .workspace_macros
             )
         )
 

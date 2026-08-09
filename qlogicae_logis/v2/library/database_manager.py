@@ -104,20 +104,20 @@ class DatabaseManager:
         _handle_utility_dynamic_imports()
 
     @property
-    def command_plugins(self) -> Any:
+    def registered_plugins(self) -> Any:
         result: Any = _SingletonManager.get_singleton(
             _ValueCacheManager
         ).get_one_value(
             self.value_cache_key_path((
-                "command-plugins",
+                "registered-plugins",
             )),
             output_type=_TargetCacheValue.DEFINED,
         )
 
         return result
 
-    @command_plugins.setter
-    def command_plugins(
+    @registered_plugins.setter
+    def registered_plugins(
         self,
         value: Any,
     ) -> None:
@@ -125,7 +125,7 @@ class DatabaseManager:
             _ValueCacheManager
         ).set_one_value(
             self.value_cache_key_path((
-                "command-plugins",
+                "registered-plugins",
             )),
             value,
             output_type=_TargetCacheValue.DEFINED,
@@ -835,7 +835,7 @@ class DatabaseManager:
             _ValueCacheManager
         ).get_one_value(
             self.value_cache_key_path((
-                "workspace-macros",
+                "macros-static",
             )),
             output_type=_TargetCacheValue.ANY,
         ) or {}
@@ -849,7 +849,33 @@ class DatabaseManager:
             _ValueCacheManager
         ).set_one_value(
             self.value_cache_key_path((
-                "workspace-macros",
+                "macros-static",
+            )),
+            value,
+            output_type=_TargetCacheValue.DEFINED,
+        )
+
+    @property
+    def workspace_macros_dynamic(self) -> Any:
+        return _SingletonManager.get_singleton(
+            _ValueCacheManager
+        ).get_one_value(
+            self.value_cache_key_path((
+                "macros-dynamic",
+            )),
+            output_type=_TargetCacheValue.ANY,
+        ) or {}
+
+    @workspace_macros_dynamic.setter
+    def workspace_macros_dynamic(
+        self,
+        value: Any,
+    ) -> None:
+        _SingletonManager.get_singleton(
+            _ValueCacheManager
+        ).set_one_value(
+            self.value_cache_key_path((
+                "macros-dynamic",
             )),
             value,
             output_type=_TargetCacheValue.DEFINED,
@@ -2557,7 +2583,7 @@ class DatabaseManager:
 
         return data["targets"] if data and "targets" in data else {}
 
-    def setup_workspace_data_selection_project_targets_name_filesystem_path(
+    def setup_workspace_data_selection_project_targets_name_filesystem_path_value(
         self,
         project_name: Any,
     ) -> Any:
@@ -2571,13 +2597,14 @@ class DatabaseManager:
                 "project",
                 "targets",
                 project_name,
+                "filesystem-path",
             )),
             output_type=_TargetCacheValue.ANY,
         )
 
-        return data["filesystem-path"] if data and "filesystem-path" in data else {}
-
-
+        return data["value"] if data and "value" in data else (
+            f"{self.selection_filesystem_path}/{project_name}"
+        )
 
     @property
     def workspace_data_workflow(

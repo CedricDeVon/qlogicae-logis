@@ -521,18 +521,19 @@ class CommandManager:
 
         command_utility_manager.run_command_configuration_workspace_filesystem_path_extraction_setup()
         command_utility_manager.run_command_configuration_workspace_data_extraction_setup()
+        command_plugin_manager.run_command_plugin_setup()
+
         command_utility_manager.run_command_value_cache_macros_setup()
         command_utility_manager.run_command_file_macros_setup()
         command_utility_manager.run_command_workspace_macros_setup()
+
         command_utility_manager.run_command_workspace_selection_setup()
         command_utility_manager.run_command_workspace_setup()
-
         command_filesystem_manager.run_command_filesystem_setup()
         command_workflow_manager.run_command_workflow_setup()
 
         log_manager.run_command_log_setup()
 
-        command_plugin_manager.run_command_plugin_setup()
 
         return True
 

@@ -232,20 +232,18 @@ class LogManager:
             _CorFileLogManager
         )
 
-        log_file_outputs = []
-        for filesystem_path in target_filesystem_paths:
-            if filesystem_path and "filesystem-path" in filesystem_path:
-                log_file_outputs.append(
-                    filesystem_path["filesystem-path"]
-                )
+        log_file_outputs = tuple(
+            filesystem_path["filesystem-path"]
+            for filesystem_path in target_filesystem_paths
+            if filesystem_path and "filesystem-path" in filesystem_path
+        )
 
         if is_default_enabled:
-            log_file_outputs = [
-                *log_file_outputs,
+            log_file_outputs += (
                 self.setup_default_log_filesystem_paths(
                     root_filesystem_path
-                )
-            ]
+                ),
+            )
 
         if is_file_output_enabled:
             for log_file_output in log_file_outputs:

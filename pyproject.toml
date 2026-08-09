@@ -1,6 +1,6 @@
 [project]
 name = "qlogicae-logis"
-version = "2.0.0"
+version = "2.0.1"
 description = "The project orchestration tool for QLogicae projects"
 readme = { file = "README.md", content-type = "text/markdown" }
 requires-python = ">=3.12"
@@ -58,8 +58,7 @@ dev = [
 ]
 
 [project.scripts]
-qlogicae-logis = "qlogicae_logis.v1.cli.app:main"
-qlogicae-logis-v1 = "qlogicae_logis.v1.cli.app:main"
+qlogicae-logis = "qlogicae_logis.v2.console.app:main"
 qlogicae-logis-v2 = "qlogicae_logis.v2.console.app:main"
 
 
@@ -78,17 +77,13 @@ build-backend = "hatchling.build"
 
 [tool.pytest.ini_options]
 pythonpath = ["."]
-testpaths = ["./test/qlogicae_logis/v1/unit"]
 python_files = ["test_*.py"]
 addopts = "-ra"
+# testpaths = ["./test/qlogicae_logis/v2/unit"]
 
 
 [tool.coverage.run]
-source = [
-    "qlogicae_logis.v1.value_cache_storage_manager",
-    "qlogicae_logis.v1.macros_manager",
-    "qlogicae_logis.v1.object_merge_manager",
-]
+source = []
 branch = true
 
 
@@ -217,7 +212,7 @@ test-benchmark-memory-usage-view = """
 """
 # memray tree output/test/benchmark/memray-2.bin
 test-pip-deployment = """
-    twine check output/build/release/dist/*
+    twine check --strict output/build/release/dist/*
 """
 deploy = """
     twine upload output/build/release/dist/* --config-file .pypirc
