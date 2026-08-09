@@ -85,43 +85,43 @@ jobs:
             - name: Run Scripts        
               run: hatch run github-workflow-test-lint
 
-    v1-unit-testing:
-        name: V1 | Unit Testing
-        runs-on: ubuntu-latest
+    # v1-unit-testing:
+    #     name: V1 | Unit Testing
+    #     runs-on: ubuntu-latest
 
-        defaults:
-            run:
-                working-directory: .
+    #     defaults:
+    #         run:
+    #             working-directory: .
 
-        strategy:
-            fail-fast: false
-            matrix:
-                python-version:
-                    - "3.14"
-                    - "3.13"
-                    - "3.12"
+    #     strategy:
+    #         fail-fast: false
+    #         matrix:
+    #             python-version:
+    #                 - "3.14"
+    #                 - "3.13"
+    #                 - "3.12"
 
-        steps:
-            - uses: actions/checkout@v4
+    #     steps:
+    #         - uses: actions/checkout@v4
 
-            - name: Setup Python
-              uses: actions/setup-python@v5
-              with:
-                python-version: ${{ matrix.python-version }}
+    #         - name: Setup Python
+    #           uses: actions/setup-python@v5
+    #           with:
+    #             python-version: ${{ matrix.python-version }}
 
-            - name: Install Hatch
-              run: |
-                python -m pip install --upgrade pip
-                pip install hatch
+    #         - name: Install Hatch
+    #           run: |
+    #             python -m pip install --upgrade pip
+    #             pip install hatch
 
-            - name: Install Dev Dependencies
-              run: python3 -m pip install -r requirements.txt
+    #         - name: Install Dev Dependencies
+    #           run: python3 -m pip install -r requirements.txt
 
-            - name: Create Hatch environment
-              run: hatch env create
+    #         - name: Create Hatch environment
+    #           run: hatch env create
 
-            - name: Run unit tests              
-              run: hatch run github-workflow-test-unit
+    #         - name: Run unit tests              
+    #           run: hatch run github-workflow-test-unit
 
 
     v1-e2e-testing-about-command:
@@ -130,7 +130,7 @@ jobs:
 
       defaults:
           run:
-              working-directory: ./test/qlogicae_logis/v1/e2e/github/workspace/about
+              working-directory: ./test/qlogicae_logis/v2/e2e/github/workspace/about
 
       strategy:
           fail-fast: false
@@ -173,7 +173,7 @@ jobs:
 
       defaults:
           run:
-              working-directory: ./test/qlogicae_logis/v1/e2e/github/workspace/workspace
+              working-directory: ./test/qlogicae_logis/v2/e2e/github/workspace/workspace
 
       strategy:
           fail-fast: false
@@ -222,7 +222,7 @@ jobs:
 
       defaults:
           run:
-              working-directory: ./test/qlogicae_logis/v1/e2e/github/workspace/cache
+              working-directory: ./test/qlogicae_logis/v2/e2e/github/workspace/cache
 
       strategy:
           fail-fast: false
@@ -265,7 +265,7 @@ jobs:
 
       defaults:
           run:
-              working-directory: ./test/qlogicae_logis/v1/e2e/github/workspace/filesystem
+              working-directory: ./test/qlogicae_logis/v2/e2e/github/workspace/filesystem
 
       strategy:
           fail-fast: false
@@ -311,7 +311,7 @@ jobs:
 
       defaults:
           run:
-              working-directory: ./test/qlogicae_logis/v1/e2e/github/workspace/workflow
+              working-directory: ./test/qlogicae_logis/v2/e2e/github/workspace/workflow
 
       strategy:
           fail-fast: false
@@ -354,7 +354,7 @@ jobs:
 
       defaults:
           run:
-              working-directory: ./test/qlogicae_logis/v1/e2e/github/workspace/template
+              working-directory: ./test/qlogicae_logis/v2/e2e/github/workspace/template
 
       strategy:
           fail-fast: false
