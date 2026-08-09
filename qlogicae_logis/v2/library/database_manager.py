@@ -349,7 +349,7 @@ class DatabaseManager:
             self.value_cache_key_path((
                 "configuration-workspace-filesystem-paths",
             )),
-            output_type=_TargetCacheValue.DEFINED,
+            output_type=_TargetCacheValue.ANY,
         )
 
         return result
@@ -366,7 +366,7 @@ class DatabaseManager:
                 "configuration-workspace-filesystem-paths",
             )),
             value,
-            output_type=_TargetCacheValue.DEFINED,
+            output_type=_TargetCacheValue.ANY,
         )
 
     @property
@@ -431,7 +431,7 @@ class DatabaseManager:
             self.value_cache_key_path((
                 "root-filesystem-path",
             )),
-            output_type=_TargetCacheValue.FOLDER_PATH,
+            output_type=_TargetCacheValue.ANY,
         )
 
         return result
@@ -446,7 +446,7 @@ class DatabaseManager:
             _SingletonManager.get_singleton(
                 _SystemManager
             ).current_executing_console_filesystem_path,
-            output_type=_TargetCacheValue.FOLDER_PATH,
+            output_type=_TargetCacheValue.ANY,
         )
 
 
@@ -459,7 +459,7 @@ class DatabaseManager:
             self.value_cache_key_path((
                 "selection-filesystem-path",
             )),
-            output_type=_TargetCacheValue.FOLDER_PATH,
+            output_type=_TargetCacheValue.ANY,
         )
 
         return result
@@ -474,7 +474,7 @@ class DatabaseManager:
             f"{_SingletonManager.get_singleton(
                 _SystemManager
             ).current_executing_console_filesystem_path}/selection",
-            output_type=_TargetCacheValue.FOLDER_PATH,
+            output_type=_TargetCacheValue.ANY,
         )
 
 
@@ -487,7 +487,7 @@ class DatabaseManager:
             self.value_cache_key_path((
                 "current-executing-script-filesystem-path",
             )),
-            output_type=_TargetCacheValue.FILE_PATH,
+            output_type=_TargetCacheValue.ANY,
         )
 
         return result
@@ -501,7 +501,7 @@ class DatabaseManager:
                 "current-executing-script-filesystem-path",
             )),
             value,
-            output_type=_TargetCacheValue.FILE_PATH,
+            output_type=_TargetCacheValue.ANY,
         )
 
 
@@ -513,7 +513,7 @@ class DatabaseManager:
             self.value_cache_key_path((
                 "initial-executing-console-filesystem-path",
             )),
-            output_type=_TargetCacheValue.FOLDER_PATH,
+            output_type=_TargetCacheValue.ANY,
         )
 
         return result
@@ -527,7 +527,7 @@ class DatabaseManager:
                 "initial-executing-console-filesystem-path",
             )),
             value,
-            output_type=_TargetCacheValue.FOLDER_PATH,
+            output_type=_TargetCacheValue.ANY,
         )
 
 
@@ -539,7 +539,7 @@ class DatabaseManager:
             self.value_cache_key_path((
                 "previous-executing-console-filesystem-path",
             )),
-            output_type=_TargetCacheValue.FOLDER_PATH,
+            output_type=_TargetCacheValue.ANY,
         )
 
         return result
@@ -555,7 +555,7 @@ class DatabaseManager:
                 "previous-executing-console-filesystem-path",
             )),
             value,
-            output_type=_TargetCacheValue.FOLDER_PATH,
+            output_type=_TargetCacheValue.ANY,
         )
 
     @property
@@ -566,7 +566,7 @@ class DatabaseManager:
             self.value_cache_key_path((
                 "current-executing-console-filesystem-path",
             )),
-            output_type=_TargetCacheValue.FOLDER_PATH,
+            output_type=_TargetCacheValue.ANY,
         )
 
         return result
@@ -582,7 +582,7 @@ class DatabaseManager:
                 "current-executing-console-filesystem-path",
             )),
             value,
-            output_type=_TargetCacheValue.FOLDER_PATH,
+            output_type=_TargetCacheValue.ANY,
         )
 
     @property
