@@ -233,9 +233,9 @@ class CommandPluginManager:
                         macros_dynamic_item["value"]
                     )
 
-            registered_plugins.add(
-                f"{scope_selection}-{module_name}"
-            )
+                registered_plugins.add(
+                    f"{scope_selection}-{module_name}"
+                )
 
         database_manager.workspace_macros = (
             database_manager.workspace_macros |
