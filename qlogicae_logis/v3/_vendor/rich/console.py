@@ -31,7 +31,7 @@ from typing import (
     runtime_checkable,
 )
 
-from rich._null_file import NULL_FILE
+from ._null_file import NULL_FILE
 
 from . import errors, themes
 from ._emoji_replace import _emoji_replace
@@ -265,7 +265,7 @@ class ConsoleRenderable(Protocol):
 
 # A type that may be rendered by Console.
 RenderableType = Union[ConsoleRenderable, RichCast, str]
-"""A string or any object that may be rendered by Rich."""
+"""A string or any object that may be rendered by ."""
 
 # The result of calling a __rich_console__ method.
 RenderResult = Iterable[Union[RenderableType, Segment]]
@@ -309,7 +309,7 @@ class ScreenUpdate:
 
 class Capture:
     """Context manager to capture the result of printing to the console.
-    See :meth:`~rich.console.Console.capture` for how to use.
+    See :meth:`~.console.Console.capture` for how to use.
 
     Args:
         console (Console): A console instance to capture output.
@@ -341,7 +341,7 @@ class Capture:
 
 
 class ThemeContext:
-    """A context manager to use a temporary theme. See :meth:`~rich.console.Console.use_theme` for usage."""
+    """A context manager to use a temporary theme. See :meth:`~.console.Console.use_theme` for usage."""
 
     def __init__(self, console: "Console", theme: Theme, inherit: bool = True) -> None:
         self.console = console
@@ -362,7 +362,7 @@ class ThemeContext:
 
 
 class PagerContext:
-    """A context manager that 'pages' content. See :meth:`~rich.console.Console.pager` for usage."""
+    """A context manager that 'pages' content. See :meth:`~.console.Console.pager` for usage."""
 
     def __init__(
         self,
@@ -401,7 +401,7 @@ class PagerContext:
 
 
 class ScreenContext:
-    """A context manager that enables an alternative screen. See :meth:`~rich.console.Console.screen` for usage."""
+    """A context manager that enables an alternative screen. See :meth:`~.console.Console.screen` for usage."""
 
     def __init__(
         self, console: "Console", hide_cursor: bool, style: StyleType = ""
@@ -880,7 +880,7 @@ class Console:
 
     def push_theme(self, theme: Theme, *, inherit: bool = True) -> None:
         """Push a new theme on to the top of the stack, replacing the styles from the previous theme.
-        Generally speaking, you should call :meth:`~rich.console.Console.use_theme` to get a context manager, rather
+        Generally speaking, you should call :meth:`~.console.Console.use_theme` to get a context manager, rather
         than calling this method directly.
 
         Args:
@@ -1098,7 +1098,7 @@ class Console:
         rather than writing it to the console.
 
         Example:
-            >>> from rich.console import Console
+            >>> from .console import Console
             >>> console = Console()
             >>> with console.capture() as capture:
             ...     console.print("[bold magenta]Hello World[/]")
@@ -1117,13 +1117,13 @@ class Console:
         is defined by the system and will typically support at least pressing a key to scroll.
 
         Args:
-            pager (Pager, optional): A pager object, or None to use :class:`~rich.pager.SystemPager`. Defaults to None.
+            pager (Pager, optional): A pager object, or None to use :class:`~.pager.SystemPager`. Defaults to None.
             styles (bool, optional): Show styles in pager. Defaults to False.
             links (bool, optional): Show links in pager. Defaults to False.
 
         Example:
-            >>> from rich.console import Console
-            >>> from rich.__main__ import make_test_card
+            >>> from .console import Console
+            >>> from .__main__ import make_test_card
             >>> console = Console()
             >>> with console.pager():
                     console.print(make_test_card())
@@ -1167,7 +1167,7 @@ class Console:
 
         Args:
             status (RenderableType): A status renderable (str or Text typically).
-            spinner (str, optional): Name of spinner animation (see python -m rich.spinner). Defaults to "dots".
+            spinner (str, optional): Name of spinner animation (see python -m .spinner). Defaults to "dots".
             spinner_style (StyleType, optional): Style of spinner. Defaults to "status.spinner".
             speed (float, optional): Speed factor for spinner animation. Defaults to 1.0.
             refresh_per_second (float, optional): Number of refreshes per second. Defaults to 12.5.
@@ -1202,7 +1202,7 @@ class Console:
         """Enables alternative screen mode.
 
         Note, if you enable this mode, you should ensure that is disabled before
-        the application exits. See :meth:`~rich.Console.screen` for a context manager
+        the application exits. See :meth:`~.Console.screen` for a context manager
         that handles this for you.
 
         Args:
@@ -1277,7 +1277,7 @@ class Console:
     def measure(
         self, renderable: RenderableType, *, options: Optional[ConsoleOptions] = None
     ) -> Measurement:
-        """Measure a renderable. Returns a :class:`~rich.measure.Measurement` object which contains
+        """Measure a renderable. Returns a :class:`~.measure.Measurement` object which contains
         information regarding the number of characters required to print the renderable.
 
         Args:
@@ -1626,7 +1626,7 @@ class Console:
         highlight: Optional[bool] = None,
     ) -> None:
         """Output to the terminal. This is a low-level way of writing to the terminal which unlike
-        :meth:`~rich.console.Console.print` won't pretty print, wrap text, or apply markup, but will
+        :meth:`~.console.Console.print` won't pretty print, wrap text, or apply markup, but will
         optionally apply highlighting and a basic style.
 
         Args:
@@ -1784,7 +1784,7 @@ class Console:
                 in to something that can be JSON encoded. Defaults to None.
             sort_keys (bool, optional): Sort dictionary keys. Defaults to False.
         """
-        from rich.json import JSON
+        from .json import JSON
 
         if json is None:
             json_renderable = JSON.from_data(
@@ -1856,7 +1856,7 @@ class Console:
         """Update lines of the screen at a given offset.
 
         Args:
-            lines (List[List[Segment]]): Rendered lines (as produced by :meth:`~rich.Console.render_lines`).
+            lines (List[List[Segment]]): Rendered lines (as produced by :meth:`~.Console.render_lines`).
             x (int, optional): x offset (column no). Defaults to 0.
             y (int, optional): y offset (column no). Defaults to 0.
 
@@ -2081,8 +2081,8 @@ class Console:
                                 )
 
                         if use_legacy_windows_render:
-                            from rich._win32_console import LegacyWindowsTerm
-                            from rich._windows_renderer import legacy_windows_render
+                            from ._win32_console import LegacyWindowsTerm
+                            from ._windows_renderer import legacy_windows_render
 
                             buffer = self._buffer[:]
                             if self.no_color and self._color_system:
@@ -2379,7 +2379,7 @@ class Console:
         import zlib
         from html import escape
 
-        from rich.cells import cell_len
+        from .cells import cell_len
 
         style_cache: Dict[Style, str] = {}
 

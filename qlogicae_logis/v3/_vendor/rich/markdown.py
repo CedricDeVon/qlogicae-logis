@@ -7,7 +7,7 @@ from typing import ClassVar, Iterable, get_args
 from markdown_it import MarkdownIt
 from markdown_it.token import Token
 
-from rich.table import Table
+from .table import Table
 
 from . import box
 from ._loop import loop_first
@@ -769,7 +769,7 @@ if __name__ == "__main__":  # pragma: no cover
     )
     args = parser.parse_args()
 
-    from rich.console import Console
+    from .console import Console
 
     if args.path == "-":
         markdown_body = sys.stdin.read()

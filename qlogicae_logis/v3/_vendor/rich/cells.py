@@ -4,7 +4,7 @@ from functools import lru_cache
 from operator import itemgetter
 from typing import Callable, NamedTuple, Sequence, Tuple
 
-from rich._unicode_data import load as load_cell_table
+from ._unicode_data import load as load_cell_table
 
 CellSpan = Tuple[int, int, int]
 

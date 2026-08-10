@@ -2,17 +2,17 @@ import colorsys
 import io
 from time import process_time
 
-from rich import box
-from rich.color import Color
-from rich.console import Console, ConsoleOptions, Group, RenderableType, RenderResult
-from rich.markdown import Markdown
-from rich.measure import Measurement
-from rich.pretty import Pretty
-from rich.segment import Segment
-from rich.style import Style
-from rich.syntax import Syntax
-from rich.table import Table
-from rich.text import Text
+from . import box
+from .color import Color
+from .console import Console, ConsoleOptions, Group, RenderableType, RenderResult
+from .markdown import Markdown
+from .measure import Measurement
+from .pretty import Pretty
+from .segment import Segment
+from .style import Style
+from .syntax import Syntax
+from .table import Table
+from .text import Text
 
 
 class ColorBox:
@@ -207,7 +207,7 @@ Supports much of the *markdown* __syntax__!
 
 
 if __name__ == "__main__":  # pragma: no cover
-    from rich.panel import Panel
+    from .panel import Panel
 
     console = Console(
         file=io.StringIO(),

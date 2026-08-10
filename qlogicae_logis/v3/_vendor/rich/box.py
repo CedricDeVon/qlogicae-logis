@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Iterable, List, Literal
 from ._loop import loop_last
 
 if TYPE_CHECKING:
-    from rich.console import ConsoleOptions
+    from .console import ConsoleOptions
 
 
 class Box:
@@ -422,8 +422,8 @@ PLAIN_HEADED_SUBSTITUTIONS = {
 
 
 if __name__ == "__main__":  # pragma: no cover
-    from rich.columns import Columns
-    from rich.panel import Panel
+    from .columns import Columns
+    from .panel import Panel
 
     from . import box as box
     from .console import Console

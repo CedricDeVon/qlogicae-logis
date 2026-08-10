@@ -27,7 +27,7 @@ from typing import (
     Union,
 )
 
-from rich.repr import RichReprResult
+from .repr import RichReprResult
 
 try:
     import attr as _attr_module
@@ -198,7 +198,7 @@ def install(
     assert console is not None
 
     def display_hook(value: Any) -> None:
-        """Replacement sys.displayhook which prettifies objects with Rich."""
+        """Replacement sys.displayhook which prettifies objects with ."""
         if value is not None:
             assert console is not None
             builtins._ = None  # type: ignore[attr-defined]

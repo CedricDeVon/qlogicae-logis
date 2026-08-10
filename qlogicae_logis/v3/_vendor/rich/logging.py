@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     from .highlighter import Highlighter
     from .traceback import Traceback
 
-from rich._null_file import NullFile
+from ._null_file import NullFile
 
 from . import get_console
 from ._log_render import LogRender
@@ -22,7 +22,7 @@ from .text import Text
 
 
 class RichHandler(Handler):
-    """A logging handler that renders output with Rich. The time / level / message and file are displayed in columns.
+    """A logging handler that renders output with . The time / level / message and file are displayed in columns.
     The level is color coded, and the message is syntax highlighted.
 
     Note:
@@ -31,7 +31,7 @@ class RichHandler(Handler):
 
     Args:
         level (Union[int, str], optional): Log level. Defaults to logging.NOTSET.
-        console (:class:`~rich.console.Console`, optional): Optional console instance to write logs.
+        console (:class:`~.console.Console`, optional): Optional console instance to write logs.
             Default will use a global console instance writing to stdout.
         show_time (bool, optional): Show a column for the time. Defaults to True.
         omit_repeated_times (bool, optional): Omit repetition of the same time. Defaults to True.
