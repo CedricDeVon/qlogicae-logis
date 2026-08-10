@@ -1,7 +1,7 @@
 data:
-  selection:
+  workspace:
     project:
-      targets:
+      selection:
         qlogicae-cor-rust:
           filesystem-path:
             value: ${{ selection-filesystem-path }}/qlogicae-cor/rust

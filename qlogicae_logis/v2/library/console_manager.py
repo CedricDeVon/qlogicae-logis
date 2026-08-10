@@ -491,7 +491,7 @@ class ConsoleManager:
 
         @application_workspace.command(
             name="setup",
-            help="Initial or filesystem replenishment.",
+            help="Complete workspace setup.",
         )
         def setup() -> bool:
             command_manager = _SingletonManager.get_singleton(
@@ -499,6 +499,41 @@ class ConsoleManager:
             )
             command_manager.run_command_base_setup()
             command_manager.run_command_workspace_setup()
+
+            return True
+
+
+        @application_workspace.command(
+            name="replenish",
+            help="Filesystem replenishment.",
+        )
+        def replenish() -> bool:
+            command_manager = _SingletonManager.get_singleton(
+                _CommandManager
+            )
+            command_manager.run_command_base_setup()
+            command_manager.run_command_workspace_replenish()
+
+            return True
+
+
+        @application_workspace.command(
+            name="install",
+            help="Initial or filesystem replenishment.",
+        )
+        def install(
+            targets: list[str] = _typer.Argument(
+                [],
+                help="List of workspace targets.",
+            ),
+        ) -> bool:
+            command_manager = _SingletonManager.get_singleton(
+                _CommandManager
+            )
+            command_manager.run_command_base_setup()
+            command_manager.run_command_workspace_install(
+                targets=targets
+            )
 
             return True
 
@@ -541,7 +576,7 @@ class ConsoleManager:
         )
         def apply(
             targets: list[str] = _typer.Argument(
-                ["all"],
+                [],
                 help="List of workspace targets.",
             ),
         ) -> bool:

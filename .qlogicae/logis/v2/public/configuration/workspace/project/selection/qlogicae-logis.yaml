@@ -1,24 +1,54 @@
 data:
-  selection:
+  workspace:
     project:
-      targets:
+      selection:
         qlogicae-logis:
-          # filesystem-path:
-          #   value: ${{ qlogicae-logis-selection-project-filesystem-path }}
+          alias:
+            targets:
+              - name:
+                  value: ql
+
+          installation:
+            is-enabled:
+              value: true
+
+            filesystem-path:
+              value: ${{ qlogicae-logis-selection-project-filesystem-path }}
+
+            scripts:
+              - run:
+                  value: git clone https://github.com/CedricDeVon/LaboratoryExercise1.git
 
   workflow:
     selection:      
       qlogicae-logis-quality-assurance:
-        enter-filesystem-path:
+        filesystem-path:
           value: ${{ qlogicae-logis-selection-project-filesystem-path }}
           
+        alias:
+          targets:
+            - name:
+                value: ql
+
         asynchronous:
           is-enabled:
             value: true
 
-        scripts:
+        os:
+          selection:
+            linux:
+
+          is-enabled:
+              value: true
+              override: false
+
+        scripts:          
           - run:
               value: qlogicae-logis-pre-workflow
+
+            os:
+              selection:
+                windows:
 
           - run:
               value: qlogicae-logis-test-type-check
@@ -43,7 +73,7 @@ data:
 
 
       qlogicae-logis-deploy:
-        enter-filesystem-path:
+        filesystem-path:
           value: ${{ qlogicae-logis-selection-project-filesystem-path }}
           
         scripts:
@@ -58,7 +88,7 @@ data:
 
 
       qlogicae-logis-test-lint:
-        enter-filesystem-path:
+        filesystem-path:
           value: ${{ qlogicae-logis-selection-project-filesystem-path }}
           
         scripts:
@@ -67,7 +97,7 @@ data:
               
 
       qlogicae-logis-test-unit:
-        enter-filesystem-path:
+        filesystem-path:
           value: ${{ qlogicae-logis-selection-project-filesystem-path }}
           
         scripts:
@@ -76,7 +106,7 @@ data:
 
 
       qlogicae-logis-test-benchmark-memory-usage-create:
-        enter-filesystem-path:
+        filesystem-path:
           value: ${{ qlogicae-logis-selection-project-filesystem-path }}
           
         scripts:
@@ -85,7 +115,7 @@ data:
 
 
       qlogicae-logis-test-benchmark-memory-usage-view:
-        enter-filesystem-path:
+        filesystem-path:
           value: ${{ qlogicae-logis-selection-project-filesystem-path }}
           
         scripts:
@@ -100,7 +130,7 @@ data:
 
 
       qlogicae-logis-test-type-check:
-        enter-filesystem-path:
+        filesystem-path:
           value: ${{ qlogicae-logis-selection-project-filesystem-path }}
           
         scripts:
@@ -109,7 +139,7 @@ data:
 
 
       qlogicae-logis-build:
-        enter-filesystem-path:
+        filesystem-path:
           value: ${{ qlogicae-logis-selection-project-filesystem-path }}
           
         scripts:
@@ -124,7 +154,7 @@ data:
 
 
       qlogicae-logis-test-pip-deployment:
-        enter-filesystem-path:
+        filesystem-path:
           value: ${{ qlogicae-logis-selection-project-filesystem-path }}
           
         scripts:
@@ -133,7 +163,7 @@ data:
 
 
       qlogicae-logis-pip-deployment:
-        enter-filesystem-path:
+        filesystem-path:
           value: ${{ qlogicae-logis-selection-project-filesystem-path }}
           
         scripts:
@@ -145,7 +175,7 @@ data:
 
 
       qlogicae-logis-git-deployment:
-        enter-filesystem-path:
+        filesystem-path:
           value: ${{ qlogicae-logis-selection-project-filesystem-path }}
           
         scripts:
@@ -166,7 +196,7 @@ data:
 
 
       qlogicae-logis-pre-workflow:
-        enter-filesystem-path:
+        filesystem-path:
           value: ${{ root-filesystem-path }}
 
         scripts:
@@ -231,7 +261,7 @@ data:
 
 
       qlogicae-logis-post-workflow:
-        enter-filesystem-path:
+        filesystem-path:
           value: ${{ qlogicae-logis-selection-project-filesystem-path }}
           
         scripts:
@@ -243,7 +273,7 @@ data:
 
 
       qlogicae-logis-archive:
-        enter-filesystem-path:
+        filesystem-path:
           value: ${{ qlogicae-logis-selection-project-filesystem-path }}
           
         scripts:          
@@ -255,7 +285,7 @@ data:
 
 
       qlogicae-logis-cleanup:
-        enter-filesystem-path:
+        filesystem-path:
           value: ${{ qlogicae-logis-selection-project-filesystem-path }}
 
         scripts:
@@ -271,6 +301,15 @@ data:
       targets:
         qlogicae-logis-display-brand-name:
           value: ${{ main-company-display-name }} ${{ qlogicae-logis-display-project-name }}
+
+          alias:
+            targets:
+              - name:
+                  value: ql
+
+          os:
+            selection:
+              linux:
 
         qlogicae-logis-base-brand-name:
           value: ${{ main-company-base-name }}-${{ qlogicae-logis-base-project-name }}
@@ -288,7 +327,7 @@ data:
           value: The project orchestration tool for QLogicae projects
 
         qlogicae-logis-current-version-number:
-          value: 2.0.7
+          value: 2.0.8
 
         qlogicae-logis-active-major-version-number:
           value: 2

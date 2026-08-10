@@ -1454,7 +1454,7 @@ class DatabaseManager:
             self.value_cache_key_path((
                 "workspace",
                 "data",
-                "selection",
+                "workspace",
                 "default",
                 "is-included",
             )),
@@ -1474,7 +1474,7 @@ class DatabaseManager:
             self.value_cache_key_path((
                 "workspace",
                 "data",
-                "selection",
+                "workspace",
                 "default",
                 "is-included",
                 "value",
@@ -1492,13 +1492,13 @@ class DatabaseManager:
             self.value_cache_key_path((
                 "workspace",
                 "data",
-                "selection",
+                "workspace",
                 "project",
             )),
             output_type=_TargetCacheValue.ANY,
         )
 
-        return data["targets"] if data and "targets" in data else {}
+        return data["selection"] if data and "selection" in data else {}
 
     @workspace_data_selection_project_targets.setter
     def workspace_data_selection_project_targets(
@@ -1511,15 +1511,13 @@ class DatabaseManager:
             self.value_cache_key_path((
                 "workspace",
                 "data",
-                "selection",
+                "workspace",
                 "project",
-                "targets",
+                "selection",
             )),
             value,
             output_type=_TargetCacheValue.DEFINED,
         )
-
-
 
     @property
     def workspace_data_selection_group_targets(self) -> Any:
@@ -1529,13 +1527,13 @@ class DatabaseManager:
             self.value_cache_key_path((
                 "workspace",
                 "data",
-                "selection",
+                "workspace",
                 "group",
             )),
             output_type=_TargetCacheValue.ANY,
         )
 
-        return data["targets"] if data and "targets" in data else {}
+        return data["selection"] if data and "selection" in data else {}
 
     @workspace_data_selection_group_targets.setter
     def workspace_data_selection_group_targets(
@@ -1548,9 +1546,9 @@ class DatabaseManager:
             self.value_cache_key_path((
                 "workspace",
                 "data",
-                "selection",
+                "workspace",
                 "group",
-                "targets",
+                "selection",
             )),
             value,
             output_type=_TargetCacheValue.DEFINED,
@@ -2573,9 +2571,9 @@ class DatabaseManager:
             self.value_cache_key_path((
                 "workspace",
                 "data",
-                "selection",
+                "workspace",
                 "group",
-                "targets",
+                "selection",
                 group_name,
             )),
             output_type=_TargetCacheValue.ANY,
@@ -2593,9 +2591,9 @@ class DatabaseManager:
             self.value_cache_key_path((
                 "workspace",
                 "data",
-                "selection",
+                "workspace",
                 "project",
-                "targets",
+                "selection",
                 project_name,
                 "filesystem-path",
             )),

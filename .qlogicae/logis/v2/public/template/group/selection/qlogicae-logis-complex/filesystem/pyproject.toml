@@ -31,15 +31,15 @@ classifiers = [
     "Topic :: Utilities",
 ]
 dependencies = [
-    "pydantic>=2.13,<3",
-    "pyfiglet>=1.0.4,<2",
-    "PyYAML>=6.0,<7",
-    "qlogicae-cor>=1.0.8,<2",
-    "rich>=15,<16",
-    "textual>=8,<9",
-    "typer>=0.26,<1",
-    "tomli_w>=1.2.0,<2",
-    "tomlkit>=0.15.0,<1"
+    # "pydantic>=2.13,<3",
+    # "pyfiglet>=1.0.4,<2",
+    # "PyYAML>=6.0,<7",
+    # "qlogicae-cor>=1.0.8,<2",
+    # "rich>=15,<16",
+    # "textual>=8,<9",
+    # "typer>=0.26,<1",
+    # "tomli_w>=1.2.0,<2",
+    # "tomlkit>=0.15.0,<1"
 ]
 
 
@@ -60,6 +60,7 @@ dev = [
 [project.scripts]
 qlogicae-logis = "${{ qlogicae-logis-source-brand-name }}.v2.console.app:main"
 qlogicae-logis-v2 = "${{ qlogicae-logis-source-brand-name }}.v2.console.app:main"
+qlogicae-logis-v3 = "${{ qlogicae-logis-source-brand-name }}.v3.console.app:main"
 
 
 [project.urls]
@@ -166,7 +167,7 @@ skip-magic-trailing-comma = false
 
 
 [tool.mypy]
-files = ["${{ qlogicae-logis-source-brand-name }}"]
+files = ["${{ qlogicae-logis-source-brand-name }}/v2"]
 strict = true
 python_version = "3.12"
 namespace_packages = true
@@ -188,7 +189,7 @@ packages = ["${{ qlogicae-logis-source-brand-name }}"]
 
 [tool.hatch.envs.default.scripts]
 test-lint = """
-    ruff check ${{ qlogicae-logis-source-brand-name }} --fix
+    ruff check ${{ qlogicae-logis-source-brand-name }}/v2 --fix
 """
 test-type-check = """
     mypy

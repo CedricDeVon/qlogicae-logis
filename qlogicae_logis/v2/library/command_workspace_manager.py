@@ -186,6 +186,19 @@ class CommandWorkspaceManager:
     def run_command_workspace_setup(
         self,
     ) -> bool:
+        return True
+
+    def run_command_workspace_install(
+        self,
+        **kwargs: Any
+    ) -> bool:
+        # input_path = kwargs.get("selection", "all")
+
+        return True
+
+    def run_command_workspace_replenish(
+        self,
+    ) -> bool:
         database_manager = _SingletonManager.get_singleton(
             _DatabaseManager
         )

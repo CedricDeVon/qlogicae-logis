@@ -575,7 +575,7 @@ class CommandFilesystemManager:
 
         if selection_paths.is_dir():
             selection_paths = selection_paths.iterdir()
-        
+
             outputs.update(
                 f"{path}"
                 for path
@@ -598,18 +598,29 @@ class CommandFilesystemManager:
         )
 
         outputs = {
-            "temporary": [
-                {
-                    "filesystem-path": {
-                        "value": f"{root_path}/.{
-                            company_project_major_version_path
-                        }/private/temporary"
-                    },
-                    "pattern": {
-                        "value": "**"
+            "temporary": {
+                "alias": {
+                    "targets": [
+                        {                            
+                            "name": {
+                                "value": "tmp"
+                            }
+                        }
+                    ]
+                },
+                "targets": [
+                    {
+                        "filesystem-path": {
+                            "value": f"{root_path}/.{
+                                company_project_major_version_path
+                            }/private/temporary"
+                        },
+                        "pattern": {
+                            "value": "**"
+                        }
                     }
-                }
-            ]
+                ]
+            }
         }
 
         return outputs

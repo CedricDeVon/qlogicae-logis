@@ -218,8 +218,8 @@ class CommandWorkflowManager:
             )
 
             workflow_selection_data_enter_full_path = (
-                workflow_selection_data["enter-filesystem-path"]
-                if workflow_selection_data and "enter-filesystem-path"
+                workflow_selection_data["filesystem-path"]
+                if workflow_selection_data and "filesystem-path"
                     in workflow_selection_data
                 else {}
             ) or {}

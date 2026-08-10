@@ -203,6 +203,18 @@ class CommandManager:
             ),
             self.run_command_workspace_export
         )
+        command_storage_manager.add_command(
+            self.setup_command_name(
+                "run_command_workspace_replenish"
+            ),
+            self.run_command_workspace_replenish
+        )
+        command_storage_manager.add_command(
+            self.setup_command_name(
+                "run_command_workspace_install"
+            ),
+            self.run_command_workspace_install
+        )
 
 
         command_storage_manager.add_command(
@@ -456,19 +468,6 @@ class CommandManager:
 
         return True
 
-
-    def run_command_workspace_setup(self) -> bool:
-        command_workspace_manager = _SingletonManager.get_singleton(
-            _CommandWorkspaceManager
-        )
-
-        self.run_command(
-            command_workspace_manager
-                .run_command_workspace_setup
-        )
-
-        return True
-
     def run_command_workspace_import(self, **kwargs: Any) -> bool:
         command_workspace_manager = _SingletonManager.get_singleton(
             _CommandWorkspaceManager
@@ -490,6 +489,43 @@ class CommandManager:
         self.run_command(
             command_workspace_manager
                 .run_command_workspace_export,
+            kwargs
+        )
+
+        return True
+
+    def run_command_workspace_setup(self) -> bool:
+        command_workspace_manager = _SingletonManager.get_singleton(
+            _CommandWorkspaceManager
+        )
+
+        self.run_command(
+            command_workspace_manager
+                .run_command_workspace_setup
+        )
+
+        return True
+
+    def run_command_workspace_replenish(self) -> bool:
+        command_workspace_manager = _SingletonManager.get_singleton(
+            _CommandWorkspaceManager
+        )
+
+        self.run_command(
+            command_workspace_manager
+                .run_command_workspace_replenish
+        )
+
+        return True
+
+    def run_command_workspace_install(self, **kwargs: Any) -> bool:
+        command_workspace_manager = _SingletonManager.get_singleton(
+            _CommandWorkspaceManager
+        )
+
+        self.run_command(
+            command_workspace_manager
+                .run_command_workspace_install,
             kwargs
         )
 

@@ -8,7 +8,7 @@ DATA: dict[str, dict[str, Any]]= {
     },
     "project-version": {
         "name": "Project Version",
-        "value": "v2.0.7",
+        "value": "v2.0.8",
         "is-tabular": True,
     },
     "project-description": {
@@ -48,7 +48,7 @@ DATA: dict[str, dict[str, Any]]= {
     },
     "repository-keywords": {
         "name": "Repository Keywords",
-        "value": ["qlogicae", "logis"],
+        "value": "qlogicae, logis",
         "is-tabular": True,
     },
 }

@@ -1,7 +1,7 @@
 data:
-  selection:
+  workspace:
     project:
-      targets:
+      selection:
         qlogicae-ensemble:
           # filesystem-path:
           #   value: ${{ qlogicae-ensemble-selection-project-filesystem-path }}

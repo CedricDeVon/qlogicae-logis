@@ -48,7 +48,7 @@ DATA: dict[str, dict[str, Any]]= {
     },
     "repository-keywords": {
         "name": "Repository Keywords",
-        "value": ["${{ main-company-base-name }}", "${{ qlogicae-logis-base-project-name }}"],
+        "value": "${{ main-company-base-name }}, ${{ qlogicae-logis-base-project-name }}",
         "is-tabular": True,
     },
 }

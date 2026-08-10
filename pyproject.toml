@@ -1,6 +1,6 @@
 [project]
 name = "qlogicae-logis"
-version = "2.0.7"
+version = "2.0.8"
 description = "The project orchestration tool for QLogicae projects"
 readme = { file = "README.md", content-type = "text/markdown" }
 requires-python = ">=3.12"
@@ -31,15 +31,15 @@ classifiers = [
     "Topic :: Utilities",
 ]
 dependencies = [
-    "pydantic>=2.13,<3",
-    "pyfiglet>=1.0.4,<2",
-    "PyYAML>=6.0,<7",
-    "qlogicae-cor>=1.0.8,<2",
-    "rich>=15,<16",
-    "textual>=8,<9",
-    "typer>=0.26,<1",
-    "tomli_w>=1.2.0,<2",
-    "tomlkit>=0.15.0,<1"
+    # "pydantic>=2.13,<3",
+    # "pyfiglet>=1.0.4,<2",
+    # "PyYAML>=6.0,<7",
+    # "qlogicae-cor>=1.0.8,<2",
+    # "rich>=15,<16",
+    # "textual>=8,<9",
+    # "typer>=0.26,<1",
+    # "tomli_w>=1.2.0,<2",
+    # "tomlkit>=0.15.0,<1"
 ]
 
 
@@ -60,6 +60,7 @@ dev = [
 [project.scripts]
 qlogicae-logis = "qlogicae_logis.v2.console.app:main"
 qlogicae-logis-v2 = "qlogicae_logis.v2.console.app:main"
+qlogicae-logis-v3 = "qlogicae_logis.v3.console.app:main"
 
 
 [project.urls]
@@ -166,7 +167,7 @@ skip-magic-trailing-comma = false
 
 
 [tool.mypy]
-files = ["qlogicae_logis"]
+files = ["qlogicae_logis/v2"]
 strict = true
 python_version = "3.12"
 namespace_packages = true
@@ -188,7 +189,7 @@ packages = ["qlogicae_logis"]
 
 [tool.hatch.envs.default.scripts]
 test-lint = """
-    ruff check qlogicae_logis --fix
+    ruff check qlogicae_logis/v2 --fix
 """
 test-type-check = """
     mypy

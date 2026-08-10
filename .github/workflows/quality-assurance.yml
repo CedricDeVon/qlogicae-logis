@@ -9,81 +9,121 @@ defaults:
         shell: bash
 
 jobs:
-    v2-type-check-testing:
-        name: V2 | Type Check
-        runs-on: ubuntu-latest
+    v2-e2e-testing-about-command:
+      name: V3
+      runs-on: ubuntu-latest
 
-        defaults:
-            run:
-                working-directory: .
+      defaults:
+          run:
+              working-directory: ./test/qlogicae_logis/v3
 
-        strategy:
-            fail-fast: false
-            matrix:
-                python-version:
-                    - "3.14"
-                    - "3.13"
-                    - "3.12"
+      strategy:
+          fail-fast: false
+          matrix:
+              python-version:
+                  - "3.14"
+                  - "3.13"
+                  - "3.12"
 
-        steps:
-            - uses: actions/checkout@v4
+      steps:
+          - uses: actions/checkout@v4
 
-            - name: Setup Python
-              uses: actions/setup-python@v5
-              with:
+          - name: PyPi Wait
+            run: sleep 10
+
+          - name: Setup Python
+            uses: actions/setup-python@v5
+            with:
                 python-version: ${{ matrix.python-version }}
 
-            - name: Install Hatch
-              run: |
-                python -m pip install --upgrade pip
-                pip install hatch
+          - name: Setup Virtual Environment
+            run: python3 -m venv .venv
 
-            - name: Install Dev Dependencies
-              run: python3 -m pip install -r requirements.txt
+          - name: Activate Virtual Environment
+            run: source .venv/bin/activate
 
-            - name: Create Hatch environment
-              run: hatch env create
+          - name: Install Package
+            run: pip install qlogicae-logis
 
-            - name: Run Scripts        
-              run: hatch run github-workflow-test-type-check
+          - name: Run 'demo'
+            run: qlogicae-logis-v3
 
-    v2-lint-testing:
-        name: V2 | Lint
-        runs-on: ubuntu-latest
 
-        defaults:
-            run:
-                working-directory: .
+    # v2-type-check-testing:
+    #     name: V2 | Type Check
+    #     runs-on: ubuntu-latest
 
-        strategy:
-            fail-fast: false
-            matrix:
-                python-version:
-                    - "3.14"
-                    - "3.13"
-                    - "3.12"
+    #     defaults:
+    #         run:
+    #             working-directory: .
 
-        steps:
-            - uses: actions/checkout@v4
+    #     strategy:
+    #         fail-fast: false
+    #         matrix:
+    #             python-version:
+    #                 - "3.14"
+    #                 - "3.13"
+    #                 - "3.12"
 
-            - name: Setup Python
-              uses: actions/setup-python@v5
-              with:
-                python-version: ${{ matrix.python-version }}
+    #     steps:
+    #         - uses: actions/checkout@v4
 
-            - name: Install Hatch
-              run: |
-                python -m pip install --upgrade pip
-                pip install hatch
+    #         - name: Setup Python
+    #           uses: actions/setup-python@v5
+    #           with:
+    #             python-version: ${{ matrix.python-version }}
 
-            - name: Install Dev Dependencies
-              run: python3 -m pip install -r requirements.txt
+    #         - name: Install Hatch
+    #           run: |
+    #             python -m pip install --upgrade pip
+    #             pip install hatch
 
-            - name: Create Hatch environment
-              run: hatch env create
+    #         - name: Install Dev Dependencies
+    #           run: python3 -m pip install -r requirements.txt
 
-            - name: Run Scripts        
-              run: hatch run github-workflow-test-lint
+    #         - name: Create Hatch environment
+    #           run: hatch env create
+
+    #         - name: Run Scripts        
+    #           run: hatch run github-workflow-test-type-check
+
+    # v2-lint-testing:
+    #     name: V2 | Lint
+    #     runs-on: ubuntu-latest
+
+    #     defaults:
+    #         run:
+    #             working-directory: .
+
+    #     strategy:
+    #         fail-fast: false
+    #         matrix:
+    #             python-version:
+    #                 - "3.14"
+    #                 - "3.13"
+    #                 - "3.12"
+
+    #     steps:
+    #         - uses: actions/checkout@v4
+
+    #         - name: Setup Python
+    #           uses: actions/setup-python@v5
+    #           with:
+    #             python-version: ${{ matrix.python-version }}
+
+    #         - name: Install Hatch
+    #           run: |
+    #             python -m pip install --upgrade pip
+    #             pip install hatch
+
+    #         - name: Install Dev Dependencies
+    #           run: python3 -m pip install -r requirements.txt
+
+    #         - name: Create Hatch environment
+    #           run: hatch env create
+
+    #         - name: Run Scripts        
+    #           run: hatch run github-workflow-test-lint
 
     # v2-unit-testing:
     #     name: V2 | Unit Testing
@@ -124,268 +164,268 @@ jobs:
     #           run: hatch run github-workflow-test-unit
 
 
-    v2-e2e-testing-about-command:
-      name: V2 | End-To-End Testing | About Command
-      runs-on: ubuntu-latest
+    # v2-e2e-testing-about-command:
+    #   name: V2 | End-To-End Testing | About Command
+    #   runs-on: ubuntu-latest
 
-      defaults:
-          run:
-              working-directory: ./test/qlogicae_logis/v2/e2e/github/workspace/about
+    #   defaults:
+    #       run:
+    #           working-directory: ./test/qlogicae_logis/v2/e2e/github/workspace/about
 
-      strategy:
-          fail-fast: false
-          matrix:
-              python-version:
-                  - "3.14"
-                  - "3.13"
-                  - "3.12"
+    #   strategy:
+    #       fail-fast: false
+    #       matrix:
+    #           python-version:
+    #               - "3.14"
+    #               - "3.13"
+    #               - "3.12"
 
-      steps:
-          - uses: actions/checkout@v4
+    #   steps:
+    #       - uses: actions/checkout@v4
 
-          - name: PyPi Wait
-            run: sleep 30
+    #       - name: PyPi Wait
+    #         run: sleep 30
 
-          - name: Setup Python
-            uses: actions/setup-python@v5
-            with:
-                python-version: ${{ matrix.python-version }}
+    #       - name: Setup Python
+    #         uses: actions/setup-python@v5
+    #         with:
+    #             python-version: ${{ matrix.python-version }}
 
-          - name: Setup Virtual Environment
-            run: python3 -m venv .venv
+    #       - name: Setup Virtual Environment
+    #         run: python3 -m venv .venv
 
-          - name: Activate Virtual Environment
-            run: source .venv/bin/activate
+    #       - name: Activate Virtual Environment
+    #         run: source .venv/bin/activate
 
-          - name: Install Package
-            run: pip install qlogicae-logis
+    #       - name: Install Package
+    #         run: pip install qlogicae-logis
 
-          - name: Run 'about me'
-            run: qlogicae-logis about me
+    #       - name: Run 'about me'
+    #         run: qlogicae-logis about me
 
-          - name: Run 'about version'
-            run: qlogicae-logis about version
+    #       - name: Run 'about version'
+    #         run: qlogicae-logis about version
 
 
-    v2-e2e-testing-workspace-command:
-      name: V2 | End-To-End Testing | Workspace Command
-      runs-on: ubuntu-latest
+    # v2-e2e-testing-workspace-command:
+    #   name: V2 | End-To-End Testing | Workspace Command
+    #   runs-on: ubuntu-latest
 
-      defaults:
-          run:
-              working-directory: ./test/qlogicae_logis/v2/e2e/github/workspace/workspace
+    #   defaults:
+    #       run:
+    #           working-directory: ./test/qlogicae_logis/v2/e2e/github/workspace/workspace
 
-      strategy:
-          fail-fast: false
-          matrix:
-              python-version:
-                  - "3.14"
-                  - "3.13"
-                  - "3.12"
+    #   strategy:
+    #       fail-fast: false
+    #       matrix:
+    #           python-version:
+    #               - "3.14"
+    #               - "3.13"
+    #               - "3.12"
 
-      steps:
-          - uses: actions/checkout@v4
+    #   steps:
+    #       - uses: actions/checkout@v4
 
-          - name: PyPi Wait
-            run: sleep 30
+    #       - name: PyPi Wait
+    #         run: sleep 30
 
-          - name: Setup Python
-            uses: actions/setup-python@v5
-            with:
-                python-version: ${{ matrix.python-version }}
+    #       - name: Setup Python
+    #         uses: actions/setup-python@v5
+    #         with:
+    #             python-version: ${{ matrix.python-version }}
 
-          - name: Setup Virtual Environment
-            run: python3 -m venv .venv
+    #       - name: Setup Virtual Environment
+    #         run: python3 -m venv .venv
 
-          - name: Activate Virtual Environment
-            run: source .venv/bin/activate
+    #       - name: Activate Virtual Environment
+    #         run: source .venv/bin/activate
 
-          - name: Install Package
-            run: pip install qlogicae-logis
+    #       - name: Install Package
+    #         run: pip install qlogicae-logis
 
-          - name: Run 'workspace setup'
-            run: qlogicae-logis workspace setup 
+    #       - name: Run 'workspace setup'
+    #         run: qlogicae-logis workspace setup 
 
-          - name: Run 'workspace list exports'
-            run: qlogicae-logis workspace list exports
+    #       - name: Run 'workspace list exports'
+    #         run: qlogicae-logis workspace list exports
 
-          - name: Run 'workspace export all'
-            run: qlogicae-logis workspace export all
+    #       - name: Run 'workspace export all'
+    #         run: qlogicae-logis workspace export all
 
-          - name: Run 'workspace import'
-            run: qlogicae-logis workspace import 
+    #       - name: Run 'workspace import'
+    #         run: qlogicae-logis workspace import 
 
 
-    v2-e2e-testing-cache-command:
-      name: V2 | End-To-End Testing | Debug Command
-      runs-on: ubuntu-latest
+    # v2-e2e-testing-cache-command:
+    #   name: V2 | End-To-End Testing | Debug Command
+    #   runs-on: ubuntu-latest
 
-      defaults:
-          run:
-              working-directory: ./test/qlogicae_logis/v2/e2e/github/workspace/debug
+    #   defaults:
+    #       run:
+    #           working-directory: ./test/qlogicae_logis/v2/e2e/github/workspace/debug
 
-      strategy:
-          fail-fast: false
-          matrix:
-              python-version:
-                  - "3.14"
-                  - "3.13"
-                  - "3.12"
+    #   strategy:
+    #       fail-fast: false
+    #       matrix:
+    #           python-version:
+    #               - "3.14"
+    #               - "3.13"
+    #               - "3.12"
 
-      steps:
-          - uses: actions/checkout@v4
+    #   steps:
+    #       - uses: actions/checkout@v4
 
-          - name: PyPi Wait
-            run: sleep 30
+    #       - name: PyPi Wait
+    #         run: sleep 30
 
-          - name: Setup Python
-            uses: actions/setup-python@v5
-            with:
-                python-version: ${{ matrix.python-version }}
+    #       - name: Setup Python
+    #         uses: actions/setup-python@v5
+    #         with:
+    #             python-version: ${{ matrix.python-version }}
 
-          - name: Setup Virtual Environment
-            run: python3 -m venv .venv
+    #       - name: Setup Virtual Environment
+    #         run: python3 -m venv .venv
 
-          - name: Activate Virtual Environment
-            run: source .venv/bin/activate
+    #       - name: Activate Virtual Environment
+    #         run: source .venv/bin/activate
 
-          - name: Install Package
-            run: pip install qlogicae-logis
+    #       - name: Install Package
+    #         run: pip install qlogicae-logis
 
-          - name: Run 'workspace setup'
-            run: qlogicae-logis workspace setup 
+    #       - name: Run 'workspace setup'
+    #         run: qlogicae-logis workspace setup 
 
-          - name: Run 'debug view value-cache'
-            run: qlogicae-logis debug view value-cache 
+    #       - name: Run 'debug view value-cache'
+    #         run: qlogicae-logis debug view value-cache 
 
 
-    v2-e2e-testing-filesystem-command:
-      name: V2 | End-To-End Testing | Filesystem Command
-      runs-on: ubuntu-latest
+    # v2-e2e-testing-filesystem-command:
+    #   name: V2 | End-To-End Testing | Filesystem Command
+    #   runs-on: ubuntu-latest
 
-      defaults:
-          run:
-              working-directory: ./test/qlogicae_logis/v2/e2e/github/workspace/filesystem
+    #   defaults:
+    #       run:
+    #           working-directory: ./test/qlogicae_logis/v2/e2e/github/workspace/filesystem
 
-      strategy:
-          fail-fast: false
-          matrix:
-              python-version:
-                  - "3.14"
-                  - "3.13"
-                  - "3.12"
+    #   strategy:
+    #       fail-fast: false
+    #       matrix:
+    #           python-version:
+    #               - "3.14"
+    #               - "3.13"
+    #               - "3.12"
 
-      steps:
-          - uses: actions/checkout@v4
+    #   steps:
+    #       - uses: actions/checkout@v4
 
-          - name: PyPi Wait
-            run: sleep 30
+    #       - name: PyPi Wait
+    #         run: sleep 30
 
-          - name: Setup Python
-            uses: actions/setup-python@v5
-            with:
-                python-version: ${{ matrix.python-version }}
+    #       - name: Setup Python
+    #         uses: actions/setup-python@v5
+    #         with:
+    #             python-version: ${{ matrix.python-version }}
 
-          - name: Setup Virtual Environment
-            run: python3 -m venv .venv
+    #       - name: Setup Virtual Environment
+    #         run: python3 -m venv .venv
 
-          - name: Activate Virtual Environment
-            run: source .venv/bin/activate
+    #       - name: Activate Virtual Environment
+    #         run: source .venv/bin/activate
 
-          - name: Install Package
-            run: pip install qlogicae-logis
+    #       - name: Install Package
+    #         run: pip install qlogicae-logis
 
-          - name: Run 'workspace setup'
-            run: qlogicae-logis workspace setup 
+    #       - name: Run 'workspace setup'
+    #         run: qlogicae-logis workspace setup 
 
-          - name: Run 'filesystem clean list included'
-            run: qlogicae-logis filesystem clean list included
+    #       - name: Run 'filesystem clean list included'
+    #         run: qlogicae-logis filesystem clean list included
 
-          - name: Run 'filesystem clean list excluded'
-            run: qlogicae-logis filesystem clean list excluded
+    #       - name: Run 'filesystem clean list excluded'
+    #         run: qlogicae-logis filesystem clean list excluded
 
 
-    v2-e2e-testing-workflow-command:
-      name: V2 | End-To-End Testing | Workflow Command
-      runs-on: ubuntu-latest
+    # v2-e2e-testing-workflow-command:
+    #   name: V2 | End-To-End Testing | Workflow Command
+    #   runs-on: ubuntu-latest
 
-      defaults:
-          run:
-              working-directory: ./test/qlogicae_logis/v2/e2e/github/workspace/workflow
+    #   defaults:
+    #       run:
+    #           working-directory: ./test/qlogicae_logis/v2/e2e/github/workspace/workflow
 
-      strategy:
-          fail-fast: false
-          matrix:
-              python-version:
-                  - "3.14"
-                  - "3.13"
-                  - "3.12"
+    #   strategy:
+    #       fail-fast: false
+    #       matrix:
+    #           python-version:
+    #               - "3.14"
+    #               - "3.13"
+    #               - "3.12"
 
-      steps:
-          - uses: actions/checkout@v4
+    #   steps:
+    #       - uses: actions/checkout@v4
 
-          - name: PyPi Wait
-            run: sleep 30
+    #       - name: PyPi Wait
+    #         run: sleep 30
 
-          - name: Setup Python
-            uses: actions/setup-python@v5
-            with:
-                python-version: ${{ matrix.python-version }}
+    #       - name: Setup Python
+    #         uses: actions/setup-python@v5
+    #         with:
+    #             python-version: ${{ matrix.python-version }}
 
-          - name: Setup Virtual Environment
-            run: python3 -m venv .venv
+    #       - name: Setup Virtual Environment
+    #         run: python3 -m venv .venv
 
-          - name: Activate Virtual Environment
-            run: source .venv/bin/activate
+    #       - name: Activate Virtual Environment
+    #         run: source .venv/bin/activate
 
-          - name: Install Package
-            run: pip install qlogicae-logis
+    #       - name: Install Package
+    #         run: pip install qlogicae-logis
 
-          - name: Run 'workspace setup'
-            run: qlogicae-logis workspace setup 
+    #       - name: Run 'workspace setup'
+    #         run: qlogicae-logis workspace setup 
 
-          - name: Run 'workflow list selections'
-            run: qlogicae-logis workflow list selections 
+    #       - name: Run 'workflow list selections'
+    #         run: qlogicae-logis workflow list selections 
 
 
-    v2-e2e-testing-template-command:
-      name: V2 | End-To-End Testing | Template Command
-      runs-on: ubuntu-latest
+    # v2-e2e-testing-template-command:
+    #   name: V2 | End-To-End Testing | Template Command
+    #   runs-on: ubuntu-latest
 
-      defaults:
-          run:
-              working-directory: ./test/qlogicae_logis/v2/e2e/github/workspace/template
+    #   defaults:
+    #       run:
+    #           working-directory: ./test/qlogicae_logis/v2/e2e/github/workspace/template
 
-      strategy:
-          fail-fast: false
-          matrix:
-              python-version:
-                  - "3.14"
-                  - "3.13"
-                  - "3.12"
+    #   strategy:
+    #       fail-fast: false
+    #       matrix:
+    #           python-version:
+    #               - "3.14"
+    #               - "3.13"
+    #               - "3.12"
 
-      steps:
-          - uses: actions/checkout@v4
+    #   steps:
+    #       - uses: actions/checkout@v4
 
-          - name: PyPi Wait
-            run: sleep 30
+    #       - name: PyPi Wait
+    #         run: sleep 30
 
-          - name: Setup Python
-            uses: actions/setup-python@v5
-            with:
-                python-version: ${{ matrix.python-version }}
+    #       - name: Setup Python
+    #         uses: actions/setup-python@v5
+    #         with:
+    #             python-version: ${{ matrix.python-version }}
 
-          - name: Setup Virtual Environment
-            run: python3 -m venv .venv
+    #       - name: Setup Virtual Environment
+    #         run: python3 -m venv .venv
 
-          - name: Activate Virtual Environment
-            run: source .venv/bin/activate
+    #       - name: Activate Virtual Environment
+    #         run: source .venv/bin/activate
 
-          - name: Install Package
-            run: pip install qlogicae-logis
+    #       - name: Install Package
+    #         run: pip install qlogicae-logis
 
-          - name: Run 'workspace setup'
-            run: qlogicae-logis workspace setup 
+    #       - name: Run 'workspace setup'
+    #         run: qlogicae-logis workspace setup 
 
-          - name: Run 'template list selections'
-            run: qlogicae-logis template list selections 
+    #       - name: Run 'template list selections'
+    #         run: qlogicae-logis template list selections 
