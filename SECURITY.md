@@ -4,5 +4,5 @@
 
 | Version | Supported |
 | ------- | ------------------ |
-| = v2.0.11 | :white_check_mark: | 
-| < v2.0.11 | :x: | 
+| = v2.0.12 | :white_check_mark: | 
+| < v2.0.12 | :x: | 

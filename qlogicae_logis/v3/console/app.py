@@ -3,7 +3,7 @@ def main() -> None:
     from qlogicae_logis.v3._vendor.pyyaml import (
         yaml
     )
-    from qlogicae_logis.v3._vendor.rich.rich import (
+    from qlogicae_logis.v3._vendor.rich import (
         console
     )
     from pathlib import Path
