@@ -15,7 +15,7 @@ jobs:
 
       defaults:
           run:
-              working-directory: ./test/qlogicae_logis/v3
+              working-directory: ./test/qlogicae_logis/v3/github/workspace/usage
 
       strategy:
           fail-fast: false
