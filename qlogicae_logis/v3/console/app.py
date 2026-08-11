@@ -1,24 +1,18 @@
 
 def main() -> None:
-    from qlogicae_logis.v3._vendor.pyyaml import (
-        yaml
-    )
-    from qlogicae_logis.v3._vendor.rich import (
-        console
+    from qlogicae_logis.v3._vendor import (
+        pyyaml
     )
     from pathlib import Path
 
 
-    data = yaml.safe_load(
+    data = pyyaml.safe_load(
         Path("root.yaml").read_text(
             encoding="utf-8",
         ),
     )
 
-    console = console.Console()
-
-
-    console.print(
+    print(
         data
     )
 
