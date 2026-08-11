@@ -12,7 +12,7 @@ else:
 from importlib import import_module
 from typing import TYPE_CHECKING, cast
 
-from ._unicode_data._versions import VERSIONS
+from ._versions import VERSIONS
 
 if TYPE_CHECKING:
     from .cells import CellTable
