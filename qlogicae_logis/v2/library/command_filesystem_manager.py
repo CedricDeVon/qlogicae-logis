@@ -601,7 +601,7 @@ class CommandFilesystemManager:
             "temporary": {
                 "alias": {
                     "targets": [
-                        {                            
+                        {
                             "name": {
                                 "value": "tmp"
                             }

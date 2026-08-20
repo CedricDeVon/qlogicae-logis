@@ -1,20 +1,16 @@
+from __future__ import annotations
+
 
 def main() -> None:
-    from qlogicae_logis.v3._vendor import (
-        pyyaml
-    )
-    from pathlib import Path
-
-
-    data = pyyaml.safe_load(
-        Path("root.yaml").read_text(
-            encoding="utf-8",
-        ),
+    from ..library import (
+        console_manager,
+        import_manager,
     )
 
-    print(
-        data
-    )
+    import_manager.ImportManager.get_singleton(
+        console_manager.ConsoleManager
+    ).run()
+
 
 if __name__ == "__main__":
     main()
