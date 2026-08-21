@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from collections.abc import Callable
-from functools import wraps
 from typing import Any, ParamSpec, TypeVar
+
+from ..library.decorator_manager import DecoratorManager
 
 P = ParamSpec("P")
 R = TypeVar("R")
@@ -14,6 +14,7 @@ __all__ = (
 
 _ImportManager: Any = None
 _DatabaseManager: Any = None
+_DecoratorManager: Any = None
 _TaskStorageManager: Any = None
 _ValueCacheDatabaseManager: Any = None
 _PersistentCacheDatabasManager: Any = None
@@ -22,12 +23,14 @@ def _handle_dynamic_imports() -> None:
     global _handle_dynamic_imports
     global _ImportManager
     global _DatabaseManager
+    global _DecoratorManager
     global _TaskStorageManager
     global _ValueCacheDatabaseManager
     global _PersistentCacheDatabasManager
 
     from ..library import (
         database_manager,
+        decorator_manager,
         import_manager,
         persistent_cache_database_manager,
         task_storage_manager,
@@ -39,6 +42,9 @@ def _handle_dynamic_imports() -> None:
     )
     _DatabaseManager = (
         database_manager.DatabaseManager
+    )
+    _DecoratorManager = (
+        decorator_manager.DecoratorManager
     )
     _ValueCacheDatabaseManager = (
         value_cache_database_manager.ValueCacheDatabaseManager
@@ -57,6 +63,7 @@ class TaskManager:
     __slots__ = (
         "_import_manager",
         "_database_manager",
+        "_decorator_manager",
         "_task_storage_manager",
         "_value_cache_database_manager",
         "_persistent_cache_database_manager",
@@ -90,6 +97,11 @@ class TaskManager:
                 _TaskStorageManager
             )
         )
+        self._decorator_manager = (
+            _ImportManager.get_singleton(
+                _DecoratorManager
+            )
+        )
 
     def setup_command_name(
         self,
@@ -99,38 +111,7 @@ class TaskManager:
             f"{value.replace("_", "-")}"
         )
 
-    @staticmethod
-    def single_use(
-        callback: Callable[P, R],
-    ) -> Any:
-        @wraps(callback)
-        def wrapper(
-            self: Any,
-            *args: P.args,
-            **kwargs: P.kwargs,
-        ) -> Any:
-            if self._task_storage_manager.is_executed(label=callback):
-                return True
-
-            self._value_cache_database_manager.write_debug_snapshot_execution_timestamp_start(
-                label=callback
-            )
-
-            result = callback(
-                self,
-                *args,
-                **kwargs,
-            )
-
-            self._value_cache_database_manager.write_debug_snapshot_execution_timestamp_complete(
-                label=callback
-            )
-
-            return result
-
-        return wrapper
-
-    @single_use
+    @DecoratorManager.single_task_decorator
     def run_task_system_values(self) -> bool:
         self._value_cache_database_manager.write_current_timestamp()
         self._value_cache_database_manager.write_current_date()
@@ -142,7 +123,7 @@ class TaskManager:
         return True
 
 
-    @single_use
+    @DecoratorManager.single_task_decorator
     def run_task_root_filesystem_path(
         self,
     ) -> bool:
@@ -150,7 +131,7 @@ class TaskManager:
 
         return True
 
-    @single_use
+    @DecoratorManager.single_task_decorator
     def run_task_selection_filesystem_path(
         self,
     ) -> bool:
@@ -158,7 +139,7 @@ class TaskManager:
 
         return True
 
-    @single_use
+    @DecoratorManager.single_task_decorator
     def run_task_executing_console_filesystem_paths(
         self,
     ) -> bool:
@@ -177,7 +158,7 @@ class TaskManager:
 
         return True
 
-    @single_use
+    @DecoratorManager.single_task_decorator
     def run_task_disk_cache_output_folder_path(
         self,
     ) -> bool:
@@ -189,7 +170,7 @@ class TaskManager:
 
         return True
 
-    @single_use
+    @DecoratorManager.single_task_decorator
     def run_task_disk_cache_output_file_path(
         self,
     ) -> bool:
@@ -199,8 +180,16 @@ class TaskManager:
 
         return True
 
-    @single_use
-    def run_task_disk_refresh(self) -> bool:
+    @DecoratorManager.single_task_decorator
+    def run_task_disk_cache_startup(
+        self,
+    ) -> bool:
+        self._import_manager.open_via_disk_cache()
+
+        return True
+
+    @DecoratorManager.single_task_decorator
+    def run_task_disk_cache_refresh(self) -> bool:
         for _index in range(5):
             self._persistent_cache_database_manager.write_refresh_data(
                 {}
@@ -208,7 +197,7 @@ class TaskManager:
 
         return True
 
-    @single_use
+    @DecoratorManager.single_task_decorator
     def run_task_initial_console_filesystem_path(
         self,
     ) -> bool:
@@ -216,7 +205,7 @@ class TaskManager:
 
         return True
 
-    @single_use
+    @DecoratorManager.single_task_decorator
     def navigate_via_root_filesystem_path(
         self,
     ) -> bool:
@@ -227,7 +216,7 @@ class TaskManager:
 
         return True
 
-    @single_use
+    @DecoratorManager.single_task_decorator
     def navigate_via_filesystem_path(
         self,
         filesystem_path: str
@@ -274,10 +263,6 @@ class TaskManager:
         )
 
         for base_path in base_paths:
-            self._value_cache_database_manager.write_debug_snapshot_execution_timestamp_start(
-                label=base_path
-            )
-
             for file_extension in (
                 file_extensions
             ):
@@ -348,16 +333,12 @@ class TaskManager:
                     value_metadata = cached_metadata
 
                 configuration_workspace_data[file_path] = (
-                    self._database_manager
+                    self._value_cache_database_manager
                         .read_file_data(
                             value_data,
                             value_metadata
                         )
                 )
-
-            self._value_cache_database_manager.write_debug_snapshot_execution_timestamp_complete(
-                label=base_path
-            )
 
         for base_path in (
             base_directory_filesystem_paths
@@ -374,10 +355,6 @@ class TaskManager:
 
             for file_path in file_paths:
                 file_path = f"{file_path}"
-                self._value_cache_database_manager.write_debug_snapshot_execution_timestamp_start(
-                    label=file_path
-                )
-
                 if (
                     self._import_manager.is_file_path_valid(value=file_path)
                     and self._import_manager.read_file_suffix(value=file_path)
@@ -443,16 +420,12 @@ class TaskManager:
                         value_metadata = cached_metadata
 
                     configuration_workspace_data[file_path] = (
-                        self._database_manager
+                        self._value_cache_database_manager
                             .read_file_data(
                                 value_data,
                                 value_metadata
                             )
                     )
-
-                self._value_cache_database_manager.write_debug_snapshot_execution_timestamp_complete(
-                    label=file_path
-                )
 
         file_count = (
             len(configuration_workspace_data)
@@ -486,7 +459,7 @@ class TaskManager:
 
         return True
 
-    @single_use
+    @DecoratorManager.single_task_decorator
     def run_task_private_configuration_workspace_extraction(
         self,
     ) -> bool:
@@ -496,7 +469,7 @@ class TaskManager:
 
         return True
 
-    @single_use
+    @DecoratorManager.single_task_decorator
     def run_task_public_configuration_workspace_extraction(
         self,
     ) -> bool:
@@ -506,12 +479,10 @@ class TaskManager:
 
         return True
 
-    @single_use
+    @DecoratorManager.single_task_decorator
     def run_task_configuration_workspace_object_merging(
         self,
     ) -> bool:
-        self._value_cache_database_manager.write_debug_snapshot_execution_timestamp_start()
-
         is_modified = (
             self._value_cache_database_manager
                 .read_is_configuration_workspace_modified()
@@ -606,7 +577,7 @@ class TaskManager:
 
         return True
 
-    @single_use
+    @DecoratorManager.single_task_decorator
     def run_task_private_plugin_extraction(
         self,
     ) -> bool:
@@ -616,7 +587,7 @@ class TaskManager:
 
         return True
 
-    @single_use
+    @DecoratorManager.single_task_decorator
     def run_task_public_plugin_extraction(
         self,
     ) -> bool:
@@ -626,7 +597,7 @@ class TaskManager:
 
         return True
 
-    @single_use
+    @DecoratorManager.single_task_decorator
     def run_task_plugin_object_merging(
         self,
     ) -> bool:
@@ -654,7 +625,7 @@ class TaskManager:
 
         return True
 
-    @single_use
+    @DecoratorManager.single_task_decorator
     def run_task_static_macros_extraction(
         self,
     ) -> bool:
@@ -692,7 +663,7 @@ class TaskManager:
 
         return True
 
-    @single_use
+    @DecoratorManager.single_task_decorator
     def run_task_static_macros_object_merging(
         self,
     ) -> bool:
@@ -700,7 +671,7 @@ class TaskManager:
             self._value_cache_database_manager.read_macros()
         )
         macros = (
-            self._database_manager
+            self._value_cache_database_manager
                 .read_object_macros(
                     macros
             )
@@ -712,7 +683,7 @@ class TaskManager:
 
         return True
 
-    @single_use
+    @DecoratorManager.single_task_decorator
     def run_task_static_macros_resolution(
         self,
     ) -> bool:
@@ -732,7 +703,7 @@ class TaskManager:
 
         return True
 
-    @single_use
+    @DecoratorManager.single_task_decorator
     def run_task_dynamic_macros_resolution(
         self,
     ) -> bool:
@@ -748,7 +719,7 @@ class TaskManager:
                 )
         )
         default_dynamic_value_cache_macros_values = (
-            self._database_manager
+            self._value_cache_database_manager
                 .read_object_macros(
                     default_dynamic_value_cache_macros_values
             )
@@ -758,7 +729,7 @@ class TaskManager:
                 .read_plugin_data_macros_dynamic_targets()
         )
         plugin_data_macros_dynamic_targets = (
-            self._database_manager
+            self._value_cache_database_manager
                 .read_object_macros(
                     plugin_data_macros_dynamic_targets
                 )
@@ -772,7 +743,7 @@ class TaskManager:
 
         return True
 
-    @single_use
+    @DecoratorManager.single_task_decorator
     def run_task_configuration_workspace_macros_resolution(
         self,
     ) -> bool:
@@ -798,7 +769,7 @@ class TaskManager:
 
         return True
 
-    @single_use
+    @DecoratorManager.single_task_decorator
     def run_task_console_logging_setup(
         self,
     ) -> bool:
@@ -845,7 +816,7 @@ class TaskManager:
 
         return True
 
-    @single_use
+    @DecoratorManager.single_task_decorator
     def run_task_file_logging_setup(
         self,
     ) -> bool:
@@ -897,7 +868,7 @@ class TaskManager:
             else file_is_verbose_value
         )
         file_targets = (
-            self._database_manager
+            self._value_cache_database_manager
                 .read_object_filesystem_values(
                     file_targets
                 )
@@ -916,7 +887,7 @@ class TaskManager:
 
         return True
 
-    @single_use
+    @DecoratorManager.single_task_decorator
     def run_task_file_system_values(self) -> bool:
         self._value_cache_database_manager.write_time_zone_name(
             self._value_cache_database_manager
@@ -933,10 +904,10 @@ class TaskManager:
 
         return True
 
-    @single_use
+    @DecoratorManager.single_task_decorator
     def run_task_workflow_setup(self) -> bool:
         data = (
-            self._database_manager
+            self._value_cache_database_manager
                 .read_object_selections(
                     self._value_cache_database_manager
                         .read_configuration_workspace_data_workflow_selection()
@@ -949,10 +920,10 @@ class TaskManager:
 
         return True
 
-    @single_use
+    @DecoratorManager.single_task_decorator
     def run_task_export_group_setup(self) -> bool:
         data = (
-            self._database_manager
+            self._value_cache_database_manager
                 .read_object_selections(
                     self._value_cache_database_manager
                         .read_configuration_workspace_data_export_group()
@@ -964,10 +935,10 @@ class TaskManager:
 
         return True
 
-    @single_use
+    @DecoratorManager.single_task_decorator
     def run_task_export_selection_setup(self) -> bool:
         data = (
-            self._database_manager
+            self._value_cache_database_manager
                 .read_object_selections(
                     self._value_cache_database_manager
                         .read_configuration_workspace_data_export_selection()
@@ -979,10 +950,10 @@ class TaskManager:
 
         return True
 
-    @single_use
+    @DecoratorManager.single_task_decorator
     def run_task_workspace_group_setup(self) -> bool:
         data = (
-            self._database_manager
+            self._value_cache_database_manager
                 .read_object_selections(
                     self._value_cache_database_manager
                         .read_configuration_workspace_data_workspace_group_selection()
@@ -995,10 +966,10 @@ class TaskManager:
 
         return True
 
-    @single_use
+    @DecoratorManager.single_task_decorator
     def run_task_workspace_project_setup(self) -> bool:
         data = (
-            self._database_manager
+            self._value_cache_database_manager
                 .read_object_selections(
                     self._value_cache_database_manager
                         .read_configuration_workspace_data_workspace_project_selection()
@@ -1011,7 +982,7 @@ class TaskManager:
 
         return True
 
-    @single_use
+    @DecoratorManager.single_task_decorator
     def run_task_workspace_default_setup(self) -> bool:
         data = (
             self._database_manager
@@ -1024,7 +995,7 @@ class TaskManager:
 
         return True
 
-    @single_use
+    @DecoratorManager.single_task_decorator
     def run_task_workspace_all_setup(self) -> bool:
         data = (
             self._value_cache_database_manager.read_workspace_default() |
@@ -1038,10 +1009,10 @@ class TaskManager:
 
         return True
 
-    @single_use
+    @DecoratorManager.single_task_decorator
     def run_task_filesystem_clean_exclude_setup(self) -> bool:
         data = (
-            self._database_manager
+            self._value_cache_database_manager
                 .read_object_exclude_filesystem_path_values(
                     self._value_cache_database_manager
                         .read_configuration_workspace_data_command_filesystem_clean_exclude_targets()
@@ -1054,10 +1025,10 @@ class TaskManager:
 
         return True
 
-    @single_use
+    @DecoratorManager.single_task_decorator
     def run_task_filesystem_clean_include_setup(self) -> bool:
         data = (
-            self._database_manager
+            self._value_cache_database_manager
                 .read_object_command_filesystem_clean_included(
                     self._value_cache_database_manager
                         .read_configuration_workspace_data_command_filesystem_clean_include_selection()
@@ -1070,22 +1041,34 @@ class TaskManager:
 
         return True
 
-    @single_use
+    @DecoratorManager.single_task_decorator
     def run_task_file_logging_shutdown(self) -> bool:
         self._import_manager.log_shutdown()
 
         return True
 
-    @single_use
-    def run_task_full_debug_value_cache(self) -> bool:
-        self.run_task_system_values()
+    @DecoratorManager.single_task_decorator
+    def run_task_disk_cache_shutdown(self) -> bool:
+        self._import_manager.close_via_disk_cache()
+
+        return True
+
+    @DecoratorManager.multi_task_decorator
+    def run_task_system_setup(self) -> bool:
         self.run_task_root_filesystem_path()
         self.run_task_selection_filesystem_path()
         self.run_task_executing_console_filesystem_paths()
         self.run_task_initial_console_filesystem_path()
         self.run_task_disk_cache_output_folder_path()
         self.run_task_disk_cache_output_file_path()
-        self.run_task_disk_refresh()
+        self.run_task_disk_cache_startup()
+        self.run_task_disk_cache_refresh()
+
+        return True
+
+    @DecoratorManager.multi_task_decorator
+    def run_task_common_setup(self) -> bool:
+        self.run_task_system_setup()
         self.run_task_private_configuration_workspace_extraction()
         self.run_task_public_configuration_workspace_extraction()
         self.run_task_private_plugin_extraction()
@@ -1100,6 +1083,12 @@ class TaskManager:
         self.run_task_configuration_workspace_macros_resolution()
         self.run_task_console_logging_setup()
         self.run_task_file_logging_setup()
+
+        return True
+
+    @DecoratorManager.multi_task_decorator
+    def run_task_full_debug_value_cache(self) -> bool:
+        self.run_task_common_setup()
         self.run_task_filesystem_clean_exclude_setup()
         self.run_task_filesystem_clean_include_setup()
         self.run_task_workflow_setup()
@@ -1112,22 +1101,15 @@ class TaskManager:
 
         return True
 
-    @single_use
+    @DecoratorManager.multi_task_decorator
     def run_task_full_debug_disk_cache(self) -> bool:
-        self.run_task_root_filesystem_path()
-        self.run_task_selection_filesystem_path()
-        self.run_task_executing_console_filesystem_paths()
-        self.run_task_initial_console_filesystem_path()
-        self.run_task_disk_cache_output_folder_path()
-        self.run_task_disk_cache_output_file_path()
-
-        self._value_cache_database_manager.write_selection_filesystem_path()
+        self.run_task_system_setup()
 
         return True
 
-    @single_use
+    @DecoratorManager.single_task_decorator
     def run_task_full_shutdown(self) -> bool:
         self.run_task_file_logging_shutdown()
+        self.run_task_disk_cache_shutdown()
 
         return True
-

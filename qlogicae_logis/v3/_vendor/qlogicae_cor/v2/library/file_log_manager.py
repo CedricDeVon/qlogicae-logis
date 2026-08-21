@@ -340,12 +340,13 @@ class FileLogManager:
         return True
 
     def shutdown(self) -> bool:
+        self.log_cached()
+        
         self.listener.stop()
 
         for handler in self.file_handlers.values():
             handler.close()
 
         self.file_handlers.clear()
-        self._cache.clear()
 
         return True

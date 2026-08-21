@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Any
 
 __all__ = (
-    "CommandWorkspaceManager"
+    "CommandFilesystemManager"
 )
 
 _TaskManager: Any = None
@@ -61,7 +61,7 @@ def _handle_dynamic_imports() -> None:
 
     _handle_dynamic_imports = lambda: None
 
-class CommandWorkspaceManager:
+class CommandFilesystemManager:
     __slots__ = (
         "_command_storage_manager",
         "_task_manager",
@@ -112,81 +112,88 @@ class CommandWorkspaceManager:
 
         self._command_storage_manager.add_commands((
             (
-                self._task_manager.setup_command_name("workspace_export"),
-                self.run_command_workspace_export,
+                self._task_manager.setup_command_name("filesystem_copy"),
+                self.run_command_filesystem_copy,
             ),
             (
-                self._task_manager.setup_command_name("workspace_import"),
-                self.run_command_workspace_import,
+                self._task_manager.setup_command_name("filesystem_move"),
+                self.run_command_filesystem_move,
             ),
             (
-                self._task_manager.setup_command_name("workspace_setup"),
-                self.run_command_workspace_setup,
+                self._task_manager.setup_command_name("filesystem_rename"),
+                self.run_command_filesystem_rename,
             ),
             (
-                self._task_manager.setup_command_name("workspace_replenish"),
-                self.run_command_workspace_replenish,
+                self._task_manager.setup_command_name("filesystem_tree_setup"),
+                self.run_command_filesystem_tree_setup,
             ),
             (
-                self._task_manager.setup_command_name("workspace_install"),
-                self.run_command_workspace_install,
+                self._task_manager.setup_command_name("filesystem_clean_path"),
+                self.run_command_filesystem_clean_path,
             ),
             (
-                self._task_manager.setup_command_name("workspace_list_exports"),
-                self.run_command_workspace_list_exports,
+                self._task_manager.setup_command_name("filesystem_clean_selection"),
+                self.run_command_filesystem_clean_selection,
+            ),
+            (
+                self._task_manager.setup_command_name("filesystem_clean_list_included"),
+                self.run_command_filesystem_clean_list_included,
+            ),
+            (
+                self._task_manager.setup_command_name("filesystem_clean_list_excluded"),
+                self.run_command_filesystem_clean_list_excluded,
             ),
         ))
 
-    def run_command_workspace_export(
+    def run_command_filesystem_copy(
         self,
         **kwargs: Any
     ) -> bool:
         return True
 
-    def run_command_workspace_import(
+    def run_command_filesystem_move(
         self,
         **kwargs: Any
     ) -> bool:
         return True
 
-    def run_command_workspace_setup(
+    def run_command_filesystem_rename(
         self,
         **kwargs: Any
     ) -> bool:
         return True
 
-    def run_command_workspace_replenish(
+    def run_command_filesystem_tree_setup(
         self,
         **kwargs: Any
     ) -> bool:
         return True
 
-    def run_command_workspace_install(
+    def run_command_filesystem_clean_path(
         self,
         **kwargs: Any
     ) -> bool:
         return True
 
-    def run_command_workspace_list_exports(
+    def run_command_filesystem_clean_selection(
+        self,
+        **kwargs: Any
+    ) -> bool:
+        return True
+
+    def run_command_filesystem_clean_list_included(
         self,
         **kwargs: Any
     ) -> bool:
         self._task_manager.run_task_common_setup()
-        self._task_manager.run_task_export_group_setup()
-        self._task_manager.run_task_export_selection_setup()
+        self._task_manager.run_task_filesystem_clean_include_setup()
 
         value = {}
-        export_groups = (
-            self._value_cache_database_manager.read_export_group()
+        filesystem_clean_included = (
+            self._value_cache_database_manager.read_filesystem_clean_included()
         ) or {}
-        if export_groups:
-            value["groups"] = export_groups
-
-        export_selections = (
-            self._value_cache_database_manager.read_export_selection()
-        ) or {}
-        if export_selections:
-            value["selections"] = export_selections
+        if filesystem_clean_included:
+            value["included"] = filesystem_clean_included
 
         if not value:
             return False
@@ -207,6 +214,50 @@ class CommandWorkspaceManager:
             self._value_cache_database_manager
                 .read_configuration_workspace_data_display_console_style_vertical_count_value()
         )
+        self._display_manager.display_tree_object(
+            value=value,
+            maximum_depth=maximum_depth,
+            is_skipped=is_skipped,
+            indent_count=indent_count,
+            vertical_space_count=vertical_space_count,
+        )
+
+        return True
+
+    def run_command_filesystem_clean_list_excluded(
+        self,
+        **kwargs: Any
+    ) -> bool:
+        self._task_manager.run_task_common_setup()
+        self._task_manager.run_task_filesystem_clean_exclude_setup()
+
+        value = {}
+        filesystem_clean_excluded = (
+            self._value_cache_database_manager.read_filesystem_clean_excluded()
+        ) or {}
+        if filesystem_clean_excluded:
+            value["excluded"] = filesystem_clean_excluded
+
+        if not value:
+            return False
+
+        maximum_depth = (
+            self._value_cache_database_manager
+                .read_configuration_workspace_data_display_console_style_maximum_depth_value()
+        )
+        is_skipped = (
+            self._value_cache_database_manager
+                .read_configuration_workspace_data_display_console_style_is_skipped_value()
+        )
+        indent_count = (
+            self._value_cache_database_manager
+                .read_configuration_workspace_data_display_console_style_indent_count_value()
+        )
+        vertical_space_count = (
+            self._value_cache_database_manager
+                .read_configuration_workspace_data_display_console_style_vertical_count_value()
+        )
+
         self._display_manager.display_tree_object(
             value=value,
             maximum_depth=maximum_depth,

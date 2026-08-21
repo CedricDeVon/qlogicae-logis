@@ -154,14 +154,20 @@ data:
           - run:
               value: hatch run test-type-check
 
-
       qlogicae-logis-build:
         filesystem-path:
           value: ${{ qlogicae-logis-selection-project-filesystem-path }}
           
         scripts:
-          # - run:
-          #     value: hatch run minify
+          - run:
+              value: run_command_filesystem_copy          
+            argument:
+              source_path: qlogicae_logis
+              target_paths:
+                - ${{ qlogicae-logis-selection-project-filesystem-path }}/tmp
+
+          - run:
+              value: hatch run minify
 
           - run:
               value: hatch build
@@ -171,6 +177,13 @@ data:
             argument:
               source_path: dist
               target_path: ${{ qlogicae-logis-output-build-release-filesystem-path }}
+
+          - run:
+              value: run_command_filesystem_copy          
+            argument:
+              source_path: tmp
+              target_paths:
+                - ${{ qlogicae-logis-selection-project-filesystem-path }}/qlogicae_logis
 
 
       qlogicae-logis-test-pip-deployment:
@@ -329,6 +342,7 @@ data:
               target_paths:
                 - dist
                 - output
+                - tmp                
 
   macros:  
     file:

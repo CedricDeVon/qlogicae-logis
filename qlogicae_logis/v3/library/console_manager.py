@@ -15,6 +15,7 @@ _CommandDebugManager: Any = None
 _CommandWorkflowManager: Any = None
 _CommandTemplateManager: Any = None
 _CommandWorkspaceManager: Any = None
+_CommandFilesystemManager: Any = None
 
 
 def _handle_dynamic_imports() -> None:
@@ -28,6 +29,7 @@ def _handle_dynamic_imports() -> None:
     global _CommandWorkflowManager
     global _CommandTemplateManager
     global _CommandWorkspaceManager
+    global _CommandFilesystemManager
 
     import argparse
 
@@ -35,6 +37,7 @@ def _handle_dynamic_imports() -> None:
         command_about_manager,
         command_cache_manager,
         command_debug_manager,
+        command_filesystem_manager,
         command_template_manager,
         command_workflow_manager,
         command_workspace_manager,
@@ -51,6 +54,7 @@ def _handle_dynamic_imports() -> None:
     _CommandWorkflowManager = command_workflow_manager.CommandWorkflowManager
     _CommandTemplateManager = command_template_manager.CommandTemplateManager
     _CommandWorkspaceManager = command_workspace_manager.CommandWorkspaceManager
+    _CommandFilesystemManager = command_filesystem_manager.CommandFilesystemManager
 
     _handle_dynamic_imports = lambda: None
 
@@ -62,6 +66,10 @@ class ConsoleManager:
         "_command_about_manager",
         "_command_cache_manager",
         "_command_debug_manager",
+        "_command_filesystem_manager",
+        "_command_template_manager",
+        "_command_workflow_manager",
+        "_command_workspace_manager",
         "_task_manager",
     )
 
@@ -83,6 +91,18 @@ class ConsoleManager:
         )
         self._command_debug_manager = _ImportManager.get_singleton(
             _CommandDebugManager
+        )
+        self._command_filesystem_manager = _ImportManager.get_singleton(
+            _CommandFilesystemManager
+        )
+        self._command_template_manager = _ImportManager.get_singleton(
+            _CommandTemplateManager
+        )
+        self._command_workflow_manager = _ImportManager.get_singleton(
+            _CommandWorkflowManager
+        )
+        self._command_workspace_manager = _ImportManager.get_singleton(
+            _CommandWorkspaceManager
         )
         self._task_manager = _ImportManager.get_singleton(
             _TaskManager
@@ -114,7 +134,6 @@ class ConsoleManager:
         return True
 
     def setup_about_command(self) -> bool:
-
         def about_version(
             arguments: _argparse.Namespace,
         ) -> bool:
@@ -360,41 +379,49 @@ class ConsoleManager:
         def filesystem_copy(
             arguments: _argparse.Namespace,
         ) -> bool:
+            self._command_filesystem_manager.run_command_filesystem_copy()
             return True
 
         def filesystem_move(
             arguments: _argparse.Namespace,
         ) -> bool:
+            self._command_filesystem_manager.run_command_filesystem_move()
             return True
 
         def filesystem_rename(
             arguments: _argparse.Namespace,
         ) -> bool:
+            self._command_filesystem_manager.run_command_filesystem_rename()
             return True
 
         def filesystem_tree_setup(
             arguments: _argparse.Namespace,
         ) -> bool:
+            self._command_filesystem_manager.run_command_filesystem_tree_setup()
             return True
 
         def filesystem_clean_path(
             arguments: _argparse.Namespace,
         ) -> bool:
+            self._command_filesystem_manager.run_command_filesystem_clean_path()
             return True
 
         def filesystem_clean_selection(
             arguments: _argparse.Namespace,
         ) -> bool:
+            self._command_filesystem_manager.run_command_filesystem_clean_selection()
             return True
 
         def filesystem_clean_list_included(
             arguments: _argparse.Namespace,
         ) -> bool:
+            self._command_filesystem_manager.run_command_filesystem_clean_list_included()
             return True
 
         def filesystem_clean_list_excluded(
             arguments: _argparse.Namespace,
         ) -> bool:
+            self._command_filesystem_manager.run_command_filesystem_clean_list_excluded()
             return True
 
 
@@ -634,31 +661,37 @@ class ConsoleManager:
         def workspace_export(
             arguments: _argparse.Namespace,
         ) -> bool:
+            self._command_workspace_manager.run_command_workspace_export()
             return True
 
         def workspace_import(
             arguments: _argparse.Namespace,
         ) -> bool:
+            self._command_workspace_manager.run_command_workspace_import()
             return True
 
         def workspace_setup(
             arguments: _argparse.Namespace,
         ) -> bool:
+            self._command_workspace_manager.run_command_workspace_setup()
             return True
 
         def workspace_replenish(
             arguments: _argparse.Namespace,
         ) -> bool:
+            self._command_workspace_manager.run_command_workspace_replenish()
             return True
 
         def workspace_install(
             arguments: _argparse.Namespace,
         ) -> bool:
+            self._command_workspace_manager.run_command_workspace_install()
             return True
 
         def workspace_list_exports(
             arguments: _argparse.Namespace,
         ) -> bool:
+            self._command_workspace_manager.run_command_workspace_list_exports()
             return True
 
         application_workspace = self._commands.add_parser(
@@ -795,12 +828,15 @@ class ConsoleManager:
         def template_apply(
             arguments: _argparse.Namespace,
         ) -> bool:
+            self._command_template_manager.run_command_template_apply()
             return True
 
         def template_list_selections(
             arguments: _argparse.Namespace,
         ) -> bool:
+            self._command_template_manager.run_command_template_list_selections()
             return True
+
 
         application_template = self._commands.add_parser(
             "template",
@@ -861,11 +897,13 @@ class ConsoleManager:
         def workflow_run(
             arguments: _argparse.Namespace,
         ) -> bool:
+            self._command_workflow_manager.run_command_workflow_run()
             return True
 
         def workflow_list_selections(
             arguments: _argparse.Namespace,
         ) -> bool:
+            self._command_workflow_manager.run_command_workflow_list_selections()
             return True
 
 

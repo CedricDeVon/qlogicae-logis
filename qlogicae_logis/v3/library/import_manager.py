@@ -6,20 +6,24 @@ __all__ = (
     "ImportManager"
 )
 
+_gc: Any = None
 _sys: Any = None
 _time: Any = None
 _uuid: Any = None
 _yaml: Any = None
 _Path: Any = None
 _shutil: Any = None
+_logging: Any = None
 _Mapping: Any = None
 _Sequence: Any = None
 _argparse: Any = None
+_resource: Any = None
 _Timestamp: Any = None
 _LogOptions: Any = None
 _LogManager: Any = None
 _JsonManager: Any = None
 _TimeManager: Any = None
+_tracemalloc: Any = None
 _MacrosManager: Any = None
 _SystemManager: Any = None
 _ScriptProcess: Any = None
@@ -56,12 +60,16 @@ _FolderEntityFileSystemTreeSetupOptions: Any = None
 
 def _handle_dynamic_imports() -> None:
     global _handle_dynamic_imports
+    global _gc
+    global _resource
+    global _tracemalloc
     global _sys
     global _time
     global _uuid
     global _yaml
     global _Path
     global _shutil
+    global _logging
     global _argparse
     global _Timestamp
     global _LogOptions
@@ -104,9 +112,13 @@ def _handle_dynamic_imports() -> None:
     global _Sequence
 
     import argparse
+    import gc
+    import logging
+    import resource
     import shutil
     import sys
     import time
+    import tracemalloc
     import uuid
     from collections.abc import Mapping, Sequence
     from concurrent.futures import ThreadPoolExecutor
@@ -150,6 +162,10 @@ def _handle_dynamic_imports() -> None:
         value_cache_manager,
     )
 
+    _gc = gc
+    _logging = logging
+    _resource = resource
+    _tracemalloc = tracemalloc
     _sys = sys
     _Mapping = Mapping
     _Sequence = Sequence
@@ -331,6 +347,27 @@ class ImportManager:
             )
         )
 
+    def snapshot_memory_usage(self) -> Any:
+        current_bytes, peak_bytes = (
+            _tracemalloc.get_traced_memory()
+            if _tracemalloc.is_tracing()
+            else (0, 0)
+        )
+
+        peak_rss = _resource.getrusage(
+            _resource.RUSAGE_SELF,
+        ).ru_maxrss
+
+        if _sys.platform != "darwin":
+            peak_rss *= 1024
+
+        return {
+            "tracemalloc-current": { "value": current_bytes },
+            "tracemalloc-peak": { "value": peak_bytes },
+            "process-peak-rss": { "value": peak_rss },
+            "gc-tracked-objects": { "value": len(_gc.get_objects(),) },
+        }
+
     # TimeManager
     def read_current_iso8601_date(
         self,
@@ -444,7 +481,7 @@ class ImportManager:
             ),
         )
 
-        return False
+        return True
 
     def remove_many_values_via_disk_cache(
         self,
@@ -460,6 +497,22 @@ class ImportManager:
         )
 
         return value
+
+    def open_via_disk_cache(
+        self,
+        **kwargs: Any,
+    ) -> bool:
+        self._disk_cache_storage_manager.open()
+
+        return True
+
+    def close_via_disk_cache(
+        self,
+        **kwargs: Any,
+    ) -> bool:
+        self._disk_cache_storage_manager.close()
+
+        return True
 
     def clear_all_values_via_disk_cache(
         self,
@@ -1307,7 +1360,7 @@ class ImportManager:
             )
 
         else:
-            return False
+            return True
 
         return True
 
@@ -1583,6 +1636,34 @@ class ImportManager:
                 "message",
                 "",
             ),
+        )
+
+        return True
+
+    def log_cache_info_to_file(
+        self,
+        **kwargs: Any,
+    ) -> bool:
+        self._file_log_manager.cache_log(
+            message=kwargs.get(
+                "message",
+                "",
+            ),
+            log_level=_logging.INFO
+        )
+
+        return True
+
+    def log_cache_warning_to_file(
+        self,
+        **kwargs: Any,
+    ) -> bool:
+        self._file_log_manager.cache_log(
+            message=kwargs.get(
+                "message",
+                "",
+            ),
+            log_level=_logging.WARNING
         )
 
         return True

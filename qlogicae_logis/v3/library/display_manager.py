@@ -220,7 +220,14 @@ class DisplayManager:
             if isinstance(value, (int, float)):
                 return str(value)
 
+
             return repr(value)
+
+        def is_set(value: Any) -> bool:
+            return isinstance(
+                value,
+                (set, frozenset),
+            )
 
         def is_sequence(value: Any) -> bool:
             return (
@@ -311,6 +318,7 @@ class DisplayManager:
                 print(v)
             else:
                 input(v)
+                
 
 
         def print_spacing(
@@ -401,7 +409,7 @@ class DisplayManager:
 
                 if label is not None:
                     text = (
-                        f"{label}: "
+                        f"{label} "
                         f"{text}"
                     )
 
@@ -422,7 +430,7 @@ class DisplayManager:
 
                 if label is not None:
                     text = (
-                        f"{label}: "
+                        f"{label} "
                         f"{text}"
                     )
 
@@ -445,7 +453,7 @@ class DisplayManager:
 
                     if label is not None:
                         text = (
-                            f"{label}: "
+                            f"{label} "
                             f"{text}"
                         )
 
@@ -460,7 +468,7 @@ class DisplayManager:
                     print_line(
                         prefixes,
                         is_last,
-                        f"{label}:",
+                        f"{label}",
                     )
 
                 child_prefixes = (
@@ -511,7 +519,7 @@ class DisplayManager:
 
                     if label is not None:
                         text = (
-                            f"{label}: "
+                            f"{label} "
                             f"{text}"
                         )
 
@@ -526,7 +534,71 @@ class DisplayManager:
                     print_line(
                         prefixes,
                         is_last,
-                        f"{label}:",
+                        f"{label}",
+                    )
+
+                child_prefixes = (
+                    prefixes
+                    if label is None
+                    else prefixes + (not is_last,)
+                )
+
+                items = list(current)
+
+                for index in range(
+                    len(items) - 1,
+                    -1,
+                    -1,
+                ):
+                    item = items[index]
+
+                    child_is_last = (
+                        index == len(items) - 1
+                    )
+
+                    if not child_is_last:
+                        push_spacing(
+                            stack,
+                            child_prefixes,
+                        )
+
+                    stack.append(
+                        (
+                            "render",
+                            item,
+                            depth + 1,
+                            child_prefixes,
+                            child_is_last,
+                            None,
+                        )
+                    )
+
+                continue
+
+            if is_set(current):
+                visited.add(current_id)
+
+                if not current:
+                    text = self.color_value("{}")
+
+                    if label is not None:
+                        text = (
+                            f"{label} "
+                            f"{text}"
+                        )
+
+                    print_line(
+                        prefixes,
+                        is_last,
+                        text,
+                    )
+                    continue
+
+                if label is not None:
+                    print_line(
+                        prefixes,
+                        is_last,
+                        f"{label}",
                     )
 
                 child_prefixes = (
@@ -578,8 +650,8 @@ class DisplayManager:
                     print_line(
                         prefixes,
                         is_last,
-                        f"{label}:",
-                    )
+                        f"{label}",
+                    )                    
 
                 child_prefixes = (
                     prefixes
@@ -629,7 +701,7 @@ class DisplayManager:
 
             if label is not None:
                 text = (
-                    f"{label}: "
+                    f"{label} "
                     f"{text}"
                 )
 
@@ -642,4 +714,6 @@ class DisplayManager:
                     and label is None
                 ),
             )
+
+        print()
 

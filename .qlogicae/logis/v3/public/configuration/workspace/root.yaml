@@ -68,12 +68,12 @@ command:
             alias:
               ql:
 
-            # operating-system:
-            #   targets:
-            #     - name:
-            #         value: Linux
-            #       architecture:
-            #         value: x86_64
+            operating-system:
+              # exclude:
+              #   Linux-x86_64:
+
+              # include:
+              #   Linux-x86_64:
 
             targets:
               - filesystem-path:
@@ -82,79 +82,79 @@ command:
                 pattern:
                   value: ""
 
-export:
-  is-enabled:
-    value: true
-
-  cleanup:
+  export: #
     is-enabled:
       value: true
 
-  asynchronous:
-    is-enabled:
-      value: true          
+    cleanup:
+      is-enabled:
+        value: true
 
-  default:
-    filesystem:
-      include:
+    asynchronous:
+      is-enabled:
+        value: true          
+
+    default:
+      filesystem:
+        include:
+          is-enabled:
+            value: true
+
+        exclude:
+          is-enabled:
+            value: true
+
+      group:
         is-enabled:
           value: true
 
-      exclude:
+      selection:
         is-enabled:
           value: true
 
     group:
-      is-enabled:
-        value: true
+      group-1:
+        is-enabled:
+          value: true
+
+        selection:
+          workspace-1:
 
     selection:
-      is-enabled:
-        value: true
+      workspace-1:
+        alias:
+          ql:
 
-  group:
-    group-1:
-      is-enabled:
-        value: true
-
-      selection:
-        workspace-1:
-
-  selection:
-    workspace-1:
-      alias:
-        ql:
-
-      is-enabled:
-        value: true
-
-      input:    
-        root-path:
-          value: ${{ root-filesystem-path }}
-
-        targets:
-          - filesystem-path:
-              value: project.code-workspace            
-
-      output:
-        filesystem-path:
-          value: ${{ root-filesystem-path }}
-
-      compression:
-        format:
-          value: zip
-
-        type:
-          value: deflated
-
-        level:
-          value: 6
-
-        is-zip-64-allowed:
+        is-enabled:
           value: true
 
-        is-timestamp-strict:
-          value: true
+        input:    
+          root-path:
+            value: ${{ root-filesystem-path }}
+
+          targets:
+            - filesystem-path:
+                value: project.code-workspace            
+
+        output:
+          filesystem-path:
+            value: ${{ root-filesystem-path }}
+
+        compression:
+          format:
+            value: zip
+
+          type:
+            value: deflated
+
+          level:
+            value: 6
+
+          is-zip-64-allowed:
+            value: true
+
+          is-timestamp-strict:
+            value: true
 
 time: ##
   zone:
@@ -189,19 +189,13 @@ log: ##
     is-verbose: 
       value: true
 
-    # targets:
-    #   - filesystem-path:
-    #       value: a.log
-
-    #   - filesystem-path:
-    #       value: b.log
-
-    #   - filesystem-path:
-    #       value: c.log
+    targets:
+      # - filesystem-path:
+      #     value: a.log
 
   console:
     is-enabled:
-      value: true
+      value: false
 
     is-verbose: 
       value: true
@@ -239,10 +233,10 @@ display: ##
         value: True
 
       indent-count:
-        value: 2
+        value: 1
 
       vertical-count:
-        value: 1
+        value: 0
 
 macros: ##
   static:

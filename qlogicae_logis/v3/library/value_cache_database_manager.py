@@ -247,6 +247,48 @@ class ValueCacheDatabaseManager:
 
         return True
 
+    def read_debug_snapshot_execution_memory(
+        self,
+        label: str = "",
+    ) -> Any:
+        if not self._database_manager.read_debug():
+            return {}
+
+        result: Any = self.read_any_value(
+            (
+                "debug",
+                "snapshot",
+                f"{label}",
+                "memory",
+            ),
+        )
+
+        return result
+
+    def write_debug_snapshot_execution_memory(
+        self,
+        label: str = "",
+    ) -> bool:
+        if not self._database_manager.read_debug():
+            return True
+
+        value = (
+            self._import_manager
+                .snapshot_memory_usage()
+        )
+
+        self.write_any_value(
+            (
+                "debug",
+                "snapshot",
+                f"{label}",
+                "memory",
+            ),
+            value
+        )
+
+        return True
+
 
     def read_current_timestamp(self) -> int:
         result: int = self.read_any_value(
@@ -2220,6 +2262,7 @@ class ValueCacheDatabaseManager:
                 "configuration",
                 "workspace",
                 "data",
+                "command",
                 "export",
             ),
         ) or {}
@@ -2235,6 +2278,7 @@ class ValueCacheDatabaseManager:
                 "configuration",
                 "workspace",
                 "data",
+                "command",
                 "export",
                 "group",
             ),
@@ -2251,6 +2295,7 @@ class ValueCacheDatabaseManager:
                 "configuration",
                 "workspace",
                 "data",
+                "command",
                 "export",
             ),
         ) or {}
@@ -2266,6 +2311,7 @@ class ValueCacheDatabaseManager:
                 "configuration",
                 "workspace",
                 "data",
+                "command",
                 "export",
                 "selection",
             ),
@@ -2361,18 +2407,18 @@ class ValueCacheDatabaseManager:
 
     def read_workspace_group(
         self
-    ) -> set[str]:
+    ) -> Any:
         result: Any = self.read_any_value(
             (
                 "workspace",
             ),
         ) or {}
 
-        return set(result.get("group", set()))
+        return result.get("group", {})
 
     def write_workspace_group(
         self,
-        value: set[str]
+        value: Any
     ) -> bool:
         self.write_any_value(
             (
@@ -2386,18 +2432,18 @@ class ValueCacheDatabaseManager:
 
     def read_workspace_project(
         self
-    ) -> set[str]:
+    ) -> Any:
         result: Any = self.read_any_value(
             (
                 "workspace",
             ),
         ) or {}
 
-        return set(result.get("project", set()))
+        return result.get("project", {})
 
     def write_workspace_project(
         self,
-        value: set[str]
+        value: Any
     ) -> bool:
         self.write_any_value(
             (
@@ -2411,18 +2457,18 @@ class ValueCacheDatabaseManager:
 
     def read_workspace_default(
         self
-    ) -> set[str]:
+    ) -> Any:
         result: Any = self.read_any_value(
             (
                 "workspace",
             ),
         ) or {}
 
-        return set(result.get("default", set()))
+        return result.get("default", {})
 
     def write_workspace_default(
         self,
-        value: set[str]
+        value: Any
     ) -> bool:
         self.write_any_value(
             (
@@ -2436,18 +2482,18 @@ class ValueCacheDatabaseManager:
 
     def read_workspace_all(
         self
-    ) -> set[str]:
+    ) -> Any:
         result: Any = self.read_any_value(
             (
                 "workspace",
             ),
         ) or {}
 
-        return set(result.get("all", set()))
+        return result.get("all", {})
 
     def write_workspace_all(
         self,
-        value: set[str]
+        value: Any
     ) -> bool:
         self.write_any_value(
             (
@@ -2461,18 +2507,18 @@ class ValueCacheDatabaseManager:
 
     def read_export_selection(
         self
-    ) -> set[str]:
+    ) -> Any:
         result: Any = self.read_any_value(
             (
                 "export",
             ),
         ) or {}
 
-        return set(result.get("selection", set()))
+        return result.get("selection", {})
 
     def write_export_selection(
         self,
-        value: set[str]
+        value: Any
     ) -> bool:
         self.write_any_value(
             (
@@ -2486,18 +2532,18 @@ class ValueCacheDatabaseManager:
 
     def read_export_group(
         self
-    ) -> set[str]:
+    ) -> Any:
         result: Any = self.read_any_value(
             (
                 "export",
             ),
         ) or {}
 
-        return set(result.get("group", set()))
+        return result.get("group", {})
 
     def write_export_group(
         self,
-        value: set[str]
+        value: Any
     ) -> bool:
         self.write_any_value(
             (
@@ -2511,18 +2557,18 @@ class ValueCacheDatabaseManager:
 
     def read_workflow_selection(
         self
-    ) -> set[str]:
+    ) -> Any:
         result: Any = self.read_any_value(
             (
                 "workflow",
             ),
         ) or {}
 
-        return set(result.get("selection", set()))
+        return result.get("selection", {})
 
     def write_workflow_selection(
         self,
-        value: set[str]
+        value: Any
     ) -> bool:
         self.write_any_value(
             (
@@ -2533,4 +2579,261 @@ class ValueCacheDatabaseManager:
         )
 
         return True
+
+    def read_object_macros(
+        self,
+        data: Any,
+    ) -> Any:
+        outputs: Any = {}
+        if not data:
+            return outputs
+
+        outputs = (
+            self.read_object_macros_values(
+                data
+            )
+        )
+
+        return outputs
+
+    def read_object_filesystem_values(
+        self,
+        data: Any,
+    ) -> set[str]:
+        outputs: set[str] = set()
+        if not data:
+            return outputs
+
+        for item in data:
+            if not item or "filesystem-path" not in item:
+                continue
+
+            if (
+                item and
+                "operating-system" in item and
+                not self.read_is_object_operating_system_included(
+                    item["operating-system"]
+                )
+            ):
+                continue
+
+            item = item["filesystem-path"]
+            if not item or "value" not in item:
+                continue
+
+            item = item["value"]
+
+            outputs.add(
+                item
+            )
+
+        return outputs
+
+    def read_object_macros_values(
+        self,
+        data: Any,
+    ) -> Any:
+        outputs: Any = {}
+        if not data:
+            return outputs
+
+        for key, item in data.items():
+            if not item or "value" not in item:
+                continue
+
+            if (
+                item and
+                "operating-system" in item and
+                not self.read_is_object_operating_system_included(
+                    item["operating-system"]
+                )
+            ):
+                continue
+
+            outputs[key] = item["value"]
+            if item and "alias" in item:
+                alias_items = (
+                    self.read_object_alias_item_values(
+                        item["alias"],
+                    )
+                )
+                for alias_item in alias_items:
+                    outputs[alias_item] = item["value"]
+
+        return outputs
+
+    def read_object_selections(
+        self,
+        data: Any,
+    ) -> Any:
+        outputs: Any = {}
+        if not data:
+            return outputs
+
+        for key, item in data.items():
+            if (
+                item and
+                "operating-system" in item and
+                not self.read_is_object_operating_system_included(
+                    item["operating-system"]
+                )
+            ):
+                continue
+
+            outputs[key] = key
+            if item and "alias" in item:
+                alias_items = (
+                    self.read_object_alias_item_values(
+                        item["alias"],
+                    )
+                )
+                for alias_item in alias_items:
+                    outputs[alias_item] = key
+
+        return outputs
+
+    def read_object_filesystem_pattern_values(
+        self,
+        data: Any,
+    ) -> set[str]:
+        outputs: set[str] = set()
+        if not data:
+            return outputs
+
+        for item in data:
+            if not item or "filesystem-path" not in item:
+                continue
+
+            if (
+                item and
+                "operating-system" in item and
+                not self.read_is_object_operating_system_included(
+                    item["operating-system"]
+                )
+            ):
+                continue
+
+            item_filesystem_path = item["filesystem-path"]
+            if "value" not in item_filesystem_path:
+                continue
+
+            item_filesystem_path_value = item_filesystem_path["value"]
+            item_pattern_value = item.get("pattern", {}).get("value", "")
+
+            if item_pattern_value:
+                paths = (
+                    self._import_manager
+                        .read_filesystem_via_pattern(
+                            filesystem_path=item_filesystem_path_value,
+                            pattern=item_pattern_value
+                        )
+                )
+                for path in paths:
+                    outputs.add(
+                        f"{path}"
+                    )
+
+            outputs.add(
+                item_filesystem_path_value
+            )
+
+        return outputs
+
+    def read_object_exclude_filesystem_path_values(
+        self,
+        data: Any,
+    ) -> Any:
+        return self.read_object_filesystem_pattern_values(
+            data
+        )
+
+    def read_object_include_filesystem_path_values(
+        self,
+        data: Any,
+    ) -> Any:
+        outputs: Any = {}
+        if not data:
+            return outputs
+
+        for _key, item in data.items():
+            if "targets" not in item:
+                continue
+
+            outputs[_key] = (
+                self.read_object_filesystem_pattern_values(
+                    item["targets"]
+                )
+            )
+
+        return outputs
+
+    def read_object_command_filesystem_clean_included(
+        self,
+        data: Any,
+    ) -> Any:
+        outputs: Any = (
+            self.read_object_selections(
+                data
+            )
+        )
+        return outputs
+
+    def read_object_alias_item_values(
+        self,
+        data: Any,
+    ) -> set[str]:
+        outputs: set[str] = set()
+
+        for key, _item in data.items():
+            outputs.add(key)
+
+        return outputs
+
+    def read_object_system_is_include(
+        self,
+        data: Any,
+    ) -> set[str]:
+        outputs: set[str] = set()
+
+        for key, _item in data.items():
+            outputs.add(key)
+
+        return outputs
+
+    def read_is_object_operating_system_included(
+        self,
+        data: Any,
+    ) -> bool:
+        if not data or ("include" not in data and "exclude" not in data):
+            return True
+
+        operating_system_name = (
+            self.read_operating_system_name()
+        )
+        operating_system_architecture = (
+            self.read_operating_system_architecture()
+        )
+        target = (
+            f"{operating_system_name}-{operating_system_architecture}"
+        )
+        included = data.get("include", {})
+        excluded = data.get("exclude", {})
+
+        if target in excluded:
+            return False
+
+        if target in included:
+            return True
+
+        return False
+
+    def read_file_data(
+        self,
+        data: Any,
+        metadata: Any,
+    ) -> Any:
+        return {
+            "data": data,
+            "metadata": metadata,
+        } or {}
 
