@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import Any
 
+from ..library.decorator_manager import DecoratorManager
+
 __all__ = (
     "CommandFilesystemManager"
 )
@@ -10,6 +12,7 @@ _TaskManager: Any = None
 _ImportManager: Any = None
 _DisplayManager: Any = None
 _DatabaseManager: Any = None
+_DecoratorManager = DecoratorManager
 _CommandStorageManager: Any = None
 _ValueCacheDatabaseManager: Any = None
 _PersistentCacheDatabasManager: Any = None
@@ -75,37 +78,36 @@ class CommandFilesystemManager:
     def __init__(self) -> None:
         _handle_dynamic_imports()
 
-        self._command_storage_manager = _ImportManager.get_singleton(
+        self._command_storage_manager = _ImportManager.read_singleton(
             _CommandStorageManager
         )
-
         self._display_manager = (
-            _ImportManager.get_singleton(
+            _ImportManager.read_singleton(
                 _DisplayManager
             )
         )
         self._task_manager = (
-            _ImportManager.get_singleton(
+            _ImportManager.read_singleton(
                 _TaskManager
             )
         )
         self._import_manager = (
-            _ImportManager.get_singleton(
+            _ImportManager.read_singleton(
                 _ImportManager
             )
         )
         self._database_manager = (
-            _ImportManager.get_singleton(
+            _ImportManager.read_singleton(
                 _DatabaseManager
             )
         )
         self._value_cache_database_manager = (
-            _ImportManager.get_singleton(
+            _ImportManager.read_singleton(
                 _ValueCacheDatabaseManager
             )
         )
         self._persistent_cache_database_manager = (
-            _ImportManager.get_singleton(
+            _ImportManager.read_singleton(
                 _PersistentCacheDatabasManager
             )
         )
@@ -145,42 +147,141 @@ class CommandFilesystemManager:
             ),
         ))
 
+    @_DecoratorManager.command_decorator
     def run_command_filesystem_copy(
         self,
         **kwargs: Any
     ) -> bool:
-        return True
+        self._task_manager.run_task_common_setup()
 
+        value: bool = self._import_manager.copy_filesystem_paths(
+            **kwargs,
+        )
+
+        return value
+
+    @_DecoratorManager.command_decorator
     def run_command_filesystem_move(
         self,
         **kwargs: Any
     ) -> bool:
-        return True
+        self._task_manager.run_task_common_setup()
 
+        value: bool = self._import_manager.move_filesystem_path(
+            **kwargs,
+        )
+
+        return value
+
+    @_DecoratorManager.command_decorator
     def run_command_filesystem_rename(
         self,
         **kwargs: Any
     ) -> bool:
-        return True
+        self._task_manager.run_task_common_setup()
 
+        value: bool = self._import_manager.rename_filesystem_entity(
+            **kwargs,
+        )
+
+        return value
+
+    @_DecoratorManager.command_decorator
     def run_command_filesystem_tree_setup(
         self,
         **kwargs: Any
     ) -> bool:
-        return True
+        self._task_manager.run_task_common_setup()
 
+        value: bool = self._import_manager.setup_filesystem_tree_paths(
+            **kwargs,
+        )
+
+        return value
+
+    @_DecoratorManager.command_decorator
     def run_command_filesystem_clean_path(
         self,
         **kwargs: Any
     ) -> bool:
+        self._task_manager.run_task_common_setup()
+        self._task_manager.run_task_filesystem_clean_exclude_setup()
+
+        target_paths = kwargs.get("target_paths", tuple())
+        if len(target_paths) < 1:
+            return False
+
+        excluded = (
+            self._value_cache_database_manager.read_filesystem_clean_excluded()
+        ) or {}
+        for target_path in target_paths:
+            if not target_path:
+                continue
+
+            if target_path in excluded:
+                continue
+
+            self._import_manager.clean_filesystem_paths(
+                target_paths=(target_path,)
+            )
+
         return True
 
+    @_DecoratorManager.command_decorator
     def run_command_filesystem_clean_selection(
         self,
         **kwargs: Any
     ) -> bool:
+        self._task_manager.run_task_common_setup()
+        self._task_manager.run_task_filesystem_clean_include_setup()
+        self._task_manager.run_task_filesystem_clean_exclude_setup()
+
+        targets = kwargs.get("targets", tuple())
+        selections = (
+            self._value_cache_database_manager
+                .read_configuration_workspace_data_command_filesystem_clean_include_selection()
+        ) or {}
+        included = (
+            self._value_cache_database_manager.read_filesystem_clean_included()
+        ) or {}
+        excluded = (
+            self._value_cache_database_manager.read_filesystem_clean_excluded()
+        ) or {}
+        for target in targets:
+            if not target or target not in included:
+                continue
+
+            selection = (
+                selections
+                    .get(
+                        included
+                            .get(
+                                target,
+                                ""
+                            ),
+                        ""
+                    )
+            )
+            if not selection:
+                continue
+
+            paths = (
+                self._value_cache_database_manager
+                    .read_object_filesystem_pattern_values(
+                        selection.get("targets", {})
+                    )
+            )
+            for path in paths:
+                if not path or path in excluded:
+                    continue
+
+                self._import_manager.clean_filesystem_paths(
+                    target_paths=(path,)
+                )
+
         return True
 
+    @_DecoratorManager.command_decorator
     def run_command_filesystem_clean_list_included(
         self,
         **kwargs: Any
@@ -198,32 +299,13 @@ class CommandFilesystemManager:
         if not value:
             return False
 
-        maximum_depth = (
-            self._value_cache_database_manager
-                .read_configuration_workspace_data_display_console_style_maximum_depth_value()
-        )
-        is_skipped = (
-            self._value_cache_database_manager
-                .read_configuration_workspace_data_display_console_style_is_skipped_value()
-        )
-        indent_count = (
-            self._value_cache_database_manager
-                .read_configuration_workspace_data_display_console_style_indent_count_value()
-        )
-        vertical_space_count = (
-            self._value_cache_database_manager
-                .read_configuration_workspace_data_display_console_style_vertical_count_value()
-        )
         self._display_manager.display_tree_object(
             value=value,
-            maximum_depth=maximum_depth,
-            is_skipped=is_skipped,
-            indent_count=indent_count,
-            vertical_space_count=vertical_space_count,
         )
 
         return True
 
+    @_DecoratorManager.command_decorator
     def run_command_filesystem_clean_list_excluded(
         self,
         **kwargs: Any
@@ -241,29 +323,8 @@ class CommandFilesystemManager:
         if not value:
             return False
 
-        maximum_depth = (
-            self._value_cache_database_manager
-                .read_configuration_workspace_data_display_console_style_maximum_depth_value()
-        )
-        is_skipped = (
-            self._value_cache_database_manager
-                .read_configuration_workspace_data_display_console_style_is_skipped_value()
-        )
-        indent_count = (
-            self._value_cache_database_manager
-                .read_configuration_workspace_data_display_console_style_indent_count_value()
-        )
-        vertical_space_count = (
-            self._value_cache_database_manager
-                .read_configuration_workspace_data_display_console_style_vertical_count_value()
-        )
-
         self._display_manager.display_tree_object(
             value=value,
-            maximum_depth=maximum_depth,
-            is_skipped=is_skipped,
-            indent_count=indent_count,
-            vertical_space_count=vertical_space_count,
         )
 
         return True

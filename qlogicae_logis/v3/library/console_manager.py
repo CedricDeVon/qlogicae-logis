@@ -9,6 +9,7 @@ __all__ = (
 _argparse: Any = None
 _TaskManager: Any = None
 _ImportManager: Any = None
+_DatabaseManager: Any = None
 _CommandAboutManager: Any = None
 _CommandCacheManager: Any = None
 _CommandDebugManager: Any = None
@@ -23,6 +24,7 @@ def _handle_dynamic_imports() -> None:
     global _argparse
     global _TaskManager
     global _ImportManager
+    global _DatabaseManager
     global _CommandAboutManager
     global _CommandCacheManager
     global _CommandDebugManager
@@ -41,6 +43,7 @@ def _handle_dynamic_imports() -> None:
         command_template_manager,
         command_workflow_manager,
         command_workspace_manager,
+        database_manager,
         import_manager,
         task_manager,
     )
@@ -48,6 +51,7 @@ def _handle_dynamic_imports() -> None:
     _argparse = argparse
     _TaskManager = task_manager.TaskManager
     _ImportManager = import_manager.ImportManager
+    _DatabaseManager = database_manager.DatabaseManager
     _CommandAboutManager = command_about_manager.CommandAboutManager
     _CommandCacheManager = command_cache_manager.CommandCacheManager
     _CommandDebugManager = command_debug_manager.CommandDebugManager
@@ -71,6 +75,7 @@ class ConsoleManager:
         "_command_workflow_manager",
         "_command_workspace_manager",
         "_task_manager",
+        "_database_manager",
     )
 
     def __init__(self) -> None:
@@ -83,29 +88,34 @@ class ConsoleManager:
             dest="command",
             metavar="",
         )
-        self._command_about_manager = _ImportManager.get_singleton(
+        self._command_about_manager = _ImportManager.read_singleton(
             _CommandAboutManager
         )
-        self._command_cache_manager = _ImportManager.get_singleton(
+        self._command_cache_manager = _ImportManager.read_singleton(
             _CommandCacheManager
         )
-        self._command_debug_manager = _ImportManager.get_singleton(
+        self._command_debug_manager = _ImportManager.read_singleton(
             _CommandDebugManager
         )
-        self._command_filesystem_manager = _ImportManager.get_singleton(
+        self._command_filesystem_manager = _ImportManager.read_singleton(
             _CommandFilesystemManager
         )
-        self._command_template_manager = _ImportManager.get_singleton(
+        self._command_template_manager = _ImportManager.read_singleton(
             _CommandTemplateManager
         )
-        self._command_workflow_manager = _ImportManager.get_singleton(
+        self._command_workflow_manager = _ImportManager.read_singleton(
             _CommandWorkflowManager
         )
-        self._command_workspace_manager = _ImportManager.get_singleton(
+        self._command_workspace_manager = _ImportManager.read_singleton(
             _CommandWorkspaceManager
         )
-        self._task_manager = _ImportManager.get_singleton(
+        self._task_manager = _ImportManager.read_singleton(
             _TaskManager
+        )
+        self._database_manager = (
+            _ImportManager.read_singleton(
+                _DatabaseManager
+            )
         )
 
     def run(self) -> bool:
@@ -137,20 +147,12 @@ class ConsoleManager:
         def about_version(
             arguments: _argparse.Namespace,
         ) -> bool:
-            command_about_manager.run_command_about_version()
+            self._command_about_manager.run_command_about_version()
             return True
 
-        def about_me(
-            arguments: _argparse.Namespace,
-        ) -> bool:
-            command_about_manager.run_command_about_me()
-            return True
-
-
-        command_about_manager = self._command_about_manager
         application_about = self._commands.add_parser(
             "about",
-            help="Show build information.",
+            help="Build information.",
         )
 
         application_about_commands = (
@@ -162,21 +164,11 @@ class ConsoleManager:
         application_about_version = (
             application_about_commands.add_parser(
                 "version",
-                help="Current version.",
+                help="Current version on pip.",
             )
         )
         application_about_version.set_defaults(
             command_handler=about_version,
-        )
-
-        application_about_me = (
-            application_about_commands.add_parser(
-                "me",
-                help="All information.",
-            )
-        )
-        application_about_me.set_defaults(
-            command_handler=about_me,
         )
 
         return True
@@ -185,33 +177,32 @@ class ConsoleManager:
         def cache_view_disk(
             arguments: _argparse.Namespace,
         ) -> bool:
-            command_cache_manager.run_command_cache_view_disk(
-                targets=(arguments.targets or [])
+            self._command_cache_manager.run_command_cache_view_disk(
+                key_paths=(arguments.key_paths or [])
             )
             return True
 
         def cache_view_value(
             arguments: _argparse.Namespace,
         ) -> bool:
-            command_cache_manager.run_command_cache_view_value(
-                targets=(arguments.targets or [])
+            self._command_cache_manager.run_command_cache_view_value(
+                key_paths=(arguments.key_paths or [])
             )
             return True
 
         def cache_clear_disk(
             arguments: _argparse.Namespace,
         ) -> bool:
-            command_cache_manager.run_command_cache_clear_disk()
+            self._command_cache_manager.run_command_cache_clear_disk()
             return True
 
         def cache_clear_value(
             arguments: _argparse.Namespace,
         ) -> bool:
-            command_cache_manager.run_command_cache_clear_value()
+            self._command_cache_manager.run_command_cache_clear_value()
             return True
 
 
-        command_cache_manager = self._command_cache_manager
         application_cache = self._commands.add_parser(
             "cache",
             help="Manage cache.",
@@ -237,11 +228,10 @@ class ConsoleManager:
         cache_view_disk_parser.add_argument(
             "--key-path",
             "-kp",
-            dest="targets",
+            dest="key_paths",
             action="append",
             default=[],
             type=str,
-            help="Key path.",
         )
         cache_view_disk_parser.set_defaults(
             command_handler=cache_view_disk,
@@ -254,11 +244,10 @@ class ConsoleManager:
         cache_view_value_parser.add_argument(
             "--key-path",
             "-kp",
-            dest="targets",
+            dest="key_paths",
             action="append",
             default=[],
             type=str,
-            help="Key path.",
         )
         cache_view_value_parser.set_defaults(
             command_handler=cache_view_value,
@@ -292,11 +281,14 @@ class ConsoleManager:
         return True
 
     def setup_debug_command(self) -> bool:
+        if not self._database_manager.read_debug_is_enabled():
+            return False
+
         def debug_view_value_cache(
             arguments: _argparse.Namespace,
         ) -> bool:
             self._command_debug_manager.run_command_debug_view_value_cache(
-                targets=(arguments.targets or [])
+                key_paths=(arguments.key_paths or [])
             )
             return True
 
@@ -304,7 +296,7 @@ class ConsoleManager:
             arguments: _argparse.Namespace,
         ) -> bool:
             self._command_debug_manager.run_command_debug_view_disk_cache(
-                targets=(arguments.targets or [])
+                key_paths=(arguments.key_paths or [])
             )
             return True
 
@@ -341,11 +333,10 @@ class ConsoleManager:
         application_debug_view_value_cache.add_argument(
             "--key-path",
             "-kp",
-            dest="targets",
+            dest="key_paths",
             action="append",
             default=[],
             type=str,
-            help="Value cache key path.",
         )
 
         application_debug_view_value_cache.set_defaults(
@@ -362,11 +353,10 @@ class ConsoleManager:
         application_debug_view_disk_cache.add_argument(
             "--key-path",
             "-kp",
-            dest="targets",
+            dest="key_paths",
             action="append",
             default=[],
             type=str,
-            help="Disk_cache key path.",
         )
 
         application_debug_view_disk_cache.set_defaults(
@@ -379,37 +369,52 @@ class ConsoleManager:
         def filesystem_copy(
             arguments: _argparse.Namespace,
         ) -> bool:
-            self._command_filesystem_manager.run_command_filesystem_copy()
+            self._command_filesystem_manager.run_command_filesystem_copy(
+                source_path=arguments.source_path,
+                target_paths=(arguments.target_paths or []),
+            )
             return True
 
         def filesystem_move(
             arguments: _argparse.Namespace,
         ) -> bool:
-            self._command_filesystem_manager.run_command_filesystem_move()
+            self._command_filesystem_manager.run_command_filesystem_move(
+                source_path=arguments.source_path,
+                target_path=arguments.target_path,
+            )
             return True
 
         def filesystem_rename(
             arguments: _argparse.Namespace,
         ) -> bool:
-            self._command_filesystem_manager.run_command_filesystem_rename()
+            self._command_filesystem_manager.run_command_filesystem_rename(
+                old_path=arguments.old_path,
+                new_path=arguments.new_path,
+            )
             return True
 
         def filesystem_tree_setup(
             arguments: _argparse.Namespace,
         ) -> bool:
-            self._command_filesystem_manager.run_command_filesystem_tree_setup()
+            self._command_filesystem_manager.run_command_filesystem_tree_setup(
+                target_paths=(arguments.target_paths or [])
+            )
             return True
 
         def filesystem_clean_path(
             arguments: _argparse.Namespace,
         ) -> bool:
-            self._command_filesystem_manager.run_command_filesystem_clean_path()
+            self._command_filesystem_manager.run_command_filesystem_clean_path(
+                target_paths=(arguments.target_paths or [])
+            )
             return True
 
         def filesystem_clean_selection(
             arguments: _argparse.Namespace,
         ) -> bool:
-            self._command_filesystem_manager.run_command_filesystem_clean_selection()
+            self._command_filesystem_manager.run_command_filesystem_clean_selection(
+                targets=(arguments.targets or [])
+            )
             return True
 
         def filesystem_clean_list_included(
@@ -446,26 +451,18 @@ class ConsoleManager:
         application_filesystem_copy.add_argument(
             "--source-path",
             "-sp",
+            dest="source_path",
             required=True,
             type=str,
-            help="Filesystem source path.",
         )
 
         application_filesystem_copy.add_argument(
-            "--target-paths",
+            "--target-path",
             "-tp",
+            dest="target_paths",
             required=True,
             nargs="+",
             type=str,
-            help="Filesystem target paths.",
-        )
-
-        application_filesystem_copy.add_argument(
-            "--overwrite",
-            "-o",
-            action=_argparse.BooleanOptionalAction,
-            default=False,
-            help="",
         )
 
         application_filesystem_copy.set_defaults(
@@ -482,25 +479,17 @@ class ConsoleManager:
         application_filesystem_move.add_argument(
             "--source-path",
             "-sp",
+            dest="source_path",
             required=True,
             type=str,
-            help="Filesystem source path.",
         )
 
         application_filesystem_move.add_argument(
             "--target-path",
             "-tp",
+            dest="target_path",
             required=True,
             type=str,
-            help="Filesystem target path.",
-        )
-
-        application_filesystem_move.add_argument(
-            "--overwrite",
-            "-o",
-            action=_argparse.BooleanOptionalAction,
-            default=False,
-            help="",
         )
 
         application_filesystem_move.set_defaults(
@@ -517,17 +506,17 @@ class ConsoleManager:
         application_filesystem_rename.add_argument(
             "--old-path",
             "-op",
+            dest="old_path",
             required=True,
             type=str,
-            help="Old file or folder name.",
         )
 
         application_filesystem_rename.add_argument(
             "--new-path",
             "-np",
+            dest="new_path",
             required=True,
             type=str,
-            help="New file or folder name.",
         )
 
         application_filesystem_rename.set_defaults(
@@ -555,12 +544,12 @@ class ConsoleManager:
         )
 
         application_filesystem_tree_setup.add_argument(
-            "--target-paths",
+            "--target-path",
             "-tp",
+            dest="target_paths",
             required=True,
             nargs="+",
             type=str,
-            help="Multiple folder paths.",
         )
 
         application_filesystem_tree_setup.set_defaults(
@@ -588,12 +577,12 @@ class ConsoleManager:
         )
 
         application_filesystem_clean_path.add_argument(
-            "--target-paths",
+            "--target-path",
             "-tp",
+            dest="target_paths",
             required=True,
             nargs="+",
             type=str,
-            help="List of cleaning filesystem paths.",
         )
 
         application_filesystem_clean_path.set_defaults(
@@ -608,9 +597,10 @@ class ConsoleManager:
         )
 
         application_filesystem_clean_selection.add_argument(
-            "targets",
+            "--target",
+            "-t",
+            dest="targets",
             nargs="+",
-            help="List of cleaning targets.",
         )
 
         application_filesystem_clean_selection.set_defaults(
@@ -661,19 +651,18 @@ class ConsoleManager:
         def workspace_export(
             arguments: _argparse.Namespace,
         ) -> bool:
-            self._command_workspace_manager.run_command_workspace_export()
+            self._command_workspace_manager.run_command_workspace_export(
+                targets=(arguments.targets or [])
+            )
             return True
 
         def workspace_import(
             arguments: _argparse.Namespace,
         ) -> bool:
-            self._command_workspace_manager.run_command_workspace_import()
-            return True
-
-        def workspace_setup(
-            arguments: _argparse.Namespace,
-        ) -> bool:
-            self._command_workspace_manager.run_command_workspace_setup()
+            self._command_workspace_manager.run_command_workspace_import(
+                input_path=(arguments.input_path or []),
+                output_path=(arguments.output_path or []),
+            )
             return True
 
         def workspace_replenish(
@@ -682,17 +671,26 @@ class ConsoleManager:
             self._command_workspace_manager.run_command_workspace_replenish()
             return True
 
-        def workspace_install(
-            arguments: _argparse.Namespace,
-        ) -> bool:
-            self._command_workspace_manager.run_command_workspace_install()
-            return True
-
         def workspace_list_exports(
             arguments: _argparse.Namespace,
         ) -> bool:
             self._command_workspace_manager.run_command_workspace_list_exports()
             return True
+
+        def workspace_setup(
+            arguments: _argparse.Namespace,
+        ) -> bool:
+            self._command_workspace_manager.run_command_workspace_setup()
+            return True
+
+        def workspace_install(
+            arguments: _argparse.Namespace,
+        ) -> bool:
+            self._command_workspace_manager.run_command_workspace_install(
+                targets=(arguments.targets or [])
+            )
+            return True
+
 
         application_workspace = self._commands.add_parser(
             "workspace",
@@ -713,10 +711,12 @@ class ConsoleManager:
         )
 
         application_workspace_export.add_argument(
-            "targets",
+            "--target",
+            "-t",
+            dest="targets",
             nargs="*",
+            type=str,
             default=[],
-            help="List of export targets.",
         )
 
         application_workspace_export.set_defaults(
@@ -731,27 +731,19 @@ class ConsoleManager:
         )
 
         application_workspace_import.add_argument(
-            "--input",
-            "-i",
-            dest="input_path",
+            "--input-path",
+            "-ip",
+            dest="target_path",
             default="",
             type=str,
-            help=(
-                "Input filesystem path of exported "
-                "workspace archive."
-            ),
         )
 
         application_workspace_import.add_argument(
-            "--output",
-            "-o",
+            "--output-path",
+            "-op",
             dest="output_path",
             default="",
             type=str,
-            help=(
-                "Output filesystem path from exported "
-                "workspace archive content."
-            ),
         )
 
         application_workspace_import.set_defaults(
@@ -788,10 +780,12 @@ class ConsoleManager:
         )
 
         application_workspace_install.add_argument(
-            "targets",
+            "--target",
+            "-t",
+            dest="targets",
             nargs="*",
+            type=str,
             default=[],
-            help="List of workspace targets.",
         )
 
         application_workspace_install.set_defaults(
@@ -828,7 +822,9 @@ class ConsoleManager:
         def template_apply(
             arguments: _argparse.Namespace,
         ) -> bool:
-            self._command_template_manager.run_command_template_apply()
+            self._command_template_manager.run_command_template_apply(
+                targets=(arguments.targets or [])
+            )
             return True
 
         def template_list_selections(
@@ -857,10 +853,12 @@ class ConsoleManager:
         )
 
         application_template_apply.add_argument(
-            "targets",
+            "--target",
+            "-t",
+            dest="targets",
             nargs="*",
+            type=str,
             default=[],
-            help="List of workspace targets.",
         )
 
         application_template_apply.set_defaults(
@@ -897,7 +895,9 @@ class ConsoleManager:
         def workflow_run(
             arguments: _argparse.Namespace,
         ) -> bool:
-            self._command_workflow_manager.run_command_workflow_run()
+            self._command_workflow_manager.run_command_workflow_run(
+                targets=(arguments.targets or [])
+            )
             return True
 
         def workflow_list_selections(
@@ -926,9 +926,12 @@ class ConsoleManager:
         )
 
         application_workflow_run.add_argument(
-            "targets",
+            "--target",
+            "-t",
+            dest="targets",
             nargs="+",
-            help="List of workflows.",
+            type=str,
+            default=[],
         )
 
         application_workflow_run.set_defaults(

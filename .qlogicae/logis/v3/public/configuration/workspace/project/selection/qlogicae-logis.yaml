@@ -6,8 +6,8 @@ workspace:
           ql:
 
         installation:
-          is-enabled:
-            value: true
+          # is-enabled:
+          #   value: true
 
           filesystem-path:
             value: ${{ qlogicae-logis-selection-project-filesystem-path }}
@@ -29,13 +29,9 @@ workflow:
         is-enabled:
           value: true
 
-      os:
-        selection:
-          linux:
-
-        is-enabled:
-            value: true
-            override: false
+      operating-system:
+        exclude:
+          Linux-x86_64:
 
       scripts:          
         - run:
@@ -318,10 +314,10 @@ macros:
           value: The project orchestration tool for QLogicae projects
 
         qlogicae-logis-current-version-number:
-          value: 2.0.16
+          value: 3.0.0
 
         qlogicae-logis-active-major-version-number:
-          value: 2
+          value: 3
 
         qlogicae-logis-active-major-version-label:
           value: v${{ qlogicae-logis-active-major-version-number }}

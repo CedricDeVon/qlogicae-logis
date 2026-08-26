@@ -1,46 +1,35 @@
-workspace:
-  is-enabled:
-    value: true
+# workspace:
+#   is-enabled:
+#     value: true
 
-workflow:
-  is-enabled:
-    value: true
+# workflow:
+#   is-enabled:
+#     value: true
 
 command:
-  cache:
-    value-cache:
-      hide:
-        key-path:
-          selection:
-            targets:
-              - key:
-                  value: a.b.c
-
-          pattern:
-            targets:
-              - value: api
-
   template:
-    is-enabled:
-      value: true
-
     cleanup:
-      is-enabled:
-        value: true
+      before:
+        is-enabled:
+          value: true
 
-  filesystem:
+      after:
+        is-enabled:
+          value: true
+
+  filesystem: ##
     clean:
-      is-enabled:
-        value: true
+      # is-enabled:
+      #   value: true
 
-      default:
-        include:
-          is-enabled:
-            value: true
+      # default:
+      #   include:
+      #     is-enabled:
+      #       value: true
 
-        exclude:
-          is-enabled:
-            value: true
+      #   exclude:
+      #     is-enabled:
+      #       value: true
 
       exclude:
         targets:
@@ -48,13 +37,14 @@ command:
               value: ${{ root-filesystem-path }}/.venv
 
           - filesystem-path:
-              value: ${{ root-filesystem-path }}/.benchmarks
-              
-            pattern:        
-              value: "*"
-
-          - filesystem-path:
               value: ${{ root-filesystem-path }}/others
+
+            # pattern:
+            #   value: "*"
+
+            # operating-system:
+            #   exclude:
+            #     Linux-x86_64:
 
           - filesystem-path:
               value: ${{ root-filesystem-path }}/project
@@ -66,11 +56,11 @@ command:
         selection:
           root:
             alias:
-              ql:
+              benchmarks:
 
-            operating-system:
-              # exclude:
-              #   Linux-x86_64:
+            # operating-system:
+            #   exclude:
+            #     Linux-x86_64:
 
               # include:
               #   Linux-x86_64:
@@ -83,62 +73,49 @@ command:
                   value: ""
 
   export: #
-    is-enabled:
-      value: true
-
     cleanup:
-      is-enabled:
-        value: true
-
-    asynchronous:
-      is-enabled:
-        value: true          
-
-    default:
-      filesystem:
-        include:
-          is-enabled:
-            value: true
-
-        exclude:
-          is-enabled:
-            value: true
-
-      group:
+      before:
         is-enabled:
           value: true
 
-      selection:
+      after:
         is-enabled:
           value: true
 
     group:
       group-1:
-        is-enabled:
-          value: true
+        alias:
+          qlgv3:
 
         selection:
-          workspace-1:
+          qlogicae-logis-v3:
 
     selection:
-      workspace-1:
+      qlogicae-logis-v3:
         alias:
-          ql:
-
-        is-enabled:
-          value: true
+          qlv3:
 
         input:    
-          root-path:
-            value: ${{ root-filesystem-path }}
+          include:
+            targets:
+              - filesystem-path:
+                  value: ${{ root-filesystem-path }}
 
-          targets:
-            - filesystem-path:
-                value: project.code-workspace            
+                pattern:
+                  value: ""
+
+          exclude:
+            targets:
+              - filesystem-path:
+                  value: ${{ root-filesystem-path }}
+
+              - pattern:
+                  value: "**/__pycache__/**"
 
         output:
-          filesystem-path:
-            value: ${{ root-filesystem-path }}
+          targets:
+            filesystem-path:
+              value: ${{ root-filesystem-path }}/project.code-workspace
 
         compression:
           format:
@@ -156,9 +133,22 @@ command:
           is-timestamp-strict:
             value: true
 
+
+cache: ##
+  cleanup:
+    before:
+      is-enabled:
+        value: false
+
+    after:
+      is-enabled:
+        value: false
+
+
 time: ##
   zone:
     value: local
+
 
 operating-system: ##
   name:
@@ -166,6 +156,7 @@ operating-system: ##
 
   architecture:
     value: x86_64
+
 
 log: ##
   is-enabled:
@@ -190,8 +181,8 @@ log: ##
       value: true
 
     targets:
-      # - filesystem-path:
-      #     value: a.log
+      - filesystem-path:
+          value: output.log
 
   console:
     is-enabled:
@@ -227,13 +218,13 @@ display: ##
         value: green
 
       maximum-depth:
-        value: 6
+        value: 14
 
       is-skipped:
         value: True
 
       indent-count:
-        value: 1
+        value: 4
 
       vertical-count:
         value: 0

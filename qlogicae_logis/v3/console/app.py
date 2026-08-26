@@ -7,7 +7,7 @@ def main() -> None:
         import_manager,
     )
 
-    import_manager.ImportManager.get_singleton(
+    import_manager.ImportManager.read_singleton(
         console_manager.ConsoleManager
     ).run()
 

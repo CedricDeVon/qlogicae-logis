@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import Any
 
+from ..library.decorator_manager import DecoratorManager
+
 __all__ = (
     "CommandDebugManager"
 )
@@ -9,9 +11,11 @@ __all__ = (
 _TaskManager: Any = None
 _ImportManager: Any = None
 _DisplayManager: Any = None
+_DatabaseManager: Any = None
 _CommandStorageManager: Any = None
 _ValueCacheDatabaseManager: Any = None
 _PersistentCacheDatabasManager: Any = None
+_DecoratorManager = DecoratorManager
 
 
 def _handle_dynamic_imports() -> None:
@@ -19,6 +23,7 @@ def _handle_dynamic_imports() -> None:
     global _TaskManager
     global _ImportManager
     global _DisplayManager
+    global _DatabaseManager
     global _CommandStorageManager
     global _ValueCacheDatabaseManager
     global _PersistentCacheDatabasManager
@@ -26,6 +31,7 @@ def _handle_dynamic_imports() -> None:
 
     from ..library import (
         command_storage_manager,
+        database_manager,
         display_manager,
         import_manager,
         persistent_cache_database_manager,
@@ -40,6 +46,9 @@ def _handle_dynamic_imports() -> None:
     _ImportManager = (
         import_manager
             .ImportManager
+    )
+    _DatabaseManager = (
+        database_manager.DatabaseManager
     )
     _DisplayManager = (
         display_manager.DisplayManager
@@ -62,6 +71,8 @@ class CommandDebugManager:
         "_command_storage_manager",
         "_task_manager",
         "_import_manager",
+        "_database_manager",
+        "_decorator_manager",
         "_value_cache_database_manager",
         "_display_manager",
         "_persistent_cache_database_manager",
@@ -70,32 +81,42 @@ class CommandDebugManager:
     def __init__(self) -> None:
         _handle_dynamic_imports()
 
-        self._command_storage_manager = _ImportManager.get_singleton(
+        self._command_storage_manager = _ImportManager.read_singleton(
             _CommandStorageManager
         )
 
+        self._decorator_manager = (
+            _ImportManager.read_singleton(
+                _DecoratorManager
+            )
+        )
+        self._database_manager = (
+            _ImportManager.read_singleton(
+                _DatabaseManager
+            )
+        )
         self._task_manager = (
-            _ImportManager.get_singleton(
+            _ImportManager.read_singleton(
                 _TaskManager
             )
         )
         self._import_manager = (
-            _ImportManager.get_singleton(
+            _ImportManager.read_singleton(
                 _ImportManager
             )
         )
         self._value_cache_database_manager = (
-            _ImportManager.get_singleton(
+            _ImportManager.read_singleton(
                 _ValueCacheDatabaseManager
             )
         )
         self._display_manager = (
-            _ImportManager.get_singleton(
+            _ImportManager.read_singleton(
                 _DisplayManager
             )
         )
         self._persistent_cache_database_manager = (
-            _ImportManager.get_singleton(
+            _ImportManager.read_singleton(
                 _PersistentCacheDatabasManager
             )
         )
@@ -111,40 +132,21 @@ class CommandDebugManager:
             ),
         ))
 
+    @_DecoratorManager.command_decorator
     def run_command_debug_view_value_cache(self, **kwargs: Any) -> bool:
-        self._task_manager.run_task_full_debug_value_cache()
+        self._task_manager.run_task_full_debug_value_cache_setup()
 
-        value = kwargs.get("targets", [])
-        maximum_depth = (
-            self._value_cache_database_manager
-                .read_configuration_workspace_data_display_console_style_maximum_depth_value()
-        )
-        is_skipped = (
-            self._value_cache_database_manager
-                .read_configuration_workspace_data_display_console_style_is_skipped_value()
-        )
-        indent_count = (
-            self._value_cache_database_manager
-                .read_configuration_workspace_data_display_console_style_indent_count_value()
-        )
-        vertical_space_count = (
-            self._value_cache_database_manager
-                .read_configuration_workspace_data_display_console_style_vertical_count_value()
-        )
+        key_paths = kwargs.get("key_paths", [])
 
-        if len(value) <= 0:
+        if len(key_paths) < 1:
             self._display_manager.display_tree_object(
                 value=self._value_cache_database_manager.read_any_value(
                     tuple()
                 ),
-                maximum_depth=maximum_depth,
-                is_skipped=is_skipped,
-                indent_count=indent_count,
-                vertical_space_count=vertical_space_count,
             )
 
         else:
-            for target in value:
+            for target in key_paths:
                 if not target:
                     continue
 
@@ -152,41 +154,20 @@ class CommandDebugManager:
                     value=self._value_cache_database_manager.read_any_value(
                         tuple(target.split("."))
                     ),
-                    maximum_depth=maximum_depth,
-                    is_skipped=is_skipped,
-                    indent_count=indent_count,
-                    vertical_space_count=vertical_space_count,
                 )
 
         return True
 
+    @_DecoratorManager.command_decorator
     def run_command_debug_view_disk_cache(self, **kwargs: Any) -> bool:
-        self._task_manager.run_task_full_debug_disk_cache()
+        self._task_manager.run_task_full_debug_disk_cache_setup()
+
+        # key_paths = kwargs.get("key_paths", [])
 
         value = self._persistent_cache_database_manager.read_all_values()
-        maximum_depth = (
-            self._value_cache_database_manager
-                .read_configuration_workspace_data_display_console_style_maximum_depth_value()
-        )
-        is_skipped = (
-            self._value_cache_database_manager
-                .read_configuration_workspace_data_display_console_style_is_skipped_value()
-        )
-        indent_count = (
-            self._value_cache_database_manager
-                .read_configuration_workspace_data_display_console_style_indent_count_value()
-        )
-        vertical_space_count = (
-            self._value_cache_database_manager
-                .read_configuration_workspace_data_display_console_style_vertical_count_value()
-        )
 
         self._display_manager.display_tree_object(
             value=value,
-            maximum_depth=maximum_depth,
-            is_skipped=is_skipped,
-            indent_count=indent_count,
-            vertical_space_count=vertical_space_count,
         )
 
         return True

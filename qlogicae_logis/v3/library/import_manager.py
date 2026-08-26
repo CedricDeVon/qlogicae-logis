@@ -15,6 +15,7 @@ _Path: Any = None
 _shutil: Any = None
 _logging: Any = None
 _Mapping: Any = None
+_metadata: Any = None
 _Sequence: Any = None
 _argparse: Any = None
 _resource: Any = None
@@ -61,8 +62,6 @@ _FolderEntityFileSystemTreeSetupOptions: Any = None
 def _handle_dynamic_imports() -> None:
     global _handle_dynamic_imports
     global _gc
-    global _resource
-    global _tracemalloc
     global _sys
     global _time
     global _uuid
@@ -70,10 +69,15 @@ def _handle_dynamic_imports() -> None:
     global _Path
     global _shutil
     global _logging
+    global _Mapping
+    global _Sequence
     global _argparse
+    global _metadata
+    global _resource
     global _Timestamp
     global _LogOptions
     global _LogManager
+    global _tracemalloc
     global _JsonManager
     global _TimeManager
     global _MacrosManager
@@ -108,8 +112,6 @@ def _handle_dynamic_imports() -> None:
     global _EnumConversionValueEnumManager
     global _FileEntityFileSystemTreeSetupOptions
     global _FolderEntityFileSystemTreeSetupOptions
-    global _Mapping
-    global _Sequence
 
     import argparse
     import gc
@@ -122,6 +124,7 @@ def _handle_dynamic_imports() -> None:
     import uuid
     from collections.abc import Mapping, Sequence
     from concurrent.futures import ThreadPoolExecutor
+    from importlib import metadata
     from importlib.util import module_from_spec, spec_from_file_location
     from pathlib import Path
     from subprocess import CompletedProcess
@@ -167,6 +170,9 @@ def _handle_dynamic_imports() -> None:
     _resource = resource
     _tracemalloc = tracemalloc
     _sys = sys
+    _metadata = (
+        metadata
+    )
     _Mapping = Mapping
     _Sequence = Sequence
     _uuid = uuid
@@ -279,72 +285,80 @@ class ImportManager:
     def __init__(self) -> None:
         _handle_dynamic_imports()
 
-        self._time_manager = self.get_singleton(
+        self._time_manager = self.read_singleton(
             _TimeManager
         )
-        self._disk_cache_storage_manager = self.get_singleton(
+        self._disk_cache_storage_manager = self.read_singleton(
             _DiskCacheStorageManager
         )
-        self._value_cache_manager = self.get_singleton(
+        self._value_cache_manager = self.read_singleton(
             _ValueCacheManager
         )
-        self._time_zone_manager = self.get_singleton(
+        self._time_zone_manager = self.read_singleton(
             _TimeZoneManager
         )
-        self._timestamp_manager = self.get_singleton(
+        self._timestamp_manager = self.read_singleton(
             _TimestampManager
         )
-        self._text_encoding_manager = self.get_singleton(
+        self._text_encoding_manager = self.read_singleton(
             _TextEncodingManager
         )
-        self._script_process_manager = self.get_singleton(
+        self._script_process_manager = self.read_singleton(
             _ScriptProcessManager
         )
-        self._macros_manager = self.get_singleton(
+        self._macros_manager = self.read_singleton(
             _MacrosManager
         )
-        self._object_merge_manager = self.get_singleton(
+        self._object_merge_manager = self.read_singleton(
             _ObjectMergeManager
         )
-        self._group_selection_manager = self.get_singleton(
+        self._group_selection_manager = self.read_singleton(
             _GroupSelectionManager
         )
-        self._json_file_io_manager = self.get_singleton(
+        self._json_file_io_manager = self.read_singleton(
             _JsonFileIoManager
         )
-        self._json_text_manager = self.get_singleton(
+        self._json_text_manager = self.read_singleton(
             _JsonTextManager
         )
-        self._filesystem_compression_manager = self.get_singleton(
+        self._filesystem_compression_manager = self.read_singleton(
             _FilesystemCompressionManager
         )
-        self._filesystem_manager = self.get_singleton(
+        self._filesystem_manager = self.read_singleton(
             _FilesystemManager
         )
-        self._system_manager = self.get_singleton(
+        self._system_manager = self.read_singleton(
             _SystemManager
         )
-        self._file_io_manager = self.get_singleton(
+        self._file_io_manager = self.read_singleton(
             _FileIoManager
         )
-        self._file_log_manager = self.get_singleton(
+        self._file_log_manager = self.read_singleton(
             _CorFileLogManager
         )
-        self._console_log_manager = self.get_singleton(
+        self._console_log_manager = self.read_singleton(
             _ConsoleLogManager
         )
-        self._log_manager = self.get_singleton(
+        self._log_manager = self.read_singleton(
             _LogManager
         )
 
     @classmethod
-    def get_singleton(self, value: Any) -> Any:
+    def read_singleton(self, value: Any) -> Any:
         _handle_singleton_manager_imports()
 
         return (
             _SingletonManager.get_singleton(
                 value
             )
+        )
+
+    def read_metadata_version(self, target: str) -> str:
+        if not target:
+            return "v0.0.0"
+
+        return (
+            _metadata.version(target) or "v0.0.0"
         )
 
     def snapshot_memory_usage(self) -> Any:
@@ -1232,23 +1246,35 @@ class ImportManager:
         self,
         **kwargs: Any,
     ) -> bool:
+        archive_path = kwargs.get("archive_path", "")
+        destination_path = kwargs.get("destination_path", "")
+        if not archive_path or not destination_path:
+            return False
+
+        overwrite = kwargs.get("overwrite", False)
         value: bool = self._filesystem_compression_manager.zip_extract(
-            archive_path=kwargs.get(
-                "archive_path",
-                "",
-            ),
-            destination_path=kwargs.get(
-                "destination_path",
-                "",
-            ),
-            overwrite=kwargs.get(
-                "overwrite",
-                False,
-            ),
+            archive_path=archive_path,
+            destination_path=destination_path,
+            overwrite=overwrite,
         )
 
         return value
 
+    def read_zip_format_compression(
+        self,
+        **kwargs: Any,
+    ) -> Any:
+        value = kwargs.get("value", "")
+        if not value:
+            return False
+
+        value = (
+            self._filesystem_compression_manager.get_zip_format_compression(
+                value,
+            )
+        )
+
+        return value
 
     def is_filesystem_path_valid(
         self,
@@ -1289,17 +1315,87 @@ class ImportManager:
 
         return value
 
+    def setup_filesystem_tree_paths(
+        self,
+        **kwargs: Any,
+    ) -> bool:
+        target_paths = kwargs.get("target_paths", [])
+        if not target_paths or len(target_paths) < 1:
+            return False
+
+        for target_path in target_paths:
+            if not target_path:
+                continue
+
+            _Path(target_path).mkdir(
+                parents=True,
+                exist_ok=True,
+            )
+
+        return True
+
     def setup_filesystem_tree_path(
         self,
         **kwargs: Any,
     ) -> bool:
-        _Path(kwargs.get(
-            "directory",
-            "",
-        )).mkdir(
+        target_path = kwargs.get("target_path", "")
+        if not target_path or not target_path:
+            return False
+
+        _Path(target_path).mkdir(
             parents=True,
             exist_ok=True,
         )
+
+        return True
+
+    def setup_filesystem_tree(
+        self,
+        **kwargs: Any,
+    ) -> bool:
+        root_path = kwargs.get("root_path", "")
+        tree = kwargs.get("tree", None)
+        if not root_path or not tree:
+            return False
+
+        path = _Path(root_path)
+
+        if not path.exists():
+            raise ValueError(
+                f"filesystem path '{path}' is invalid"
+            )
+
+        path.mkdir(
+            parents=True,
+            exist_ok=True,
+        )
+
+        for entity in tree.entities or []:
+            entity_path = path / entity.name
+
+            if isinstance(
+                entity,
+                _FolderEntityFileSystemTreeSetupOptions,
+            ):
+                entity_path.mkdir(
+                    parents=True,
+                    exist_ok=True,
+                )
+
+                self.setup_filesystem_tree(
+                    root_path=entity_path,
+                    tree=entity,
+                )
+
+            elif isinstance(
+                entity,
+                _FileEntityFileSystemTreeSetupOptions,
+            ):
+                if not entity_path.exists():
+                    entity_path.write_text(
+                        entity.content,
+                        encoding=entity.encoding,
+                    )
 
         return True
 
@@ -1307,60 +1403,105 @@ class ImportManager:
         self,
         **kwargs: Any,
     ) -> bool:
-        source = _Path(kwargs.get(
-            "first_path",
-            "",
-        ))
-        destination = _Path(kwargs.get(
-            "second_path",
-            "",
-        ))
+        source_path = kwargs.get("source_path", "")
+        target_path = kwargs.get("target_path", "")
 
-        destination.parent.mkdir(
+        if not source_path or not target_path:
+            return False
+
+        source_path = _Path(source_path)
+        target_path = _Path(target_path)
+
+        target_path.parent.mkdir(
             parents=True,
             exist_ok=True,
         )
 
         _shutil.move(
-            str(source),
-            str(destination),
+            str(source_path),
+            str(target_path),
         )
 
         return True
 
-    def copy_filesystem_path(
+    def copy_filesystem_paths(
         self,
         **kwargs: Any,
     ) -> bool:
-        fs_first_path = _Path(kwargs.get(
-            "first_path",
-            "",
-        ))
-        fs_second_path = _Path(kwargs.get(
-            "second_path",
-            "",
-        ))
+        source_path = kwargs.get("source_path", "")
+        target_paths = kwargs.get("target_paths", [])
 
-        if fs_first_path.is_dir():
-            _shutil.copytree(
-                fs_first_path,
-                fs_second_path,
-                dirs_exist_ok=True,
-            )
+        if not source_path or len(target_paths) < 1:
+            return False
 
-        elif fs_first_path.is_file():
-            fs_second_path.parent.mkdir(
-                parents=True,
-                exist_ok=True,
-            )
+        source_path = _Path(source_path)
+        for target_path in target_paths:
+            if not target_path:
+                continue
 
-            _shutil.copy2(
-                fs_first_path,
-                fs_second_path,
-            )
+            target_path = _Path(target_path)
 
-        else:
-            return True
+            if source_path.is_dir():
+                _shutil.copytree(
+                    source_path,
+                    target_path,
+                    dirs_exist_ok=True,
+                )
+
+            elif source_path.is_file():
+                target_path.parent.mkdir(
+                    parents=True,
+                    exist_ok=True,
+                )
+
+                _shutil.copy2(
+                    source_path,
+                    target_path,
+                )
+
+        return True
+
+    def clean_filesystem_paths(
+        self,
+        **kwargs: Any,
+    ) -> bool:
+        target_paths = kwargs.get("target_paths", [])
+        if not target_paths or len(target_paths) < 1:
+            return False
+
+        for target_path in target_paths:
+            if not target_path:
+                continue
+
+            target_path = _Path(
+                target_path
+            ).resolve()
+
+            protected_paths = {
+                _Path(""),
+                _Path("/"),
+                _Path.home(),
+            }
+
+            if target_path in protected_paths:
+                raise ValueError(
+                    f"folder path '{target_path}' is protected"
+                )
+
+            if not target_path.exists():
+                return True
+
+            if not target_path.is_dir():
+                raise ValueError(
+                    f"file path '{target_path}' is not a folder"
+                )
+
+            for item in target_path.iterdir():
+                if item.is_file() or item.is_symlink():
+                    item.unlink()
+
+                elif item.is_dir():
+                    _shutil.rmtree(item)
 
         return True
 
@@ -1368,11 +1509,12 @@ class ImportManager:
         self,
         **kwargs: Any,
     ) -> bool:
-        directory = _Path(
-            kwargs.get(
-                "path",
-                "",
-            )
+        target_path = kwargs.get("target_path", "")
+        if not target_path:
+            return False
+
+        target_path = _Path(
+            target_path
         ).resolve()
 
         protected_paths = {
@@ -1381,20 +1523,20 @@ class ImportManager:
             _Path.home(),
         }
 
-        if directory in protected_paths:
+        if target_path in protected_paths:
             raise ValueError(
-                f"folder path '{directory}' is protected"
+                f"folder path '{target_path}' is protected"
             )
 
-        if not directory.exists():
+        if not target_path.exists():
             return True
 
-        if not directory.is_dir():
+        if not target_path.is_dir():
             raise ValueError(
-                f"file path '{directory}' is not a folder"
+                f"file path '{target_path}' is not a folder"
             )
 
-        for item in directory.iterdir():
+        for item in target_path.iterdir():
             if item.is_file() or item.is_symlink():
                 item.unlink()
 
@@ -1403,18 +1545,38 @@ class ImportManager:
 
         return True
 
+    def read_filesystem_entity_parents(
+        self,
+        **kwargs: Any,
+    ) -> set[str]:
+        data: set[str] = set()
+        target_path = kwargs.get("target_path", "")
+        if not target_path:
+            return data
+
+        parents = _Path(target_path).parents
+        if not parents:
+            return data
+
+        for parent in parents:
+            if not parent:
+                continue
+
+            data.add(f"{parent}")
+
+        return data
+
     def rename_filesystem_entity(
         self,
         **kwargs: Any,
     ) -> bool:
-        _Path(kwargs.get(
-            "source",
-            "",
-        )).rename(
-            kwargs.get(
-                "destination",
-                "",
-            )
+        old_path = kwargs.get("old_path", "")
+        new_path = kwargs.get("new_path", "")
+        if not old_path or not new_path:
+            return False
+
+        _Path(old_path).rename(
+            kwargs.get(new_path)
         )
 
         return True
@@ -1627,6 +1789,19 @@ class ImportManager:
 
         return True
 
+    def log_debug_to_file(
+        self,
+        **kwargs: Any,
+    ) -> bool:
+        self._file_log_manager.log_info(
+            message=kwargs.get(
+                "message",
+                "",
+            ),
+        )
+
+        return True
+
     def log_info_to_all(
         self,
         **kwargs: Any,
@@ -1641,6 +1816,20 @@ class ImportManager:
         return True
 
     def log_cache_info_to_file(
+        self,
+        **kwargs: Any,
+    ) -> bool:
+        self._file_log_manager.cache_log(
+            message=kwargs.get(
+                "message",
+                "",
+            ),
+            log_level=_logging.INFO
+        )
+
+        return True
+
+    def log_cache_debug_to_file(
         self,
         **kwargs: Any,
     ) -> bool:

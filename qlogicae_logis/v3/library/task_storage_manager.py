@@ -34,7 +34,7 @@ class TaskStorageManager:
 
         self._tasks: dict[str, Any] = {}
         self._import_manager = (
-            _ImportManager.get_singleton(
+            _ImportManager.read_singleton(
                 _ImportManager
             )
         )

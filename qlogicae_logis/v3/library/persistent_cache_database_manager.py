@@ -49,12 +49,12 @@ class PersistentCacheDatabasManager:
         _handle_dynamic_imports()
 
         self._import_manager = (
-            _ImportManager.get_singleton(
+            _ImportManager.read_singleton(
                 _ImportManager
             )
         )
         self._database_manager = (
-            _ImportManager.get_singleton(
+            _ImportManager.read_singleton(
                 _DatabaseManager
             )
         )

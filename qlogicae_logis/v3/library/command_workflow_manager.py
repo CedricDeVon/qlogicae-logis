@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import Any
 
+from ..library.decorator_manager import DecoratorManager
+
 __all__ = (
     "CommandWorkflowManager"
 )
@@ -10,6 +12,7 @@ _TaskManager: Any = None
 _ImportManager: Any = None
 _DisplayManager: Any = None
 _DatabaseManager: Any = None
+_DecoratorManager = DecoratorManager
 _CommandStorageManager: Any = None
 _ValueCacheDatabaseManager: Any = None
 _PersistentCacheDatabasManager: Any = None
@@ -75,37 +78,37 @@ class CommandWorkflowManager:
     def __init__(self) -> None:
         _handle_dynamic_imports()
 
-        self._command_storage_manager = _ImportManager.get_singleton(
+        self._command_storage_manager = _ImportManager.read_singleton(
             _CommandStorageManager
         )
 
         self._display_manager = (
-            _ImportManager.get_singleton(
+            _ImportManager.read_singleton(
                 _DisplayManager
             )
         )
         self._task_manager = (
-            _ImportManager.get_singleton(
+            _ImportManager.read_singleton(
                 _TaskManager
             )
         )
         self._import_manager = (
-            _ImportManager.get_singleton(
+            _ImportManager.read_singleton(
                 _ImportManager
             )
         )
         self._database_manager = (
-            _ImportManager.get_singleton(
+            _ImportManager.read_singleton(
                 _DatabaseManager
             )
         )
         self._value_cache_database_manager = (
-            _ImportManager.get_singleton(
+            _ImportManager.read_singleton(
                 _ValueCacheDatabaseManager
             )
         )
         self._persistent_cache_database_manager = (
-            _ImportManager.get_singleton(
+            _ImportManager.read_singleton(
                 _PersistentCacheDatabasManager
             )
         )
@@ -121,51 +124,71 @@ class CommandWorkflowManager:
             ),
         ))
 
+    @_DecoratorManager.command_decorator
     def run_command_workflow_run(
         self,
         **kwargs: Any
     ) -> bool:
+        # def handle_workflow_run_target(target: str) -> bool:
+        #     return True
+
+        # self._task_manager.run_task_common_setup()
+        # self._task_manager.run_task_workflow_setup()
+        # self._task_manager.run_task_filesystem_clean_exclude_setup()
+        # self._task_manager.run_task_filesystem_clean_include_setup()
+
+        # targets = kwargs.get('targets', [])
+        # if len(targets) < 1:
+        #     return False
+
+        # root_filesystem_path = (
+        #     self._value_cache_database_manager
+        #         .read_root_filesystem_path()
+        # )
+        # commands = (
+        #     self._command_storage_manager
+        #         .read_commands()
+        # )
+        # workspace_data_workflow = (
+        #     self._value_cache_database_manager
+        #         .read_configuration_workspace_data_workflow_selection()
+        # )
+        # workflow_selections = (
+        #     self._value_cache_database_manager
+        #         .read_workflow_selection()
+        # )
+
+        # for target in targets:
+        #     if not target or target not in workflow_selections:
+        #         continue
+
+        #     handle_workflow_run_target(
+        #         workspace_data_workflow[target]
+        #     )
+
         return True
 
+    @_DecoratorManager.command_decorator
     def run_command_workflow_list_selections(
         self,
         **kwargs: Any
     ) -> bool:
-        self._task_manager.run_task_common_setup()    
+        self._task_manager.run_task_common_setup()
         self._task_manager.run_task_workflow_setup()
 
         value = {}
-        workflow_selection = (
-            self._value_cache_database_manager.read_workflow_selection()
+        workflow_selections = (
+            self._value_cache_database_manager
+                .read_workflow_selection()
         ) or {}
-        if workflow_selection:
-            value["selections"] = workflow_selection
+        if workflow_selections:
+            value["selections"] = workflow_selections
 
         if not value:
             return False
 
-        maximum_depth = (
-            self._value_cache_database_manager
-                .read_configuration_workspace_data_display_console_style_maximum_depth_value()
-        )
-        is_skipped = (
-            self._value_cache_database_manager
-                .read_configuration_workspace_data_display_console_style_is_skipped_value()
-        )
-        indent_count = (
-            self._value_cache_database_manager
-                .read_configuration_workspace_data_display_console_style_indent_count_value()
-        )
-        vertical_space_count = (
-            self._value_cache_database_manager
-                .read_configuration_workspace_data_display_console_style_vertical_count_value()
-        )
         self._display_manager.display_tree_object(
             value=value,
-            maximum_depth=maximum_depth,
-            is_skipped=is_skipped,
-            indent_count=indent_count,
-            vertical_space_count=vertical_space_count,
         )
 
         return True

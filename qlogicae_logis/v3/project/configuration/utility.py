@@ -11,7 +11,9 @@ DATA: dict[str, dict[str, Any]]= {
         "value": "v3"
     },
     "debug": {
-        "value": True
+        "is-enabled": {
+            "value": True
+        }        
     },
 }
 

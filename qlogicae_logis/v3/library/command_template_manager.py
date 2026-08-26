@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import Any
 
+from ..library.decorator_manager import DecoratorManager
+
 __all__ = (
     "CommandTemplateManager"
 )
@@ -10,6 +12,7 @@ _TaskManager: Any = None
 _ImportManager: Any = None
 _DisplayManager: Any = None
 _DatabaseManager: Any = None
+_DecoratorManager = DecoratorManager
 _CommandStorageManager: Any = None
 _ValueCacheDatabaseManager: Any = None
 _PersistentCacheDatabasManager: Any = None
@@ -19,8 +22,8 @@ def _handle_dynamic_imports() -> None:
     global _TaskManager
     global _ImportManager
     global _DisplayManager
-    global _CommandStorageManager
     global _DatabaseManager
+    global _CommandStorageManager
     global _ValueCacheDatabaseManager
     global _PersistentCacheDatabasManager
 
@@ -75,37 +78,37 @@ class CommandTemplateManager:
     def __init__(self) -> None:
         _handle_dynamic_imports()
 
-        self._command_storage_manager = _ImportManager.get_singleton(
+        self._command_storage_manager = _ImportManager.read_singleton(
             _CommandStorageManager
         )
 
         self._display_manager = (
-            _ImportManager.get_singleton(
+            _ImportManager.read_singleton(
                 _DisplayManager
             )
         )
         self._task_manager = (
-            _ImportManager.get_singleton(
+            _ImportManager.read_singleton(
                 _TaskManager
             )
         )
         self._import_manager = (
-            _ImportManager.get_singleton(
+            _ImportManager.read_singleton(
                 _ImportManager
             )
         )
         self._database_manager = (
-            _ImportManager.get_singleton(
+            _ImportManager.read_singleton(
                 _DatabaseManager
             )
         )
         self._value_cache_database_manager = (
-            _ImportManager.get_singleton(
+            _ImportManager.read_singleton(
                 _ValueCacheDatabaseManager
             )
         )
         self._persistent_cache_database_manager = (
-            _ImportManager.get_singleton(
+            _ImportManager.read_singleton(
                 _PersistentCacheDatabasManager
             )
         )
@@ -121,12 +124,115 @@ class CommandTemplateManager:
             ),
         ))
 
+    @_DecoratorManager.command_decorator
     def run_command_template_apply(
         self,
         **kwargs: Any
     ) -> bool:
+        # def handle_target_root() -> bool:
+        #     return True
+
+        # def handle_target_group() -> bool:
+        #     return True
+
+        # def handle_target_project() -> bool:
+        #     return True
+
+        # def handle_target_group_selection(target: str) -> bool:
+        #     return True
+
+        # def handle_target_project_selection(target: str) -> bool:
+        #     return True
+
+        # self._task_manager.run_task_common_setup()
+        # self._task_manager.run_task_workspace_default_setup()
+        # self._task_manager.run_task_workspace_group_setup()
+        # self._task_manager.run_task_workspace_project_setup()
+        # self._task_manager.run_task_filesystem_clean_exclude_setup()
+        # self._task_manager.run_task_filesystem_clean_include_setup()
+
+        # targets = kwargs.get("targets", ["all"])
+        # if len(targets) < 1:
+        #     return False
+
+        # default_filesystem_accessibility_types = (
+        #     self._database_manager
+        #         .read_default_filesystem_accessibility_types()
+        # )
+        # selection_projects = (
+        #     self._value_cache_database_manager
+        #         .read_workspace_project()
+        # )
+        # selection_groups = (
+        #     self._value_cache_database_manager
+        #         .read_workspace_group()
+        # )
+        # default_template_types = (
+        #     self._database_manager
+        #         .read_default_template_types()
+        # )
+        # root_filesystem_path = (
+        #     self._value_cache_database_manager
+        #         .read_root_filesystem_path()
+        # )
+        # workspace_filesystem_path = (
+        #     self._value_cache_database_manager
+        #         .read_root_filesystem_path()
+        # )
+        # temporary_template_output_filesystem_path = (
+        #     self._database_manager
+        #         .read_temporary_template_output_filesystem_path()
+        # )
+        # cleanup_before_is_enabled = (
+        #     self._value_cache_database_manager
+        #         .read_con_wor_data_template_cleanup_before_is_enabled_value()
+        # )
+        # cleanup_after_is_enabled = (
+        #     self._value_cache_database_manager
+        #         .read_con_wor_data_template_cleanup_after_is_enabled_value()
+        # )
+
+        # if cleanup_before_is_enabled:
+        #     self._task_manager.run_task_safe_clean_filesystem_path(
+        #         target_path=temporary_template_output_filesystem_path
+        #     )
+
+        # for target in targets:
+        #     if not target:
+        #         continue
+
+        #     if target == "all":
+        #         handle_target_root()
+        #         handle_target_group()
+        #         handle_target_project()
+
+        #     elif target == "root":
+        #         handle_target_root()
+
+        #     elif target == "group":
+        #         handle_target_group()
+
+        #     elif target == "project":
+        #         handle_target_project()
+
+        #     elif target in selection_groups:
+        #         handle_target_group_selection(
+        #             selection_groups[target]
+        #         )
+
+        #     elif target in selection_projects:
+        #         handle_target_project_selection(
+        #             selection_projects[target]
+        #         )
+
+        # if cleanup_after_is_enabled:
+        #     self._task_manager.run_task_safe_clean_filesystem_path(
+        #         target_path=temporary_template_output_filesystem_path
+        #     )
+
         return True
 
+    @_DecoratorManager.command_decorator
     def run_command_template_list_selections(
         self,
         **kwargs: Any
@@ -135,7 +241,6 @@ class CommandTemplateManager:
         self._task_manager.run_task_workspace_default_setup()
         self._task_manager.run_task_workspace_group_setup()
         self._task_manager.run_task_workspace_project_setup()
-        self._task_manager.run_task_workspace_all_setup()
 
         value = {}
         value_default = (
@@ -166,28 +271,8 @@ class CommandTemplateManager:
         if not value:
             return False
 
-        maximum_depth = (
-            self._value_cache_database_manager
-                .read_configuration_workspace_data_display_console_style_maximum_depth_value()
-        )
-        is_skipped = (
-            self._value_cache_database_manager
-                .read_configuration_workspace_data_display_console_style_is_skipped_value()
-        )
-        indent_count = (
-            self._value_cache_database_manager
-                .read_configuration_workspace_data_display_console_style_indent_count_value()
-        )
-        vertical_space_count = (
-            self._value_cache_database_manager
-                .read_configuration_workspace_data_display_console_style_vertical_count_value()
-        )
         self._display_manager.display_tree_object(
             value=value,
-            maximum_depth=maximum_depth,
-            is_skipped=is_skipped,
-            indent_count=indent_count,
-            vertical_space_count=vertical_space_count,
         )
 
         return True

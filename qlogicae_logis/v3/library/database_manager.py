@@ -48,7 +48,7 @@ class DatabaseManager:
         _handle_utility_dynamic_imports()
 
         self._import_manager = (
-            _ImportManager.get_singleton(
+            _ImportManager.read_singleton(
                 _ImportManager
             )
         )
@@ -94,9 +94,11 @@ class DatabaseManager:
     def read_default_plugin_file_extensions(self) -> set[str]:
         return {".py"}
 
+    def read_default_groups(self) -> Any:
+        return { "all": "all" }
+
     def read_default_selection_targets(self) -> Any:
         return {
-            "all": "all",
             "root": "root",
             "group": "group",
             "project": "project",
@@ -114,10 +116,13 @@ class DatabaseManager:
     def read_expunged(self) -> str:
         return "expunged"
 
-    def read_debug(self) -> bool:
+    def read_debug_is_enabled(self) -> bool:
         data: bool = (
             _utility_data.get(
                 "debug",
+                {}
+            ).get(
+                "is-enabled",
                 {}
             ).get(
                 "value",
@@ -149,6 +154,14 @@ class DatabaseManager:
                 "value",
                 "project"
             )
+        )
+
+        return data
+
+    def read_company_project_name(self) -> str:
+        data: str = (
+            f"{self.read_company_name()}-"
+            f"{self.read_project_name()}"
         )
 
         return data
@@ -192,6 +205,37 @@ class DatabaseManager:
             f"{self.read_root_workspace_filesystem_path()}/private"
             f"/temporary/log/{self._import_manager.read_current_iso8601_date()}.log",
         }
+
+    def read_default_export_selections(
+        self,
+    ) -> Any:
+        data: Any = {
+            f"{self.read_company_project_major_version("-")}",
+            f"{self.read_company_project_major_version("-")}-public",
+            f"{self.read_company_project_major_version("-")}-private",
+        }
+
+        return { key: key for key in data }
+
+    def read_default_export_selection_data(
+        self,
+    ) -> Any:
+        data: Any = {
+            f"{self.read_company_project_major_version("-")}": {},
+            f"{self.read_company_project_major_version("-")}-public": {},
+            f"{self.read_company_project_major_version("-")}-private": {},
+        }
+
+        return { key: key for key in data }
+
+    def read_default_export_groups(
+        self,
+    ) -> Any:
+        data = {
+            "all"
+        }
+
+        return { key: key for key in data }
 
     def read_default_disk_cache_output_file_path(
         self,
@@ -347,6 +391,12 @@ class DatabaseManager:
         )
 
         return value
+
+    def read_object_selection_origins(
+        self,
+        data: Any
+    ) -> Any:
+        return { item[key] for key, item in data }
 
     def read_plugin_data(
         self,

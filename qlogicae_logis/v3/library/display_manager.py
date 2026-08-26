@@ -109,17 +109,17 @@ class DisplayManager:
         }
 
         self._import_manager = (
-            _ImportManager.get_singleton(
+            _ImportManager.read_singleton(
                 _ImportManager
             )
         )
         self._database_manager = (
-            _ImportManager.get_singleton(
+            _ImportManager.read_singleton(
                 _DatabaseManager
             )
         )
         self._value_cache_database_manager = (
-            _ImportManager.get_singleton(
+            _ImportManager.read_singleton(
                 _ValueCacheDatabaseManager
             )
         )
@@ -177,15 +177,55 @@ class DisplayManager:
             color.lower(), ""
         )
 
+    def display_highlight_value(
+        self,
+        **kwargs: Any,
+    ) -> None:
+        print(
+            self.color_value(
+                kwargs.get("value", "")
+            )
+        )
+
+
     def display_tree_object(
         self,
         **kwargs: Any,
     ) -> None:
+        maximum_depth: int | None = (
+            self._value_cache_database_manager
+                .read_configuration_workspace_data_display_console_style_maximum_depth_value()
+        )
+        is_skipped: bool = (
+            self._value_cache_database_manager
+                .read_configuration_workspace_data_display_console_style_is_skipped_value()
+        )
+        indent_count: int = (
+            self._value_cache_database_manager
+                .read_configuration_workspace_data_display_console_style_indent_count_value()
+        )
+        vertical_space_count: int = (
+            self._value_cache_database_manager
+                .read_configuration_workspace_data_display_console_style_vertical_count_value()
+        )
+
         value = kwargs.get("value")
-        is_skipped: bool = kwargs.get("is_skipped", True)
-        # indent_count: int = kwargs.get("indent_count", 4)
-        maximum_depth: int | None = kwargs.get("maximum_depth", 6)
-        vertical_space_count: int = kwargs.get("vertical_space_count", 1)
+        is_skipped = kwargs.get(
+            "is_skipped",
+            is_skipped,
+        )
+        indent_count = kwargs.get(
+            "indent_count",
+            indent_count,
+        )
+        maximum_depth = kwargs.get(
+            "maximum_depth",
+            maximum_depth,
+        )
+        vertical_space_count = kwargs.get(
+            "vertical_space_count",
+            vertical_space_count,
+        )
 
         visited: set[int] = set()
 
@@ -220,7 +260,6 @@ class DisplayManager:
             if isinstance(value, (int, float)):
                 return str(value)
 
-
             return repr(value)
 
         def is_set(value: Any) -> bool:
@@ -238,7 +277,9 @@ class DisplayManager:
                 )
             )
 
-        def get_attributes(value: Any) -> dict[str, Any]:
+        def get_attributes(
+            value: Any,
+        ) -> dict[str, Any]:
             attributes: dict[str, Any] = {}
 
             if hasattr(value, "__dict__"):
@@ -267,6 +308,7 @@ class DisplayManager:
             return (
                 isinstance(value, _Mapping)
                 or is_sequence(value)
+                or is_set(value)
                 or bool(get_attributes(value))
             )
 
@@ -276,11 +318,13 @@ class DisplayManager:
             result = ""
 
             for has_next in prefixes:
-                result += self.color_tree(
-                    "│   "
-                    if has_next
-                    else "    "
-                )
+                if has_next:
+                    result += self.color_tree(
+                        "│"
+                        + " " * (indent_count - 1)
+                    )
+                else:
+                    result += " " * indent_count
 
             return result
 
@@ -308,18 +352,16 @@ class DisplayManager:
 
                 return
 
-            v = (
+            output = (
                 tree_prefix(prefixes)
                 + tree_branch(is_last)
                 + text
             )
 
             if is_skipped:
-                print(v)
+                print(output)
             else:
-                input(v)
-                
-
+                input(output)
 
         def print_spacing(
             prefixes: tuple[bool, ...],
@@ -393,14 +435,6 @@ class DisplayManager:
                 print_spacing(prefixes)
                 continue
 
-            if action == "print":
-                print_line(
-                    prefixes,
-                    is_last,
-                    str(label),
-                )
-                continue
-
             if (
                 maximum_depth is not None
                 and depth > maximum_depth
@@ -444,9 +478,7 @@ class DisplayManager:
             if isinstance(current, _Mapping):
                 visited.add(current_id)
 
-                items = list(
-                    current.items(),
-                )
+                items = list(current.items())
 
                 if not items:
                     text = self.color_value("{}")
@@ -468,12 +500,12 @@ class DisplayManager:
                     print_line(
                         prefixes,
                         is_last,
-                        f"{label}",
+                        label,
                     )
 
                 child_prefixes = (
                     prefixes
-                    if label is None
+                    if depth == 0
                     else prefixes + (not is_last,)
                 )
 
@@ -534,12 +566,12 @@ class DisplayManager:
                     print_line(
                         prefixes,
                         is_last,
-                        f"{label}",
+                        label,
                     )
 
                 child_prefixes = (
                     prefixes
-                    if label is None
+                    if depth == 0
                     else prefixes + (not is_last,)
                 )
 
@@ -579,7 +611,7 @@ class DisplayManager:
                 visited.add(current_id)
 
                 if not current:
-                    text = self.color_value("{}")
+                    text = self.color_value("set()")
 
                     if label is not None:
                         text = (
@@ -598,12 +630,12 @@ class DisplayManager:
                     print_line(
                         prefixes,
                         is_last,
-                        f"{label}",
+                        label,
                     )
 
                 child_prefixes = (
                     prefixes
-                    if label is None
+                    if depth == 0
                     else prefixes + (not is_last,)
                 )
 
@@ -639,9 +671,7 @@ class DisplayManager:
 
                 continue
 
-            attributes = get_attributes(
-                current,
-            )
+            attributes = get_attributes(current)
 
             if attributes:
                 visited.add(current_id)
@@ -650,18 +680,16 @@ class DisplayManager:
                     print_line(
                         prefixes,
                         is_last,
-                        f"{label}",
-                    )                    
+                        label,
+                    )
 
                 child_prefixes = (
                     prefixes
-                    if label is None
+                    if depth == 0
                     else prefixes + (not is_last,)
                 )
 
-                items = list(
-                    attributes.items(),
-                )
+                items = list(attributes.items())
 
                 for index in range(
                     len(items) - 1,
@@ -716,4 +744,3 @@ class DisplayManager:
             )
 
         print()
-

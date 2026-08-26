@@ -49,15 +49,25 @@ class ValueCacheDatabaseManager:
         _handle_dynamic_imports()
 
         self._import_manager = (
-            _ImportManager.get_singleton(
+            _ImportManager.read_singleton(
                 _ImportManager
             )
         )
         self._database_manager = (
-            _ImportManager.get_singleton(
+            _ImportManager.read_singleton(
                 _DatabaseManager
             )
         )
+
+    def read_default_clean_included(self) -> Any:
+        data: Any = {}
+        return data
+
+    def read_default_clean_excluded(self) -> Any:
+        data = self._import_manager.read_filesystem_entity_parents(
+            target_path=self.read_root_filesystem_path()
+        )
+        return data
 
     def read_key_path(self, key_path: Any) -> Any:
         return (
@@ -115,11 +125,49 @@ class ValueCacheDatabaseManager:
 
         return result
 
+    def read_debug_snapshot_execution(
+        self,
+        label: str = "",
+    ) -> Any:
+        if not self._database_manager.read_debug_is_enabled():
+            return {}
+
+        result: Any = self.read_any_value(
+            (
+                "debug",
+                "snapshot",
+                f"{label}",
+                "timestamp",
+            ),
+        )
+
+        return result
+
+    def write_debug_snapshot_execution(
+        self,
+        label: str = "",
+        data: Any = None,
+    ) -> bool:
+        if not self._database_manager.read_debug_is_enabled():
+            return True
+
+        self.write_any_value(
+            (
+                "debug",
+                "snapshot",
+                f"{label}",
+                "timestamp",
+            ),
+            (data or {})
+        )
+
+        return True
+
     def read_debug_snapshot_execution_timestamp_start(
         self,
         label: str = "",
     ) -> int:
-        if not self._database_manager.read_debug():
+        if not self._database_manager.read_debug_is_enabled():
             return 0
 
         result: int = self.read_any_value(
@@ -139,7 +187,7 @@ class ValueCacheDatabaseManager:
         self,
         label: str = "",
     ) -> bool:
-        if not self._database_manager.read_debug():
+        if not self._database_manager.read_debug_is_enabled():
             return True
 
         self.write_any_value(
@@ -160,7 +208,7 @@ class ValueCacheDatabaseManager:
         self,
         label: str = "",
     ) -> int:
-        if not self._database_manager.read_debug():
+        if not self._database_manager.read_debug_is_enabled():
             return 0
 
         result: int = self.read_any_value(
@@ -180,7 +228,7 @@ class ValueCacheDatabaseManager:
         self,
         label: str = "",
     ) -> bool:
-        if not self._database_manager.read_debug():
+        if not self._database_manager.read_debug_is_enabled():
             return True
 
         self.write_any_value(
@@ -203,7 +251,7 @@ class ValueCacheDatabaseManager:
         self,
         label: str = "",
     ) -> float:
-        if not self._database_manager.read_debug():
+        if not self._database_manager.read_debug_is_enabled():
             return 0.0
 
         result: float = self.read_any_value(
@@ -223,7 +271,7 @@ class ValueCacheDatabaseManager:
         self,
         label: str = "",
     ) -> bool:
-        if not self._database_manager.read_debug():
+        if not self._database_manager.read_debug_is_enabled():
             return True
 
         duration = (
@@ -251,7 +299,7 @@ class ValueCacheDatabaseManager:
         self,
         label: str = "",
     ) -> Any:
-        if not self._database_manager.read_debug():
+        if not self._database_manager.read_debug_is_enabled():
             return {}
 
         result: Any = self.read_any_value(
@@ -269,7 +317,7 @@ class ValueCacheDatabaseManager:
         self,
         label: str = "",
     ) -> bool:
-        if not self._database_manager.read_debug():
+        if not self._database_manager.read_debug_is_enabled():
             return True
 
         value = (
@@ -1328,7 +1376,7 @@ class ValueCacheDatabaseManager:
             ),
         ) or {}
 
-        return int(result.get("value", 1))
+        return int(result.get("value", 0))
 
     def write_configuration_workspace_data_display_console_style_vertical_count_value(
         self,
@@ -2320,6 +2368,164 @@ class ValueCacheDatabaseManager:
 
         return True
 
+    def read_con_wor_data_export_cleanup_before_is_enabled_value(
+        self
+    ) -> bool:
+        result: Any = self.read_any_value(
+            (
+                "configuration",
+                "workspace",
+                "data",
+                "command",
+                "export",
+                "cleanup",
+                "before",
+                "is-enabled",
+            ),
+        ) or {}
+
+        return bool(result.get("value", True))
+
+    def write_con_wor_data_export_cleanup_before_is_enabled_value(
+        self,
+        value: bool
+    ) -> bool:
+        self.write_any_value(
+            (
+                "configuration",
+                "workspace",
+                "data",
+                "command",
+                "export",
+                "cleanup",
+                "before",
+                "is-enabled",
+                "value",
+            ),
+            value,
+        )
+
+        return True
+
+    def read_con_wor_data_export_cleanup_after_is_enabled_value(
+        self
+    ) -> bool:
+        result: Any = self.read_any_value(
+            (
+                "configuration",
+                "workspace",
+                "data",
+                "command",
+                "export",
+                "cleanup",
+                "after",
+                "is-enabled",
+            ),
+        ) or {}
+
+        return bool(result.get("value", True))
+
+    def write_con_wor_data_export_cleanup_after_is_enabled_value(
+        self,
+        value: bool
+    ) -> bool:
+        self.write_any_value(
+            (
+                "configuration",
+                "workspace",
+                "data",
+                "command",
+                "export",
+                "cleanup",
+                "after",
+                "is-enabled",
+                "value",
+            ),
+            value,
+        )
+
+        return True
+
+
+    def read_con_wor_data_template_cleanup_before_is_enabled_value(
+        self
+    ) -> bool:
+        result: Any = self.read_any_value(
+            (
+                "configuration",
+                "workspace",
+                "data",
+                "command",
+                "template",
+                "cleanup",
+                "before",
+                "is-enabled",
+            ),
+        ) or {}
+
+        return bool(result.get("value", True))
+
+    def write_con_wor_data_template_cleanup_before_is_enabled_value(
+        self,
+        value: bool
+    ) -> bool:
+        self.write_any_value(
+            (
+                "configuration",
+                "workspace",
+                "data",
+                "command",
+                "template",
+                "cleanup",
+                "before",
+                "is-enabled",
+                "value",
+            ),
+            value,
+        )
+
+        return True
+
+    def read_con_wor_data_template_cleanup_after_is_enabled_value(
+        self
+    ) -> bool:
+        result: Any = self.read_any_value(
+            (
+                "configuration",
+                "workspace",
+                "data",
+                "command",
+                "template",
+                "cleanup",
+                "after",
+                "is-enabled",
+            ),
+        ) or {}
+
+        return bool(result.get("value", True))
+
+    def write_con_wor_data_template_cleanup_after_is_enabled_value(
+        self,
+        value: bool
+    ) -> bool:
+        self.write_any_value(
+            (
+                "configuration",
+                "workspace",
+                "data",
+                "command",
+                "template",
+                "cleanup",
+                "after",
+                "is-enabled",
+                "value",
+            ),
+            value,
+        )
+
+        return True
+
+
     def read_configuration_workspace_data_workflow_selection(
         self
     ) -> Any:
@@ -2351,6 +2557,83 @@ class ValueCacheDatabaseManager:
 
         return True
 
+
+    def read_con_wor_data_cache_cleanup_before_is_enabled_value(
+        self
+    ) -> bool:
+        result: Any = self.read_any_value(
+            (
+                "configuration",
+                "workspace",
+                "data",
+                "cache",
+                "cleanup",
+                "before",
+                "is-enabled",
+            ),
+        ) or {}
+
+        return bool(result.get("value", False))
+
+    def write_con_wor_data_cache_cleanup_before_is_enabled_value(
+        self,
+        value: bool
+    ) -> bool:
+        self.write_any_value(
+            (
+                "configuration",
+                "workspace",
+                "data",
+                "cache",
+                "cleanup",
+                "before",
+                "is-enabled",
+                "value",
+            ),
+            value,
+        )
+
+        return True
+
+    def read_con_wor_data_cache_cleanup_after_is_enabled_value(
+        self
+    ) -> bool:
+        result: Any = self.read_any_value(
+            (
+                "configuration",
+                "workspace",
+                "data",
+                "cache",
+                "cleanup",
+                "after",
+                "is-enabled",
+            ),
+        ) or {}
+
+        return bool(result.get("value", False))
+
+    def write_con_wor_data_cache_cleanup_after_is_enabled_value(
+        self,
+        value: bool
+    ) -> bool:
+        self.write_any_value(
+            (
+                "configuration",
+                "workspace",
+                "data",
+                "cache",
+                "cleanup",
+                "after",
+                "is-enabled",
+                "value",
+            ),
+            value,
+        )
+
+        return True
+
+
+
     def read_filesystem_clean_excluded(
         self
     ) -> set[str]:
@@ -2380,7 +2663,7 @@ class ValueCacheDatabaseManager:
 
     def read_filesystem_clean_included(
         self
-    ) -> set[str]:
+    ) -> Any:
         result: Any = self.read_any_value(
             (
                 "filesystem",
@@ -2388,11 +2671,11 @@ class ValueCacheDatabaseManager:
             ),
         ) or {}
 
-        return set(result.get("included", set()))
+        return result.get("included", {})
 
     def write_filesystem_clean_included(
         self,
-        value: set[str]
+        value: Any
     ) -> bool:
         self.write_any_value(
             (
@@ -2404,6 +2687,8 @@ class ValueCacheDatabaseManager:
         )
 
         return True
+
+
 
     def read_workspace_group(
         self
