@@ -129,42 +129,188 @@ class CommandWorkflowManager:
         self,
         **kwargs: Any
     ) -> bool:
-        # def handle_workflow_run_target(target: str) -> bool:
-        #     return True
+        def handle_workflow_run_target(
+            workflow_target: str
+        ) -> bool:
+            if not workflow_target:
+                return False
 
-        # self._task_manager.run_task_common_setup()
-        # self._task_manager.run_task_workflow_setup()
-        # self._task_manager.run_task_filesystem_clean_exclude_setup()
-        # self._task_manager.run_task_filesystem_clean_include_setup()
+            workflow_selection = (
+                data_workflow.get(
+                    workflow_target,
+                    {}
+                )
+            )
 
-        # targets = kwargs.get('targets', [])
-        # if len(targets) < 1:
-        #     return False
+            if not workflow_selection:
+                return False
 
-        # root_filesystem_path = (
-        #     self._value_cache_database_manager
-        #         .read_root_filesystem_path()
-        # )
-        # commands = (
-        #     self._command_storage_manager
-        #         .read_commands()
-        # )
-        # workspace_data_workflow = (
-        #     self._value_cache_database_manager
-        #         .read_configuration_workspace_data_workflow_selection()
-        # )
-        # workflow_selections = (
-        #     self._value_cache_database_manager
-        #         .read_workflow_selection()
-        # )
+            workflow_selection_data_is_enabled_value = (
+                workflow_selection
+                    .get("is-enabled", {})
+                    .get("value", True)
+            )
+            if not workflow_selection_data_is_enabled_value:
+                return False
 
-        # for target in targets:
-        #     if not target or target not in workflow_selections:
-        #         continue
+            is_operating_system_included = (
+                self._value_cache_database_manager
+                    .read_is_object_operating_system_included(
+                        workflow_selection
+                    )
+            )
+            if not is_operating_system_included:
+                return False
 
-        #     handle_workflow_run_target(
-        #         workspace_data_workflow[target]
-        #     )
+            workflow_selection_scripts = (
+                workflow_selection
+                    .get("scripts", {})
+            )
+            workflow_selection_delay_value = (
+                workflow_selection
+                    .get("delay", {})
+                    .get("value", 0)
+            )
+            workflow_selection_delay_value = (
+                workflow_selection_delay_value
+                if workflow_selection_delay_value >= 0
+                else 0
+            )
+            workflow_selection_is_atmoic_value = (
+                workflow_selection
+                    .get("is-atmoic", {})
+                    .get("value", False)
+            )
+            workflow_selection_filesystem_path_value = (
+                workflow_selection
+                    .get("filesystem-path", {})
+                    .get("value", root_filesystem_path)
+            )
+
+            self._import_manager.time_delay(
+                value=workflow_selection_delay_value
+            )
+
+            for workflow_selection_script in workflow_selection_scripts:
+                if not workflow_selection_script:
+                    continue
+
+                workflow_selection_script_is_enabled_value = (
+                    workflow_selection_script
+                        .get("is-enabled", {})
+                        .get("value", True)
+                )
+                if not workflow_selection_script_is_enabled_value:
+                    continue
+
+                workflow_selection_script_is_operating_system_included = (
+                    self._value_cache_database_manager
+                        .read_is_object_operating_system_included(
+                            workflow_selection_script
+                        )
+                )
+                if not workflow_selection_script_is_operating_system_included:
+                    continue
+
+                workflow_selection_script_run_value = (
+                    workflow_selection_script
+                        .get("run", {})
+                        .get("value", "")
+                )
+                if not workflow_selection_script_run_value:
+                    continue
+
+                workflow_selection_script_process_value = (
+                    workflow_selection_script
+                        .get("process", {})
+                        .get("value", "shell")
+                )
+
+                workflow_selection_script_argument = (
+                    workflow_selection_script
+                        .get("argument", {})
+                )
+
+                workflow_selection_script_delay_value = (
+                    workflow_selection_script
+                        .get("delay", {})
+                        .get("value", 0)
+                )
+                workflow_selection_script_delay_value = (
+                    workflow_selection_script_delay_value
+                    if workflow_selection_script_delay_value >= 0
+                    else 0
+                )
+
+                self._import_manager.time_delay(
+                    value=workflow_selection_script_delay_value
+                )
+
+                self._task_manager.navigate_via_filesystem_path(
+                    workflow_selection_filesystem_path_value
+                )
+
+                if workflow_selection_script_run_value in commands:
+                    commands[workflow_selection_script_run_value](**workflow_selection_script_argument)
+
+                elif workflow_selection_script_run_value in data_workflow_selections:
+                    handle_workflow_run_target(
+                        workflow_selection_script_run_value
+                    )
+
+                else:
+                    cli_output = {}
+                    if workflow_selection_script_process_value == "shell":
+                        cli_output = self._import_manager.run_shell_command(
+                            command=workflow_selection_script_run_value
+                        )
+
+                    elif workflow_selection_script_process_value == "subprocess":
+                        cli_output = self._import_manager.run_subprocess_command(
+                            command=workflow_selection_script_run_value
+                        )
+
+            return True
+
+        self._task_manager.run_task_common_setup()
+        self._task_manager.run_task_workflow_setup()
+        self._task_manager.run_task_filesystem_clean_exclude_setup()
+        self._task_manager.run_task_filesystem_clean_include_setup()
+
+        targets = kwargs.get('targets', [])
+        if not targets or len(targets) < 1:
+            return False
+
+        root_filesystem_path = (
+            self._value_cache_database_manager
+                .read_root_filesystem_path()
+        )
+        commands = (
+            self._command_storage_manager
+                .read_commands()
+        )
+        data_workflow = (
+            self._value_cache_database_manager
+                .read_configuration_workspace_data_workflow_selection()
+        )
+        data_workflow_selections = (
+            self._value_cache_database_manager
+                .read_workflow_selection()
+        )
+        workflow_selections = (
+            self._database_manager
+                .read_object_selection_origins(
+                    data_workflow_selections
+                )
+        )
+
+        for target in targets:
+            if not target or target not in data_workflow_selections:
+                continue
+
+            handle_workflow_run_target(
+                data_workflow_selections[target]
+            )
 
         return True
 

@@ -162,12 +162,182 @@ class CommandWorkspaceManager:
         **kwargs: Any
     ) -> bool:
         def handle_workspace_export_group(target: str) -> bool:
+            if not target or target not in command_export_group:
+                return False
 
+            export_group = (
+                command_export_group[target]
+            )
+            is_enabled_value = (
+                export_group
+                    .get("is-enabled", {})
+                    .get("value", True)
+            )
+            if not is_enabled_value:
+                return False
+
+            export_group_selections = (
+                export_group
+                    .get("selection", {})
+            )
+
+            for key in export_group_selections:
+                if key in command_export_group:
+                    handle_workspace_export_group(
+                        key
+                    )
+
+                elif key in command_export_selection:
+                    handle_workspace_export_selection(
+                        key
+                    )
 
             return True
 
         def handle_workspace_export_selection(target: str) -> bool:
+            export_selection = (
+                command_export_selection
+                    .get(target, {})
+            )
+            if target in default_export_selection_data:
+                if not export_selection:
+                    export_selection = (
+                        default_export_selection_data
+                            .get(target, {})
+                    )
 
+            export_selection_is_enabled_value = (
+                export_selection
+                    .get("is-enabled", {})
+                    .get("value", True)
+            )
+            if not export_selection_is_enabled_value:
+                return False
+
+            export_selection_input_exclude_targets = (
+                export_selection
+                    .get("input", {})
+                    .get("exclude", {})
+                    .get("targets", [])
+            )
+            export_selection_input_exclude_targets = (
+                self._value_cache_database_manager
+                    .read_object_pattern_values(
+                        export_selection_input_exclude_targets
+                    )
+            )
+            export_selection_input_include_targets = (
+                export_selection
+                    .get("input", {})
+                    .get("include", {})
+                    .get("targets", [])
+            )
+            export_selection_input_include_targets = (
+                self._value_cache_database_manager
+                    .read_object_filesystem_pattern_values(
+                        export_selection_input_include_targets
+                    )
+            )
+            export_selection_input_include_targets = (
+                self._database_manager
+                    .read_object_filtered_export_included(
+                        export_selection_input_include_targets,
+                        export_selection_input_exclude_targets
+                    )
+            )
+
+            export_selection_output_targets = (
+                export_selection
+                    .get("output", {})
+                    .get("targets", [])
+            )
+            export_selection_output_targets = (
+                self._value_cache_database_manager
+                    .read_object_filesystem_values(
+                        export_selection_output_targets
+                    )
+            )
+            export_selection_compression_format_value = (
+                export_selection
+                    .get("compression", {})
+                    .get("format", {})
+                    .get("value", "zip")
+            )
+            export_selection_compression_type_value = (
+                export_selection
+                    .get("compression", {})
+                    .get("type", {})
+                    .get("value", "deflated")
+            )
+            export_selection_compression_level_value = (
+                export_selection
+                    .get("compression", {})
+                    .get("level", {})
+                    .get("value", 6)
+            )
+            export_selection_compression_is_zip_64_allowed_value = (
+                export_selection
+                    .get("compression", {})
+                    .get("is-zip-64-allowed", {})
+                    .get("value", True)
+            )
+            export_selection_compression_is_timestamp_strict_value = (
+                export_selection
+                    .get("compression", {})
+                    .get("is-timestamp-strict", {})
+                    .get("value", True)
+            )
+
+            temporary_copy_items = []
+            temporary_output_path = (
+                f"{export_temporary_output_filesystem_path}/{target}"
+            )
+            for include_target in export_selection_input_include_targets:
+                if not include_target:
+                    continue
+
+                temporary_input_path = (
+                    f"{root_filesystem_path}/{include_target}"
+                )
+                temporary_output_target_path = (
+                    f"{temporary_output_path}/{include_target}"
+                )
+
+                temporary_copy_items.append(
+                    {
+                        "input": temporary_input_path,
+                        "output": temporary_output_target_path
+                    }
+                )
+
+            for item in temporary_copy_items:
+                if not item or "input" not in item or "output" not in item:
+                    continue
+
+                input_path = item.get("input", "")
+                output_path = item.get("output", "")
+                if not input_path or not output_path:
+                    continue
+
+                self._import_manager.copy_filesystem_paths(
+                    source_path=input_path,
+                    target_paths=(output_path,),
+                )
+
+            for export_selection_output_target in export_selection_output_targets:
+                destination = (
+                    f"{export_selection_output_target}.{export_selection_compression_format_value}"
+                )
+
+                self._import_manager.compress(
+                    source=temporary_output_path,
+                    destination=destination,
+                    mode="w",
+                    compression=export_selection_compression_type_value,
+                    compresslevel=export_selection_compression_level_value,
+                    allowZip64=export_selection_compression_is_zip_64_allowed_value,
+                    strict_timestamps=export_selection_compression_is_timestamp_strict_value,
+                )
 
             return True
 
@@ -185,19 +355,19 @@ class CommandWorkspaceManager:
             self._value_cache_database_manager
                 .read_root_filesystem_path()
         )
-        workspace_data_command_export_group = (
+        command_export_group = (
             self._value_cache_database_manager
                 .read_configuration_workspace_data_export_group()
         )
-        workspace_data_command_export_selection = (
+        command_export_selection = (
             self._value_cache_database_manager
                 .read_configuration_workspace_data_export_selection()
         )
-        workspace_data_command_export_cleanup_before_is_enabled = (
+        command_export_cleanup_before_is_enabled = (
             self._value_cache_database_manager
                 .read_con_wor_data_export_cleanup_before_is_enabled_value()
         )
-        workspace_data_command_export_cleanup_after_is_enabled = (
+        command_export_cleanup_after_is_enabled = (
             self._value_cache_database_manager
                 .read_con_wor_data_export_cleanup_after_is_enabled_value()
         )
@@ -224,7 +394,7 @@ class CommandWorkspaceManager:
                 .read_temporary_export_output_filesystem_path()
         )
 
-        if workspace_data_command_export_cleanup_before_is_enabled:
+        if command_export_cleanup_before_is_enabled:
             self._task_manager.run_task_safe_clean_filesystem_path(
                 target_path=export_temporary_output_filesystem_path
             )
@@ -234,9 +404,9 @@ class CommandWorkspaceManager:
                 continue
 
             if target == "all":
-                for export_selection in export_selection_values:
+                for selection in export_selection_values:
                     handle_workspace_export_selection(
-                        export_selection
+                        selection
                     )
 
             elif target in export_groups:
@@ -249,7 +419,7 @@ class CommandWorkspaceManager:
                     export_selections[target]
                 )
 
-        if workspace_data_command_export_cleanup_after_is_enabled:
+        if command_export_cleanup_after_is_enabled:
             self._task_manager.run_task_safe_clean_filesystem_path(
                 target_path=export_temporary_output_filesystem_path
             )

@@ -134,7 +134,7 @@ class TaskManager:
     ) -> bool:
         self._value_cache_database_manager.write_initial_executing_console_filesystem_path(
             self._import_manager
-                .read_current_executing_script_filesystem_path()
+                .read_original_executing_console_filesystem_path()
         )
         self._value_cache_database_manager.write_previous_executing_console_filesystem_path(
             self._value_cache_database_manager
@@ -205,7 +205,6 @@ class TaskManager:
 
         return True
 
-    @_DecoratorManager.single_task_decorator
     def navigate_via_filesystem_path(
         self,
         filesystem_path: str
@@ -213,7 +212,7 @@ class TaskManager:
 
         self._value_cache_database_manager.write_previous_executing_console_filesystem_path(
             self._value_cache_database_manager
-                .read_current_executing_console_filesystem_path()
+                .read_original_executing_console_filesystem_path()
         )
         self._import_manager.write_current_executing_console_filesystem_path(
             filesystem_path=filesystem_path
@@ -1067,6 +1066,7 @@ class TaskManager:
 
     @_DecoratorManager.multi_task_decorator
     def run_task_system_setup(self) -> bool:
+        self.run_task_system_values()
         self.run_task_root_filesystem_path()
         self.run_task_selection_filesystem_path()
         self.run_task_executing_console_filesystem_paths()

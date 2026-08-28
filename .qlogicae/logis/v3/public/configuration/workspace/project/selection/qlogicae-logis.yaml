@@ -25,21 +25,16 @@ workflow:
       alias:
         ql:
 
-      asynchronous:
-        is-enabled:
-          value: true
+      # operating-system:
+      #   exclude:
+      #     Linux-x86_64:
 
-      operating-system:
-        exclude:
-          Linux-x86_64:
+      #   include:
+      #     Linux-x86_64:
 
       scripts:          
         - run:
             value: qlogicae-logis-pre-workflow
-
-          os:
-            selection:
-              windows:
 
         - run:
             value: qlogicae-logis-test-type-check
@@ -116,7 +111,7 @@ workflow:
             value: hatch run test-benchmark-memory-usage-view      
           
         # - run:
-        #     value: run_command_filesystem_move        
+        #     value: filesystem-move        
         #   argument:
         #     source_path: scalene-profile.html
         #     target_path: ${{ qlogicae-logis-output-test-benchmark-filesystem-path }}/scalene-profile.html
@@ -143,7 +138,7 @@ workflow:
             value: hatch build
 
         - run:
-            value: run_command_filesystem_move       
+            value: filesystem-move       
           argument:
             source_path: dist
             target_path: ${{ qlogicae-logis-output-build-release-filesystem-path }}
@@ -196,7 +191,7 @@ workflow:
 
       scripts:
         - run:
-            value: run_command_filesystem_clean_path
+            value: filesystem-clean-path
           argument:
             target_paths:
               - ${{ qlogicae-logis-selection-project-filesystem-path }}/dist
@@ -208,27 +203,27 @@ workflow:
             value: pip freeze > requirements.txt
 
         - run:
-            value: run_command_filesystem_copy          
+            value: filesystem-copy          
           argument:
             source_path: requirements.txt
             target_paths:
               - ${{ qlogicae-logis-selection-project-filesystem-path }}/requirements.txt
 
         - run:
-            value: run_command_template_apply        
+            value: template-apply        
           argument:
             targets:
               - qlogicae-logis-complex
 
         - run:
-            value: run_command_filesystem_copy          
+            value: filesystem-copy          
           argument:
             source_path: qlogicae_logis
             target_paths:
               - ${{ qlogicae-logis-selection-project-filesystem-path }}/qlogicae_logis
 
         - run:
-            value: run_command_filesystem_copy          
+            value: filesystem-copy          
           argument:
             source_path: .qlogicae
             target_paths:
@@ -236,14 +231,14 @@ workflow:
               - ${{ qlogicae-ensemble-selection-project-filesystem-path }}/.qlogicae
 
         - run:
-            value: run_command_filesystem_copy          
+            value: filesystem-copy          
           argument:
             source_path: test
             target_paths:
               - ${{ qlogicae-logis-selection-project-filesystem-path }}/test
 
         - run:
-            value: run_command_filesystem_tree_setup          
+            value: filesystem-tree-setup          
           argument:
             target_paths:
               - ${{ qlogicae-logis-selection-project-filesystem-path }}/archive
@@ -270,7 +265,7 @@ workflow:
         
       scripts:          
         - run:
-            value: run_command_filesystem_move         
+            value: filesystem-move         
           argument:
             source_path: output
             target_path: ${{ qlogicae-logis-archive-filesystem-path }}
@@ -282,7 +277,7 @@ workflow:
 
       scripts:
         - run:
-            value: run_command_filesystem_clean_path
+            value: filesystem-clean-path
           argument:
             target_paths:
               - dist
@@ -296,7 +291,7 @@ macros:
           value: ${{ main-company-display-name }} ${{ qlogicae-logis-display-project-name }}
 
           alias:
-            ql:
+            qldbn:
 
         qlogicae-logis-base-brand-name:
           value: ${{ main-company-base-name }}-${{ qlogicae-logis-base-project-name }}

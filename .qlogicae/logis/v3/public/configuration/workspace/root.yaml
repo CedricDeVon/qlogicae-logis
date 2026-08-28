@@ -15,7 +15,7 @@ command:
 
       after:
         is-enabled:
-          value: true
+          value: false
 
   filesystem: ##
     clean:
@@ -72,50 +72,62 @@ command:
                 pattern:
                   value: ""
 
-  export: #
+  export: ##
     cleanup:
       before:
         is-enabled:
-          value: true
+          value: false
 
       after:
         is-enabled:
-          value: true
+          value: false
 
     group:
-      group-1:
+      custom-group:
         alias:
-          qlgv3:
+          cg:
 
         selection:
-          qlogicae-logis-v3:
+          custom-selection:
 
     selection:
-      qlogicae-logis-v3:
+      custom-selection:
         alias:
-          qlv3:
+          cs:
 
         input:    
           include:
             targets:
               - filesystem-path:
-                  value: ${{ root-filesystem-path }}
+                  value: .qlogicae/logis/v3/.gitignore
+
+              - filesystem-path:
+                  value: .qlogicae/logis/v3/private/configuration
+
+              - filesystem-path:
+                  value: .qlogicae/logis/v3/private/plugin
+
+              - filesystem-path:
+                  value: .qlogicae/logis/v3/private/template
+                  
+              - filesystem-path:
+                  value: .qlogicae/logis/v3/public
 
                 pattern:
                   value: ""
 
           exclude:
             targets:
-              - filesystem-path:
-                  value: ${{ root-filesystem-path }}
+              - pattern:
+                  value: private/temporary
 
               - pattern:
-                  value: "**/__pycache__/**"
+                  value: __pycache__
 
         output:
           targets:
-            filesystem-path:
-              value: ${{ root-filesystem-path }}/project.code-workspace
+            - filesystem-path:
+                value: ${{ root-filesystem-path }}/abc
 
         compression:
           format:

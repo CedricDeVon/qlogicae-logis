@@ -733,7 +733,7 @@ class ConsoleManager:
         application_workspace_import.add_argument(
             "--input-path",
             "-ip",
-            dest="target_path",
+            dest="input_path",
             default="",
             type=str,
         )

@@ -129,106 +129,328 @@ class CommandTemplateManager:
         self,
         **kwargs: Any
     ) -> bool:
-        # def handle_target_root() -> bool:
-        #     return True
+        def handle_target_root() -> bool:
+            destination_temporary_target_filesystem_path = (
+                f"{temporary_template_output_filesystem_path}/root/filesystem"
+            )
 
-        # def handle_target_group() -> bool:
-        #     return True
+            for accessibility_type in default_filesystem_accessibility_types:
+                source_all_filesystem_path = (
+                    f"{root_workspace_filesystem_path}/{accessibility_type}/template/all/filesystem"
+                )
+                source_root_filesystem_path = (
+                    f"{root_workspace_filesystem_path}/{accessibility_type}/template/root/filesystem"
+                )
 
-        # def handle_target_project() -> bool:
-        #     return True
+                self._import_manager.setup_filesystem_tree_paths(
+                    target_paths=(
+                        source_all_filesystem_path,
+                        source_root_filesystem_path,
+                        destination_temporary_target_filesystem_path,
+                    ),
+                )
 
-        # def handle_target_group_selection(target: str) -> bool:
-        #     return True
+                self._import_manager.copy_filesystem_path(
+                    source_path=source_all_filesystem_path,
+                    target_path=destination_temporary_target_filesystem_path,
+                )
+                self._import_manager.copy_filesystem_path(
+                    source_path=source_root_filesystem_path,
+                    target_path=destination_temporary_target_filesystem_path,
+                )
 
-        # def handle_target_project_selection(target: str) -> bool:
-        #     return True
+            self._import_manager.macros_parse_filesystem(
+                filesystem_path=destination_temporary_target_filesystem_path,
+                workspace_macros=macros_data,
+            )
 
-        # self._task_manager.run_task_common_setup()
-        # self._task_manager.run_task_workspace_default_setup()
-        # self._task_manager.run_task_workspace_group_setup()
-        # self._task_manager.run_task_workspace_project_setup()
-        # self._task_manager.run_task_filesystem_clean_exclude_setup()
-        # self._task_manager.run_task_filesystem_clean_include_setup()
+            self._import_manager.copy_filesystem_path(
+                source_path=destination_temporary_target_filesystem_path,
+                target_path=root_filesystem_path,
+            )
 
-        # targets = kwargs.get("targets", ["all"])
-        # if len(targets) < 1:
-        #     return False
+            return True
 
-        # default_filesystem_accessibility_types = (
-        #     self._database_manager
-        #         .read_default_filesystem_accessibility_types()
-        # )
-        # selection_projects = (
-        #     self._value_cache_database_manager
-        #         .read_workspace_project()
-        # )
-        # selection_groups = (
-        #     self._value_cache_database_manager
-        #         .read_workspace_group()
-        # )
-        # default_template_types = (
-        #     self._database_manager
-        #         .read_default_template_types()
-        # )
-        # root_filesystem_path = (
-        #     self._value_cache_database_manager
-        #         .read_root_filesystem_path()
-        # )
-        # workspace_filesystem_path = (
-        #     self._value_cache_database_manager
-        #         .read_root_filesystem_path()
-        # )
-        # temporary_template_output_filesystem_path = (
-        #     self._database_manager
-        #         .read_temporary_template_output_filesystem_path()
-        # )
-        # cleanup_before_is_enabled = (
-        #     self._value_cache_database_manager
-        #         .read_con_wor_data_template_cleanup_before_is_enabled_value()
-        # )
-        # cleanup_after_is_enabled = (
-        #     self._value_cache_database_manager
-        #         .read_con_wor_data_template_cleanup_after_is_enabled_value()
-        # )
+        def handle_target_group() -> bool:
+            for selection_group in selection_groups:
+                handle_target_group_selection(
+                    selection_group
+                )
 
-        # if cleanup_before_is_enabled:
-        #     self._task_manager.run_task_safe_clean_filesystem_path(
-        #         target_path=temporary_template_output_filesystem_path
-        #     )
+            return True
 
-        # for target in targets:
-        #     if not target:
-        #         continue
+        def handle_target_project() -> bool:
+            for selection_project in selection_projects:
+                handle_target_project_selection(
+                    selection_project
+                )
 
-        #     if target == "all":
-        #         handle_target_root()
-        #         handle_target_group()
-        #         handle_target_project()
+            return True
 
-        #     elif target == "root":
-        #         handle_target_root()
+        def handle_target_group_selection(group_target: str) -> bool:
+            if not group_target:
+                return False
 
-        #     elif target == "group":
-        #         handle_target_group()
+            selection_group = (
+                data_selection_groups.get(group_target, {})
+            )
+            if not selection_group:
+                return False
 
-        #     elif target == "project":
-        #         handle_target_project()
+            selection_group_targets = (
+                set(selection_group.get("targets", {}))
+            )
 
-        #     elif target in selection_groups:
-        #         handle_target_group_selection(
-        #             selection_groups[target]
-        #         )
+            destination_temporary_target_filesystem_path = (
+                f"{temporary_template_output_filesystem_path}/group/selection/{group_target}/filesystem"
+            )
+            for accessibility_type in default_filesystem_accessibility_types:
+                source_all_filesystem_path = (
+                    f"{root_workspace_filesystem_path}/{accessibility_type}/template/all/filesystem"
+                )
+                source_group_filesystem_path = (
+                    f"{root_workspace_filesystem_path}/{accessibility_type}/template/group/filesystem"
+                )
+                source_target_filesystem_path = (
+                    f"{root_workspace_filesystem_path}/{accessibility_type}/template/group/selection/{group_target}/filesystem"
+                )
 
-        #     elif target in selection_projects:
-        #         handle_target_project_selection(
-        #             selection_projects[target]
-        #         )
+                self._import_manager.setup_filesystem_tree_paths(
+                    target_paths=(
+                        source_all_filesystem_path,
+                        source_group_filesystem_path,
+                        source_target_filesystem_path,
+                        destination_temporary_target_filesystem_path,
+                    ),
+                )
 
-        # if cleanup_after_is_enabled:
-        #     self._task_manager.run_task_safe_clean_filesystem_path(
-        #         target_path=temporary_template_output_filesystem_path
-        #     )
+                self._import_manager.copy_filesystem_path(
+                    source_path=source_all_filesystem_path,
+                    target_path=destination_temporary_target_filesystem_path,
+                )
+                self._import_manager.copy_filesystem_path(
+                    source_path=source_group_filesystem_path,
+                    target_path=destination_temporary_target_filesystem_path,
+                )
+                self._import_manager.copy_filesystem_path(
+                    source_path=source_target_filesystem_path,
+                    target_path=destination_temporary_target_filesystem_path,
+                )
+
+            self._import_manager.macros_parse_filesystem(
+                filesystem_path=destination_temporary_target_filesystem_path,
+                workspace_macros=macros_data,
+            )
+
+            for selection_group_target in selection_group_targets:
+                if selection_group_target == "root":
+                    source_temporary_target_filesystem_path = (
+                        f"{temporary_template_output_filesystem_path}/root/filesystem"
+                    )
+                    self._import_manager.copy_filesystem_path(
+                        source_path=destination_temporary_target_filesystem_path,
+                        target_path=source_temporary_target_filesystem_path,
+                    )
+                    handle_target_root()
+
+                elif selection_group_target in selection_projects:
+                    source_temporary_target_filesystem_path = (
+                        f"{temporary_template_output_filesystem_path}/project/selection/{selection_group_target}/filesystem"
+                    )
+                    self._import_manager.copy_filesystem_path(
+                        source_path=destination_temporary_target_filesystem_path,
+                        target_path=source_temporary_target_filesystem_path,
+                    )
+                    handle_target_project_selection(
+                        selection_group_target
+                    )
+
+                elif selection_group_target in selection_groups:
+                    source_temporary_target_filesystem_path = (
+                        f"{temporary_template_output_filesystem_path}/group/selection/{selection_group_target}/filesystem"
+                    )
+                    self._import_manager.copy_filesystem_path(
+                        source_path=destination_temporary_target_filesystem_path,
+                        target_path=source_temporary_target_filesystem_path,
+                    )
+                    handle_target_group_selection(
+                        selection_group_target
+                    )
+
+            return True
+
+        def handle_target_project_selection(project_target: str) -> bool:
+            if not project_target:
+                return False
+
+            selection_project = (
+                data_selection_projects
+                    .get(project_target, {})
+            )
+            if not selection_project:
+                return False
+
+            selection_project_filesystem_path_value = (
+                selection_project
+                    .get("filesystem-path", {})
+                    .get("value", "")
+            )
+            if not selection_project_filesystem_path_value:
+                return False
+
+            destination_target_filesystem_path = (
+                f"{temporary_template_output_filesystem_path}/project/selection/{project_target}/filesystem"
+            )
+            for accessibility_type in default_filesystem_accessibility_types:
+                source_all_filesystem_path = (
+                    f"{root_workspace_filesystem_path}/{accessibility_type}/template/all/filesystem"
+                )
+                source_project_filesystem_path = (
+                    f"{root_workspace_filesystem_path}/{accessibility_type}/template/project/filesystem"
+                )
+                source_target_filesystem_path = (
+                    f"{root_workspace_filesystem_path}/{accessibility_type}/template/project/selection/{project_target}/filesystem"
+                )
+
+                self._import_manager.setup_filesystem_tree_paths(
+                    target_paths=(
+                        source_all_filesystem_path,
+                        source_project_filesystem_path,
+                        source_target_filesystem_path,
+                        destination_target_filesystem_path,
+                    ),
+                )
+
+                self._import_manager.copy_filesystem_path(
+                    source_path=source_all_filesystem_path,
+                    target_path=destination_target_filesystem_path,
+                )
+                self._import_manager.copy_filesystem_path(
+                    source_path=source_project_filesystem_path,
+                    target_path=destination_target_filesystem_path,
+                )
+                self._import_manager.copy_filesystem_path(
+                    source_path=source_target_filesystem_path,
+                    target_path=destination_target_filesystem_path,
+                )
+
+            self._import_manager.macros_parse_filesystem(
+                filesystem_path=destination_target_filesystem_path,
+                workspace_macros=macros_data,
+            )
+
+            self._import_manager.copy_filesystem_path(
+                source_path=destination_target_filesystem_path,
+                target_path=selection_project_filesystem_path_value,
+            )
+
+            return True
+
+        self._task_manager.run_task_common_setup()
+        self._task_manager.run_task_workspace_default_setup()
+        self._task_manager.run_task_workspace_group_setup()
+        self._task_manager.run_task_workspace_project_setup()
+        self._task_manager.run_task_filesystem_clean_exclude_setup()
+        self._task_manager.run_task_filesystem_clean_include_setup()
+
+        targets = kwargs.get("targets", ["all"])
+        if len(targets) < 1:
+            return False
+
+        macros_data = (
+            self._value_cache_database_manager
+                .read_macros()
+        )
+        default_filesystem_accessibility_types = (
+            self._database_manager
+                .read_default_filesystem_accessibility_types()
+        )
+        data_selection_projects = (
+            self._value_cache_database_manager
+                .read_configuration_workspace_data_workspace_project_selection()
+        )
+        selection_projects = (
+            self._value_cache_database_manager
+                .read_workspace_project()
+        )
+        selection_projects = (
+            self._database_manager
+                .read_object_selection_origins(
+                    selection_projects
+                )
+        )
+        data_selection_groups = (
+            self._value_cache_database_manager
+                .read_configuration_workspace_data_workspace_group_selection()
+        )
+        selection_groups = (
+            self._value_cache_database_manager
+                .read_workspace_group()
+        )
+        selection_groups = (
+            self._database_manager
+                .read_object_selection_origins(
+                    selection_groups
+                )
+        )
+        root_filesystem_path = (
+            self._value_cache_database_manager
+                .read_root_filesystem_path()
+        )
+        root_workspace_filesystem_path = (
+            self._database_manager
+                .read_root_workspace_filesystem_path()
+        )
+        temporary_template_output_filesystem_path = (
+            self._database_manager
+                .read_temporary_template_output_filesystem_path()
+        )
+        cleanup_before_is_enabled = (
+            self._value_cache_database_manager
+                .read_con_wor_data_template_cleanup_before_is_enabled_value()
+        )
+        cleanup_after_is_enabled = (
+            self._value_cache_database_manager
+                .read_con_wor_data_template_cleanup_after_is_enabled_value()
+        )
+
+        if cleanup_before_is_enabled:
+            self._task_manager.run_task_safe_clean_filesystem_path(
+                target_path=temporary_template_output_filesystem_path
+            )
+
+        for target in targets:
+            if not target:
+                continue
+
+            if target == "all":
+                handle_target_root()
+                handle_target_group()
+                handle_target_project()
+
+            elif target == "root":
+                handle_target_root()
+
+            elif target == "group":
+                handle_target_group()
+
+            elif target == "project":
+                handle_target_project()
+
+            elif target in selection_groups:
+                handle_target_group_selection(
+                    target
+                )
+
+            elif target in selection_projects:
+                handle_target_project_selection(
+                    target
+                )
+
+        if cleanup_after_is_enabled:
+            self._task_manager.run_task_safe_clean_filesystem_path(
+                target_path=temporary_template_output_filesystem_path
+            )
 
         return True
 
@@ -254,7 +476,6 @@ class CommandTemplateManager:
         ) or {}
         if value_project:
             value["projects"] = value_project
-
 
         value_group = (
             self._value_cache_database_manager.read_workspace_group()

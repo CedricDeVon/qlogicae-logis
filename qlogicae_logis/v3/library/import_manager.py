@@ -14,6 +14,7 @@ _yaml: Any = None
 _Path: Any = None
 _shutil: Any = None
 _logging: Any = None
+_ZipFile: Any = None
 _Mapping: Any = None
 _metadata: Any = None
 _Sequence: Any = None
@@ -70,6 +71,7 @@ def _handle_dynamic_imports() -> None:
     global _shutil
     global _logging
     global _Mapping
+    global _ZipFile
     global _Sequence
     global _argparse
     global _metadata
@@ -128,6 +130,7 @@ def _handle_dynamic_imports() -> None:
     from importlib.util import module_from_spec, spec_from_file_location
     from pathlib import Path
     from subprocess import CompletedProcess
+    from zipfile import ZipFile
 
     from .._vendor.pyyaml import yaml
     from .._vendor.qlogicae_cor.v2.library import (
@@ -168,6 +171,7 @@ def _handle_dynamic_imports() -> None:
     _gc = gc
     _logging = logging
     _resource = resource
+    _ZipFile = ZipFile
     _tracemalloc = tracemalloc
     _sys = sys
     _metadata = (
@@ -243,7 +247,6 @@ def _handle_dynamic_imports() -> None:
     )
 
     _handle_dynamic_imports = lambda: None
-
 
 def _handle_singleton_manager_imports() -> None:
     global _handle_singleton_manager_imports
@@ -353,6 +356,58 @@ class ImportManager:
             )
         )
 
+    def compress(
+        self,
+        **kwargs: Any,
+    ) -> bool:
+        source = (
+            kwargs.get("source", "")
+        )
+        destination = (
+            kwargs.get("destination", "")
+        )
+        mode = (
+            kwargs.get("mode", "")
+        )
+        if not destination or not mode:
+            return False
+
+        source = _Path(source)
+        compression = (
+            kwargs.get("compression", "deflated")
+        )
+        compression = (
+            self.read_zip_format_compression(
+                value=compression
+            )
+        )
+        compresslevel = (
+            kwargs.get("compresslevel", 6)
+        )
+        allowZip64 = (
+            kwargs.get("allowZip64", True)
+        )
+        strict_timestamps = (
+            kwargs.get("strict_timestamps", True)
+        )
+
+        with _ZipFile(
+            destination,
+            mode=mode,
+            compression=compression,
+            compresslevel=compresslevel,
+            allowZip64=allowZip64,
+            strict_timestamps=strict_timestamps,
+        ) as archive:
+            for path in source.rglob("*"):
+                archive.write(
+                    path,
+                    arcname=path.relative_to(source),
+                )
+
+
+        return True
+
     def read_metadata_version(self, target: str) -> str:
         if not target:
             return "v0.0.0"
@@ -383,6 +438,25 @@ class ImportManager:
         }
 
     # TimeManager
+    def time_delay(
+        self,
+        **kwargs: Any,
+    ) -> bool:
+        value = (
+            kwargs.get(
+                "value",
+                0
+            )
+        )
+        if not value:
+            return False
+
+        _time.sleep(
+            value
+        )
+
+        return True
+
     def read_current_iso8601_date(
         self,
     ) -> str:
@@ -1434,12 +1508,16 @@ class ImportManager:
         if not source_path or len(target_paths) < 1:
             return False
 
-        source_path = _Path(source_path)
+        source_path = _Path(source_path).resolve()
+
         for target_path in target_paths:
             if not target_path:
                 continue
 
-            target_path = _Path(target_path)
+            target_path = _Path(target_path).resolve()
+
+            if source_path == target_path:
+                return False
 
             if source_path.is_dir():
                 _shutil.copytree(
@@ -1458,6 +1536,46 @@ class ImportManager:
                     source_path,
                     target_path,
                 )
+
+        return True
+
+    def copy_filesystem_path(
+        self,
+        **kwargs: Any,
+    ) -> bool:
+        source_path = kwargs.get("source_path", "")
+        target_path = kwargs.get("target_path", "")
+
+        if not source_path or not target_path:
+            return False
+
+        source_path = _Path(source_path).resolve()
+
+        if not target_path:
+            return False
+
+        target_path = _Path(target_path).resolve()
+
+        if source_path == target_path:
+            return False
+
+        if source_path.is_dir():
+            _shutil.copytree(
+                source_path,
+                target_path,
+                dirs_exist_ok=True,
+            )
+
+        elif source_path.is_file():
+            target_path.parent.mkdir(
+                parents=True,
+                exist_ok=True,
+            )
+
+            _shutil.copy2(
+                source_path,
+                target_path,
+            )
 
         return True
 
@@ -1677,6 +1795,15 @@ class ImportManager:
         )
 
         return True
+
+    def read_original_executing_console_filesystem_path(
+        self,
+    ) -> str:
+        value: str = (
+            self._system_manager
+                .original_executing_console_filesystem_path
+        )
+        return value
 
     # FileIoManager
     def read_file(

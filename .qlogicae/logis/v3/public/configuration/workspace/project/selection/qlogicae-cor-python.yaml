@@ -7,10 +7,42 @@ workspace:
 
 workflow:
   selection:      
+    demo-1:
+      filesystem-path:
+        value: ${{ qlogicae-cor-python-selection-project-filesystem-path }}
+
+      scripts:
+        - run:
+            value: "echo 'hello'"
+
+    demo:
+      filesystem-path:
+        value: ${{ qlogicae-cor-python-selection-project-filesystem-path }}
+
+      alias:
+        dm:
+
+      scripts:
+        - run:
+            value: "echo 'start'"
+
+        - run:
+            value: demo-1
+
+        - run:
+            value: "echo 'end'"
+
     qlogicae-cor-python-quality-assurance:
       filesystem-path:
         value: ${{ qlogicae-cor-python-selection-project-filesystem-path }}
-        
+      
+      # operating-system:
+      #   exclude:
+      #     Linux-x86_64:
+
+      #   include:
+      #     Linux-x86_64:
+      
       scripts:
         - run:
             value: qlogicae-cor-python-pre-workflow
@@ -106,7 +138,7 @@ workflow:
             value: hatch build
 
         - run:
-            value: run_command_filesystem_move       
+            value: filesystem-move       
           argument:
             source_path: dist
             target_path: ${{ qlogicae-cor-python-output-build-release-filesystem-path }}
@@ -160,21 +192,21 @@ workflow:
 
       scripts:
         - run:
-            value: run_command_filesystem_clean_path
+            value: filesystem-clean-path
           argument:
             target_paths:
               - ${{ qlogicae-cor-python-selection-project-filesystem-path }}/dist
               - ${{ qlogicae-cor-python-selection-project-filesystem-path }}/output
 
         - run:
-            value: run_command_template_apply        
+            value: template-apply        
           argument:
             targets:
               - qlogicae-cor-root
               - qlogicae-cor-python
 
         - run:
-            value: run_command_filesystem_tree_setup          
+            value: filesystem-tree-setup          
           argument:
             target_paths:
               - ${{ qlogicae-cor-python-selection-project-filesystem-path }}/archive
@@ -204,7 +236,7 @@ workflow:
 
       scripts:          
         - run:
-            value: run_command_filesystem_move         
+            value: filesystem-move         
           argument:
             source_path: output
             target_path: ${{ qlogicae-cor-python-archive-filesystem-path }}
@@ -216,7 +248,7 @@ workflow:
 
       scripts:
         - run:
-            value: run_command_filesystem_clean_path
+            value: filesystem-clean-path
           argument:
             target_paths:
               - dist

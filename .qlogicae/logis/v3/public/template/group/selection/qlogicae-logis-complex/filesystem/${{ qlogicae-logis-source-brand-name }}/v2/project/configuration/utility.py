@@ -8,7 +8,7 @@ DATA: dict[str, dict[str, Any]]= {
         "value": "${{ qlogicae-logis-base-project-name }}"
     },
     "active-major-version-label": {
-        "value": "${{ qlogicae-logis-active-major-version-label }}"
+        "value": "v2"
     },
 }
 

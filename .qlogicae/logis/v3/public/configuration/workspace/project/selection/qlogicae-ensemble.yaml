@@ -16,13 +16,13 @@ workflow:
 
       scripts:
         - run:
-            value: run_command_template_apply
+            value: template-apply
           argument:
             targets:
               - ${{ qlogicae-ensemble-base-brand-name }}
 
         - run:
-            value: run_command_filesystem_copy          
+            value: filesystem-copy          
           argument:
             source_path: ${{ root-filesystem-path }}/.qlogicae
             target_paths:

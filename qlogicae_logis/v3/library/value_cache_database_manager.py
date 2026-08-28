@@ -337,7 +337,6 @@ class ValueCacheDatabaseManager:
 
         return True
 
-
     def read_current_timestamp(self) -> int:
         result: int = self.read_any_value(
             (
@@ -513,7 +512,7 @@ class ValueCacheDatabaseManager:
                 "root-filesystem-path",
                 "value",
             ),
-            self._import_manager.read_current_executing_console_filesystem_path()
+            self._import_manager.read_original_executing_console_filesystem_path()
         )
 
         return True
@@ -535,7 +534,7 @@ class ValueCacheDatabaseManager:
                 "value",
             ),
             f"{
-                self._import_manager.read_current_executing_console_filesystem_path()
+                self._import_manager.read_original_executing_console_filesystem_path()
             }/selection",
         )
 
@@ -617,7 +616,7 @@ class ValueCacheDatabaseManager:
 
         return True
 
-    def read_current_executing_console_filesystem_path(
+    def read_original_executing_console_filesystem_path(
         self
     ) -> str:
         result: str = self.read_any_value(
@@ -3024,6 +3023,34 @@ class ValueCacheDatabaseManager:
 
         return outputs
 
+    def read_object_pattern_values(
+        self,
+        data: Any,
+    ) -> set[str]:
+        outputs: set[str] = set()
+        if not data:
+            return outputs
+
+        for item in data:
+            if (
+                item and
+                "operating-system" in item and
+                not self.read_is_object_operating_system_included(
+                    item["operating-system"]
+                )
+            ):
+                continue
+
+            value = item.get("pattern", {}).get("value", "")
+            if not value:
+                continue
+
+            outputs.add(
+                value
+            )
+
+        return outputs
+
     def read_object_exclude_filesystem_path_values(
         self,
         data: Any,
@@ -3121,4 +3148,3 @@ class ValueCacheDatabaseManager:
             "data": data,
             "metadata": metadata,
         } or {}
-

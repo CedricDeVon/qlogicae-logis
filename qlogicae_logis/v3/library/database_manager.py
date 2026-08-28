@@ -69,10 +69,10 @@ class DatabaseManager:
     def read_default_dynamic_value_cache_macros(self) -> dict[str, Any]:
         return {}
 
-    def read_default_template_types(self) -> tuple[str, str]:
-        return ( "filesystem", "fragment", )
+    def read_default_template_types(self) -> tuple[str, ...]:
+        return ( "filesystem", )
 
-    def read_default_filesystem_accessibility_types(self) -> tuple[str, str]:
+    def read_default_filesystem_accessibility_types(self) -> tuple[str, ...]:
         return ( "private", "public", )
 
     def read_default_data_file_extensions(self) -> set[str]:
@@ -183,7 +183,7 @@ class DatabaseManager:
         self,
     ) -> str:
         return (
-            f"{self._import_manager.read_current_executing_console_filesystem_path()}/"
+            f"{self._import_manager.read_original_executing_console_filesystem_path()}/"
             f".{
             self.read_company_project_major_version(
             "/"
@@ -206,28 +206,6 @@ class DatabaseManager:
             f"/temporary/log/{self._import_manager.read_current_iso8601_date()}.log",
         }
 
-    def read_default_export_selections(
-        self,
-    ) -> Any:
-        data: Any = {
-            f"{self.read_company_project_major_version("-")}",
-            f"{self.read_company_project_major_version("-")}-public",
-            f"{self.read_company_project_major_version("-")}-private",
-        }
-
-        return { key: key for key in data }
-
-    def read_default_export_selection_data(
-        self,
-    ) -> Any:
-        data: Any = {
-            f"{self.read_company_project_major_version("-")}": {},
-            f"{self.read_company_project_major_version("-")}-public": {},
-            f"{self.read_company_project_major_version("-")}-private": {},
-        }
-
-        return { key: key for key in data }
-
     def read_default_export_groups(
         self,
     ) -> Any:
@@ -236,6 +214,22 @@ class DatabaseManager:
         }
 
         return { key: key for key in data }
+
+    def read_object_filtered_export_included(
+        self,
+        targets: Any,
+        patterns: Any
+    ) -> Any:
+        if not targets or not patterns:
+            return targets
+
+        data = set()
+        for pattern in patterns:
+            for target in targets:
+                if pattern not in target:
+                    data.add(target)
+
+        return data
 
     def read_default_disk_cache_output_file_path(
         self,
@@ -396,7 +390,7 @@ class DatabaseManager:
         self,
         data: Any
     ) -> Any:
-        return { item[key] for key, item in data }
+        return { value for _key, value in data.items() }
 
     def read_plugin_data(
         self,
@@ -440,3 +434,113 @@ class DatabaseManager:
             ) or {}
 
         return data
+
+    def read_default_export_selections(
+        self,
+    ) -> Any:
+        data: Any = {
+            f"{self.read_company_project_major_version("-")}",
+            f"{self.read_company_project_major_version("-")}-public",
+            f"{self.read_company_project_major_version("-")}-private",
+        }
+
+        return { key: key for key in data }
+
+    def read_default_export_selection_data(
+        self,
+    ) -> Any:
+        root_path = (
+            self._import_manager
+                .read_original_executing_console_filesystem_path()
+        )
+        workspace_path = (
+            f".{self.read_company_project_major_version("/")}"
+        )
+        export_name = (
+            self
+                .read_company_project_major_version("-")
+        )
+        input_target_public_export = {
+            "filesystem-path": {
+                "value": f"{workspace_path}/public"
+            }
+        }
+        input_target_private_export = [
+            {
+                "filesystem-path": {
+                    "value": f"{workspace_path}/.gitignore"
+                }
+            },
+            {
+                "filesystem-path": {
+                    "value": f"{workspace_path}/private/.gitignore"
+                }
+            },
+            {
+                "filesystem-path": {
+                    "value": f"{workspace_path}/private/configuration"
+                }
+            },
+            {
+                "filesystem-path": {
+                    "value": f"{workspace_path}/private/plugin"
+                }
+            },
+            {
+                "filesystem-path": {
+                    "value": f"{workspace_path}/private/template"
+                }
+            },
+        ]
+
+        def read_output_targets(tag: str = "") -> Any:
+            if tag:
+                tag = f"-{tag}"
+
+            return {
+                "targets": [
+                    {
+                        "filesystem-path": {
+                            "value": f"{root_path}/{export_name}{tag}"
+                        }
+
+                    }
+                ]
+            }
+
+        data: Any = {
+            f"{export_name}": {
+                "input": {
+                    "include": {
+                        "targets": [
+                            input_target_public_export,
+                            *input_target_private_export
+                        ]
+                    }
+                },
+                "output": read_output_targets()
+            },
+            f"{export_name}-public": {
+                "input": {
+                    "include": {
+                        "targets": [
+                            input_target_public_export
+                        ]
+                    },
+                },
+                "output": read_output_targets("public")
+            },
+            f"{export_name}-private": {
+                "input": {
+                    "include": {
+                        "targets": [
+                            *input_target_private_export
+                        ]
+                    }
+                },
+                "output": read_output_targets("private")
+            },
+        }
+
+        return data
+
