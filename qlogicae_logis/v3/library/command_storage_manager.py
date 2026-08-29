@@ -1,89 +1,42 @@
 from __future__ import annotations
-
+B=True
+A=False
 from typing import Any
-
-__all__ = (
-    "CommandStorageManager"
-)
-
-
-def _handle_dynamic_imports() -> None:
-    global _handle_dynamic_imports
-
-    _handle_dynamic_imports = lambda: None
-
-class CommandStorageManager:
-    __slots__ = ("_commands")
-
-    def __init__(self) -> None:
-        _handle_dynamic_imports()
-
-        self._commands: dict[str, Any] = {}
-
-    def read_command_name(
-        self,
-        value: str
-    ) -> str:
-        if not value:
-            return ""
-
-        return (
-            f"command-{value.replace("_", "-")}"
-        )
-
-    def read_commands(self) -> dict[str, Any]:
-        return self._commands
-
-    def write_commands(self, value: dict[str, Any]) -> None:
-        if not value:
-            return
-
-        self._commands = value
-
-    def add_command(self, name: str, callback: Any) -> bool:
-        if not name or not callback:
-            return False
-
-        self._commands[name] = callback
-
-        return True
-
-    def add_commands(self, items: Any) -> bool:
-        if not items:
-            return False
-
-        for (name, callback) in items:
-            if not name or not callback:
-                continue
-
-            self._commands[name] = callback
-
-        return True
-
-    def run_command(self, name: str) -> bool:
-        if not name:
-            return False
-
-        self._commands[name]()
-
-        return True
-
-    def read_command(self, name: str) -> Any:
-        if not name:
-            return False
-
-        return  self._commands[name]
-
-    def write_command(self, name: str, value: dict[str, Any]) -> None:
-        if not name or not value:
-            return
-
-        self._commands[name] = value
-
-    def remove_command(self, name: str) -> bool:
-        if not name:
-            return False
-
-        del self._commands[name]
-
-        return True
+__all__='CommandStorageManager'
+def C():global C;C=lambda:None
+class D:
+	__slots__='_commands'
+	def __init__(A):C();A._commands={}
+	def read_command_name(B,value):
+		A=value
+		if not A:return''
+		return f"command-{A.replace("_","-")}"
+	def read_commands(A):return A._commands
+	def write_commands(B,value):
+		A=value
+		if not A:return
+		B._commands=A
+	def add_command(D,name,callback):
+		C=callback
+		if not name or not C:return A
+		D._commands[name]=C;return B
+	def add_commands(F,items):
+		C=items
+		if not C:return A
+		for(D,E)in C:
+			if not D or not E:continue
+			F._commands[D]=E
+		return B
+	def run_command(C,name):
+		if not name:return A
+		C._commands[name]();return B
+	def read_command(B,name):
+		if not name:return A
+		return B._commands[name]
+	def write_command(B,name,value):
+		A=value
+		if not name or not A:return
+		B._commands[name]=A
+	def remove_command(C,name):
+		if not name:return A
+		del C._commands[name];return B

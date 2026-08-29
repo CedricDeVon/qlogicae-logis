@@ -1,270 +1,99 @@
 from __future__ import annotations
-
-__all__ = (
-    "ValueCacheStorageManager",
-)
-
+R='destination is neither a dictionary nor a list'
+Q=print
+P=ValueError
+L=tuple
+O=None
+N=IndexError
+M=KeyError
+K=type
+J=len
+I=int
+G=True
+B=False
+F=list
+E=dict
+D=TypeError
+A=isinstance
+__all__='ValueCacheStorageManager',
 from typing import Any
-
-_json: Any = None
-
-
-def _handle_dynamic_imports() -> None:
-    global _handle_dynamic_imports
-    global _json
-
-    import json
-
-    _json = json
-
-    _handle_dynamic_imports = lambda: None
-
-
-class ValueCacheStorageManager:
-    __slots__ = (
-        "_collection",
-    )
-
-    def __init__(self) -> None:
-        _handle_dynamic_imports()
-
-        self._collection: dict[str, Any] = {}
-
-    @property
-    def collection(self) -> dict[str, Any]:
-        return self._collection
-
-    def is_key_found(
-        self,
-        keys: tuple[str | int, ...],
-    ) -> bool:
-        if not keys:
-            return False
-
-        cache: Any = self._collection
-
-        for key in keys:
-            if isinstance(cache, dict):
-                if key not in cache:
-                    return False
-
-            elif isinstance(cache, (list, tuple)):
-                if not isinstance(key, int):
-                    return False
-
-                if key < 0 or key >= len(cache):
-                    return False
-
-            else:
-                return False
-
-            cache = cache[key]
-
-        return True
-
-    def get_one_value(
-        self,
-        keys: tuple[str | int, ...],
-    ) -> Any:
-        if not keys:
-            return None
-
-        cache: Any = self._collection
-
-        for key in keys:
-            if isinstance(cache, dict):
-                if key not in cache:
-                    return None
-
-            elif isinstance(cache, (list, tuple)):
-                if not isinstance(key, int):
-                    return None
-
-                if key < 0 or key >= len(cache):
-                    return None
-
-            else:
-                return None
-
-            cache = cache[key]
-
-        return cache
-
-    def set_one_value(
-        self,
-        keys: tuple[str | int, ...],
-        value: Any,
-        create_missing: bool = True,
-    ) -> bool:
-        if not keys:
-            raise ValueError("'keys' cannot be empty")
-
-        cache: Any = self._collection
-
-        for key in keys[:-1]:
-            if isinstance(cache, dict):
-                if key not in cache:
-                    if not create_missing:
-                        raise KeyError(
-                            f"key path '{keys}' not found"
-                        )
-
-                    cache[key] = {}
-
-                elif not isinstance(
-                    cache[key],
-                    (dict, list),
-                ):
-                    raise TypeError(
-                        f"key path '{keys}' does not reference "
-                        "a dictionary or list"
-                    )
-
-                cache = cache[key]
-
-            elif isinstance(cache, list):
-                if not isinstance(key, int):
-                    raise TypeError(
-                        f"expected an index, got "
-                        f"'{type(key).__name__}'"
-                    )
-
-                if key < 0 or key >= len(cache):
-                    raise IndexError(
-                        f"index '{key}' is out of range"
-                    )
-
-                cache = cache[key]
-
-            else:
-                raise TypeError(
-                    f"cannot traverse into "
-                    f"'{type(cache).__name__}'"
-                )
-
-        last = keys[-1]
-
-        if isinstance(cache, dict):
-            cache[last] = value
-
-        elif isinstance(cache, list):
-            if not isinstance(last, int):
-                raise TypeError(
-                    f"expected an index, got "
-                    f"{type(last).__name__}"
-                )
-
-            if last < 0 or last >= len(cache):
-                raise IndexError(
-                    f"index '{last}' is out of range"
-                )
-
-            cache[last] = value
-
-        else:
-            raise TypeError(
-                "destination is neither a "
-                "dictionary nor a list"
-            )
-
-        return True
-
-    def remove_one_value(
-        self,
-        keys: tuple[str | int, ...],
-    ) -> bool:
-        if not keys:
-            raise ValueError(
-                "keys cannot be empty"
-            )
-
-        cache: Any = self._collection
-
-        for key in keys[:-1]:
-            if isinstance(cache, dict):
-                if key not in cache:
-                    raise KeyError(
-                        f"key path '{keys}' not found"
-                    )
-
-            elif isinstance(cache, list):
-                if not isinstance(key, int):
-                    raise TypeError(
-                        f"expected an index, got "
-                        f"{type(key).__name__}"
-                    )
-
-                if key < 0 or key >= len(cache):
-                    raise IndexError(
-                        f"index path '{keys}' "
-                        "is out of range"
-                    )
-
-            else:
-                raise TypeError(
-                    f"cannot traverse into "
-                    f"'{type(cache).__name__}'"
-                )
-
-            cache = cache[key]
-
-        last = keys[-1]
-
-        if isinstance(cache, dict):
-            try:
-                del cache[last]
-            except KeyError:
-                raise KeyError(
-                    f"key '{last}' not found"
-                ) from None
-
-        elif isinstance(cache, list):
-            if not isinstance(last, int):
-                raise TypeError(
-                    f"expected an index, got "
-                    f"{type(last).__name__}"
-                )
-
-            if last < 0 or last >= len(cache):
-                raise IndexError(
-                    f"index '{last}' is out of range"
-                )
-
-            del cache[last]
-
-        else:
-            raise TypeError(
-                "destination is neither a "
-                "dictionary nor a list"
-            )
-
-        return True
-
-    def clear_all_values(self) -> bool:
-        self._collection.clear()
-
-        return True
-
-    def display_one_item(
-        self,
-        key: str,
-    ) -> bool:
-        print(
-            f"- {key}: "
-            f"{self._collection[key]}"
-        )
-
-        return True
-
-    def display_all_items(self) -> bool:
-        print(
-            _json.dumps(
-                self._collection,
-                indent=2,
-                sort_keys=False,
-                ensure_ascii=False,
-                default=str,
-            )
-        )
-
-        return True
+C=O
+def H():global H;global C;import json;C=json;H=lambda:O
+class S:
+	__slots__='_collection',
+	def __init__(A):H();A._collection={}
+	@property
+	def collection(self):return self._collection
+	def is_key_found(H,keys):
+		if not keys:return B
+		C=H._collection
+		for D in keys:
+			if A(C,E):
+				if D not in C:return B
+			elif A(C,(F,L)):
+				if not A(D,I):return B
+				if D<0 or D>=J(C):return B
+			else:return B
+			C=C[D]
+		return G
+	def get_one_value(D,keys):
+		if not keys:return
+		B=D._collection
+		for C in keys:
+			if A(B,E):
+				if C not in B:return
+			elif A(B,(F,L)):
+				if not A(C,I):return
+				if C<0 or C>=J(B):return
+			else:return
+			B=B[C]
+		return B
+	def set_one_value(Q,keys,value,create_missing=G):
+		O=value;L=keys
+		if not L:raise P("'keys' cannot be empty")
+		B=Q._collection
+		for C in L[:-1]:
+			if A(B,E):
+				if C not in B:
+					if not create_missing:raise M(f"key path '{L}' not found")
+					B[C]={}
+				elif not A(B[C],(E,F)):raise D(f"key path '{L}' does not reference a dictionary or list")
+				B=B[C]
+			elif A(B,F):
+				if not A(C,I):raise D(f"expected an index, got '{K(C).__name__}'")
+				if C<0 or C>=J(B):raise N(f"index '{C}' is out of range")
+				B=B[C]
+			else:raise D(f"cannot traverse into '{K(B).__name__}'")
+		H=L[-1]
+		if A(B,E):B[H]=O
+		elif A(B,F):
+			if not A(H,I):raise D(f"expected an index, got {K(H).__name__}")
+			if H<0 or H>=J(B):raise N(f"index '{H}' is out of range")
+			B[H]=O
+		else:raise D(R)
+		return G
+	def remove_one_value(Q,keys):
+		L=keys
+		if not L:raise P('keys cannot be empty')
+		B=Q._collection
+		for H in L[:-1]:
+			if A(B,E):
+				if H not in B:raise M(f"key path '{L}' not found")
+			elif A(B,F):
+				if not A(H,I):raise D(f"expected an index, got {K(H).__name__}")
+				if H<0 or H>=J(B):raise N(f"index path '{L}' is out of range")
+			else:raise D(f"cannot traverse into '{K(B).__name__}'")
+			B=B[H]
+		C=L[-1]
+		if A(B,E):
+			try:del B[C]
+			except M:raise M(f"key '{C}' not found")from O
+		elif A(B,F):
+			if not A(C,I):raise D(f"expected an index, got {K(C).__name__}")
+			if C<0 or C>=J(B):raise N(f"index '{C}' is out of range")
+			del B[C]
+		else:raise D(R)
+		return G
+	def clear_all_values(A):A._collection.clear();return G
+	def display_one_item(A,key):Q(f"- {key}: {A._collection[key]}");return G
+	def display_all_items(A):Q(C.dumps(A._collection,indent=2,sort_keys=B,ensure_ascii=B,default=str));return G

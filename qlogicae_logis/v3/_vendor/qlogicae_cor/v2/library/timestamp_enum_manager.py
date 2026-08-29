@@ -1,73 +1,25 @@
 from __future__ import annotations
-
-__all__ = (
-    "TimestampEnumManager",
-)
-
-from typing import TYPE_CHECKING, Any
-
-if TYPE_CHECKING:
-    from .enum_conversion_value import (
-        EnumConversionValue,
-    )
-
-_EnumConversionValue: Any = None
-_Timestamp: Any = None
-
-
-def _handle_dynamic_imports() -> None:
-    global _handle_dynamic_imports
-    global _EnumConversionValue
-    global _Timestamp
-
-
-    from .enum_conversion_value import EnumConversionValue
-    from .timestamp import Timestamp
-
-    _EnumConversionValue = (
-        EnumConversionValue
-    )
-    _Timestamp = (
-        Timestamp
-    )
-
-    _handle_dynamic_imports = lambda: None
-
-
-class TimestampEnumManager:
-    def __init__(self) -> None:
-        _handle_dynamic_imports()
-
-    def convert_value(
-        self,
-        input_type: Any,
-        output_type: EnumConversionValue | None = None,
-    ) -> object:
-        if output_type is None:
-            output_type = _EnumConversionValue.STRING
-
-        match output_type:
-            case _EnumConversionValue.STRING:
-                match input_type:
-                    case _Timestamp.ISO_DATE_STRING:
-                        return "iso_date_string"
-
-                    case _Timestamp.ISO_FILESYSTEM_STRING:
-                        return "iso_filesystem_string"
-
-                    case _:
-                        return "iso_date_string"
-
-            case _EnumConversionValue.ENUM:
-                match input_type.lower():
-                    case "local":
-                        return _Timestamp.ISO_DATE_STRING
-
-                    case "iso_filesystem_string":
-                        return _Timestamp.ISO_FILESYSTEM_STRING
-
-                    case _:
-                        return _Timestamp.NONE
-
-            case _:
-                return _EnumConversionValue.NONE
+C=None
+__all__='TimestampEnumManager',
+from typing import TYPE_CHECKING as E,Any
+if E:from.enum_conversion_value import EnumConversionValue
+B=C
+A=C
+def D():global D;global B;global A;from.enum_conversion_value import EnumConversionValue as E;from.timestamp import Timestamp as F;B=E;A=F;D=lambda:C
+class F:
+	def __init__(A):D()
+	def convert_value(G,input_type,output_type=C):
+		F='iso_date_string';E=input_type;D=output_type
+		if D is C:D=B.STRING
+		match D:
+			case B.STRING:
+				match E:
+					case A.ISO_DATE_STRING:return F
+					case A.ISO_FILESYSTEM_STRING:return'iso_filesystem_string'
+					case _:return F
+			case B.ENUM:
+				match E.lower():
+					case'local':return A.ISO_DATE_STRING
+					case'iso_filesystem_string':return A.ISO_FILESYSTEM_STRING
+					case _:return A.NONE
+			case _:return B.NONE

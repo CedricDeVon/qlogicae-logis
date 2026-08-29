@@ -1,584 +1,106 @@
 from __future__ import annotations
-
+O='timestamp_modified'
+N='.py'
+M='public'
+L='private'
+K=hasattr
+I='project'
+H='all'
+D='arguments must not be null'
+C=None
+B=ValueError
+A='value'
 from typing import Any
-
-__all__ = (
-    "DatabaseManager"
-)
-
-_utility_data: Any = None
-_ImportManager: Any = None
-_utility_metadata: Any = None
-
-
-def _handle_dynamic_imports() -> None:
-    global _handle_dynamic_imports
-    global _utility_data
-    global _ImportManager
-    global _utility_metadata
-
-    from ..library import (
-        import_manager,
-    )
-    from ..project.configuration import (
-        utility,
-    )
-
-    _utility_data = (
-        utility.DATA
-    )
-    _utility_metadata = (
-        utility.METADATA
-    )
-    _ImportManager = (
-        import_manager.ImportManager
-    )
-
-    _handle_dynamic_imports = lambda: None
-
-
-class DatabaseManager:
-    __slots__ = (
-        "_import_manager",
-    )
-
-    def __init__(self) -> None:
-        _handle_dynamic_imports()
-
-        self._import_manager = (
-            _ImportManager.read_singleton(
-                _ImportManager
-            )
-        )
-
-    # Constants
-    def read_default_static_value_cache_macros(self) -> set[str]:
-        return {
-            "current-date",
-            "current-year",
-            "time-zone",
-            "operating-system-name",
-            "operating-system-architecture",
-            "current-timestamp",
-            "root-filesystem-path",
-            "selection-filesystem-path",
-        }
-
-    def read_default_dynamic_value_cache_macros(self) -> dict[str, Any]:
-        return {}
-
-    def read_default_template_types(self) -> tuple[str, ...]:
-        return ( "filesystem", )
-
-    def read_default_filesystem_accessibility_types(self) -> tuple[str, ...]:
-        return ( "private", "public", )
-
-    def read_default_data_file_extensions(self) -> set[str]:
-        return (
-            self.read_default_yaml_data_file_extensions() |
-            self.read_default_json_data_file_extensions() |
-            self.read_default_python_data_file_extensions()
-        )
-
-    def read_default_yaml_data_file_extensions(self) -> set[str]:
-        return {".yaml", ".yml"}
-
-    def read_default_json_data_file_extensions(self) -> set[str]:
-        return {".json"}
-
-    def read_default_python_data_file_extensions(self) -> set[str]:
-        return {".py"}
-
-    def read_default_plugin_file_extensions(self) -> set[str]:
-        return {".py"}
-
-    def read_default_groups(self) -> Any:
-        return { "all": "all" }
-
-    def read_default_selection_targets(self) -> Any:
-        return {
-            "root": "root",
-            "group": "group",
-            "project": "project",
-        }
-
-    def read_none(self) -> str:
-        return "none"
-
-    def read_not_a_number(self) -> str:
-        return "nan"
-
-    def read_redacted(self) -> str:
-        return "redacted"
-
-    def read_expunged(self) -> str:
-        return "expunged"
-
-    def read_company_project_major_version(
-        self,
-        delimeter: str,
-    ) -> str:
-        return (
-            f"{self.read_company_name()}{delimeter}"
-            f"{self.read_project_name()}{delimeter}"
-            f"{self.read_active_major_version_label()}"
-        )
-
-    def read_root_key_path(
-        self,
-    ) -> tuple[str, str, str]:
-        return (
-            f"{self.read_company_name()}",
-            f"{self.read_project_name()}",
-            f"{self.read_active_major_version_label()}",
-        )
-
-    def read_debug_is_enabled(self) -> bool:
-        data: bool = (
-            _utility_data.get(
-                "debug",
-                {}
-            ).get(
-                "is-enabled",
-                {}
-            ).get(
-                "value",
-                False
-            )
-        )
-
-        return data
-
-    def read_company_name(self) -> str:
-        data: str = (
-            _utility_data.get(
-                "company-name",
-                {}
-            ).get(
-                "value",
-                "company"
-            )
-        )
-
-        return data
-
-    def read_project_name(self) -> str:
-        data: str = (
-            _utility_data.get(
-                "project-name",
-                {}
-            ).get(
-                "value",
-                "project"
-            )
-        )
-
-        return data
-
-    def read_company_project_name(self) -> str:
-        data: str = (
-            f"{self.read_company_name()}-"
-            f"{self.read_project_name()}"
-        )
-
-        return data
-
-    def read_active_major_version_label(self) -> str:
-        data: str = (
-            _utility_data.get(
-                "active-major-version-label",
-                {}
-            ).get(
-                "value",
-                "v0"
-            )
-        )
-
-        return data
-
-    def read_root_workspace_filesystem_path(
-        self,
-    ) -> str:
-        return (
-            f"{self._import_manager.read_original_executing_console_filesystem_path()}/"
-            f".{
-                self.read_company_project_major_version(
-                    "/"
-                )
-            }"
-        )
-
-    def read_root_plugin_filesystem_path(
-        self,
-        scope_selection: str,
-    ) -> str:
-        return (
-            f"{self.read_root_workspace_filesystem_path()}/{scope_selection}/plugin"
-        )
-
-    def read_default_log_output_filesystem_paths(
-        self,
-    ) -> set[str]:
-        return {
-            f"{self.read_root_workspace_filesystem_path()}/private"
-            f"/temporary/log/{self._import_manager.read_current_iso8601_date()}.log",
-        }
-
-    def read_default_export_groups(
-        self,
-    ) -> Any:
-        data = {
-            "all"
-        }
-
-        return { key: key for key in data }
-
-    def read_object_filtered_export_included(
-        self,
-        targets: Any,
-        patterns: Any
-    ) -> Any:
-        if not targets or not patterns:
-            return targets
-
-        data = set()
-        for pattern in patterns:
-            if not pattern:
-                continue
-
-            for target in targets:
-                if pattern in target:
-                    continue
-
-                data.add(target)
-
-        return data
-
-    def read_default_disk_cache_output_file_path(
-        self,
-    ) -> str:
-        base_path = (
-            self.read_root_workspace_filesystem_path()
-        )
-        iso8601_date = (
-            self._import_manager.read_current_iso8601_date()
-        )
-
-        return (
-            f"{base_path}/private/temporary/cache/disk/{iso8601_date}.db"
-        )
-
-    def read_default_cache_disk_output_folder_path(
-        self,
-    ) -> str:
-        base_path = (
-            self.read_root_workspace_filesystem_path()
-        )
-
-        return (
-            f"{base_path}/private/temporary/cache/disk"
-        )
-
-    def read_temporary_template_output_filesystem_path(
-        self,
-    ) -> str:
-        base_path = (
-            self.read_root_workspace_filesystem_path()
-        )
-
-        return (
-            f"{base_path}/private/temporary/template"
-        )
-
-    def read_temporary_export_output_filesystem_path(
-        self,
-    ) -> str:
-        base_path = (
-            self.read_root_workspace_filesystem_path()
-        )
-
-        return (
-            f"{base_path}/private/temporary/export"
-        )
-
-    def read_temporary_export_targets_source_filesystem_path(
-        self,
-        target: str,
-    ) -> str:
-        if not target:
-            raise ValueError("arguments must not be null")
-
-        base_path = (
-            self.read_root_workspace_filesystem_path()
-        )
-
-        return (
-            f"{base_path}/private/temporary/export/targets/{target}"
-        )
-
-    def read_temporary_export_targets_output_filesystem_path(
-        self,
-        target: str,
-        relative_path: str,
-    ) -> str:
-        if not target or not relative_path:
-            raise ValueError("arguments must not be null")
-
-        base_path = (
-            self.read_root_workspace_filesystem_path()
-        )
-
-        return (
-            f"{base_path}/private/temporary/export/targets/{target}/{relative_path}"
-        )
-
-    def read_configuration_workspace_filesystem_path(
-        self,
-        accessibility_type: str
-    ) -> str:
-        if not accessibility_type:
-            raise ValueError("arguments must not be null")
-
-        base_path = (
-            self.read_root_workspace_filesystem_path()
-        )
-
-        return (
-            f"{base_path}/{accessibility_type}/configuration/workspace"
-        )
-
-    def read_configuration_workspace_base_file_paths(
-        self,
-        accessibility_type: str
-    ) -> Any:
-        if not accessibility_type:
-            raise ValueError("arguments must not be null")
-
-        base_path = (
-            self.read_configuration_workspace_filesystem_path(
-                accessibility_type
-            )
-        )
-
-        return (
-            f"{base_path}/root",
-            f"{base_path}/project/project",
-            f"{base_path}/group/group",
-        )
-
-    def read_configuration_workspace_base_folder_paths(
-        self,
-        accessibility_type: str
-    ) -> Any:
-        if not accessibility_type:
-            raise ValueError("arguments must not be null")
-
-        base_path = (
-            self.read_configuration_workspace_filesystem_path(
-                accessibility_type
-            )
-        )
-
-        return (
-            f"{base_path}/group/selection",
-            f"{base_path}/project/selection",
-        )
-
-    def read_file_metadata(
-        self,
-        filesystem_path: str
-    ) -> Any:
-        if not filesystem_path:
-            raise ValueError("arguments must not be null")
-
-        return {
-            "timestamp_modified": {
-                "value": (
-                    self._import_manager
-                        .read_filesystem_modification_timestamp(
-                            value=filesystem_path
-                        )
-                )
-            }
-        }
-
-    def read_object_property_timestamp_modified_value(
-        self,
-        data: Any,
-    ) -> int:
-        value: int = data.get(
-            "timestamp_modified",
-            {},
-        ).get(
-            "value",
-            None
-        )
-
-        return value
-
-    def read_object_selection_origins(
-        self,
-        data: Any
-    ) -> Any:
-        if not data:
-            raise ValueError("arguments must not be null")
-
-        return { value for _key, value in data.items() }
-
-    def read_plugin_data(
-        self,
-        module: Any,
-    ) -> Any:
-        module = {
-            "command": (
-                module.command if hasattr(module, "command") else None
-            ),
-            "macros": (
-                module.macros if hasattr(module, "macros") else None
-            ),
-        }
-
-        return module
-
-    def read_default_export_selections(
-        self,
-    ) -> Any:
-        company_project_major_version = (
-            self.read_company_project_major_version("-")
-        )
-        data: Any = {
-            f"{company_project_major_version}",
-            f"{company_project_major_version}-public",
-            f"{company_project_major_version}-private",
-        }
-
-        return { key: key for key in data }
-
-    def read_default_export_selection_data(
-        self,
-    ) -> Any:
-        root_path = (
-            self._import_manager
-                .read_original_executing_console_filesystem_path()
-        )
-        workspace_path = (
-            f".{self.read_company_project_major_version("/")}"
-        )
-        export_name = (
-            self
-                .read_company_project_major_version("-")
-        )
-        input_target_public_export = {
-            "filesystem-path": {
-                "value": f"{workspace_path}/public"
-            }
-        }
-        input_target_private_export = [
-            {
-                "filesystem-path": {
-                    "value": f"{workspace_path}/.gitignore"
-                }
-            },
-            {
-                "filesystem-path": {
-                    "value": f"{workspace_path}/private/.gitignore"
-                }
-            },
-            {
-                "filesystem-path": {
-                    "value": f"{workspace_path}/private/configuration"
-                }
-            },
-            {
-                "filesystem-path": {
-                    "value": f"{workspace_path}/private/plugin"
-                }
-            },
-            {
-                "filesystem-path": {
-                    "value": f"{workspace_path}/private/template"
-                }
-            },
-        ]
-
-        def handle_read_output_targets(tag: str = "") -> Any:
-            if tag:
-                tag = f"-{tag}"
-
-            return {
-                "targets": [
-                    {
-                        "filesystem-path": {
-                            "value": f"{root_path}/{export_name}{tag}"
-                        }
-
-                    }
-                ]
-            }
-
-        data: Any = {
-            f"{export_name}": {
-                "input": {
-                    "include": {
-                        "targets": [
-                            input_target_public_export,
-                            *input_target_private_export
-                        ]
-                    }
-                },
-                "output": handle_read_output_targets()
-            },
-            f"{export_name}-public": {
-                "input": {
-                    "include": {
-                        "targets": [
-                            input_target_public_export
-                        ]
-                    },
-                },
-                "output": handle_read_output_targets("public")
-            },
-            f"{export_name}-private": {
-                "input": {
-                    "include": {
-                        "targets": [
-                            *input_target_private_export
-                        ]
-                    }
-                },
-                "output": handle_read_output_targets("private")
-            },
-        }
-
-        return data
-
-    def read_configuration_workspace_data_file(
-        self,
-        file_path: Any,
-    ) -> Any:
-        if not file_path:
-            return {}
-
-        data: Any = {}
-        file_path_suffix = (
-            self._import_manager.read_file_suffix(
-                value=file_path
-            )
-        )
-
-        if file_path_suffix in self.read_default_yaml_data_file_extensions():
-            data = self._import_manager.read_yaml_file(
-                file_path=file_path
-            ) or {}
-
-        elif file_path_suffix in self.read_default_json_data_file_extensions():
-            data = self._import_manager.read_json_file(
-                file_path=file_path
-            ) or {}
-
-        elif file_path_suffix in self.read_default_python_data_file_extensions():
-            data = self._import_manager.read_python_file(
-                file_path=file_path
-            ) or {}
-
-        return data
+__all__='DatabaseManager'
+E=C
+F=C
+J=C
+def G():global G;global E;global F;global J;from..library import import_manager as B;from..project.configuration import utility as A;E=A.DATA;J=A.METADATA;F=B.ImportManager;G=lambda:C
+class P:
+	__slots__='_import_manager',
+	def __init__(A):G();A._import_manager=F.read_singleton(F)
+	def read_default_static_value_cache_macros(A):return{'current-date','current-year','time-zone','operating-system-name','operating-system-architecture','current-timestamp','root-filesystem-path','selection-filesystem-path'}
+	def read_default_dynamic_value_cache_macros(A):return{}
+	def read_default_template_types(A):return'filesystem',
+	def read_default_filesystem_accessibility_types(A):return L,M
+	def read_default_data_file_extensions(A):return A.read_default_yaml_data_file_extensions()|A.read_default_json_data_file_extensions()|A.read_default_python_data_file_extensions()
+	def read_default_yaml_data_file_extensions(A):return{'.yaml','.yml'}
+	def read_default_json_data_file_extensions(A):return{'.json'}
+	def read_default_python_data_file_extensions(A):return{N}
+	def read_default_plugin_file_extensions(A):return{N}
+	def read_default_groups(A):return{H:H}
+	def read_default_selection_targets(C):B='group';A='root';return{A:A,B:B,I:I}
+	def read_none(A):return'none'
+	def read_not_a_number(A):return'nan'
+	def read_redacted(A):return'redacted'
+	def read_expunged(A):return'expunged'
+	def read_company_project_major_version(A,delimeter):B=delimeter;return f"{A.read_company_name()}{B}{A.read_project_name()}{B}{A.read_active_major_version_label()}"
+	def read_root_key_path(A):return f"{A.read_company_name()}",f"{A.read_project_name()}",f"{A.read_active_major_version_label()}"
+	def read_debug_is_enabled(C):B=E.get('debug',{}).get('is-enabled',{}).get(A,False);return B
+	def read_company_name(C):B=E.get('company-name',{}).get(A,'company');return B
+	def read_project_name(C):B=E.get('project-name',{}).get(A,I);return B
+	def read_company_project_name(A):B=f"{A.read_company_name()}-{A.read_project_name()}";return B
+	def read_active_major_version_label(C):B=E.get('active-major-version-label',{}).get(A,'v0');return B
+	def read_root_workspace_filesystem_path(A):return f"{A._import_manager.read_original_executing_console_filesystem_path()}/.{A.read_company_project_major_version("/")}"
+	def read_root_plugin_filesystem_path(A,scope_selection):return f"{A.read_root_workspace_filesystem_path()}/{scope_selection}/plugin"
+	def read_default_log_output_filesystem_paths(A):return{f"{A.read_root_workspace_filesystem_path()}/private/temporary/log/{A._import_manager.read_current_iso8601_date()}.log"}
+	def read_default_export_groups(B):A={H};return{A:A for A in A}
+	def read_object_filtered_export_included(F,targets,patterns):
+		B=patterns;A=targets
+		if not A or not B:return A
+		C=set()
+		for D in B:
+			if not D:continue
+			for E in A:
+				if D in E:continue
+				C.add(E)
+		return C
+	def read_default_disk_cache_output_file_path(A):B=A.read_root_workspace_filesystem_path();C=A._import_manager.read_current_iso8601_date();return f"{B}/private/temporary/cache/disk/{C}.db"
+	def read_default_cache_disk_output_folder_path(A):B=A.read_root_workspace_filesystem_path();return f"{B}/private/temporary/cache/disk"
+	def read_temporary_template_output_filesystem_path(A):B=A.read_root_workspace_filesystem_path();return f"{B}/private/temporary/template"
+	def read_temporary_export_output_filesystem_path(A):B=A.read_root_workspace_filesystem_path();return f"{B}/private/temporary/export"
+	def read_temporary_export_targets_source_filesystem_path(C,target):
+		A=target
+		if not A:raise B(D)
+		E=C.read_root_workspace_filesystem_path();return f"{E}/private/temporary/export/targets/{A}"
+	def read_temporary_export_targets_output_filesystem_path(E,target,relative_path):
+		C=relative_path;A=target
+		if not A or not C:raise B(D)
+		F=E.read_root_workspace_filesystem_path();return f"{F}/private/temporary/export/targets/{A}/{C}"
+	def read_configuration_workspace_filesystem_path(C,accessibility_type):
+		A=accessibility_type
+		if not A:raise B(D)
+		E=C.read_root_workspace_filesystem_path();return f"{E}/{A}/configuration/workspace"
+	def read_configuration_workspace_base_file_paths(E,accessibility_type):
+		C=accessibility_type
+		if not C:raise B(D)
+		A=E.read_configuration_workspace_filesystem_path(C);return f"{A}/root",f"{A}/project/project",f"{A}/group/group"
+	def read_configuration_workspace_base_folder_paths(E,accessibility_type):
+		A=accessibility_type
+		if not A:raise B(D)
+		C=E.read_configuration_workspace_filesystem_path(A);return f"{C}/group/selection",f"{C}/project/selection"
+	def read_file_metadata(E,filesystem_path):
+		C=filesystem_path
+		if not C:raise B(D)
+		return{O:{A:E._import_manager.read_filesystem_modification_timestamp(value=C)}}
+	def read_object_property_timestamp_modified_value(D,data):B=data.get(O,{}).get(A,C);return B
+	def read_object_selection_origins(A,data):
+		if not data:raise B(D)
+		return{A for(B,A)in data.items()}
+	def read_plugin_data(E,module):D='macros';B='command';A=module;A={B:A.command if K(A,B)else C,D:A.macros if K(A,D)else C};return A
+	def read_default_export_selections(B):A=B.read_company_project_major_version('-');C={f"{A}",f"{A}-public",f"{A}-private"};return{A:A for A in C}
+	def read_default_export_selection_data(F):
+		J='include';I='output';H='input';E='targets';B='filesystem-path';O=F._import_manager.read_original_executing_console_filesystem_path();C=f".{F.read_company_project_major_version("/")}";D=F.read_company_project_major_version('-');K={B:{A:f"{C}/public"}};N=[{B:{A:f"{C}/.gitignore"}},{B:{A:f"{C}/private/.gitignore"}},{B:{A:f"{C}/private/configuration"}},{B:{A:f"{C}/private/plugin"}},{B:{A:f"{C}/private/template"}}]
+		def G(tag=''):
+			C=tag
+			if C:C=f"-{C}"
+			return{E:[{B:{A:f"{O}/{D}{C}"}}]}
+		P={f"{D}":{H:{J:{E:[K,*N]}},I:G()},f"{D}-public":{H:{J:{E:[K]}},I:G(M)},f"{D}-private":{H:{J:{E:[*N]}},I:G(L)}};return P
+	def read_configuration_workspace_data_file(A,file_path):
+		B=file_path
+		if not B:return{}
+		C={};D=A._import_manager.read_file_suffix(value=B)
+		if D in A.read_default_yaml_data_file_extensions():C=A._import_manager.read_yaml_file(file_path=B)or{}
+		elif D in A.read_default_json_data_file_extensions():C=A._import_manager.read_json_file(file_path=B)or{}
+		elif D in A.read_default_python_data_file_extensions():C=A._import_manager.read_python_file(file_path=B)or{}
+		return C

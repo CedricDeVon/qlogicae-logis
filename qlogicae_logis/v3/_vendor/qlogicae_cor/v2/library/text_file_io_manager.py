@@ -1,95 +1,20 @@
 from __future__ import annotations
-
-__all__ = (
-    "TextFileIoManager",
-)
-
-from typing import TYPE_CHECKING, Any
-
-if TYPE_CHECKING:
-    from pathlib import Path
-
-_pathlib: Any = None
-_SingletonManager: Any = None
-_TextEncodingManager: Any = None
-
-
-def _handle_dynamic_imports() -> None:
-    global _handle_dynamic_imports
-    global _pathlib
-    global _SingletonManager
-    global _TextEncodingManager
-
-    import pathlib
-
-    from .singleton_manager import SingletonManager
-    from .text_encoding_manager import TextEncodingManager
-
-    _pathlib = pathlib
-    _SingletonManager = (
-        SingletonManager
-    )
-    _TextEncodingManager = (
-        TextEncodingManager
-    )
-
-    _handle_dynamic_imports = lambda: None
-
-
-class TextFileIoManager:
-    __slots__ = (
-        "_text_encoding_manager",
-    )
-
-    def __init__(self) -> None:
-        _handle_dynamic_imports()
-
-        self._text_encoding_manager = (
-            _SingletonManager.get_singleton(
-                _TextEncodingManager
-            )   
-        )
-
-    def read_file(
-        self,
-        file_path: str,
-    ) -> str:
-        path: Path = _pathlib.Path(file_path)
-
-        output_data = ""
-
-        with path.open(
-            mode="r",
-            encoding=(
-                self._text_encoding_manager
-                    .selected_encoding
-            ),
-        ) as file:
-            output_data = file.read() or ""
-
-        return output_data
-
-    def write_file(
-        self,
-        file_path: str,
-        data: object,
-    ) -> bool:
-        path: Path = _pathlib.Path(file_path)
-
-        path.parent.mkdir(
-            parents=True,
-            exist_ok=True,
-        )
-
-        with path.open(
-            mode="w",
-            encoding=(
-                self._text_encoding_manager
-                    .selected_encoding
-            ),
-        ) as file:
-            file.write(
-                str(data),
-            )
-
-        return True
+B=None
+__all__='TextFileIoManager',
+from typing import TYPE_CHECKING as F,Any
+if F:from pathlib import Path
+A=B
+C=B
+D=B
+def E():global E;global A;global C;global D;import pathlib as F;from.singleton_manager import SingletonManager as G;from.text_encoding_manager import TextEncodingManager as H;A=F;C=G;D=H;E=lambda:B
+class G:
+	__slots__='_text_encoding_manager',
+	def __init__(A):E();A._text_encoding_manager=C.get_singleton(D)
+	def read_file(C,file_path):
+		D=A.Path(file_path);B=''
+		with D.open(mode='r',encoding=C._text_encoding_manager.selected_encoding)as E:B=E.read()or''
+		return B
+	def write_file(D,file_path,data):
+		B=True;C=A.Path(file_path);C.parent.mkdir(parents=B,exist_ok=B)
+		with C.open(mode='w',encoding=D._text_encoding_manager.selected_encoding)as E:E.write(str(data))
+		return B
