@@ -1,36 +1,104 @@
-B=None
-class A:
-	def __init__(A,start_mark,end_mark):A.start_mark=start_mark;A.end_mark=end_mark
-	def __repr__(A):B=[A for A in A.__dict__ if not A.endswith('_mark')];B.sort();C=', '.join(['%s=%r'%(B,getattr(A,B))for B in B]);return'%s(%s)'%(A.__class__.__name__,C)
-class C(A):
-	id='<directive>'
-	def __init__(A,name,value,start_mark,end_mark):A.name=name;A.value=value;A.start_mark=start_mark;A.end_mark=end_mark
-class D(A):id='<document start>'
-class E(A):id='<document end>'
-class F(A):
-	id='<stream start>'
-	def __init__(A,start_mark=B,end_mark=B,encoding=B):A.start_mark=start_mark;A.end_mark=end_mark;A.encoding=encoding
-class G(A):id='<stream end>'
-class H(A):id='<block sequence start>'
-class I(A):id='<block mapping start>'
-class J(A):id='<block end>'
-class K(A):id='['
-class L(A):id='{'
-class M(A):id=']'
-class N(A):id='}'
-class O(A):id='?'
-class P(A):id=':'
-class Q(A):id='-'
-class R(A):id=','
-class S(A):
-	id='<alias>'
-	def __init__(A,value,start_mark,end_mark):A.value=value;A.start_mark=start_mark;A.end_mark=end_mark
-class T(A):
-	id='<anchor>'
-	def __init__(A,value,start_mark,end_mark):A.value=value;A.start_mark=start_mark;A.end_mark=end_mark
-class U(A):
-	id='<tag>'
-	def __init__(A,value,start_mark,end_mark):A.value=value;A.start_mark=start_mark;A.end_mark=end_mark
-class V(A):
-	id='<scalar>'
-	def __init__(A,value,plain,start_mark,end_mark,style=B):A.value=value;A.plain=plain;A.start_mark=start_mark;A.end_mark=end_mark;A.style=style
+
+class Token:
+    def __init__(self, start_mark, end_mark):
+        self.start_mark = start_mark
+        self.end_mark = end_mark
+    def __repr__(self):
+        attributes = [key for key in self.__dict__
+                if not key.endswith('_mark')]
+        attributes.sort()
+        arguments = ', '.join(['%s=%r' % (key, getattr(self, key))
+                for key in attributes])
+        return '%s(%s)' % (self.__class__.__name__, arguments)
+
+#class BOMToken(Token):
+#    id = '<byte order mark>'
+
+class DirectiveToken(Token):
+    id = '<directive>'
+    def __init__(self, name, value, start_mark, end_mark):
+        self.name = name
+        self.value = value
+        self.start_mark = start_mark
+        self.end_mark = end_mark
+
+class DocumentStartToken(Token):
+    id = '<document start>'
+
+class DocumentEndToken(Token):
+    id = '<document end>'
+
+class StreamStartToken(Token):
+    id = '<stream start>'
+    def __init__(self, start_mark=None, end_mark=None,
+            encoding=None):
+        self.start_mark = start_mark
+        self.end_mark = end_mark
+        self.encoding = encoding
+
+class StreamEndToken(Token):
+    id = '<stream end>'
+
+class BlockSequenceStartToken(Token):
+    id = '<block sequence start>'
+
+class BlockMappingStartToken(Token):
+    id = '<block mapping start>'
+
+class BlockEndToken(Token):
+    id = '<block end>'
+
+class FlowSequenceStartToken(Token):
+    id = '['
+
+class FlowMappingStartToken(Token):
+    id = '{'
+
+class FlowSequenceEndToken(Token):
+    id = ']'
+
+class FlowMappingEndToken(Token):
+    id = '}'
+
+class KeyToken(Token):
+    id = '?'
+
+class ValueToken(Token):
+    id = ':'
+
+class BlockEntryToken(Token):
+    id = '-'
+
+class FlowEntryToken(Token):
+    id = ','
+
+class AliasToken(Token):
+    id = '<alias>'
+    def __init__(self, value, start_mark, end_mark):
+        self.value = value
+        self.start_mark = start_mark
+        self.end_mark = end_mark
+
+class AnchorToken(Token):
+    id = '<anchor>'
+    def __init__(self, value, start_mark, end_mark):
+        self.value = value
+        self.start_mark = start_mark
+        self.end_mark = end_mark
+
+class TagToken(Token):
+    id = '<tag>'
+    def __init__(self, value, start_mark, end_mark):
+        self.value = value
+        self.start_mark = start_mark
+        self.end_mark = end_mark
+
+class ScalarToken(Token):
+    id = '<scalar>'
+    def __init__(self, value, plain, start_mark, end_mark, style=None):
+        self.value = value
+        self.plain = plain
+        self.start_mark = start_mark
+        self.end_mark = end_mark
+        self.style = style
+

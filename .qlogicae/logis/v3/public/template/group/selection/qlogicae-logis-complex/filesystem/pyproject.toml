@@ -48,7 +48,7 @@ dev = [
 ]
 
 [project.scripts]
-qlogicae-logis = "${{ qlogicae-logis-source-brand-name }}.v2.console.app:main"
+qlogicae-logis = "${{ qlogicae-logis-source-brand-name }}.v3.console.app:main"
 
 
 [project.urls]
@@ -212,9 +212,9 @@ test-unit = """
         --junitxml=\"${{ qlogicae-logis-output-test-unit-filesystem-path }}/junit.xml\" \
 """
 test-benchmark-memory-usage-create = """
-    memray run -o ${{ qlogicae-logis-output-test-benchmark-filesystem-path }}/memray-1.bin -m test.${{ qlogicae-logis-source-brand-name }}.v2.benchmark.memory_usage.test_usage ;
+    memray run -o ${{ qlogicae-logis-output-test-benchmark-filesystem-path }}/memray-1.bin -m test.${{ qlogicae-logis-source-brand-name }}.v3.benchmark.memory_usage.test_usage ;
 """
-# memray run -o ${{ qlogicae-logis-output-test-benchmark-filesystem-path }}/memray-2.bin -m test.${{ qlogicae-logis-source-brand-name }}.v2.benchmark.memory_usage.test_dynamic
+# memray run -o ${{ qlogicae-logis-output-test-benchmark-filesystem-path }}/memray-2.bin -m test.${{ qlogicae-logis-source-brand-name }}.v3.benchmark.memory_usage.test_dynamic
 test-benchmark-memory-usage-view = """
     memray tree ${{ qlogicae-logis-output-test-benchmark-filesystem-path }}/memray-1.bin
 """
@@ -253,7 +253,7 @@ github-workflow-test-benchmark-memory-usage-view = """
 """
 
 # scalene run --html --outfile ${{ qlogicae-logis-output-test-benchmark-filesystem-path }}/scalene.html test/${{ qlogicae-logis-source-brand-name }}/v3/benchmark/memory_usage/test_static.py
-# memray run -o ${{ qlogicae-logis-output-test-benchmark-filesystem-path }}/memray.bin -m test.${{ qlogicae-logis-source-brand-name }}.v2.benchmark.memory_usage.test_static
+# memray run -o ${{ qlogicae-logis-output-test-benchmark-filesystem-path }}/memray.bin -m test.${{ qlogicae-logis-source-brand-name }}.v3.benchmark.memory_usage.test_static
 # scalene view ${{ qlogicae-logis-output-test-benchmark-filesystem-path }}/scalene.json
 # memray tree ${{ qlogicae-logis-output-test-benchmark-filesystem-path }}/memray.bin
 #     scalene view ${{ qlogicae-logis-output-test-benchmark-filesystem-path }}/scalene.json

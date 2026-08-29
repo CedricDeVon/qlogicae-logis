@@ -1,11 +1,53 @@
 from __future__ import annotations
-D=None
-__all__='LogFormat',
-import logging as E
+
+__all__ = (
+    "LogFormat",
+)
+
+import logging
 from typing import Any
-A=D
-B=D
-def C():global C;global G;global A;global B;from.singleton_manager import SingletonManager as E;from.timestamp_manager import TimestampManager as F;A=E;B=F;C=lambda:D
-class F(E.Formatter):
-	def __init__(A):C()
-	def format(F,record):C=record;D=A.get_singleton(B).generate_current_timestamp();E=f"[ {D} ] [ {C.levelname} ] {C.getMessage()}";return E
+
+_SingletonManager: Any = None
+_TimestampManager: Any = None
+
+
+def _handle_dynamic_imports() -> None:
+    global _handle_dynamic_imports
+    global _logging
+    global _SingletonManager
+    global _TimestampManager
+
+    from .singleton_manager import SingletonManager
+    from .timestamp_manager import TimestampManager
+
+    _SingletonManager = (
+        SingletonManager
+    )
+    _TimestampManager = (
+        TimestampManager
+    )
+
+    _handle_dynamic_imports = lambda: None
+
+
+class LogFormat(logging.Formatter):
+    def __init__(self) -> None:
+        _handle_dynamic_imports()
+
+    def format(
+        self,
+        record: logging.LogRecord,
+    ) -> str:
+        timestamp: str = (
+            _SingletonManager.get_singleton(
+                _TimestampManager,
+            ).generate_current_timestamp()
+        )
+
+        value: str = (
+            f"[ {timestamp} ] "
+            f"[ {record.levelname} ] "
+            f"{record.getMessage()}"
+        )
+
+        return value

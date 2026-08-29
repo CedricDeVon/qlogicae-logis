@@ -63,7 +63,7 @@ workflow:
             value: qlogicae-logis-pre-workflow
 
         - run:
-            value: qlogicae-logis-pip-deployment          
+            value: qlogicae-logis-pip-deployment  
 
         - run:
             value: qlogicae-logis-post-workflow
@@ -314,7 +314,7 @@ macros:
           value: The project orchestration tool for QLogicae projects
 
         qlogicae-logis-current-version-number:
-          value: 3.0.1
+          value: 3.0.2
 
         qlogicae-logis-active-major-version-number:
           value: 3

@@ -1,128 +1,445 @@
 from __future__ import annotations
-T="'values' must be a mapping"
-M=tuple
-S=KeyError
-R=reversed
-K=property
-P=False
-O=set
-D=None
-F=ValueError
-E=TypeError
-C=str
-A=isinstance
-__all__='MacrosManager',
+
+__all__ = (
+    "MacrosManager",
+)
+
 from typing import Any
-B=D
-G=D
-L=D
-H=D
-I=D
-def J():global J;global B;global G;global L;global H;global I;import re;from collections.abc import Mapping as A;from pathlib import Path;from.singleton_manager import SingletonManager as C;from.text_encoding_manager import TextEncodingManager as E;B=re;G=Path;L=A;H=C;I=E;J=lambda:D
-class N:
-	__slots__='_selected_identifier_pattern','_selected_macros_pattern','_text_encoding_manager'
-	def __init__(A):J();A._text_encoding_manager=H.get_singleton(I);A._selected_identifier_pattern=B.compile('^[A-Za-z0-9._-]+$');A._selected_macros_pattern=B.compile('\\$\\{\\{\\s*([A-Za-z0-9._-]+)\\s*\\}\\}')
-	@K
-	def selected_identifier_pattern(self):return self._selected_identifier_pattern
-	@selected_identifier_pattern.setter
-	def selected_identifier_pattern(self,value):self._selected_identifier_pattern=B.compile(value)
-	@K
-	def selected_macros_pattern(self):return self._selected_macros_pattern
-	@selected_macros_pattern.setter
-	def selected_macros_pattern(self,value):self._selected_macros_pattern=B.compile(value)
-	def _resolve_value(B,value):
-		A=value
-		if callable(A):return A()
-		return A
-	def resolve_many(K,values):
-		H=values
-		if not A(H,L):raise E(T)
-		for B in H:
-			if not A(B,C):raise E('macro names must be strings')
-			if not K._selected_identifier_pattern.fullmatch(B):raise F(f"invalid macro name: '{B}'")
-		D={}
-		for P in H:
-			if P in D:continue
-			I=[P];J=O()
-			while I:
-				B=I[-1]
-				if B in D:I.pop();J.discard(B);continue
-				if B not in H:raise F(f"key path '{B}' is an unknown macro")
-				M=H[B]
-				if not A(M,C):D[B]=K._resolve_value(M);I.pop();J.discard(B);continue
-				J.add(B);N=[]
-				for Q in K._selected_macros_pattern.finditer(M):
-					G=Q.group(1)
-					if G in D:continue
-					if G not in H:raise F(f"key path '{B}' references unknown macro '{G}'")
-					if G in J:raise F(f"circular macro reference: '{B}' -> '{G}'")
-					if G not in N:N.append(G)
-				if N:I.extend(R(N));continue
-				def S(match):A=match.group(1);return C(D[A])
-				D[B]=K._selected_macros_pattern.sub(S,M);I.pop();J.remove(B)
-		return D
-	def resolve_one(M,key,values,cache,stack):
-		K=stack;J=values;G=key;D=cache
-		if not A(G,C):raise E("'key' must be a string")
-		if not A(J,L):raise E(T)
-		if not A(D,dict):raise E("'cache' must be a dictionary")
-		if not A(K,O):raise E("'stack' must be a set")
-		if G not in J:raise S(f"unknown macro '{G}'")
-		if G in D:return D[G]
-		N=[(G,P)]
-		while N:
-			B,U=N.pop()
-			if B in D:continue
-			if not U:
-				if B in K:raise F(f"key path '{B}' is a circular reference")
-				if B not in J:raise F(f"key path '{B}' is an unknown macro")
-				H=J[B]
-				if not A(H,C):D[B]=M._resolve_value(H);continue
-				K.add(B);N.append((B,True));Q=[]
-				for V in M._selected_macros_pattern.finditer(H):
-					I=V.group(1)
-					if I not in J:raise S(f"macro '{B}' references unknown macro '{I}'")
-					if I in K:raise F(f"circular macro reference: '{B}' -> '{I}'")
-					if I not in D:
-						if I not in Q:Q.append(I)
-				N.extend((A,P)for A in R(Q))
-			else:
-				H=J[B]
-				if not A(H,C):D[B]=M._resolve_value(H)
-				else:D[B]=M._selected_macros_pattern.sub(lambda match:C(D[match.group(1)]),H)
-				K.remove(B)
-		return D[G]
-	def parse_many(A,values,resolved):return A.parse_one(values,resolved)
-	def parse_one(D,value,resolved):
-		E=resolved;B=value
-		if A(B,C):
-			def F(match):
-				A=match;B=A.group(1)
-				if B not in E:return C(A.group(0))
-				return C(D._resolve_value(E[B]))
-			return D._selected_macros_pattern.sub(F,B)
-		if A(B,dict):return{A:D.parse_one(B,E)for(A,B)in B.items()}
-		if A(B,list):return[D.parse_one(A,E)for A in B]
-		if A(B,M):return M(D.parse_one(A,E)for A in B)
-		if A(B,O):return{D.parse_one(A,E)for A in B}
-		return B
-	def parse_filesystem(F,filesystem_path,workspace_macros):
-		I=workspace_macros;K=F._text_encoding_manager.selected_encoding;M=G(filesystem_path)
-		for(H,N,O)in M.walk(top_down=P):
-			H=G(H)
-			for Q in O:
-				B=H/Q
-				try:L=B.read_text(encoding=K)
-				except UnicodeDecodeError:pass
-				else:
-					J=F.parse_one(L,I)
-					if not A(J,C):raise E('parsed file data must be a string')
-					if J!=L:B.write_text(J,encoding=K)
-				D=F.parse_one(B.name,I)
-				if not A(D,C):raise E('parsed file name must be a string')
-				if D!=B.name:B=B.rename(B.with_name(D))
-			for R in N:
-				B=H/R;D=F.parse_one(B.name,I)
-				if not A(D,C):raise E('parsed directory name must be a string')
-				if D!=B.name:B.rename(B.with_name(D))
-		return True
+
+_re: Any = None
+_Path: Any = None
+_Mapping: Any = None
+_SingletonManager: Any = None
+_TextEncodingManager: Any = None
+
+
+def _handle_dynamic_imports() -> None:
+    global _handle_dynamic_imports
+    global _re
+    global _Path
+    global _Mapping
+    global _SingletonManager
+    global _TextEncodingManager
+
+    import re
+    from collections.abc import Mapping
+    from pathlib import Path
+
+    from .singleton_manager import SingletonManager
+    from .text_encoding_manager import TextEncodingManager
+
+    _re = re
+    _Path = Path
+    _Mapping = Mapping
+    _SingletonManager = SingletonManager
+    _TextEncodingManager = (
+        TextEncodingManager
+    )
+
+    _handle_dynamic_imports = lambda: None
+
+
+class MacrosManager:
+    __slots__ = (
+        "_selected_identifier_pattern",
+        "_selected_macros_pattern",
+        "_text_encoding_manager",
+    )
+
+    def __init__(self) -> None:
+        _handle_dynamic_imports()
+
+        self._text_encoding_manager = (
+            _SingletonManager.get_singleton(
+                _TextEncodingManager
+            )   
+        )
+
+        self._selected_identifier_pattern: _re.Pattern[str] = (
+            _re.compile(r"^[A-Za-z0-9._-]+$")
+        )
+        self._selected_macros_pattern: _re.Pattern[str] = (
+            _re.compile(r"\$\{\{\s*([A-Za-z0-9._-]+)\s*\}\}")
+        )
+
+    @property
+    def selected_identifier_pattern(self) -> _re.Pattern[str]:
+        return self._selected_identifier_pattern
+
+    @selected_identifier_pattern.setter
+    def selected_identifier_pattern(self, value: str) -> None:
+        self._selected_identifier_pattern = _re.compile(value)
+
+    @property
+    def selected_macros_pattern(self) -> _re.Pattern[str]:
+        return self._selected_macros_pattern
+
+    @selected_macros_pattern.setter
+    def selected_macros_pattern(self, value: str) -> None:
+        self._selected_macros_pattern = _re.compile(value)
+
+    def _resolve_value(
+        self,
+        value: object,
+    ) -> object:
+        if callable(value):
+            return value()
+
+        return value
+
+
+    def resolve_many(
+        self,
+        values: object,
+    ) -> _Mapping[str, object]:
+        if not isinstance(values, _Mapping):
+            raise TypeError("'values' must be a mapping")
+
+        for key in values:
+            if not isinstance(key, str):
+                raise TypeError("macro names must be strings")
+
+            if not self._selected_identifier_pattern.fullmatch(key):
+                raise ValueError(
+                    f"invalid macro name: '{key}'",
+                )
+
+        cache: dict[str, object] = {}
+
+        for root in values:
+            if root in cache:
+                continue
+
+            stack: list[str] = [root]
+            visiting: set[str] = set()
+
+            while stack:
+                key = stack[-1]
+
+                if key in cache:
+                    stack.pop()
+                    visiting.discard(key)
+                    continue
+
+                if key not in values:
+                    raise ValueError(
+                        f"key path '{key}' is an unknown macro",
+                    )
+
+                value = values[key]
+
+                if not isinstance(value, str):
+                    cache[key] = self._resolve_value(value)
+                    stack.pop()
+                    visiting.discard(key)
+                    continue
+
+                visiting.add(key)
+
+                dependencies: list[str] = []
+
+                for match in self._selected_macros_pattern.finditer(
+                    value,
+                ):
+                    dependency = match.group(1)
+
+                    if dependency in cache:
+                        continue
+
+                    if dependency not in values:
+                        raise ValueError(
+                            f"key path '{key}' references unknown macro "
+                            f"'{dependency}'",
+                        )
+
+                    if dependency in visiting:
+                        raise ValueError(
+                            f"circular macro reference: "
+                            f"'{key}' -> '{dependency}'",
+                        )
+
+                    if dependency not in dependencies:
+                        dependencies.append(dependency)
+
+                if dependencies:
+                    stack.extend(reversed(dependencies))
+                    continue
+
+                def replace(
+                    match: _re.Match[str],
+                ) -> str:
+                    dependency = match.group(1)
+                    return str(cache[dependency])
+
+                cache[key] = self._selected_macros_pattern.sub(
+                    replace,
+                    value,
+                )
+
+                stack.pop()
+                visiting.remove(key)
+
+        return cache
+
+
+    def resolve_one(
+        self,
+        key: object,
+        values: object,
+        cache: dict[str, object],
+        stack: set[str],
+    ) -> object:
+        if not isinstance(key, str):
+            raise TypeError("'key' must be a string")
+
+        if not isinstance(values, _Mapping):
+            raise TypeError("'values' must be a mapping")
+
+        if not isinstance(cache, dict):
+            raise TypeError("'cache' must be a dictionary")
+
+        if not isinstance(stack, set):
+            raise TypeError("'stack' must be a set")
+
+        if key not in values:
+            raise KeyError(f"unknown macro '{key}'")
+
+        if key in cache:
+            return cache[key]
+
+        frames: list[tuple[str, bool]] = [
+            (key, False),
+        ]
+
+        while frames:
+            current_key, expanded = frames.pop()
+
+            if current_key in cache:
+                continue
+
+            if not expanded:
+                if current_key in stack:
+                    raise ValueError(
+                        f"key path '{current_key}' is a circular reference",
+                    )
+
+                if current_key not in values:
+                    raise ValueError(
+                        f"key path '{current_key}' is an unknown macro",
+                    )
+
+                value = values[current_key]
+
+                if not isinstance(value, str):
+                    cache[current_key] = self._resolve_value(value)
+                    continue
+
+                stack.add(current_key)
+
+                frames.append(
+                    (current_key, True),
+                )
+
+                dependencies: list[str] = []
+
+                for match in self._selected_macros_pattern.finditer(
+                    value,
+                ):
+                    dependency = match.group(1)
+
+                    if dependency not in values:
+                        raise KeyError(
+                            f"macro '{current_key}' references unknown macro "
+                            f"'{dependency}'",
+                        )
+
+                    if dependency in stack:
+                        raise ValueError(
+                            f"circular macro reference: "
+                            f"'{current_key}' -> '{dependency}'",
+                        )
+
+                    if dependency not in cache:
+                        if dependency not in dependencies:
+                            dependencies.append(dependency)
+
+                frames.extend(
+                    (dependency, False)
+                    for dependency in reversed(dependencies)
+                )
+
+            else:
+                value = values[current_key]
+
+                if not isinstance(value, str):
+                    cache[current_key] = self._resolve_value(value)
+                else:
+                    cache[current_key] = (
+                        self._selected_macros_pattern.sub(
+                            lambda match: str(
+                                cache[match.group(1)],
+                            ),
+                            value,
+                        )
+                    )
+
+                stack.remove(current_key)
+
+        return cache[key]
+
+
+    def parse_many(
+        self,
+        values: object,
+        resolved: _Mapping[str, object],
+    ) -> object:
+        return self.parse_one(
+            values,
+            resolved,
+        )
+
+
+    def parse_one(
+        self,
+        value: object,
+        resolved: _Mapping[str, object],
+    ) -> Any:
+        if isinstance(value, str):
+
+            def replace(
+                match: _re.Match[str],
+            ) -> str:
+                key = match.group(1)
+
+                if key not in resolved:
+                    return str(match.group(0))
+
+                return (
+                    str(
+                        self._resolve_value(
+                            resolved[key]
+                        )
+                    )
+                )
+
+            return self._selected_macros_pattern.sub(
+                replace,
+                value,
+            )
+
+        if isinstance(value, dict):
+            return {
+                key: self.parse_one(
+                    child,
+                    resolved,
+                )
+                for key, child in value.items()
+            }
+
+        if isinstance(value, list):
+            return [
+                self.parse_one(
+                    child,
+                    resolved,
+                )
+                for child in value
+            ]
+
+        if isinstance(value, tuple):
+            return tuple(
+                self.parse_one(
+                    child,
+                    resolved,
+                )
+                for child in value
+            )
+
+        if isinstance(value, set):
+            return {
+                self.parse_one(
+                    child,
+                    resolved,
+                )
+                for child in value
+            }
+
+        return value
+
+
+    def parse_filesystem(
+        self,
+        filesystem_path: str | _Path,
+        workspace_macros: _Mapping[str, object],
+    ) -> bool:
+        encoding = (
+            self._text_encoding_manager
+                .selected_encoding
+        )
+
+        root = _Path(filesystem_path)
+
+        for current_root, directories, files in root.walk(
+            top_down=False,
+        ):
+            current_root = _Path(current_root)
+
+            for file_name in files:
+                current_path = current_root / file_name
+
+                try:
+                    file_data = current_path.read_text(
+                        encoding=encoding,
+                    )
+                except UnicodeDecodeError:
+                    pass
+                else:
+                    parsed_file_data = self.parse_one(
+                        file_data,
+                        workspace_macros,
+                    )
+
+                    if not isinstance(parsed_file_data, str):
+                        raise TypeError(
+                            "parsed file data must be a string",
+                        )
+
+                    if parsed_file_data != file_data:
+                        current_path.write_text(
+                            parsed_file_data,
+                            encoding=encoding,
+                        )
+
+                parsed_name = self.parse_one(
+                    current_path.name,
+                    workspace_macros,
+                )
+
+                if not isinstance(parsed_name, str):
+                    raise TypeError(
+                        "parsed file name must be a string",
+                    )
+
+                if parsed_name != current_path.name:
+                    current_path = current_path.rename(
+                        current_path.with_name(parsed_name),
+                    )
+
+            for directory_name in directories:
+                current_path = current_root / directory_name
+
+                parsed_name = self.parse_one(
+                    current_path.name,
+                    workspace_macros,
+                )
+
+                if not isinstance(parsed_name, str):
+                    raise TypeError(
+                        "parsed directory name must be a string",
+                    )
+
+                if parsed_name != current_path.name:
+                    current_path.rename(
+                        current_path.with_name(parsed_name),
+                    )
+
+        return True

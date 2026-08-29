@@ -1,3 +1,22 @@
 from __future__ import annotations
-def A():from..library import console_manager as B,import_manager as C;A=C.ImportManager.read_singleton(B.ConsoleManager);A.run();A.shutdown()
-if __name__=='__main__':A()
+
+
+def main() -> None:
+    from ..library import (
+        console_manager,
+        import_manager,
+    )
+
+    console_application = (
+        import_manager.ImportManager.read_singleton(
+            console_manager.ConsoleManager
+        )
+    )
+
+    console_application.run()
+    console_application.shutdown()
+
+
+if __name__ == "__main__":
+    main()
+
