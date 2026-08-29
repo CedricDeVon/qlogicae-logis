@@ -1,98 +1,27 @@
 from __future__ import annotations
-
-__all__ = (
-    "FilesystemCompressionManager",
-)
-
+D=None
+__all__='FilesystemCompressionManager',
 from typing import Any
-
-_zipfile: Any = None
-_Path: Any = None
-
-
-def _handle_dynamic_imports() -> None:
-    global _handle_dynamic_imports
-    global _zipfile
-    global _Path
-
-    import zipfile
-    from pathlib import Path
-
-    _zipfile = zipfile
-    _Path = Path
-
-    _handle_dynamic_imports = lambda: None
-
-
-class FilesystemCompressionManager:
-    def __init__(self) -> None:
-        _handle_dynamic_imports()
-
-    def get_zip_format_compression(
-        self,
-        value: str,
-    ) -> int:
-        result: int
-
-        match value.lower():
-            case "store" | "stored" | "none":
-                result = _zipfile.ZIP_STORED
-
-            case "deflate" | "deflated":
-                result = _zipfile.ZIP_DEFLATED
-
-            case "bz2" | "bzip2":
-                result = _zipfile.ZIP_BZIP2
-
-            case "lzma" | "xz":
-                result = _zipfile.ZIP_LZMA
-
-            case _:
-                result = _zipfile.ZIP_DEFLATED
-
-        return result
-
-    def zip_extract(
-        self,
-        archive_path: str,
-        destination_path: str,
-        overwrite: bool = False,
-    ) -> bool:
-        fs_archive_path = _Path(archive_path)
-        fs_destination_path = _Path(
-            destination_path,
-        ).resolve()
-
-        fs_destination_path.mkdir(
-            parents=True,
-            exist_ok=True,
-        )
-
-        with _zipfile.ZipFile(
-            fs_archive_path,
-            "r",
-        ) as archive:
-            for member in archive.infolist():
-                target = (
-                    fs_destination_path
-                    / member.filename
-                ).resolve()
-
-                if (
-                    fs_destination_path not in target.parents
-                    and target != fs_destination_path
-                ):
-                    raise ValueError(
-                        f"unsafe archive filesystem path "
-                        f"'{member.filename}'"
-                    )
-
-                if not overwrite and target.exists():
-                    continue
-
-                archive.extract(
-                    member,
-                    fs_destination_path,
-                )
-
-        return True
+A=D
+C=D
+def B():global B;global A;global C;import zipfile as E;from pathlib import Path;A=E;C=Path;B=lambda:D
+class E:
+	def __init__(A):B()
+	def get_zip_format_compression(C,value):
+		B:0
+		match value.lower():
+			case'store'|'stored'|'none':B=A.ZIP_STORED
+			case'deflate'|'deflated':B=A.ZIP_DEFLATED
+			case'bz2'|'bzip2':B=A.ZIP_BZIP2
+			case'lzma'|'xz':B=A.ZIP_LZMA
+			case _:B=A.ZIP_DEFLATED
+		return B
+	def zip_extract(I,archive_path,destination_path,overwrite=False):
+		F=True;H=C(archive_path);B=C(destination_path).resolve();B.mkdir(parents=F,exist_ok=F)
+		with A.ZipFile(H,'r')as G:
+			for D in G.infolist():
+				E=(B/D.filename).resolve()
+				if B not in E.parents and E!=B:raise ValueError(f"unsafe archive filesystem path '{D.filename}'")
+				if not overwrite and E.exists():continue
+				G.extract(D,B)
+		return F

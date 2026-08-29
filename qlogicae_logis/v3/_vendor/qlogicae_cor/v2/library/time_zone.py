@@ -1,11 +1,3 @@
 from enum import Enum
-
-__all__ = (
-    "TimeZone",
-)
-
-class TimeZone(Enum):
-    UTC = 0
-    LOCAL = 1
-    CUSTOM = 2
-    NONE = 3
+__all__='TimeZone',
+class A(Enum):UTC=0;LOCAL=1;CUSTOM=2;NONE=3

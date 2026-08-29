@@ -1,2113 +1,412 @@
 from __future__ import annotations
-
+AD='is_verbose'
+AC='is_enabled'
+AB='encoding'
+AA='key_paths'
+A9=isinstance
+A8='source_path'
+A7='target_paths'
+A6='indent'
+A5='allow_unicode'
+A4='default_flow_style'
+A3='sort_keys'
+A2='command'
+A1='utf-8'
+A0='values'
+Z='filesystem_path'
+Y=len
+R='target_path'
+Q='file_path'
+P=ValueError
+L='message'
+H='key_path'
+G=tuple
+F='value'
+D=None
+C=''
+B=True
+A=False
 from typing import Any
-
-__all__ = (
-    "ImportManager"
-)
-
-_gc: Any = None
-_sys: Any = None
-_time: Any = None
-_uuid: Any = None
-_yaml: Any = None
-_Path: Any = None
-_shutil: Any = None
-_logging: Any = None
-_ZipFile: Any = None
-_metadata: Any = None
-_resource: Any = None
-_Timestamp: Any = None
-_LogOptions: Any = None
-_LogManager: Any = None
-_TimeManager: Any = None
-_tracemalloc: Any = None
-_MacrosManager: Any = None
-_SystemManager: Any = None
-_ScriptProcess: Any = None
-_FileIoManager: Any = None
-_TimeZoneManager: Any = None
-_module_from_spec: Any = None
-_SingletonManager: Any = None
-_TimestampManager: Any = None
-_TargetCacheValue: Any = None
-_ConsoleLogManager: Any = None
-_ValueCacheManager: Any = None
-_CorFileLogManager: Any = None
-_ObjectMergeManager: Any = None
-_TextEncodingManager: Any = None
-_ScriptProcessManager: Any = None
-_GroupSelectionManager: Any = None
-_spec_from_file_location: Any = None
-_DiskCacheStorageManager: Any = None
-_ScriptProcessEnumManager: Any = None
-_FilesystemCompressionManager: Any = None
-_FileEntityFileSystemTreeSetupOptions: Any = None
-_FolderEntityFileSystemTreeSetupOptions: Any = None
-
-
-def _handle_dynamic_imports() -> None:
-    global _handle_dynamic_imports
-    global _gc
-    global _sys
-    global _time
-    global _uuid
-    global _yaml
-    global _Path
-    global _shutil
-    global _logging
-    global _ZipFile
-    global _metadata
-    global _resource
-    global _Timestamp
-    global _LogOptions
-    global _LogManager
-    global _tracemalloc
-    global _TimeManager
-    global _MacrosManager
-    global _SystemManager
-    global _ScriptProcess
-    global _FileIoManager
-    global _module_from_spec
-    global _TimeZoneManager
-    global _SingletonManager
-    global _TimestampManager
-    global _TargetCacheValue
-    global _ConsoleLogManager
-    global _ValueCacheManager
-    global _CorFileLogManager
-    global _ObjectMergeManager
-    global _TextEncodingManager
-    global _ScriptProcessManager
-    global _GroupSelectionManager
-    global _spec_from_file_location
-    global _DiskCacheStorageManager
-    global _ScriptProcessEnumManager
-    global _FilesystemCompressionManager
-    global _FileEntityFileSystemTreeSetupOptions
-    global _FolderEntityFileSystemTreeSetupOptions
-
-    import gc
-    import logging
-    import resource
-    import shutil
-    import sys
-    import time
-    import tracemalloc
-    import uuid
-    from importlib import metadata
-    from importlib.util import module_from_spec, spec_from_file_location
-    from pathlib import Path
-    from zipfile import ZipFile
-
-    from .._vendor.pyyaml import yaml
-    from .._vendor.qlogicae_cor.v2.library import (
-        console_log_manager,
-        disk_cache_storage_manager,
-        file_entity_filesystem_tree_setup_options,
-        file_io_manager,
-        file_log_manager,
-        filesystem_compression_manager,
-        folder_entity_filesystem_tree_setup_options,
-        group_selection_manager,
-        log_manager,
-        log_options,
-        macros_manager,
-        object_merge_manager,
-        script_process,
-        script_process_manager,
-        singleton_manager,
-        system_manager,
-        target_cache_value,
-        text_encoding_manager,
-        time_manager,
-        time_zone_manager,
-        timestamp,
-        timestamp_manager,
-        value_cache_manager,
-    )
-
-    _gc = gc
-    _sys = sys
-    _uuid = uuid
-    _yaml = yaml
-    _Path = Path
-    _time = time
-    _shutil = shutil
-    _ZipFile = ZipFile
-    _logging = logging
-    _metadata = metadata
-    _resource = resource
-    _tracemalloc = tracemalloc
-    _Timestamp = timestamp.Timestamp
-    _LogOptions = log_options.LogOptions
-    _LogManager = log_manager.LogManager
-    _module_from_spec = module_from_spec
-    _TimeManager = time_manager.TimeManager
-    _MacrosManager = macros_manager.MacrosManager
-    _SystemManager = system_manager.SystemManager
-    _spec_from_file_location = spec_from_file_location
-    _TimeZoneManager = time_zone_manager.TimeZoneManager
-    _CorFileLogManager = file_log_manager.FileLogManager
-    _SingletonManager = singleton_manager.SingletonManager
-    _TimestampManager = timestamp_manager.TimestampManager
-    _TargetCacheValue = target_cache_value.TargetCacheValue
-    _ValueCacheManager = value_cache_manager.ValueCacheManager
-    _ObjectMergeManager = object_merge_manager.ObjectMergeManager
-    _ScriptProcessManager = script_process_manager.ScriptProcessManager
-    _FilesystemCompressionManager = (
-        filesystem_compression_manager.FilesystemCompressionManager
-    )
-    _FileEntityFileSystemTreeSetupOptions = (
-        file_entity_filesystem_tree_setup_options
-        .FileEntityFileSystemTreeSetupOptions
-    )
-    _FolderEntityFileSystemTreeSetupOptions = (
-        folder_entity_filesystem_tree_setup_options
-        .FolderEntityFileSystemTreeSetupOptions
-    )
-    _ConsoleLogManager = console_log_manager.ConsoleLogManager
-    _DiskCacheStorageManager = (
-        disk_cache_storage_manager.DiskCacheStorageManager
-    )
-    _ScriptProcess = script_process.ScriptProcess
-    _FileIoManager = file_io_manager.FileIoManager
-    _GroupSelectionManager = group_selection_manager.GroupSelectionManager
-    _TextEncodingManager = (
-        text_encoding_manager
-            .TextEncodingManager
-    )
-
-    _handle_dynamic_imports = lambda: None
-
-def _handle_singleton_manager_imports() -> None:
-    global _handle_singleton_manager_imports
-
-    global _SingletonManager
-
-    from .._vendor.qlogicae_cor.v2.library import (
-        singleton_manager,
-    )
-
-    _SingletonManager = singleton_manager.SingletonManager
-
-    _handle_singleton_manager_imports = lambda: None
-
-
-class ImportManager:
-    __slots__ = (
-        "_time_manager",
-        "_disk_cache_storage_manager",
-        "_value_cache_manager",
-        "_time_zone_manager",
-        "_timestamp_manager",
-        "_text_encoding_manager",
-        "_script_process_manager",
-        "_macros_manager",
-        "_object_merge_manager",
-        "_group_selection_manager",
-        "_filesystem_compression_manager",
-        "_system_manager",
-        "_file_io_manager",
-        "_file_log_manager",
-        "_console_log_manager",
-        "_log_manager",
-    )
-
-    def __init__(self) -> None:
-        _handle_dynamic_imports()
-
-        self._time_manager = self.read_singleton(
-            _TimeManager
-        )
-        self._disk_cache_storage_manager = self.read_singleton(
-            _DiskCacheStorageManager
-        )
-        self._value_cache_manager = self.read_singleton(
-            _ValueCacheManager
-        )
-        self._time_zone_manager = self.read_singleton(
-            _TimeZoneManager
-        )
-        self._timestamp_manager = self.read_singleton(
-            _TimestampManager
-        )
-        self._text_encoding_manager = self.read_singleton(
-            _TextEncodingManager
-        )
-        self._script_process_manager = self.read_singleton(
-            _ScriptProcessManager
-        )
-        self._macros_manager = self.read_singleton(
-            _MacrosManager
-        )
-        self._object_merge_manager = self.read_singleton(
-            _ObjectMergeManager
-        )
-        self._group_selection_manager = self.read_singleton(
-            _GroupSelectionManager
-        )
-        self._filesystem_compression_manager = self.read_singleton(
-            _FilesystemCompressionManager
-        )
-        self._system_manager = self.read_singleton(
-            _SystemManager
-        )
-        self._file_io_manager = self.read_singleton(
-            _FileIoManager
-        )
-        self._file_log_manager = self.read_singleton(
-            _CorFileLogManager
-        )
-        self._console_log_manager = self.read_singleton(
-            _ConsoleLogManager
-        )
-        self._log_manager = self.read_singleton(
-            _LogManager
-        )
-
-    @classmethod
-    def read_singleton(self, value: Any) -> Any:
-        if not value:
-            return {}
-
-        _handle_singleton_manager_imports()
-
-        return (
-            _SingletonManager.get_singleton(
-                value
-            )
-        )
-
-    def convert_to_os_specific_path_value(
-        self,
-        **kwargs: Any,
-    ) -> str:
-        filesystem_path = kwargs.get(
-            "filesystem_path",
-            ""
-        )
-
-        return f"{_Path(
-            filesystem_path
-        )}"
-
-    def compress(
-        self,
-        **kwargs: Any,
-    ) -> bool:
-        if not kwargs:
-            return False
-
-        source = (
-            kwargs.get("source", "")
-        )
-        destination = (
-            kwargs.get("destination", "")
-        )
-        mode = (
-            kwargs.get("mode", "")
-        )
-        if not destination or not mode:
-            return False
-
-        source = _Path(source)
-        compression = (
-            kwargs.get("compression", "deflated")
-        )
-        compression = (
-            self.read_zip_format_compression(
-                value=compression
-            )
-        )
-        compresslevel = (
-            kwargs.get("compresslevel", 6)
-        )
-        allowZip64 = (
-            kwargs.get("allowZip64", True)
-        )
-        strict_timestamps = (
-            kwargs.get("strict_timestamps", True)
-        )
-
-        with _ZipFile(
-            destination,
-            mode=mode,
-            compression=compression,
-            compresslevel=compresslevel,
-            allowZip64=allowZip64,
-            strict_timestamps=strict_timestamps,
-        ) as archive:
-            for path in source.rglob("*"):
-                archive.write(
-                    path,
-                    arcname=path.relative_to(source),
-                )
-
-
-        return True
-
-    def read_metadata_version(self, target: str) -> str:
-        if not target:
-            return "v0.0.0"
-
-        return (
-            _metadata.version(target) or "v0.0.0"
-        )
-
-    def snapshot_memory_usage(self) -> Any:
-        current_bytes, peak_bytes = (
-            _tracemalloc.get_traced_memory()
-            if _tracemalloc.is_tracing()
-            else (0, 0)
-        )
-
-        peak_rss = _resource.getrusage(
-            _resource.RUSAGE_SELF,
-        ).ru_maxrss
-
-        if _sys.platform != "darwin":
-            peak_rss *= 1024
-
-        return {
-            "tracemalloc-current": { "value": current_bytes },
-            "tracemalloc-peak": { "value": peak_bytes },
-            "process-peak-rss": { "value": peak_rss },
-            "gc-tracked-objects": { "value": len(_gc.get_objects(),) },
-        }
-
-    # TimeManager
-    def time_delay(
-        self,
-        **kwargs: Any,
-    ) -> bool:
-        if not kwargs:
-            return False
-
-        value = (
-            kwargs.get(
-                "value",
-                0
-            )
-        )
-        if not value:
-            return False
-
-        _time.sleep(
-            value
-        )
-
-        return True
-
-    def read_current_iso8601_date(
-        self,
-    ) -> str:
-        value: str = (
-            self._time_manager.current_iso8601_date
-        )
-
-        return value
-
-    def read_current_nanosecond(
-        self,
-    ) -> int:
-        value: int = (
-            self._time_manager.current_nanosecond
-        )
-
-        return value
-
-    def read_current_day(
-        self,
-    ) -> int:
-        value: int = (
-            self._time_manager.current_day
-        )
-
-        return value
-
-    def read_current_month(
-        self,
-    ) -> int:
-        value: int = (
-            self._time_manager.current_month
-        )
-
-        return value
-
-    def read_current_year(
-        self,
-    ) -> int:
-        value: int = (
-            self._time_manager.current_year
-        )
-
-        return value
-
-    # DiskCacheStorageManager
-    def is_key_found_via_disk_cache(
-        self,
-        **kwargs: Any,
-    ) -> bool:
-        if not kwargs:
-            return False
-
-        value: bool = (
-            self._disk_cache_storage_manager.is_keys_found(
-                key_path=kwargs.get(
-                    "key_path",
-                    ""
-                ),
-            )
-        )
-
-        return value
-
-    def is_item_expired_via_disk_cache(
-        self,
-        **kwargs: Any,
-    ) -> bool:
-        if not kwargs:
-            return False
-
-        value: bool = (
-            self._disk_cache_storage_manager.is_item_expired(
-                key_path=kwargs.get(
-                    "key_path",
-                    ""
-                ),
-            )
-        )
-
-        return value
-
-    def read_all_values_via_disk_cache(
-        self,
-    ) -> dict[str, Any]:
-        value: dict[str, Any] = (
-            self._disk_cache_storage_manager.read_all_values()
-        )
-
-        return value
-
-    def read_many_values_via_disk_cache(
-        self,
-        **kwargs: Any,
-    ) -> dict[str, Any]:
-        if not kwargs:
-            return {}
-
-        value: dict[str, Any] = (
-            self._disk_cache_storage_manager.get_many_values(
-                key_paths=kwargs.get(
-                    "key_paths",
-                    tuple()
-                ),
-            )
-        )
-
-        return value
-
-    def write_many_values_via_disk_cache(
-        self,
-        **kwargs: Any,
-    ) -> bool:
-        if not kwargs:
-            return False
-
-        self._disk_cache_storage_manager.set_many_values(
-            values=kwargs.get(
-                "values",
-                {}
-            ),
-        )
-
-        return True
-
-    def remove_many_values_via_disk_cache(
-        self,
-        **kwargs: Any,
-    ) -> dict[str, bool]:
-        if not kwargs:
-            return {}
-
-        value: dict[str, Any] = (
-            self._disk_cache_storage_manager.remove_many_values(
-                key_paths=kwargs.get(
-                    "key_paths",
-                    tuple()
-                ),
-            )
-        )
-
-        return value
-
-    def open_via_disk_cache(
-        self,
-    ) -> bool:
-        self._disk_cache_storage_manager.open()
-
-        return True
-
-    def close_via_disk_cache(
-        self,
-    ) -> bool:
-        self._disk_cache_storage_manager.close()
-
-        return True
-
-    def clear_all_values_via_disk_cache(
-        self,
-    ) -> bool:
-        self._disk_cache_storage_manager.clear_all_values()
-
-        return True
-
-    def remove_expired_values_via_disk_cache(self) -> int:
-        value: int = (
-            self._disk_cache_storage_manager.remove_expired_values()
-        )
-
-        return value
-
-    def sync_via_disk_cache(self) -> bool:
-        self._disk_cache_storage_manager.sync()
-
-        return True
-
-    def reorganize_via_disk_cache(self) -> bool:
-        self._disk_cache_storage_manager.reorganize()
-
-        return True
-
-    def display_all_items_via_disk_cache(self) -> bool:
-        self._disk_cache_storage_manager.display_all_items()
-
-        return True
-
-    def write_database_path_via_disk_cache(
-        self,
-        value: str
-    ) -> bool:
-        if not value:
-            return False
-
-        self._disk_cache_storage_manager.database_path = (
-            value
-        )
-
-        return True
-
-    # ValueCacheManager
-    def read_any_value_via_value_cache(
-        self,
-        **kwargs: Any,
-    ) -> Any:
-        if not kwargs:
-            return {}
-
-        value: Any = (
-            self._value_cache_manager.get_one_value(
-                key_path=kwargs.get(
-                    "key_path",
-                    tuple()
-                ),
-                output_type=(
-                    _TargetCacheValue.ANY
-                )
-            )
-        )
-
-        return value
-
-    def read_defined_value_via_value_cache(
-        self,
-        **kwargs: Any,
-    ) -> Any:
-        if not kwargs:
-            return {}
-
-        value: Any = (
-            self._value_cache_manager.get_one_value(
-                key_path=kwargs.get(
-                    "key_path",
-                    tuple()
-                ),
-                output_type=(
-                    _TargetCacheValue.DEFINED
-                )
-            )
-        )
-
-        return value
-
-    def write_any_value_via_value_cache(
-        self,
-        **kwargs: Any,
-    ) -> bool:
-        if not kwargs:
-            return False
-
-        self._value_cache_manager.set_one_value(
-            key_path=kwargs.get(
-                "key_path",
-                tuple()
-            ),
-            value=kwargs.get(
-                "value",
-                {}
-            ),
-            output_type=(
-                _TargetCacheValue.ANY
-            )
-        )
-
-        return True
-
-    def write_defined_value_via_value_cache(
-        self,
-        **kwargs: Any,
-    ) -> bool:
-        if not kwargs:
-            return False
-
-        self._value_cache_manager.set_one_value(
-            key_path=kwargs.get(
-                "key_path",
-                tuple()
-            ),
-            value=kwargs.get(
-                "value",
-                {}
-            ),
-            output_type=(
-                _TargetCacheValue.DEFINED
-            )
-        )
-
-        return True
-
-    def write_file_path_value_via_value_cache(
-        self,
-        **kwargs: Any,
-    ) -> bool:
-        if not kwargs:
-            return False
-
-        self._value_cache_manager.set_one_value(
-            key_path=kwargs.get(
-                "key_path",
-                tuple()
-            ),
-            value=kwargs.get(
-                "value",
-                {}
-            ),
-            output_type=(
-                _TargetCacheValue.FILE_PATH
-            )
-        )
-
-        return True
-
-    def write_folder_path_value_via_value_cache(
-        self,
-        **kwargs: Any,
-    ) -> bool:
-        if not kwargs:
-            return False
-
-        self._value_cache_manager.set_one_value(
-            key_path=kwargs.get(
-                "key_path",
-                tuple()
-            ),
-            value=kwargs.get(
-                "value",
-                {}
-            ),
-            output_type=(
-                _TargetCacheValue.FOLDER_PATH
-            )
-        )
-
-        return True
-
-    def write_filesystem_path_value_via_value_cache(
-        self,
-        **kwargs: Any,
-    ) -> bool:
-        if not kwargs:
-            return False
-
-        self._value_cache_manager.set_one_value(
-            key_path=kwargs.get(
-                "key_path",
-                tuple()
-            ),
-            value=kwargs.get(
-                "value",
-                {}
-            ),
-            output_type=(
-                _TargetCacheValue.FILESYSTEM_PATH
-            )
-        )
-
-        return True
-
-    def display_all_items_via_value_cache(
-        self,
-    ) -> bool:
-        self._value_cache_manager.display_all_items()
-
-        return True
-
-    def remove_one_value_via_value_cache(
-        self,
-        **kwargs: Any,
-    ) -> bool:
-        if not kwargs:
-            return False
-
-        self._value_cache_manager.remove_one_value(
-            key_path=kwargs.get(
-                "key_path",
-                tuple()
-            ),
-        )
-
-        return True
-
-    def clear_all_values_via_value_cache(
-        self,
-    ) -> bool:
-        self._value_cache_manager.clear_all_values()
-
-        return True
-
-
-    # TimeManager
-    def read_selected_time_zone(
-        self,
-    ) -> str:
-        value: str = (
-            self._time_zone_manager.selected_time_zone_type
-        )
-
-        return value
-
-    def write_selected_time_zone(
-        self,
-        **kwargs: Any,
-    ) -> bool:
-        if not kwargs:
-            return False
-
-        self._time_zone_manager.selected_time_zone_type = (
-            kwargs.get(
-                "value",
-                "local"
-            ),
-        )
-
-        return True
-
-    # TimestampManager
-    def generate_current_date_timestamp(
-        self,
-    ) -> str:
-        value: str = (
-            self._timestamp_manager.generate_current_timestamp(
-                _Timestamp.ISO_DATE_STRING
-            )
-        )
-
-        return value
-
-    def generate_current_filesystem_timestamp(
-        self,
-    ) -> str:
-        value: str = (
-            self._timestamp_manager.generate_current_timestamp(
-                _Timestamp.ISO_FILESYSTEM_STRING
-            )
-        )
-
-        return value
-
-    # TextEncodingManager
-    def read_selected_encoding(
-        self,
-    ) -> str:
-        value: str = (
-            self._text_encoding_manager.selected_encoding
-        )
-
-        return value
-
-    def write_selected_encoding(
-        self,
-        **kwargs: Any,
-    ) -> bool:
-        if not kwargs:
-            return False
-
-        self._text_encoding_manager.selected_encoding = (
-            kwargs.get(
-                "value",
-                "utf-8"
-            ),
-        )
-
-        return True
-
-
-    # ScriptProcess
-    def run_shell_command(
-        self,
-        **kwargs: Any,
-    ) -> Any:
-        if not kwargs:
-            return False
-
-        value: Any = (
-            self._script_process_manager.execute_command(
-                command=kwargs.get(
-                    "command",
-                    ""
-                ),
-                script_process_type=(
-                    _ScriptProcess.SHELL
-                )
-            )
-        )
-
-        return value
-
-    def run_subprocess_command(
-        self,
-        **kwargs: Any,
-    ) -> Any:
-        if not kwargs:
-            return False
-
-        value: Any = (
-            self._script_process_manager.execute_command(
-                command=kwargs.get(
-                    "command",
-                    ""
-                ),
-                script_process_type=(
-                    _ScriptProcess.SUBPROCESS
-                )
-            )
-        )
-
-        return value
-
-    def run_command(
-        self,
-        **kwargs: Any,
-    ) -> Any:
-        if not kwargs:
-            return {}
-
-        script_process = (
-            kwargs.get(
-                "script_process",
-                "shell"
-            )
-        )
-        command = (
-            kwargs.get(
-                "command",
-                ""
-            )
-        )
-        if not command:
-            return {}
-
-        cli_output = {}
-        if script_process == "shell":
-            cli_output = self.run_shell_command(
-                command=command
-            )
-
-        elif script_process == "subprocess":
-            cli_output = self.run_subprocess_command(
-                command=command
-            )
-
-        return cli_output
-
-    # MacrosManager
-    def macros_resolve_many(
-        self,
-        **kwargs: Any,
-    ) -> Any:
-        if not kwargs:
-            return False
-
-        value: Any = (
-            self._macros_manager.resolve_many(
-                kwargs.get(
-                    "values",
-                    {}
-                ),
-            )
-        )
-
-        return value
-
-    def macros_parse_many(
-        self,
-        **kwargs: Any,
-    ) -> object:
-        if not kwargs:
-            return False
-
-        value: object = (
-            self._macros_manager.parse_many(
-                values=kwargs.get(
-                    "values",
-                    ""
-                ),
-                resolved=kwargs.get(
-                    "resolved",
-                    {}
-                ),
-            )
-        )
-
-        return value
-
-    def macros_parse_filesystem(
-        self,
-        **kwargs: Any,
-    ) -> bool:
-        if not kwargs:
-            return False
-
-        value: bool = (
-            self._macros_manager.parse_filesystem(
-                filesystem_path=kwargs.get(
-                    "filesystem_path",
-                    ""
-                ),
-                workspace_macros=kwargs.get(
-                    "workspace_macros",
-                    {}
-                ),
-            )
-        )
-
-        return value
-
-    # ObjectMergeManager
-    def object_deep_merge(
-        self,
-        **kwargs: Any,
-    ) -> object:
-        if not kwargs:
-            return False
-
-        value: object = (
-            self._object_merge_manager.deep_merge(
-                left=kwargs.get(
-                    "left",
-                    {}
-                ),
-                right=kwargs.get(
-                    "right",
-                    {}
-                ),
-            )
-        )
-
-        return value
-
-    def object_deep_merge_fragments(
-        self,
-        **kwargs: Any,
-    ) -> object:
-        if not kwargs:
-            return False
-
-        value: object = (
-            self._object_merge_manager.deep_merge_fragments(
-                left=kwargs.get(
-                    "left",
-                    {}
-                ),
-                right=kwargs.get(
-                    "right",
-                    {}
-                ),
-            )
-        )
-
-        return value
-
-    # group_selection_manager
-    def object_flatten_group(
-        self,
-        **kwargs: Any,
-    ) -> Any:
-        if not kwargs:
-            return False
-
-        return (
-            self._group_selection_manager
-                .flatten_group(
-                    kwargs.get(
-                        "target",
-                        ""
-                    ),
-                    kwargs.get(
-                        "data",
-                        {}
-                    ),
-                )
-        ) or {}
-
-    # yaml
-    def convert_yaml_string_to_object(
-        self,
-        **kwargs: Any,
-    ) -> object:
-        if not kwargs:
-            return {}
-
-        return _yaml.safe_load(
-            kwargs.get(
-                "value",
-                ""
-            )
-        ) or {}
-
-    def convert_yaml_object_to_string(
-        self,
-        **kwargs: Any,
-    ) -> str:
-        if not kwargs:
-            return ""
-
-        return _yaml.safe_dump(
-            kwargs.get(
-                "value",
-                ""
-            ),
-            sort_keys=kwargs.get(
-                "sort_keys",
-                False,
-            ),
-            default_flow_style=kwargs.get(
-                "default_flow_style",
-                False,
-            ),
-            allow_unicode=kwargs.get(
-                "allow_unicode",
-                True,
-            ),
-            indent=kwargs.get(
-                "indent",
-                4,
-            )
-        ) or ""
-
-    def format_yaml_to_string(
-        self,
-        **kwargs: Any,
-    ) -> object:
-        if not kwargs:
-            return False
-
-        return (
-            _yaml.dump(
-                kwargs.get(
-                    "value",
-                    ""
-                ),
-                sort_keys=kwargs.get(
-                    "sort_keys",
-                    False,
-                ),
-                default_flow_style=kwargs.get(
-                    "default_flow_style",
-                    False,
-                ),
-                allow_unicode=kwargs.get(
-                    "allow_unicode",
-                    True,
-                ),
-                indent=kwargs.get(
-                    "indent",
-                    4,
-                )
-            )
-        )
-
-    def read_yaml_file(
-        self,
-        **kwargs: Any,
-    ) -> object:
-        if not kwargs:
-            return False
-
-        path = _Path(
-            kwargs.get(
-                "file_path",
-                ""
-            ),
-        )
-
-        with path.open(
-            mode="r",
-            encoding=kwargs.get(
-                "encoding",
-                "utf-8"
-            ),
-        ) as file:
-            return _yaml.safe_load(file) or {}
-
-    def write_yaml_file(
-        self,
-        **kwargs: Any,
-    ) -> bool:
-        if not kwargs:
-            return False
-
-        path = _Path(
-            kwargs.get(
-                "file_path",
-                ""
-            ),
-        )
-
-        with path.open(
-            mode="w",
-            encoding=kwargs.get(
-                "encoding",
-                "utf-8"
-            ),
-        ) as file:
-            _yaml.safe_dump(
-                kwargs.get(
-                    "value",
-                    ""
-                ),
-                file,
-                sort_keys=kwargs.get(
-                    "sort_keys",
-                    False,
-                ),
-                default_flow_style=kwargs.get(
-                    "default_flow_style",
-                    False,
-                ),
-                allow_unicode=kwargs.get(
-                    "allow_unicode",
-                    True,
-                ),
-                indent=kwargs.get(
-                    "indent",
-                    4,
-                )
-            )
-
-        return True
-
-    # Python
-    def read_python_file(
-        self,
-        **kwargs: Any,
-    ) -> object:
-        if not kwargs:
-            return False
-
-        file_path = _Path(
-            kwargs.get(
-                "file_path",
-                ""
-            )
-        )
-
-        module_name = file_path.stem
-        spec = _spec_from_file_location(module_name, file_path)
-        module = _module_from_spec(spec)
-        spec.loader.exec_module(module)
-
-        return module or {}
-
-    # FilesystemManager
-    def read_child_folder_paths(
-        self,
-        **kwargs: Any,
-    ) -> Any:
-        if not kwargs:
-            return False
-
-        return _Path(
-            kwargs.get(
-                "value",
-                "",
-            ),
-        ).iterdir()
-
-    def read_file_suffix(
-        self,
-        **kwargs: Any,
-    ) -> Any:
-        if not kwargs:
-            return False
-
-        return _Path(
-            kwargs.get(
-                "value",
-                "",
-            ),
-        ).suffix
-
-
-    def read_filesystem_modification_timestamp(
-        self,
-        **kwargs: Any,
-    ) -> float:
-        if not kwargs:
-            return False
-
-        value: float = (
-            _Path(
-                kwargs.get(
-                    "value",
-                    "",
-                ),
-            ).stat().st_mtime
-        )
-
-        return value
-
-    def read_filesystem_status_change_timestamp(
-        self,
-        **kwargs: Any,
-    ) -> float:
-        if not kwargs:
-            return False
-
-        value: float = (
-            _Path(
-                kwargs.get(
-                    "value",
-                    "",
-                ),
-            ).stat().st_ctime
-        )
-
-        return value
-
-    def read_filesystem_access_timestamp(
-        self,
-        **kwargs: Any,
-    ) -> float:
-        if not kwargs:
-            return False
-
-        value: float = (
-            _Path(
-                kwargs.get(
-                    "value",
-                    "",
-                ),
-            ).stat().st_atime
-        )
-
-        return value
-
-    def read_filesystem_via_pattern(
-        self,
-        **kwargs: Any,
-    ) -> Any:
-        if not kwargs:
-            return False
-
-        filesystem_path: str = kwargs.get(
-            "filesystem_path",
-            "",
-        )
-        pattern: str = kwargs.get(
-            "pattern",
-            "",
-        )
-        value: Any = tuple(
-            _Path(
-                filesystem_path
-            ).glob(pattern)
-        )
-
-        return value
-
-    def uncompress_zip(
-        self,
-        **kwargs: Any,
-    ) -> bool:
-        if not kwargs:
-            return False
-
-        archive_path = kwargs.get("archive_path", "")
-        destination_path = kwargs.get("destination_path", "")
-        if not archive_path or not destination_path:
-            return False
-
-        overwrite = kwargs.get("overwrite", False)
-        value: bool = self._filesystem_compression_manager.zip_extract(
-            archive_path=archive_path,
-            destination_path=destination_path,
-            overwrite=overwrite,
-        )
-
-        return value
-
-    def read_zip_format_compression(
-        self,
-        **kwargs: Any,
-    ) -> Any:
-        if not kwargs:
-            return False
-
-        value = kwargs.get("value", "")
-        if not value:
-            return False
-
-        value = (
-            self._filesystem_compression_manager.get_zip_format_compression(
-                value,
-            )
-        )
-
-        return value
-
-    def is_filesystem_path_valid(
-        self,
-        **kwargs: Any,
-    ) -> bool:
-        if not kwargs:
-            return False
-
-        value: bool = _Path(
-            kwargs.get(
-                "value",
-                "",
-            )
-        ).exists()
-
-        return value
-
-    def is_file_path_valid(
-        self,
-        **kwargs: Any,
-    ) -> bool:
-        if not kwargs:
-            return False
-
-        value: bool = _Path(
-            kwargs.get(
-                "value",
-                "",
-            )
-        ).is_file()
-
-        return value
-
-    def is_folder_path_valid(
-        self,
-        **kwargs: Any,
-    ) -> bool:
-        if not kwargs:
-            return False
-
-        value: bool = _Path(
-            kwargs.get(
-                "value",
-                "",
-            )
-        ).is_dir()
-
-        return value
-
-    def setup_filesystem_tree_paths(
-        self,
-        **kwargs: Any,
-    ) -> bool:
-        if not kwargs:
-            return False
-
-        target_paths = kwargs.get("target_paths", [])
-        if not target_paths or len(target_paths) < 1:
-            return False
-
-        for target_path in target_paths:
-            if not target_path:
-                continue
-
-            _Path(target_path).mkdir(
-                parents=True,
-                exist_ok=True,
-            )
-
-        return True
-
-    def setup_filesystem_tree_path(
-        self,
-        **kwargs: Any,
-    ) -> bool:
-        if not kwargs:
-            return False
-
-        target_path = kwargs.get("target_path", "")
-        if not target_path or not target_path:
-            return False
-
-        target_path = _Path(target_path)
-        if target_path.exists():
-            return False
-
-        target_path.mkdir(
-            parents=True,
-            exist_ok=True,
-        )
-
-        return True
-
-    def setup_filesystem_tree(
-        self,
-        **kwargs: Any,
-    ) -> bool:
-        if not kwargs:
-            return False
-
-        root_path = kwargs.get("root_path", "")
-        tree = kwargs.get("tree", None)
-        if not root_path or not tree:
-            return False
-
-        path = _Path(root_path)
-
-        if not path.exists():
-            raise ValueError(
-                f"filesystem path '{path}' is invalid"
-            )
-
-        path.mkdir(
-            parents=True,
-            exist_ok=True,
-        )
-
-        for entity in tree.entities or []:
-            entity_path = path / entity.name
-
-            if isinstance(
-                entity,
-                _FolderEntityFileSystemTreeSetupOptions,
-            ):
-                entity_path.mkdir(
-                    parents=True,
-                    exist_ok=True,
-                )
-
-                self.setup_filesystem_tree(
-                    root_path=entity_path,
-                    tree=entity,
-                )
-
-            elif isinstance(
-                entity,
-                _FileEntityFileSystemTreeSetupOptions,
-            ):
-                if not entity_path.exists():
-                    entity_path.write_text(
-                        entity.content,
-                        encoding=entity.encoding,
-                    )
-
-        return True
-
-    def move_filesystem_path(
-        self,
-        **kwargs: Any,
-    ) -> bool:
-        if not kwargs:
-            return False
-
-        source_path = kwargs.get("source_path", "")
-        target_path = kwargs.get("target_path", "")
-
-        if not source_path or not target_path:
-            return False
-
-        source_path = _Path(source_path)
-        target_path = _Path(target_path)
-
-        target_path.parent.mkdir(
-            parents=True,
-            exist_ok=True,
-        )
-
-        _shutil.move(
-            str(source_path),
-            str(target_path),
-        )
-
-        return True
-
-    def copy_filesystem_paths(
-        self,
-        **kwargs: Any,
-    ) -> bool:
-        if not kwargs:
-            return False
-
-        source_path = kwargs.get("source_path", "")
-        target_paths = kwargs.get("target_paths", [])
-
-        if not source_path or len(target_paths) < 1:
-            return False
-
-        source_path = _Path(source_path).resolve()
-
-        for target_path in target_paths:
-            if not target_path:
-                continue
-
-            target_path = _Path(target_path).resolve()
-
-            if source_path == target_path:
-                return False
-
-            if source_path.is_dir():
-                _shutil.copytree(
-                    source_path,
-                    target_path,
-                    dirs_exist_ok=True,
-                )
-
-            elif source_path.is_file():
-                target_path.parent.mkdir(
-                    parents=True,
-                    exist_ok=True,
-                )
-
-                _shutil.copy2(
-                    source_path,
-                    target_path,
-                )
-
-        return True
-
-    def copy_filesystem_path(
-        self,
-        **kwargs: Any,
-    ) -> bool:
-        if not kwargs:
-            return False
-
-        source_path = kwargs.get("source_path", "")
-        target_path = kwargs.get("target_path", "")
-
-        if not source_path or not target_path:
-            return False
-
-        source_path = _Path(source_path).resolve()
-
-        if not target_path:
-            return False
-
-        target_path = _Path(target_path).resolve()
-
-        if source_path == target_path:
-            return False
-
-        if source_path.is_dir():
-            _shutil.copytree(
-                source_path,
-                target_path,
-                dirs_exist_ok=True,
-            )
-
-        elif source_path.is_file():
-            target_path.parent.mkdir(
-                parents=True,
-                exist_ok=True,
-            )
-
-            _shutil.copy2(
-                source_path,
-                target_path,
-            )
-
-        return True
-
-    def clean_filesystem_paths(
-        self,
-        **kwargs: Any,
-    ) -> bool:
-        if not kwargs:
-            return False
-
-        target_paths = kwargs.get("target_paths", [])
-        if not target_paths or len(target_paths) < 1:
-            return False
-
-        for target_path in target_paths:
-            if not target_path:
-                continue
-
-            target_path = _Path(
-                target_path
-            ).resolve()
-
-            protected_paths = {
-                _Path(""),
-                _Path("/"),
-                _Path.home(),
-            }
-
-            if target_path in protected_paths:
-                raise ValueError(
-                    f"folder path '{target_path}' is protected"
-                )
-
-            if not target_path.exists():
-                return True
-
-            if not target_path.is_dir():
-                raise ValueError(
-                    f"file path '{target_path}' is not a folder"
-                )
-
-            for item in target_path.iterdir():
-                if item.is_file() or item.is_symlink():
-                    item.unlink()
-
-                elif item.is_dir():
-                    _shutil.rmtree(item)
-
-        return True
-
-    def clean_filesystem_path(
-        self,
-        **kwargs: Any,
-    ) -> bool:
-        if not kwargs:
-            return False
-
-        target_path = kwargs.get("target_path", "")
-        if not target_path:
-            return False
-
-        target_path = _Path(
-            target_path
-        ).resolve()
-
-        protected_paths = {
-            _Path(""),
-            _Path("/"),
-            _Path.home(),
-        }
-
-        if target_path in protected_paths:
-            raise ValueError(
-                f"folder path '{target_path}' is protected"
-            )
-
-        if not target_path.exists():
-            return True
-
-        if not target_path.is_dir():
-            raise ValueError(
-                f"file path '{target_path}' is not a folder"
-            )
-
-        for item in target_path.iterdir():
-            if item.is_file() or item.is_symlink():
-                item.unlink()
-
-            elif item.is_dir():
-                _shutil.rmtree(item)
-
-        return True
-
-    def read_filesystem_entity_parents(
-        self,
-        **kwargs: Any,
-    ) -> set[str]:
-        if not kwargs:
-            return set()
-
-        data: set[str] = set()
-        target_path = kwargs.get("target_path", "")
-        if not target_path:
-            return data
-
-        parents = _Path(target_path).parents
-        if not parents:
-            return data
-
-        for parent in parents:
-            if not parent:
-                continue
-
-            data.add(f"{parent}")
-
-        return data
-
-    def rename_filesystem_entity(
-        self,
-        **kwargs: Any,
-    ) -> bool:
-        if not kwargs:
-            return False
-
-        old_path = kwargs.get("old_path", "")
-        new_path = kwargs.get("new_path", "")
-        if not old_path or not new_path:
-            return False
-
-        _Path(old_path).rename(
-            kwargs.get(new_path)
-        )
-
-        return True
-
-    def read_python_filesystem_paths(
-        self,
-        **kwargs: Any,
-    ) -> Any:
-        if not kwargs:
-            return False
-
-        target_path = _Path(
-            kwargs.get(
-                "path",
-                "",
-            )
-        )
-
-        value: Any = tuple(
-            str(path)
-            for path in target_path.rglob("*.py")
-            if "__pycache__" not in path.parts
-        )
-
-        return value
-
-    # uuid
-    def generate_uuidv4(
-        self
-    ) -> str:
-        value: str = _uuid.uuid4()
-        return value
-
-    def generate_uuidv5(
-        self,
-        **kwargs: Any,
-    ) -> str:
-        if not kwargs:
-            return ""
-
-        value: str = _uuid.uuid5(
-            _uuid.NAMESPACE_DNS,
-            kwargs.get(
-                "key",
-                "key",
-            )
-        )
-        return value
-
-    def generate_uuidv7(
-        self,
-    ) -> str:
-        value: str = _uuid.uuid7()
-        return value
-
-    # SystemManager
-    def read_method_name(
-        self,
-        level: int = 2,
-    ) -> str:
-        value: str = f"{_sys._getframe(level).f_code.co_name}"
-        return value
-
-    def read_operating_system_name(
-        self,
-    ) -> str:
-        value: str = self._system_manager.operating_system_name
-        return value
-
-    def read_operating_system_architecture(
-        self,
-    ) -> str:
-        value: str = self._system_manager.operating_system_architecture
-        return value
-
-    def read_current_executing_script_filesystem_path(
-        self,
-    ) -> str:
-        value: str = (
-            self._system_manager
-                .current_executing_script_filesystem_path
-        )
-        return value
-
-    def read_current_executing_console_filesystem_path(
-        self,
-    ) -> str:
-        value: str = (
-            self._system_manager
-                .current_executing_console_filesystem_path
-        )
-        return value
-
-    def write_current_executing_console_filesystem_path(
-        self,
-        **kwargs: Any,
-    ) -> bool:
-        if not kwargs:
-            return False
-
-        self._system_manager.current_executing_console_filesystem_path = (
-            kwargs.get(
-                "filesystem_path",
-                "",
-            )
-        )
-
-        return True
-
-    def read_original_executing_console_filesystem_path(
-        self,
-    ) -> str:
-        value: str = (
-            self._system_manager
-                .original_executing_console_filesystem_path
-        )
-        return value
-
-    # FileIoManager
-    def read_file(
-        self,
-        **kwargs: Any,
-    ) -> str:
-        if not kwargs:
-            return ""
-
-        value: str = (
-            self._file_io_manager.read_file(
-                file_path=kwargs.get(
-                    "file_path",
-                    "",
-                )
-            )
-        )
-
-        return value
-
-    def write_file(
-        self,
-        **kwargs: Any,
-    ) -> bool:
-        if not kwargs:
-            return False
-
-        self._file_io_manager.write_file(
-            file_path=kwargs.get(
-                "file_path",
-                "",
-            ),
-            data=kwargs.get(
-                "data",
-                {},
-            ),
-        )
-
-        return True
-
-    # Logging
-    def setup_file_log_settings(
-        self,
-        **kwargs: Any,
-    ) -> bool:
-        if not kwargs:
-            return False
-
-        is_enabled = kwargs.get(
-            "is_enabled",
-            True,
-        )
-        is_verbose = kwargs.get(
-            "is_verbose",
-            True,
-        )
-
-        self._file_log_manager.options = _LogOptions(
-            is_enabled=is_enabled,
-            is_verbose_enabled=is_verbose
-        )
-
-        if is_enabled:
-            file_outputs = kwargs.get(
-                "file_outputs",
-                tuple(),
-            )
-
-            for file_output in file_outputs:
-                self._file_log_manager.add_file_output(
-                    file_output
-                )
-
-        return True
-
-    def setup_console_log_settings(
-        self,
-        **kwargs: Any,
-    ) -> bool:
-        if not kwargs:
-            return False
-
-        is_enabled = kwargs.get(
-            "is_enabled",
-            True,
-        )
-        is_verbose = kwargs.get(
-            "is_verbose",
-            True,
-        )
-
-        self._console_log_manager.options = _LogOptions(
-            is_enabled=is_enabled,
-            is_verbose_enabled=is_verbose
-        )
-
-        return True
-
-    def log_info_to_file(
-        self,
-        **kwargs: Any,
-    ) -> bool:
-        if not kwargs:
-            return False
-
-        self._file_log_manager.log_info(
-            message=kwargs.get(
-                "message",
-                "",
-            ),
-        )
-
-        return True
-
-    def log_warning_to_file(
-        self,
-        **kwargs: Any,
-    ) -> bool:
-        if not kwargs:
-            return False
-
-        self._file_log_manager.log_warning(
-            message=kwargs.get(
-                "message",
-                "",
-            ),
-        )
-
-        return True
-
-    def log_debug_to_file(
-        self,
-        **kwargs: Any,
-    ) -> bool:
-        if not kwargs:
-            return False
-
-        self._file_log_manager.log_info(
-            message=kwargs.get(
-                "message",
-                "",
-            ),
-        )
-
-        return True
-
-    def log_info_to_all(
-        self,
-        **kwargs: Any,
-    ) -> bool:
-        if not kwargs:
-            return False
-
-        self._log_manager.log_info(
-            message=kwargs.get(
-                "message",
-                "",
-            ),
-        )
-
-        return True
-
-    def log_cache_info_to_file(
-        self,
-        **kwargs: Any,
-    ) -> bool:
-        if not kwargs:
-            return False
-
-        self._file_log_manager.cache_log(
-            message=kwargs.get(
-                "message",
-                "",
-            ),
-            log_level=_logging.INFO
-        )
-
-        return True
-
-    def log_cache_debug_to_file(
-        self,
-        **kwargs: Any,
-    ) -> bool:
-        if not kwargs:
-            return False
-
-        self._file_log_manager.cache_log(
-            message=kwargs.get(
-                "message",
-                "",
-            ),
-            log_level=_logging.DEBUG
-        )
-
-        return True
-
-    def log_cache_warning_to_file(
-        self,
-        **kwargs: Any,
-    ) -> bool:
-        if not kwargs:
-            return False
-
-        self._file_log_manager.cache_log(
-            message=kwargs.get(
-                "message",
-                "",
-            ),
-            log_level=_logging.WARNING
-        )
-
-        return True
-
-    def log_shutdown(
-        self,
-    ) -> bool:
-        self._log_manager.shutdown()
-
-        return True
+__all__='ImportManager'
+a=D
+S=D
+b=D
+M=D
+K=D
+E=D
+I=D
+N=D
+c=D
+d=D
+T=D
+U=D
+V=D
+e=D
+f=D
+W=D
+g=D
+h=D
+X=D
+i=D
+j=D
+k=D
+O=D
+l=D
+J=D
+m=D
+n=D
+o=D
+p=D
+q=D
+r=D
+s=D
+t=D
+u=D
+AE=D
+v=D
+w=D
+x=D
+def y():global y;global a;global S;global b;global M;global K;global E;global I;global N;global c;global d;global T;global U;global V;global e;global W;global f;global g;global h;global X;global i;global k;global j;global O;global l;global J;global m;global n;global o;global p;global q;global r;global s;global t;global u;global AE;global v;global w;global x;import gc,logging as A,resource as B,shutil as C,sys,time,tracemalloc as F,uuid;from importlib import metadata as G;from importlib.util import module_from_spec as H,spec_from_file_location as L;from pathlib import Path;from zipfile import ZipFile as P;from.._vendor.pyyaml import yaml;from.._vendor.qlogicae_cor.v2.library import console_log_manager as Q,disk_cache_storage_manager as R,file_entity_filesystem_tree_setup_options as Y,file_io_manager as Z,file_log_manager as z,filesystem_compression_manager as A0,folder_entity_filesystem_tree_setup_options as A1,group_selection_manager as A2,log_manager as A3,log_options as A4,macros_manager as A5,object_merge_manager as A6,script_process as A7,script_process_manager as A8,singleton_manager as A9,system_manager as AA,target_cache_value as AB,text_encoding_manager as AC,time_manager as AD,time_zone_manager as AF,timestamp as AG,timestamp_manager as AH,value_cache_manager as AI;a=gc;S=sys;M=uuid;K=yaml;E=Path;b=time;I=C;c=P;N=A;d=G;T=B;W=F;U=AG.Timestamp;V=A4.LogOptions;e=A3.LogManager;k=H;f=AD.TimeManager;g=A5.MacrosManager;h=AA.SystemManager;t=L;j=AF.TimeZoneManager;o=z.FileLogManager;O=A9.SingletonManager;l=AH.TimestampManager;J=AB.TargetCacheValue;n=AI.ValueCacheManager;p=A6.ObjectMergeManager;r=A8.ScriptProcessManager;v=A0.FilesystemCompressionManager;w=Y.FileEntityFileSystemTreeSetupOptions;x=A1.FolderEntityFileSystemTreeSetupOptions;m=Q.ConsoleLogManager;u=R.DiskCacheStorageManager;X=A7.ScriptProcess;i=Z.FileIoManager;s=A2.GroupSelectionManager;q=AC.TextEncodingManager;y=lambda:D
+def z():global z;global O;from.._vendor.qlogicae_cor.v2.library import singleton_manager as A;O=A.SingletonManager;z=lambda:D
+class AF:
+	__slots__='_time_manager','_disk_cache_storage_manager','_value_cache_manager','_time_zone_manager','_timestamp_manager','_text_encoding_manager','_script_process_manager','_macros_manager','_object_merge_manager','_group_selection_manager','_filesystem_compression_manager','_system_manager','_file_io_manager','_file_log_manager','_console_log_manager','_log_manager'
+	def __init__(A):y();A._time_manager=A.read_singleton(f);A._disk_cache_storage_manager=A.read_singleton(u);A._value_cache_manager=A.read_singleton(n);A._time_zone_manager=A.read_singleton(j);A._timestamp_manager=A.read_singleton(l);A._text_encoding_manager=A.read_singleton(q);A._script_process_manager=A.read_singleton(r);A._macros_manager=A.read_singleton(g);A._object_merge_manager=A.read_singleton(p);A._group_selection_manager=A.read_singleton(s);A._filesystem_compression_manager=A.read_singleton(v);A._system_manager=A.read_singleton(h);A._file_io_manager=A.read_singleton(i);A._file_log_manager=A.read_singleton(o);A._console_log_manager=A.read_singleton(m);A._log_manager=A.read_singleton(e)
+	@classmethod
+	def read_singleton(B,value):
+		A=value
+		if not A:return{}
+		z();return O.get_singleton(A)
+	def convert_to_os_specific_path_value(D,**A):B=A.get(Z,C);return f"{E(B)}"
+	def compress(K,**D):
+		if not D:return A
+		F=D.get('source',C);H=D.get('destination',C);I=D.get('mode',C)
+		if not H or not I:return A
+		F=E(F);G=D.get('compression','deflated');G=K.read_zip_format_compression(value=G);L=D.get('compresslevel',6);M=D.get('allowZip64',B);N=D.get('strict_timestamps',B)
+		with c(H,mode=I,compression=G,compresslevel=L,allowZip64=M,strict_timestamps=N)as O:
+			for J in F.rglob('*'):O.write(J,arcname=J.relative_to(F))
+		return B
+	def read_metadata_version(C,target):
+		B='v0.0.0';A=target
+		if not A:return B
+		return d.version(A)or B
+	def snapshot_memory_usage(D):
+		B,C=W.get_traced_memory()if W.is_tracing()else(0,0);A=T.getrusage(T.RUSAGE_SELF).ru_maxrss
+		if S.platform!='darwin':A*=1024
+		return{'tracemalloc-current':{F:B},'tracemalloc-peak':{F:C},'process-peak-rss':{F:A},'gc-tracked-objects':{F:Y(a.get_objects())}}
+	def time_delay(E,**C):
+		if not C:return A
+		D=C.get(F,0)
+		if not D:return A
+		b.sleep(D);return B
+	def read_current_iso8601_date(A):B=A._time_manager.current_iso8601_date;return B
+	def read_current_nanosecond(A):B=A._time_manager.current_nanosecond;return B
+	def read_current_day(A):B=A._time_manager.current_day;return B
+	def read_current_month(A):B=A._time_manager.current_month;return B
+	def read_current_year(A):B=A._time_manager.current_year;return B
+	def is_key_found_via_disk_cache(D,**B):
+		if not B:return A
+		E=D._disk_cache_storage_manager.is_keys_found(key_path=B.get(H,C));return E
+	def is_item_expired_via_disk_cache(D,**B):
+		if not B:return A
+		E=D._disk_cache_storage_manager.is_item_expired(key_path=B.get(H,C));return E
+	def read_all_values_via_disk_cache(A):B=A._disk_cache_storage_manager.read_all_values();return B
+	def read_many_values_via_disk_cache(B,**A):
+		if not A:return{}
+		C=B._disk_cache_storage_manager.get_many_values(key_paths=A.get(AA,G()));return C
+	def write_many_values_via_disk_cache(D,**C):
+		if not C:return A
+		D._disk_cache_storage_manager.set_many_values(values=C.get(A0,{}));return B
+	def remove_many_values_via_disk_cache(B,**A):
+		if not A:return{}
+		C=B._disk_cache_storage_manager.remove_many_values(key_paths=A.get(AA,G()));return C
+	def open_via_disk_cache(A):A._disk_cache_storage_manager.open();return B
+	def close_via_disk_cache(A):A._disk_cache_storage_manager.close();return B
+	def clear_all_values_via_disk_cache(A):A._disk_cache_storage_manager.clear_all_values();return B
+	def remove_expired_values_via_disk_cache(A):B=A._disk_cache_storage_manager.remove_expired_values();return B
+	def sync_via_disk_cache(A):A._disk_cache_storage_manager.sync();return B
+	def reorganize_via_disk_cache(A):A._disk_cache_storage_manager.reorganize();return B
+	def display_all_items_via_disk_cache(A):A._disk_cache_storage_manager.display_all_items();return B
+	def write_database_path_via_disk_cache(D,value):
+		C=value
+		if not C:return A
+		D._disk_cache_storage_manager.database_path=C;return B
+	def read_any_value_via_value_cache(B,**A):
+		if not A:return{}
+		C=B._value_cache_manager.get_one_value(key_path=A.get(H,G()),output_type=J.ANY);return C
+	def read_defined_value_via_value_cache(B,**A):
+		if not A:return{}
+		C=B._value_cache_manager.get_one_value(key_path=A.get(H,G()),output_type=J.DEFINED);return C
+	def write_any_value_via_value_cache(D,**C):
+		if not C:return A
+		D._value_cache_manager.set_one_value(key_path=C.get(H,G()),value=C.get(F,{}),output_type=J.ANY);return B
+	def write_defined_value_via_value_cache(D,**C):
+		if not C:return A
+		D._value_cache_manager.set_one_value(key_path=C.get(H,G()),value=C.get(F,{}),output_type=J.DEFINED);return B
+	def write_file_path_value_via_value_cache(D,**C):
+		if not C:return A
+		D._value_cache_manager.set_one_value(key_path=C.get(H,G()),value=C.get(F,{}),output_type=J.FILE_PATH);return B
+	def write_folder_path_value_via_value_cache(D,**C):
+		if not C:return A
+		D._value_cache_manager.set_one_value(key_path=C.get(H,G()),value=C.get(F,{}),output_type=J.FOLDER_PATH);return B
+	def write_filesystem_path_value_via_value_cache(D,**C):
+		if not C:return A
+		D._value_cache_manager.set_one_value(key_path=C.get(H,G()),value=C.get(F,{}),output_type=J.FILESYSTEM_PATH);return B
+	def display_all_items_via_value_cache(A):A._value_cache_manager.display_all_items();return B
+	def remove_one_value_via_value_cache(D,**C):
+		if not C:return A
+		D._value_cache_manager.remove_one_value(key_path=C.get(H,G()));return B
+	def clear_all_values_via_value_cache(A):A._value_cache_manager.clear_all_values();return B
+	def read_selected_time_zone(A):B=A._time_zone_manager.selected_time_zone_type;return B
+	def write_selected_time_zone(D,**C):
+		if not C:return A
+		D._time_zone_manager.selected_time_zone_type=C.get(F,'local'),;return B
+	def generate_current_date_timestamp(A):B=A._timestamp_manager.generate_current_timestamp(U.ISO_DATE_STRING);return B
+	def generate_current_filesystem_timestamp(A):B=A._timestamp_manager.generate_current_timestamp(U.ISO_FILESYSTEM_STRING);return B
+	def read_selected_encoding(A):B=A._text_encoding_manager.selected_encoding;return B
+	def write_selected_encoding(D,**C):
+		if not C:return A
+		D._text_encoding_manager.selected_encoding=C.get(F,A1),;return B
+	def run_shell_command(D,**B):
+		if not B:return A
+		E=D._script_process_manager.execute_command(command=B.get(A2,C),script_process_type=X.SHELL);return E
+	def run_subprocess_command(D,**B):
+		if not B:return A
+		E=D._script_process_manager.execute_command(command=B.get(A2,C),script_process_type=X.SUBPROCESS);return E
+	def run_command(E,**A):
+		G='shell'
+		if not A:return{}
+		F=A.get('script_process',G);B=A.get(A2,C)
+		if not B:return{}
+		D={}
+		if F==G:D=E.run_shell_command(command=B)
+		elif F=='subprocess':D=E.run_subprocess_command(command=B)
+		return D
+	def macros_resolve_many(C,**B):
+		if not B:return A
+		D=C._macros_manager.resolve_many(B.get(A0,{}));return D
+	def macros_parse_many(D,**B):
+		if not B:return A
+		E=D._macros_manager.parse_many(values=B.get(A0,C),resolved=B.get('resolved',{}));return E
+	def macros_parse_filesystem(D,**B):
+		if not B:return A
+		E=D._macros_manager.parse_filesystem(filesystem_path=B.get(Z,C),workspace_macros=B.get('workspace_macros',{}));return E
+	def object_deep_merge(C,**B):
+		if not B:return A
+		D=C._object_merge_manager.deep_merge(left=B.get('left',{}),right=B.get('right',{}));return D
+	def object_deep_merge_fragments(C,**B):
+		if not B:return A
+		D=C._object_merge_manager.deep_merge_fragments(left=B.get('left',{}),right=B.get('right',{}));return D
+	def object_flatten_group(D,**B):
+		if not B:return A
+		return D._group_selection_manager.flatten_group(B.get('target',C),B.get('data',{}))or{}
+	def convert_yaml_string_to_object(B,**A):
+		if not A:return{}
+		return K.safe_load(A.get(F,C))or{}
+	def convert_yaml_object_to_string(E,**D):
+		if not D:return C
+		return K.safe_dump(D.get(F,C),sort_keys=D.get(A3,A),default_flow_style=D.get(A4,A),allow_unicode=D.get(A5,B),indent=D.get(A6,4))or C
+	def format_yaml_to_string(E,**D):
+		if not D:return A
+		return K.dump(D.get(F,C),sort_keys=D.get(A3,A),default_flow_style=D.get(A4,A),allow_unicode=D.get(A5,B),indent=D.get(A6,4))
+	def read_yaml_file(G,**B):
+		if not B:return A
+		D=E(B.get(Q,C))
+		with D.open(mode='r',encoding=B.get(AB,A1))as F:return K.safe_load(F)or{}
+	def write_yaml_file(I,**D):
+		if not D:return A
+		G=E(D.get(Q,C))
+		with G.open(mode='w',encoding=D.get(AB,A1))as H:K.safe_dump(D.get(F,C),H,sort_keys=D.get(A3,A),default_flow_style=D.get(A4,A),allow_unicode=D.get(A5,B),indent=D.get(A6,4))
+		return B
+	def read_python_file(I,**B):
+		if not B:return A
+		D=E(B.get(Q,C));H=D.stem;F=t(H,D);G=k(F);F.loader.exec_module(G);return G or{}
+	def read_child_folder_paths(D,**B):
+		if not B:return A
+		return E(B.get(F,C)).iterdir()
+	def read_file_suffix(D,**B):
+		if not B:return A
+		return E(B.get(F,C)).suffix
+	def read_filesystem_modification_timestamp(G,**B):
+		if not B:return A
+		D=E(B.get(F,C)).stat().st_mtime;return D
+	def read_filesystem_status_change_timestamp(G,**B):
+		if not B:return A
+		D=E(B.get(F,C)).stat().st_ctime;return D
+	def read_filesystem_access_timestamp(G,**B):
+		if not B:return A
+		D=E(B.get(F,C)).stat().st_atime;return D
+	def read_filesystem_via_pattern(I,**B):
+		if not B:return A
+		D=B.get(Z,C);F=B.get('pattern',C);H=G(E(D).glob(F));return H
+	def uncompress_zip(F,**B):
+		if not B:return A
+		D=B.get('archive_path',C);E=B.get('destination_path',C)
+		if not D or not E:return A
+		G=B.get('overwrite',A);H=F._filesystem_compression_manager.zip_extract(archive_path=D,destination_path=E,overwrite=G);return H
+	def read_zip_format_compression(E,**D):
+		if not D:return A
+		B=D.get(F,C)
+		if not B:return A
+		B=E._filesystem_compression_manager.get_zip_format_compression(B);return B
+	def is_filesystem_path_valid(G,**B):
+		if not B:return A
+		D=E(B.get(F,C)).exists();return D
+	def is_file_path_valid(G,**B):
+		if not B:return A
+		D=E(B.get(F,C)).is_file();return D
+	def is_folder_path_valid(G,**B):
+		if not B:return A
+		D=E(B.get(F,C)).is_dir();return D
+	def setup_filesystem_tree_paths(G,**D):
+		if not D:return A
+		C=D.get(A7,[])
+		if not C or Y(C)<1:return A
+		for F in C:
+			if not F:continue
+			E(F).mkdir(parents=B,exist_ok=B)
+		return B
+	def setup_filesystem_tree_path(G,**F):
+		if not F:return A
+		D=F.get(R,C)
+		if not D or not D:return A
+		D=E(D)
+		if D.exists():return A
+		D.mkdir(parents=B,exist_ok=B);return B
+	def setup_filesystem_tree(L,**I):
+		if not I:return A
+		J=I.get('root_path',C);K=I.get('tree',D)
+		if not J or not K:return A
+		G=E(J)
+		if not G.exists():raise P(f"filesystem path '{G}' is invalid")
+		G.mkdir(parents=B,exist_ok=B)
+		for F in K.entities or[]:
+			H=G/F.name
+			if A9(F,x):H.mkdir(parents=B,exist_ok=B);L.setup_filesystem_tree(root_path=H,tree=F)
+			elif A9(F,w):
+				if not H.exists():H.write_text(F.content,encoding=F.encoding)
+		return B
+	def move_filesystem_path(H,**G):
+		if not G:return A
+		F=G.get(A8,C);D=G.get(R,C)
+		if not F or not D:return A
+		F=E(F);D=E(D);D.parent.mkdir(parents=B,exist_ok=B);I.move(str(F),str(D));return B
+	def copy_filesystem_paths(J,**G):
+		if not G:return A
+		D=G.get(A8,C);H=G.get(A7,[])
+		if not D or Y(H)<1:return A
+		D=E(D).resolve()
+		for F in H:
+			if not F:continue
+			F=E(F).resolve()
+			if D==F:return A
+			if D.is_dir():I.copytree(D,F,dirs_exist_ok=B)
+			elif D.is_file():F.parent.mkdir(parents=B,exist_ok=B);I.copy2(D,F)
+		return B
+	def copy_filesystem_path(H,**G):
+		if not G:return A
+		D=G.get(A8,C);F=G.get(R,C)
+		if not D or not F:return A
+		D=E(D).resolve()
+		if not F:return A
+		F=E(F).resolve()
+		if D==F:return A
+		if D.is_dir():I.copytree(D,F,dirs_exist_ok=B)
+		elif D.is_file():F.parent.mkdir(parents=B,exist_ok=B);I.copy2(D,F)
+		return B
+	def clean_filesystem_paths(K,**H):
+		if not H:return A
+		G=H.get(A7,[])
+		if not G or Y(G)<1:return A
+		for D in G:
+			if not D:continue
+			D=E(D).resolve();J={E(C),E('/'),E.home()}
+			if D in J:raise P(f"folder path '{D}' is protected")
+			if not D.exists():return B
+			if not D.is_dir():raise P(f"file path '{D}' is not a folder")
+			for F in D.iterdir():
+				if F.is_file()or F.is_symlink():F.unlink()
+				elif F.is_dir():I.rmtree(F)
+		return B
+	def clean_filesystem_path(J,**G):
+		if not G:return A
+		D=G.get(R,C)
+		if not D:return A
+		D=E(D).resolve();H={E(C),E('/'),E.home()}
+		if D in H:raise P(f"folder path '{D}' is protected")
+		if not D.exists():return B
+		if not D.is_dir():raise P(f"file path '{D}' is not a folder")
+		for F in D.iterdir():
+			if F.is_file()or F.is_symlink():F.unlink()
+			elif F.is_dir():I.rmtree(F)
+		return B
+	def read_filesystem_entity_parents(H,**B):
+		if not B:return set()
+		A=set();D=B.get(R,C)
+		if not D:return A
+		F=E(D).parents
+		if not F:return A
+		for G in F:
+			if not G:continue
+			A.add(f"{G}")
+		return A
+	def rename_filesystem_entity(H,**D):
+		if not D:return A
+		F=D.get('old_path',C);G=D.get('new_path',C)
+		if not F or not G:return A
+		E(F).rename(D.get(G));return B
+	def read_python_filesystem_paths(H,**B):
+		if not B:return A
+		D=E(B.get('path',C));F=G(str(A)for A in D.rglob('*.py')if'__pycache__'not in A.parts);return F
+	def generate_uuidv4(B):A=M.uuid4();return A
+	def generate_uuidv5(E,**A):
+		B='key'
+		if not A:return C
+		D=M.uuid5(M.NAMESPACE_DNS,A.get(B,B));return D
+	def generate_uuidv7(B):A=M.uuid7();return A
+	def read_method_name(B,level=2):A=f"{S._getframe(level).f_code.co_name}";return A
+	def read_operating_system_name(A):B=A._system_manager.operating_system_name;return B
+	def read_operating_system_architecture(A):B=A._system_manager.operating_system_architecture;return B
+	def read_current_executing_script_filesystem_path(A):B=A._system_manager.current_executing_script_filesystem_path;return B
+	def read_current_executing_console_filesystem_path(A):B=A._system_manager.current_executing_console_filesystem_path;return B
+	def write_current_executing_console_filesystem_path(E,**D):
+		if not D:return A
+		E._system_manager.current_executing_console_filesystem_path=D.get(Z,C);return B
+	def read_original_executing_console_filesystem_path(A):B=A._system_manager.original_executing_console_filesystem_path;return B
+	def read_file(B,**A):
+		if not A:return C
+		D=B._file_io_manager.read_file(file_path=A.get(Q,C));return D
+	def write_file(E,**D):
+		if not D:return A
+		E._file_io_manager.write_file(file_path=D.get(Q,C),data=D.get('data',{}));return B
+	def setup_file_log_settings(D,**C):
+		if not C:return A
+		E=C.get(AC,B);F=C.get(AD,B);D._file_log_manager.options=V(is_enabled=E,is_verbose_enabled=F)
+		if E:
+			H=C.get('file_outputs',G())
+			for I in H:D._file_log_manager.add_file_output(I)
+		return B
+	def setup_console_log_settings(D,**C):
+		if not C:return A
+		E=C.get(AC,B);F=C.get(AD,B);D._console_log_manager.options=V(is_enabled=E,is_verbose_enabled=F);return B
+	def log_info_to_file(E,**D):
+		if not D:return A
+		E._file_log_manager.log_info(message=D.get(L,C));return B
+	def log_warning_to_file(E,**D):
+		if not D:return A
+		E._file_log_manager.log_warning(message=D.get(L,C));return B
+	def log_debug_to_file(E,**D):
+		if not D:return A
+		E._file_log_manager.log_info(message=D.get(L,C));return B
+	def log_info_to_all(E,**D):
+		if not D:return A
+		E._log_manager.log_info(message=D.get(L,C));return B
+	def log_cache_info_to_file(E,**D):
+		if not D:return A
+		E._file_log_manager.cache_log(message=D.get(L,C),log_level=N.INFO);return B
+	def log_cache_debug_to_file(E,**D):
+		if not D:return A
+		E._file_log_manager.cache_log(message=D.get(L,C),log_level=N.DEBUG);return B
+	def log_cache_warning_to_file(E,**D):
+		if not D:return A
+		E._file_log_manager.cache_log(message=D.get(L,C),log_level=N.WARNING);return B
+	def log_shutdown(A):A._log_manager.shutdown();return B

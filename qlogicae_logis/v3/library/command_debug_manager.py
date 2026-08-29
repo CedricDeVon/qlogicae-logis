@@ -1,175 +1,29 @@
 from __future__ import annotations
-
+K=tuple
+A=None
 from typing import Any
-
-from ..library.decorator_manager import DecoratorManager
-
-__all__ = (
-    "CommandDebugManager"
-)
-
-_TaskManager: Any = None
-_ImportManager: Any = None
-_DisplayManager: Any = None
-_DatabaseManager: Any = None
-_CommandStorageManager: Any = None
-_ValueCacheDatabaseManager: Any = None
-_PersistentCacheDatabasManager: Any = None
-_DecoratorManager = DecoratorManager
-
-
-def _handle_dynamic_imports() -> None:
-    global _handle_dynamic_imports
-    global _TaskManager
-    global _ImportManager
-    global _DisplayManager
-    global _DatabaseManager
-    global _CommandStorageManager
-    global _ValueCacheDatabaseManager
-    global _PersistentCacheDatabasManager
-
-
-    from ..library import (
-        command_storage_manager,
-        database_manager,
-        display_manager,
-        import_manager,
-        persistent_cache_database_manager,
-        task_manager,
-        value_cache_database_manager,
-    )
-
-    _TaskManager = (
-        task_manager
-            .TaskManager
-    )
-    _ImportManager = (
-        import_manager
-            .ImportManager
-    )
-    _DatabaseManager = (
-        database_manager.DatabaseManager
-    )
-    _DisplayManager = (
-        display_manager.DisplayManager
-    )
-    _ValueCacheDatabaseManager = (
-        value_cache_database_manager.ValueCacheDatabaseManager
-    )
-    _CommandStorageManager = (
-        command_storage_manager
-            .CommandStorageManager
-    )
-    _PersistentCacheDatabasManager = (
-        persistent_cache_database_manager.PersistentCacheDatabasManager
-    )
-
-    _handle_dynamic_imports = lambda: None
-
-class CommandDebugManager:
-    __slots__ = (
-        "_command_storage_manager",
-        "_task_manager",
-        "_import_manager",
-        "_database_manager",
-        "_decorator_manager",
-        "_value_cache_database_manager",
-        "_display_manager",
-        "_persistent_cache_database_manager",
-    )
-
-    def __init__(self) -> None:
-        _handle_dynamic_imports()
-
-        self._command_storage_manager = _ImportManager.read_singleton(
-            _CommandStorageManager
-        )
-
-        self._decorator_manager = (
-            _ImportManager.read_singleton(
-                _DecoratorManager
-            )
-        )
-        self._database_manager = (
-            _ImportManager.read_singleton(
-                _DatabaseManager
-            )
-        )
-        self._task_manager = (
-            _ImportManager.read_singleton(
-                _TaskManager
-            )
-        )
-        self._import_manager = (
-            _ImportManager.read_singleton(
-                _ImportManager
-            )
-        )
-        self._value_cache_database_manager = (
-            _ImportManager.read_singleton(
-                _ValueCacheDatabaseManager
-            )
-        )
-        self._display_manager = (
-            _ImportManager.read_singleton(
-                _DisplayManager
-            )
-        )
-        self._persistent_cache_database_manager = (
-            _ImportManager.read_singleton(
-                _PersistentCacheDatabasManager
-            )
-        )
-
-        self._command_storage_manager.add_commands((
-            (
-                self._command_storage_manager
-                    .read_command_name("debug_view_value_cache"),
-                self.run_command_debug_view_value_cache,
-            ),
-            (
-                self._command_storage_manager
-                    .read_command_name("debug_view_disk_cache"),
-                self.run_command_debug_view_disk_cache,
-            ),
-        ))
-
-    @_DecoratorManager.command_decorator
-    def run_command_debug_view_value_cache(self, **kwargs: Any) -> bool:
-        self._task_manager.run_task_full_debug_value_cache_setup()
-
-        key_paths = kwargs.get("key_paths", [])
-
-        if len(key_paths) < 1:
-            self._display_manager.display_tree_object(
-                value=self._value_cache_database_manager.read_any_value(
-                    tuple()
-                ),
-            )
-
-        else:
-            for target in key_paths:
-                if not target:
-                    continue
-
-                self._display_manager.display_tree_object(
-                    value=self._value_cache_database_manager.read_any_value(
-                        tuple(target.split("."))
-                    ),
-                )
-
-        return True
-
-    @_DecoratorManager.command_decorator
-    def run_command_debug_view_disk_cache(self, **kwargs: Any) -> bool:
-        self._task_manager.run_task_full_debug_disk_cache_setup()
-
-        value = self._persistent_cache_database_manager.read_all_values()
-
-        self._display_manager.display_tree_object(
-            value=value,
-        )
-
-        return True
-
-
+from..library.decorator_manager import DecoratorManager as L
+__all__='CommandDebugManager'
+C=A
+B=A
+D=A
+E=A
+F=A
+G=A
+H=A
+I=L
+def J():global J;global C;global B;global D;global E;global F;global G;global H;from..library import command_storage_manager as I,database_manager as K,display_manager as L,import_manager as M,persistent_cache_database_manager as N,task_manager as O,value_cache_database_manager as P;C=O.TaskManager;B=M.ImportManager;E=K.DatabaseManager;D=L.DisplayManager;G=P.ValueCacheDatabaseManager;F=I.CommandStorageManager;H=N.PersistentCacheDatabasManager;J=lambda:A
+class M:
+	__slots__='_command_storage_manager','_task_manager','_import_manager','_database_manager','_decorator_manager','_value_cache_database_manager','_display_manager','_persistent_cache_database_manager'
+	def __init__(A):J();A._command_storage_manager=B.read_singleton(F);A._decorator_manager=B.read_singleton(I);A._database_manager=B.read_singleton(E);A._task_manager=B.read_singleton(C);A._import_manager=B.read_singleton(B);A._value_cache_database_manager=B.read_singleton(G);A._display_manager=B.read_singleton(D);A._persistent_cache_database_manager=B.read_singleton(H);A._command_storage_manager.add_commands(((A._command_storage_manager.read_command_name('debug_view_value_cache'),A.run_command_debug_view_value_cache),(A._command_storage_manager.read_command_name('debug_view_disk_cache'),A.run_command_debug_view_disk_cache)))
+	@I.command_decorator
+	def run_command_debug_view_value_cache(self,**D):
+		A=self;A._task_manager.run_task_full_debug_value_cache_setup();B=D.get('key_paths',[])
+		if len(B)<1:A._display_manager.display_tree_object(value=A._value_cache_database_manager.read_any_value(K()))
+		else:
+			for C in B:
+				if not C:continue
+				A._display_manager.display_tree_object(value=A._value_cache_database_manager.read_any_value(K(C.split('.'))))
+		return True
+	@I.command_decorator
+	def run_command_debug_view_disk_cache(self,**C):A=self;A._task_manager.run_task_full_debug_disk_cache_setup();B=A._persistent_cache_database_manager.read_all_values();A._display_manager.display_tree_object(value=B);return True

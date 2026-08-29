@@ -35,15 +35,6 @@ workflow:
         - run:
             value: qlogicae-logis-test-lint
 
-        # - run:
-        #     value: qlogicae-logis-test-unit
-
-        # - run:
-        #     value: qlogicae-logis-test-benchmark-memory-usage-create
-
-        # - run:
-        #     value: qlogicae-logis-test-benchmark-memory-usage-view
-
         - run:
             value: qlogicae-logis-build
             
@@ -51,7 +42,13 @@ workflow:
             value: qlogicae-logis-test-pip-deployment
 
         - run:
-            value: qlogicae-logis-post-workflow
+            value: qlogicae-logis-archive
+
+        # - run:
+        #     value: qlogicae-logis-test-benchmark-memory-usage-create
+
+        # - run:
+        #     value: qlogicae-logis-test-benchmark-memory-usage-view
 
 
     qlogicae-logis-deploy:
@@ -60,13 +57,10 @@ workflow:
         
       scripts:
         - run:
-            value: qlogicae-logis-pre-workflow
+            value: hatch run deploy
 
         - run:
-            value: qlogicae-logis-pip-deployment  
-
-        - run:
-            value: qlogicae-logis-post-workflow
+            value: qlogicae-logis-git-deployment
 
 
     qlogicae-logis-test-lint:
@@ -147,18 +141,6 @@ workflow:
             value: hatch run test-pip-deployment
 
 
-    qlogicae-logis-pip-deployment:
-      filesystem-path:
-        value: ${{ qlogicae-logis-selection-project-filesystem-path }}
-        
-      scripts:
-        - run:
-            value: hatch run deploy
-
-        - run:
-            value: qlogicae-logis-git-deployment
-
-
     qlogicae-logis-git-deployment:
       filesystem-path:
         value: ${{ qlogicae-logis-selection-project-filesystem-path }}
@@ -184,6 +166,23 @@ workflow:
         value: ${{ root-filesystem-path }}
 
       scripts:
+        - run:
+            value: command-filesystem-clean-path
+          argument:
+            target_paths:
+              - qlogicae_logis/__pycache__
+              - qlogicae_logis/v3/__pycache__
+              - qlogicae_logis/v3/_vendor/__pycache__
+              - qlogicae_logis/v3/_vendor/pyyaml/__pycache__
+              - qlogicae_logis/v3/_vendor/pyyaml/yaml/__pycache__
+              - qlogicae_logis/v3/_vendor/qlogicae_cor/__pycache__
+              - qlogicae_logis/v3/_vendor/qlogicae_cor/v2/__pycache__
+              - qlogicae_logis/v3/_vendor/qlogicae_cor/v2/library/__pycache__
+              - qlogicae_logis/v3/console/__pycache__
+              - qlogicae_logis/v3/library/__pycache__
+              - qlogicae_logis/v3/project/__pycache__
+              - qlogicae_logis/v3/project/configuration/__pycache__
+
         - run:
             value: command-filesystem-clean-path
           argument:
@@ -240,7 +239,6 @@ workflow:
               - ${{ qlogicae-logis-selection-project-filesystem-path }}/${{ qlogicae-logis-output-test-unit-filesystem-path }}
               - ${{ qlogicae-logis-selection-project-filesystem-path }}/${{ qlogicae-logis-output-test-benchmark-filesystem-path }}                              
 
-
     qlogicae-logis-post-workflow:
       filesystem-path:
         value: ${{ qlogicae-logis-selection-project-filesystem-path }}
@@ -249,9 +247,6 @@ workflow:
         - run:
             value: qlogicae-logis-archive
 
-        - run:
-            value: qlogicae-logis-cleanup
-
 
     qlogicae-logis-archive:
       filesystem-path:
@@ -259,34 +254,11 @@ workflow:
         
       scripts:          
         - run:
-            value: command-filesystem-move         
+            value: command-filesystem-copy
           argument:
             source_path: output
-            target_path: ${{ qlogicae-logis-archive-filesystem-path }}
-
-
-    qlogicae-logis-cleanup:
-      filesystem-path:
-        value: ${{ qlogicae-logis-selection-project-filesystem-path }}
-
-      scripts:
-        - run:
-            value: command-filesystem-clean-path
-          argument:
             target_paths:
-              - dist
-              - output
-              - qlogicae_logis/v3/__pycache__
-              - qlogicae_logis/v3/_vendor/__pycache__
-              - qlogicae_logis/v3/_vendor/pyyaml/__pycache__
-              - qlogicae_logis/v3/_vendor/pyyaml/yaml/__pycache__
-              - qlogicae_logis/v3/_vendor/qlogicae_cor/__pycache__
-              - qlogicae_logis/v3/_vendor/qlogicae_cor/v2/__pycache__
-              - qlogicae_logis/v3/_vendor/qlogicae_cor/v2/library/__pycache__
-              - qlogicae_logis/v3/console/__pycache__
-              - qlogicae_logis/v3/library/__pycache__
-              - qlogicae_logis/v3/project/__pycache__
-              - qlogicae_logis/v3/project/configuration/__pycache__
+              - ${{ qlogicae-logis-archive-filesystem-path }}
 
 macros:
   static:  
@@ -314,7 +286,7 @@ macros:
           value: The project orchestration tool for QLogicae projects
 
         qlogicae-logis-current-version-number:
-          value: 3.0.2
+          value: 3.0.3
 
         qlogicae-logis-active-major-version-number:
           value: 3

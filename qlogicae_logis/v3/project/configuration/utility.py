@@ -1,25 +1,4 @@
+A='value'
 from typing import Any
-
-DATA: dict[str, dict[str, Any]]= {
-    "company-name": {
-        "value": "qlogicae"
-    },
-    "project-name": {
-        "value": "logis"
-    },
-    "active-major-version-label": {
-        "value": "v3"
-    },
-    "debug": {
-        "is-enabled": {
-            "value": True
-        }
-    },
-}
-
-METADATA: dict[str, dict[str, Any]] = {    
-
-}
-
-
-
+B={'company-name':{A:'qlogicae'},'project-name':{A:'logis'},'active-major-version-label':{A:'v3'},'debug':{'is-enabled':{A:True}}}
+C={}

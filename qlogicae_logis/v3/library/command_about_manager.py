@@ -1,146 +1,24 @@
 from __future__ import annotations
-
+B=None
 from typing import Any
-
-from ..library.decorator_manager import DecoratorManager
-
-__all__ = (
-    "CommandAboutManager"
-)
-
-_TaskManager: Any = None
-_ImportManager: Any = None
-_DisplayManager: Any = None
-_DatabaseManager: Any = None
-_DecoratorManager = DecoratorManager
-_CommandStorageManager: Any = None
-_ValueCacheDatabaseManager: Any = None
-_PersistentCacheDatabasManager: Any = None
-
-
-def _handle_dynamic_imports() -> None:
-    global _handle_dynamic_imports
-    global _TaskManager
-    global _ImportManager
-    global _DisplayManager
-    global _CommandStorageManager
-    global _DatabaseManager
-    global _ValueCacheDatabaseManager
-    global _PersistentCacheDatabasManager
-
-    from ..library import (
-        command_storage_manager,
-        database_manager,
-        display_manager,
-        import_manager,
-        persistent_cache_database_manager,
-        task_manager,
-        value_cache_database_manager,
-    )
-
-    _TaskManager = (
-        task_manager
-            .TaskManager
-    )
-    _DisplayManager = (
-        display_manager.DisplayManager
-    )
-    _DatabaseManager = (
-        database_manager.DatabaseManager
-    )
-    _ValueCacheDatabaseManager = (
-        value_cache_database_manager.ValueCacheDatabaseManager
-    )
-    _PersistentCacheDatabasManager = (
-        persistent_cache_database_manager.PersistentCacheDatabasManager
-    )
-    _ImportManager = (
-        import_manager
-            .ImportManager
-    )
-    _CommandStorageManager = (
-        command_storage_manager
-            .CommandStorageManager
-    )
-
-    _handle_dynamic_imports = lambda: None
-
-class CommandAboutManager:
-    __slots__ = (
-        "_command_storage_manager",
-        "_task_manager",
-        "_import_manager",
-        "_display_manager",
-        "_database_manager",
-        "_value_cache_database_manager",
-        "_persistent_cache_database_manager",
-    )
-
-    def __init__(self) -> None:
-        _handle_dynamic_imports()
-
-        self._command_storage_manager = (
-            _ImportManager.read_singleton(
-                _CommandStorageManager
-            )
-        )
-        self._display_manager = (
-            _ImportManager.read_singleton(
-                _DisplayManager
-            )
-        )
-        self._task_manager = (
-            _ImportManager.read_singleton(
-                _TaskManager
-            )
-        )
-        self._import_manager = (
-            _ImportManager.read_singleton(
-                _ImportManager
-            )
-        )
-        self._database_manager = (
-            _ImportManager.read_singleton(
-                _DatabaseManager
-            )
-        )
-        self._value_cache_database_manager = (
-            _ImportManager.read_singleton(
-                _ValueCacheDatabaseManager
-            )
-        )
-        self._persistent_cache_database_manager = (
-            _ImportManager.read_singleton(
-                _PersistentCacheDatabasManager
-            )
-        )
-        self._command_storage_manager.add_commands((
-            (
-                self._command_storage_manager
-                    .read_command_name("about_version"),
-                self.run_command_about_version,
-            ),
-        ))
-
-    @_DecoratorManager.command_decorator
-    def run_command_about_version(self, **kwargs: Any) -> bool:
-        company_project_name = (
-            self._database_manager
-                .read_company_project_name()
-        )
-        if not company_project_name:
-            return False
-
-        metadata_version = (
-            self._import_manager.read_metadata_version(
-                company_project_name
-            )
-        )
-        if not metadata_version:
-            return False
-
-        self._display_manager.display_highlight_value(
-            value=metadata_version
-        )
-
-        return True
+from..library.decorator_manager import DecoratorManager as J
+__all__='CommandAboutManager'
+C=B
+A=B
+D=B
+E=B
+K=J
+F=B
+G=B
+H=B
+def I():global I;global C;global A;global D;global F;global E;global G;global H;from..library import command_storage_manager as J,database_manager as K,display_manager as L,import_manager as M,persistent_cache_database_manager as N,task_manager as O,value_cache_database_manager as P;C=O.TaskManager;D=L.DisplayManager;E=K.DatabaseManager;G=P.ValueCacheDatabaseManager;H=N.PersistentCacheDatabasManager;A=M.ImportManager;F=J.CommandStorageManager;I=lambda:B
+class L:
+	__slots__='_command_storage_manager','_task_manager','_import_manager','_display_manager','_database_manager','_value_cache_database_manager','_persistent_cache_database_manager'
+	def __init__(B):I();B._command_storage_manager=A.read_singleton(F);B._display_manager=A.read_singleton(D);B._task_manager=A.read_singleton(C);B._import_manager=A.read_singleton(A);B._database_manager=A.read_singleton(E);B._value_cache_database_manager=A.read_singleton(G);B._persistent_cache_database_manager=A.read_singleton(H);B._command_storage_manager.add_commands(((B._command_storage_manager.read_command_name('about_version'),B.run_command_about_version),))
+	@K.command_decorator
+	def run_command_about_version(self,**E):
+		D=False;A=self;B=A._database_manager.read_company_project_name()
+		if not B:return D
+		C=A._import_manager.read_metadata_version(B)
+		if not C:return D
+		A._display_manager.display_highlight_value(value=C);return True

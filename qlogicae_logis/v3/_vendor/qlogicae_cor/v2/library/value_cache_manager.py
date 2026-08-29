@@ -1,187 +1,43 @@
 from __future__ import annotations
-
-__all__ = (
-    "ValueCacheManager",
-)
-
-from typing import TYPE_CHECKING, Any
-
-if TYPE_CHECKING:
-    from .target_cache_value import TargetCacheValue
-
-_FilesystemManager: Any = None
-_SingletonManager: Any = None
-_TargetCacheValue: Any = None
-_ValueCacheStorageManager: Any = None
-
-def _handle_dynamic_imports() -> None:
-    global _handle_dynamic_imports
-    global _FilesystemManager
-    global _SingletonManager
-    global _TargetCacheValue
-    global _ValueCacheStorageManager
-
-    from .filesystem_manager import FilesystemManager
-    from .singleton_manager import SingletonManager
-    from .target_cache_value import TargetCacheValue
-    from .value_cache_storage_manager import ValueCacheStorageManager
-
-    _FilesystemManager = (
-        FilesystemManager
-    )
-    _SingletonManager = (
-        SingletonManager
-    )
-    _TargetCacheValue = (
-        TargetCacheValue
-    )
-    _ValueCacheStorageManager = (
-        ValueCacheStorageManager
-    )
-
-    _handle_dynamic_imports = lambda: None
-
-
-class ValueCacheManager:
-    __slots__ = (
-        "_filesystem_manager",
-        "_value_cache_storage_manager",
-    )
-
-    def __init__(self) -> None:
-        _handle_dynamic_imports()
-
-        self._filesystem_manager = (
-            _SingletonManager.get_singleton(
-                _FilesystemManager
-            )            
-        )
-        self._value_cache_storage_manager = (
-            _SingletonManager.get_singleton(
-                _ValueCacheStorageManager
-            )
-        )
-
-    def is_key_found(
-        self,
-        key_path: tuple[str | int, ...],
-    ) -> bool:
-        result: bool = self._value_cache_storage_manager.is_key_found(key_path)
-
-        return result
-
-    def get_one_value(
-        self,
-        key_path: tuple[str | int, ...],
-        output_type: TargetCacheValue | None = None,
-    ) -> object:
-        if output_type is None:
-            output_type = _TargetCacheValue.DEFINED
-
-        value = self._value_cache_storage_manager.get_one_value(key_path)
-
-        self.throw_if_value_is_explicitly_invalid(
-            value,
-            output_type,
-        )
-
-        return value
-
-    def set_one_value(
-        self,
-        key_path: tuple[str | int, ...],
-        value: object,
-        output_type: TargetCacheValue | None = None,
-    ) -> bool:
-        if output_type is None:
-            output_type = _TargetCacheValue.DEFINED
-
-        self.throw_if_value_is_explicitly_invalid(
-            value,
-            output_type,
-        )
-
-        result: bool = self._value_cache_storage_manager.set_one_value(
-            key_path,
-            value,
-        )
-
-        return result
-
-    def remove_one_value(
-        self,
-        key_path: tuple[str | int, ...],
-    ) -> bool:
-        self.throw_if_key_not_found(key_path)
-
-        result: bool = self._value_cache_storage_manager.remove_one_value(key_path)
-
-        return result
-
-    def clear_all_values(self) -> bool:
-        result: bool = self._value_cache_storage_manager.clear_all_values()
-
-        return result
-
-    def display_all_items(self) -> bool:
-        result: bool = self._value_cache_storage_manager.display_all_items()
-
-        return result
-
-    def throw_if_value_is_explicitly_invalid(
-        self,
-        value: object,
-        output_type: TargetCacheValue | None = None,
-    ) -> bool:
-        if output_type is None:
-            output_type = _TargetCacheValue.DEFINED
-
-        match output_type:
-            case _TargetCacheValue.FILESYSTEM_PATH:
-                self._filesystem_manager.throw_if_filesystem_path_invalid(
-                    value,
-                )
-
-                return True
-
-            case _TargetCacheValue.FILE_PATH:
-                self._filesystem_manager.throw_if_file_path_invalid(
-                    value,
-                )
-
-                return True
-
-            case _TargetCacheValue.FOLDER_PATH:
-                self._filesystem_manager.throw_if_folder_path_invalid(
-                    value,
-                )
-
-                return True
-
-            case _TargetCacheValue.DEFINED:
-                self.throw_if_undefined(value)
-
-                return True
-
-            case _:
-                return False
-
-    def throw_if_key_not_found(
-        self,
-        key_path: tuple[str | int, ...],
-    ) -> bool:
-        if not self._value_cache_storage_manager.is_key_found(key_path):
-            raise KeyError(
-                f"key path '{key_path}' does not exist",
-            )
-
-        return False
-
-    def throw_if_undefined(
-        self,
-        value: Any,
-    ) -> bool:
-        if value is None:
-            raise KeyError("value is not defined")
-
-        return False
+H=KeyError
+G=False
+A=None
+__all__='ValueCacheManager',
+from typing import TYPE_CHECKING as I,Any
+if I:from.target_cache_value import TargetCacheValue
+D=A
+C=A
+B=A
+E=A
+def F():global F;global D;global C;global B;global E;from.filesystem_manager import FilesystemManager as G;from.singleton_manager import SingletonManager as H;from.target_cache_value import TargetCacheValue as I;from.value_cache_storage_manager import ValueCacheStorageManager as J;D=G;C=H;B=I;E=J;F=lambda:A
+class J:
+	__slots__='_filesystem_manager','_value_cache_storage_manager'
+	def __init__(A):F();A._filesystem_manager=C.get_singleton(D);A._value_cache_storage_manager=C.get_singleton(E)
+	def is_key_found(A,key_path):B=A._value_cache_storage_manager.is_key_found(key_path);return B
+	def get_one_value(D,key_path,output_type=A):
+		C=output_type
+		if C is A:C=B.DEFINED
+		E=D._value_cache_storage_manager.get_one_value(key_path);D.throw_if_value_is_explicitly_invalid(E,C);return E
+	def set_one_value(D,key_path,value,output_type=A):
+		E=value;C=output_type
+		if C is A:C=B.DEFINED
+		D.throw_if_value_is_explicitly_invalid(E,C);F=D._value_cache_storage_manager.set_one_value(key_path,E);return F
+	def remove_one_value(A,key_path):B=key_path;A.throw_if_key_not_found(B);C=A._value_cache_storage_manager.remove_one_value(B);return C
+	def clear_all_values(A):B=A._value_cache_storage_manager.clear_all_values();return B
+	def display_all_items(A):B=A._value_cache_storage_manager.display_all_items();return B
+	def throw_if_value_is_explicitly_invalid(C,value,output_type=A):
+		F=output_type;E=True;D=value
+		if F is A:F=B.DEFINED
+		match F:
+			case B.FILESYSTEM_PATH:C._filesystem_manager.throw_if_filesystem_path_invalid(D);return E
+			case B.FILE_PATH:C._filesystem_manager.throw_if_file_path_invalid(D);return E
+			case B.FOLDER_PATH:C._filesystem_manager.throw_if_folder_path_invalid(D);return E
+			case B.DEFINED:C.throw_if_undefined(D);return E
+			case _:return G
+	def throw_if_key_not_found(B,key_path):
+		A=key_path
+		if not B._value_cache_storage_manager.is_key_found(A):raise H(f"key path '{A}' does not exist")
+		return G
+	def throw_if_undefined(B,value):
+		if value is A:raise H('value is not defined')
+		return G

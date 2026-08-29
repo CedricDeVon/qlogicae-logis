@@ -1,61 +1,21 @@
-__all__ = (
-    "PlaceholderValueManager",
-)
-
-class PlaceholderValueManager:
-    __slots__ = (
-        "_none",
-        "_not_a_number",
-        "_redacted",
-        "_expunged",
-    )
-
-    def __init__(self) -> None:
-        self._none: str = "none"
-        self._not_a_number: str = "nan"
-        self._redacted: str = "redacted"
-        self._expunged: str = "expunged"
-
-    @property
-    def none(self) -> str:
-        return self._none
-
-    @none.setter
-    def none(
-        self,
-        value: str,
-    ) -> None:
-        self._none = value
-
-    @property
-    def not_a_number(self) -> str:
-        return self._not_a_number
-
-    @not_a_number.setter
-    def not_a_number(
-        self,
-        value: str,
-    ) -> None:
-        self._not_a_number = value
-
-    @property
-    def redacted(self) -> str:
-        return self._redacted
-
-    @redacted.setter
-    def redacted(
-        self,
-        value: str,
-    ) -> None:
-        self._redacted = value
-
-    @property
-    def expunged(self) -> str:
-        return self._expunged
-
-    @expunged.setter
-    def expunged(
-        self,
-        value: str,
-    ) -> None:
-        self._expunged = value
+A=property
+__all__='PlaceholderValueManager',
+class B:
+	__slots__='_none','_not_a_number','_redacted','_expunged'
+	def __init__(A):A._none='none';A._not_a_number='nan';A._redacted='redacted';A._expunged='expunged'
+	@A
+	def none(self):return self._none
+	@none.setter
+	def none(self,value):self._none=value
+	@A
+	def not_a_number(self):return self._not_a_number
+	@not_a_number.setter
+	def not_a_number(self,value):self._not_a_number=value
+	@A
+	def redacted(self):return self._redacted
+	@redacted.setter
+	def redacted(self,value):self._redacted=value
+	@A
+	def expunged(self):return self._expunged
+	@expunged.setter
+	def expunged(self,value):self._expunged=value

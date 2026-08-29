@@ -1,85 +1,35 @@
 from __future__ import annotations
-
-__all__ = (
-    "ObjectMergeManager",
-)
-
+H=list
+G=dict
+D=None
+B=isinstance
+__all__='ObjectMergeManager',
 from typing import Any
-
-_deepcopy: Any = None
-
-
-def _handle_dynamic_imports() -> None:
-    global _handle_dynamic_imports
-    global _deepcopy
-
-    from copy import deepcopy
-
-    _deepcopy = deepcopy
-
-    _handle_dynamic_imports = lambda: None
-
-
-class ObjectMergeManager:
-    def __init__(self) -> None:
-        _handle_dynamic_imports()
-
-    def deep_merge(
-        self,
-        left: object,
-        right: object,
-    ) -> object:
-        if left is None:
-            return _deepcopy(right)
-
-        if right is None:
-            return _deepcopy(left)
-
-        if isinstance(left, dict) and isinstance(right, dict):
-            result = _deepcopy(left)
-
-            for key, value in right.items():
-                if key in result:
-                    result[key] = self.deep_merge(
-                        result[key],
-                        value,
-                    )
-                else:
-                    result[key] = _deepcopy(value)
-
-            return result
-
-        if isinstance(left, list) and isinstance(right, list):
-            return _deepcopy(left) + _deepcopy(right)
-
-        return _deepcopy(right)
-
-    def deep_merge_fragments(
-        self,
-        left: object,
-        right: object,
-    ) -> object:
-        if left is None:
-            return _deepcopy(right)
-
-        if right is None:
-            return _deepcopy(left)
-
-        if isinstance(left, dict) and isinstance(right, dict):
-            result = _deepcopy(left)
-
-            for key, value in right.items():
-                if key in result:
-                    result[key] = self.deep_merge_fragments(
-                        result[key],
-                        value,
-                    )
-                else:
-                    result[key] = _deepcopy(value)
-
-            return result
-
-        if isinstance(left, list) and isinstance(right, list):
-            return _deepcopy(right)
-
-        return _deepcopy(right)
+A=D
+def C():global C;global A;from copy import deepcopy as B;A=B;C=lambda:D
+class E:
+	def __init__(A):C()
+	def deep_merge(K,left,right):
+		E=left;C=right
+		if E is D:return A(C)
+		if C is D:return A(E)
+		if B(E,G)and B(C,G):
+			F=A(E)
+			for(I,J)in C.items():
+				if I in F:F[I]=K.deep_merge(F[I],J)
+				else:F[I]=A(J)
+			return F
+		if B(E,H)and B(C,H):return A(E)+A(C)
+		return A(C)
+	def deep_merge_fragments(K,left,right):
+		E=left;C=right
+		if E is D:return A(C)
+		if C is D:return A(E)
+		if B(E,G)and B(C,G):
+			F=A(E)
+			for(I,J)in C.items():
+				if I in F:F[I]=K.deep_merge_fragments(F[I],J)
+				else:F[I]=A(J)
+			return F
+		if B(E,H)and B(C,H):return A(C)
+		return A(C)
