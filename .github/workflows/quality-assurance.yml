@@ -1,4 +1,7 @@
 name: Quality Assurance
+permissions:
+  contents: read
+  pull-requests: write
 
 on:
     push:
@@ -9,8 +12,8 @@ defaults:
         shell: bash
 
 jobs:
-    v2-e2e-testing-about-command:
-      name: V3
+    v3-e2e-testing-about-command:
+      name: V3 | About Command
       runs-on: ubuntu-latest
 
       defaults:
@@ -49,84 +52,84 @@ jobs:
             run: qlogicae-logis about version
 
 
-    # v2-type-check-testing:
-    #     name: V2 | Type Check
-    #     runs-on: ubuntu-latest
+    v3-type-check-testing:
+        name: V3 | Type Check
+        runs-on: ubuntu-latest
 
-    #     defaults:
-    #         run:
-    #             working-directory: .
+        defaults:
+            run:
+                working-directory: .
 
-    #     strategy:
-    #         fail-fast: false
-    #         matrix:
-    #             python-version:
-    #                 - "3.14"
-    #                 - "3.13"
-    #                 - "3.12"
+        strategy:
+            fail-fast: false
+            matrix:
+                python-version:
+                    - "3.14"
+                    - "3.13"
+                    - "3.12"
 
-    #     steps:
-    #         - uses: actions/checkout@v4
+        steps:
+            - uses: actions/checkout@v4
 
-    #         - name: Setup Python
-    #           uses: actions/setup-python@v5
-    #           with:
-    #             python-version: ${{ matrix.python-version }}
+            - name: Setup Python
+              uses: actions/setup-python@v5
+              with:
+                python-version: ${{ matrix.python-version }}
 
-    #         - name: Install Hatch
-    #           run: |
-    #             python -m pip install --upgrade pip
-    #             pip install hatch
+            - name: Install Hatch
+              run: |
+                python -m pip install --upgrade pip
+                pip install hatch
 
-    #         - name: Install Dev Dependencies
-    #           run: python3 -m pip install -r requirements.txt
+            - name: Install Dev Dependencies
+              run: python3 -m pip install -r requirements.txt
 
-    #         - name: Create Hatch environment
-    #           run: hatch env create
+            - name: Create Hatch environment
+              run: hatch env create
 
-    #         - name: Run Scripts        
-    #           run: hatch run github-workflow-test-type-check
+            - name: Run Scripts        
+              run: hatch run github-workflow-test-type-check
 
-    # v2-lint-testing:
-    #     name: V2 | Lint
-    #     runs-on: ubuntu-latest
+    v3-lint-testing:
+        name: V3 | Lint
+        runs-on: ubuntu-latest
 
-    #     defaults:
-    #         run:
-    #             working-directory: .
+        defaults:
+            run:
+                working-directory: .
 
-    #     strategy:
-    #         fail-fast: false
-    #         matrix:
-    #             python-version:
-    #                 - "3.14"
-    #                 - "3.13"
-    #                 - "3.12"
+        strategy:
+            fail-fast: false
+            matrix:
+                python-version:
+                    - "3.14"
+                    - "3.13"
+                    - "3.12"
 
-    #     steps:
-    #         - uses: actions/checkout@v4
+        steps:
+            - uses: actions/checkout@v4
 
-    #         - name: Setup Python
-    #           uses: actions/setup-python@v5
-    #           with:
-    #             python-version: ${{ matrix.python-version }}
+            - name: Setup Python
+              uses: actions/setup-python@v5
+              with:
+                python-version: ${{ matrix.python-version }}
 
-    #         - name: Install Hatch
-    #           run: |
-    #             python -m pip install --upgrade pip
-    #             pip install hatch
+            - name: Install Hatch
+              run: |
+                python -m pip install --upgrade pip
+                pip install hatch
 
-    #         - name: Install Dev Dependencies
-    #           run: python3 -m pip install -r requirements.txt
+            - name: Install Dev Dependencies
+              run: python3 -m pip install -r requirements.txt
 
-    #         - name: Create Hatch environment
-    #           run: hatch env create
+            - name: Create Hatch environment
+              run: hatch env create
 
-    #         - name: Run Scripts        
-    #           run: hatch run github-workflow-test-lint
+            - name: Run Scripts        
+              run: hatch run github-workflow-test-lint
 
-    # v2-unit-testing:
-    #     name: V2 | Unit Testing
+    # v3-unit-testing:
+    #     name: v3 | Unit Testing
     #     runs-on: ubuntu-latest
 
     #     defaults:
@@ -164,13 +167,13 @@ jobs:
     #           run: hatch run github-workflow-test-unit
 
 
-    # v2-e2e-testing-about-command:
-    #   name: V2 | End-To-End Testing | About Command
+    # v3-e2e-testing-about-command:
+    #   name: v3 | End-To-End Testing | About Command
     #   runs-on: ubuntu-latest
 
     #   defaults:
     #       run:
-    #           working-directory: ./test/qlogicae_logis/v2/e2e/github/workspace/about
+    #           working-directory: ./test/qlogicae_logis/v3/e2e/github/workspace/about
 
     #   strategy:
     #       fail-fast: false
@@ -207,13 +210,13 @@ jobs:
     #         run: qlogicae-logis about version
 
 
-    # v2-e2e-testing-workspace-command:
-    #   name: V2 | End-To-End Testing | Workspace Command
+    # v3-e2e-testing-workspace-command:
+    #   name: v3 | End-To-End Testing | Workspace Command
     #   runs-on: ubuntu-latest
 
     #   defaults:
     #       run:
-    #           working-directory: ./test/qlogicae_logis/v2/e2e/github/workspace/workspace
+    #           working-directory: ./test/qlogicae_logis/v3/e2e/github/workspace/workspace
 
     #   strategy:
     #       fail-fast: false
@@ -256,13 +259,13 @@ jobs:
     #         run: qlogicae-logis workspace import 
 
 
-    # v2-e2e-testing-cache-command:
-    #   name: V2 | End-To-End Testing | Debug Command
+    # v3-e2e-testing-cache-command:
+    #   name: v3 | End-To-End Testing | Debug Command
     #   runs-on: ubuntu-latest
 
     #   defaults:
     #       run:
-    #           working-directory: ./test/qlogicae_logis/v2/e2e/github/workspace/debug
+    #           working-directory: ./test/qlogicae_logis/v3/e2e/github/workspace/debug
 
     #   strategy:
     #       fail-fast: false
@@ -299,13 +302,13 @@ jobs:
     #         run: qlogicae-logis debug view value-cache 
 
 
-    # v2-e2e-testing-filesystem-command:
-    #   name: V2 | End-To-End Testing | Filesystem Command
+    # v3-e2e-testing-filesystem-command:
+    #   name: v3 | End-To-End Testing | Filesystem Command
     #   runs-on: ubuntu-latest
 
     #   defaults:
     #       run:
-    #           working-directory: ./test/qlogicae_logis/v2/e2e/github/workspace/filesystem
+    #           working-directory: ./test/qlogicae_logis/v3/e2e/github/workspace/filesystem
 
     #   strategy:
     #       fail-fast: false
@@ -345,13 +348,13 @@ jobs:
     #         run: qlogicae-logis filesystem clean list excluded
 
 
-    # v2-e2e-testing-workflow-command:
-    #   name: V2 | End-To-End Testing | Workflow Command
+    # v3-e2e-testing-workflow-command:
+    #   name: v3 | End-To-End Testing | Workflow Command
     #   runs-on: ubuntu-latest
 
     #   defaults:
     #       run:
-    #           working-directory: ./test/qlogicae_logis/v2/e2e/github/workspace/workflow
+    #           working-directory: ./test/qlogicae_logis/v3/e2e/github/workspace/workflow
 
     #   strategy:
     #       fail-fast: false
@@ -388,13 +391,13 @@ jobs:
     #         run: qlogicae-logis workflow list selections 
 
 
-    # v2-e2e-testing-template-command:
-    #   name: V2 | End-To-End Testing | Template Command
+    # v3-e2e-testing-template-command:
+    #   name: v3 | End-To-End Testing | Template Command
     #   runs-on: ubuntu-latest
 
     #   defaults:
     #       run:
-    #           working-directory: ./test/qlogicae_logis/v2/e2e/github/workspace/template
+    #           working-directory: ./test/qlogicae_logis/v3/e2e/github/workspace/template
 
     #   strategy:
     #       fail-fast: false
