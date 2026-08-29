@@ -1,31 +1,75 @@
-_A=None
-__all__=['Mark','YAMLError','MarkedYAMLError']
+
+__all__ = ['Mark', 'YAMLError', 'MarkedYAMLError']
+
 class Mark:
-	def __init__(A,name,index,line,column,buffer,pointer):A.name=name;A.index=index;A.line=line;A.column=column;A.buffer=buffer;A.pointer=pointer
-	def get_snippet(A,indent=4,max_length=75):
-		I=' ... ';H='\x00\r\n\x85\u2028\u2029';F=max_length;E=indent
-		if A.buffer is _A:return
-		D='';B=A.pointer
-		while B>0 and A.buffer[B-1]not in H:
-			B-=1
-			if A.pointer-B>F/2-1:D=I;B+=5;break
-		G='';C=A.pointer
-		while C<len(A.buffer)and A.buffer[C]not in H:
-			C+=1
-			if C-A.pointer>F/2-1:G=I;C-=5;break
-		J=A.buffer[B:C];return' '*E+D+J+G+'\n'+' '*(E+A.pointer-B+len(D))+'^'
-	def __str__(A):
-		B=A.get_snippet();C='  in "%s", line %d, column %d'%(A.name,A.line+1,A.column+1)
-		if B is not _A:C+=':\n'+B
-		return C
-class YAMLError(Exception):0
+
+    def __init__(self, name, index, line, column, buffer, pointer):
+        self.name = name
+        self.index = index
+        self.line = line
+        self.column = column
+        self.buffer = buffer
+        self.pointer = pointer
+
+    def get_snippet(self, indent=4, max_length=75):
+        if self.buffer is None:
+            return None
+        head = ''
+        start = self.pointer
+        while start > 0 and self.buffer[start-1] not in '\0\r\n\x85\u2028\u2029':
+            start -= 1
+            if self.pointer-start > max_length/2-1:
+                head = ' ... '
+                start += 5
+                break
+        tail = ''
+        end = self.pointer
+        while end < len(self.buffer) and self.buffer[end] not in '\0\r\n\x85\u2028\u2029':
+            end += 1
+            if end-self.pointer > max_length/2-1:
+                tail = ' ... '
+                end -= 5
+                break
+        snippet = self.buffer[start:end]
+        return ' '*indent + head + snippet + tail + '\n'  \
+                + ' '*(indent+self.pointer-start+len(head)) + '^'
+
+    def __str__(self):
+        snippet = self.get_snippet()
+        where = "  in \"%s\", line %d, column %d"   \
+                % (self.name, self.line+1, self.column+1)
+        if snippet is not None:
+            where += ":\n"+snippet
+        return where
+
+class YAMLError(Exception):
+    pass
+
 class MarkedYAMLError(YAMLError):
-	def __init__(A,context=_A,context_mark=_A,problem=_A,problem_mark=_A,note=_A):A.context=context;A.context_mark=context_mark;A.problem=problem;A.problem_mark=problem_mark;A.note=note
-	def __str__(A):
-		B=[]
-		if A.context is not _A:B.append(A.context)
-		if A.context_mark is not _A and(A.problem is _A or A.problem_mark is _A or A.context_mark.name!=A.problem_mark.name or A.context_mark.line!=A.problem_mark.line or A.context_mark.column!=A.problem_mark.column):B.append(str(A.context_mark))
-		if A.problem is not _A:B.append(A.problem)
-		if A.problem_mark is not _A:B.append(str(A.problem_mark))
-		if A.note is not _A:B.append(A.note)
-		return'\n'.join(B)
+
+    def __init__(self, context=None, context_mark=None,
+            problem=None, problem_mark=None, note=None):
+        self.context = context
+        self.context_mark = context_mark
+        self.problem = problem
+        self.problem_mark = problem_mark
+        self.note = note
+
+    def __str__(self):
+        lines = []
+        if self.context is not None:
+            lines.append(self.context)
+        if self.context_mark is not None  \
+            and (self.problem is None or self.problem_mark is None
+                    or self.context_mark.name != self.problem_mark.name
+                    or self.context_mark.line != self.problem_mark.line
+                    or self.context_mark.column != self.problem_mark.column):
+            lines.append(str(self.context_mark))
+        if self.problem is not None:
+            lines.append(self.problem)
+        if self.problem_mark is not None:
+            lines.append(str(self.problem_mark))
+        if self.note is not None:
+            lines.append(self.note)
+        return '\n'.join(lines)
+

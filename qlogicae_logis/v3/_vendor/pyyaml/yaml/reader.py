@@ -1,66 +1,187 @@
-_A=None
-__all__=['Reader','ReaderError']
-import codecs,re
-from.error import Mark,YAMLError
+# This module contains abstractions for the input stream. You don't have to
+# looks further, there are no pretty code.
+#
+# We define two classes here.
+#
+#   Mark(source, line, column)
+# It's just a record and its only use is producing nice error messages.
+# Parser does not use it for any other purposes.
+#
+#   Reader(source, data)
+# Reader determines the encoding of `data` and converts it to unicode.
+# Reader provides the following methods and attributes:
+#   reader.peek(length=1) - return the next `length` characters
+#   reader.forward(length=1) - move the current position to `length` characters.
+#   reader.index - the number of the current character.
+#   reader.line, stream.column - the line and the column of the current character.
+
+__all__ = ['Reader', 'ReaderError']
+
+import codecs
+import re
+
+from .error import Mark, YAMLError
+
+
 class ReaderError(YAMLError):
-	def __init__(A,name,position,character,encoding,reason):A.name=name;A.character=character;A.position=position;A.encoding=encoding;A.reason=reason
-	def __str__(A):
-		if isinstance(A.character,bytes):return'\'%s\' codec can\'t decode byte #x%02x: %s\n  in "%s", position %d'%(A.encoding,ord(A.character),A.reason,A.name,A.position)
-		else:return'unacceptable character #x%04x: %s\n  in "%s", position %d'%(A.character,A.reason,A.name,A.position)
+
+    def __init__(self, name, position, character, encoding, reason):
+        self.name = name
+        self.character = character
+        self.position = position
+        self.encoding = encoding
+        self.reason = reason
+
+    def __str__(self):
+        if isinstance(self.character, bytes):
+            return "'%s' codec can't decode byte #x%02x: %s\n"  \
+                    "  in \"%s\", position %d"    \
+                    % (self.encoding, ord(self.character), self.reason,
+                            self.name, self.position)
+        else:
+            return "unacceptable character #x%04x: %s\n"    \
+                    "  in \"%s\", position %d"    \
+                    % (self.character, self.reason,
+                            self.name, self.position)
+
 class Reader:
-	def __init__(A,stream):
-		B=stream;A.name=_A;A.stream=_A;A.stream_pointer=0;A.eof=True;A.buffer='';A.pointer=0;A.raw_buffer=_A;A.raw_decode=_A;A.encoding=_A;A.index=0;A.line=0;A.column=0
-		if isinstance(B,str):A.name='<unicode string>';A.check_printable(B);A.buffer=B+'\x00'
-		elif isinstance(B,bytes):A.name='<byte string>';A.raw_buffer=B;A.determine_encoding()
-		else:A.stream=B;A.name=getattr(B,'name','<file>');A.eof=False;A.raw_buffer=_A;A.determine_encoding()
-	def peek(A,index=0):
-		B=index
-		try:return A.buffer[A.pointer+B]
-		except IndexError:A.update(B+1);return A.buffer[A.pointer+B]
-	def prefix(A,length=1):
-		B=length
-		if A.pointer+B>=len(A.buffer):A.update(B)
-		return A.buffer[A.pointer:A.pointer+B]
-	def forward(A,length=1):
-		B=length
-		if A.pointer+B+1>=len(A.buffer):A.update(B+1)
-		while B:
-			C=A.buffer[A.pointer];A.pointer+=1;A.index+=1
-			if C in'\n\x85\u2028\u2029'or C=='\r'and A.buffer[A.pointer]!='\n':A.line+=1;A.column=0
-			elif C!='\ufeff':A.column+=1
-			B-=1
-	def get_mark(A):
-		if A.stream is _A:return Mark(A.name,A.index,A.line,A.column,A.buffer,A.pointer)
-		else:return Mark(A.name,A.index,A.line,A.column,_A,_A)
-	def determine_encoding(A):
-		while not A.eof and(A.raw_buffer is _A or len(A.raw_buffer)<2):A.update_raw()
-		if isinstance(A.raw_buffer,bytes):
-			if A.raw_buffer.startswith(codecs.BOM_UTF16_LE):A.raw_decode=codecs.utf_16_le_decode;A.encoding='utf-16-le'
-			elif A.raw_buffer.startswith(codecs.BOM_UTF16_BE):A.raw_decode=codecs.utf_16_be_decode;A.encoding='utf-16-be'
-			else:A.raw_decode=codecs.utf_8_decode;A.encoding='utf-8'
-		A.update(1)
-	NON_PRINTABLE=re.compile('[^\t\n\r -~\x85\xa0-\ud7ff\ue000-�𐀀-\U0010ffff]')
-	def check_printable(A,data):
-		B=A.NON_PRINTABLE.search(data)
-		if B:C=B.group();D=A.index+(len(A.buffer)-A.pointer)+B.start();raise ReaderError(A.name,D,ord(C),'unicode','special characters are not allowed')
-	def update(A,length):
-		if A.raw_buffer is _A:return
-		A.buffer=A.buffer[A.pointer:];A.pointer=0
-		while len(A.buffer)<length:
-			if not A.eof:A.update_raw()
-			if A.raw_decode is not _A:
-				try:C,D=A.raw_decode(A.raw_buffer,'strict',A.eof)
-				except UnicodeDecodeError as B:
-					F=A.raw_buffer[B.start]
-					if A.stream is not _A:E=A.stream_pointer-len(A.raw_buffer)+B.start
-					else:E=B.start
-					raise ReaderError(A.name,E,F,B.encoding,B.reason)
-			else:C=A.raw_buffer;D=len(C)
-			A.check_printable(C);A.buffer+=C;A.raw_buffer=A.raw_buffer[D:]
-			if A.eof:A.buffer+='\x00';A.raw_buffer=_A;break
-	def update_raw(A,size=4096):
-		B=A.stream.read(size)
-		if A.raw_buffer is _A:A.raw_buffer=B
-		else:A.raw_buffer+=B
-		A.stream_pointer+=len(B)
-		if not B:A.eof=True
+    # Reader:
+    # - determines the data encoding and converts it to a unicode string,
+    # - checks if characters are in allowed range,
+    # - adds '\0' to the end.
+
+    # Reader accepts
+    #  - a `bytes` object,
+    #  - a `str` object,
+    #  - a file-like object with its `read` method returning `str`,
+    #  - a file-like object with its `read` method returning `unicode`.
+
+    # Yeah, it's ugly and slow.
+
+    def __init__(self, stream):
+        self.name = None
+        self.stream = None
+        self.stream_pointer = 0
+        self.eof = True
+        self.buffer = ''
+        self.pointer = 0
+        self.raw_buffer = None
+        self.raw_decode = None
+        self.encoding = None
+        self.index = 0
+        self.line = 0
+        self.column = 0
+        if isinstance(stream, str):
+            self.name = "<unicode string>"
+            self.check_printable(stream)
+            self.buffer = stream+'\0'
+        elif isinstance(stream, bytes):
+            self.name = "<byte string>"
+            self.raw_buffer = stream
+            self.determine_encoding()
+        else:
+            self.stream = stream
+            self.name = getattr(stream, 'name', "<file>")
+            self.eof = False
+            self.raw_buffer = None
+            self.determine_encoding()
+
+    def peek(self, index=0):
+        try:
+            return self.buffer[self.pointer+index]
+        except IndexError:
+            self.update(index+1)
+            return self.buffer[self.pointer+index]
+
+    def prefix(self, length=1):
+        if self.pointer+length >= len(self.buffer):
+            self.update(length)
+        return self.buffer[self.pointer:self.pointer+length]
+
+    def forward(self, length=1):
+        if self.pointer+length+1 >= len(self.buffer):
+            self.update(length+1)
+        while length:
+            ch = self.buffer[self.pointer]
+            self.pointer += 1
+            self.index += 1
+            if ch in '\n\x85\u2028\u2029'  \
+                    or (ch == '\r' and self.buffer[self.pointer] != '\n'):
+                self.line += 1
+                self.column = 0
+            elif ch != '\uFEFF':
+                self.column += 1
+            length -= 1
+
+    def get_mark(self):
+        if self.stream is None:
+            return Mark(self.name, self.index, self.line, self.column,
+                    self.buffer, self.pointer)
+        else:
+            return Mark(self.name, self.index, self.line, self.column,
+                    None, None)
+
+    def determine_encoding(self):
+        while not self.eof and (self.raw_buffer is None or len(self.raw_buffer) < 2):
+            self.update_raw()
+        if isinstance(self.raw_buffer, bytes):
+            if self.raw_buffer.startswith(codecs.BOM_UTF16_LE):
+                self.raw_decode = codecs.utf_16_le_decode
+                self.encoding = 'utf-16-le'
+            elif self.raw_buffer.startswith(codecs.BOM_UTF16_BE):
+                self.raw_decode = codecs.utf_16_be_decode
+                self.encoding = 'utf-16-be'
+            else:
+                self.raw_decode = codecs.utf_8_decode
+                self.encoding = 'utf-8'
+        self.update(1)
+
+    NON_PRINTABLE = re.compile('[^\x09\x0A\x0D\x20-\x7E\x85\xA0-\uD7FF\uE000-\uFFFD\U00010000-\U0010ffff]')
+    def check_printable(self, data):
+        match = self.NON_PRINTABLE.search(data)
+        if match:
+            character = match.group()
+            position = self.index+(len(self.buffer)-self.pointer)+match.start()
+            raise ReaderError(self.name, position, ord(character),
+                    'unicode', "special characters are not allowed")
+
+    def update(self, length):
+        if self.raw_buffer is None:
+            return
+        self.buffer = self.buffer[self.pointer:]
+        self.pointer = 0
+        while len(self.buffer) < length:
+            if not self.eof:
+                self.update_raw()
+            if self.raw_decode is not None:
+                try:
+                    data, converted = self.raw_decode(self.raw_buffer,
+                            'strict', self.eof)
+                except UnicodeDecodeError as exc:
+                    character = self.raw_buffer[exc.start]
+                    if self.stream is not None:
+                        position = self.stream_pointer-len(self.raw_buffer)+exc.start
+                    else:
+                        position = exc.start
+                    raise ReaderError(self.name, position, character,
+                            exc.encoding, exc.reason)
+            else:
+                data = self.raw_buffer
+                converted = len(data)
+            self.check_printable(data)
+            self.buffer += data
+            self.raw_buffer = self.raw_buffer[converted:]
+            if self.eof:
+                self.buffer += '\0'
+                self.raw_buffer = None
+                break
+
+    def update_raw(self, size=4096):
+        data = self.stream.read(size)
+        if self.raw_buffer is None:
+            self.raw_buffer = data
+        else:
+            self.raw_buffer += data
+        self.stream_pointer += len(data)
+        if not data:
+            self.eof = True

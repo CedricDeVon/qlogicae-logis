@@ -1,30 +1,175 @@
 from __future__ import annotations
-_A=None
-__all__='ConsoleLogManager',
-from typing import TYPE_CHECKING,Any
-if TYPE_CHECKING:from.log_options import LogOptions
-_logging=_A
-_LogFormat=_A
-_LogOptions=_A
-_LogOptionsManager=_A
-_SingletonManager=_A
-def _handle_dynamic_imports():global _handle_dynamic_imports;global _logging;global _LogFormat;global _LogOptions;global _LogOptionsManager;global _SingletonManager;import logging as A;from.log_format import LogFormat as B;from.log_options import LogOptions as C;from.log_options_manager import LogOptionsManager as D;from.singleton_manager import SingletonManager as E;_logging=A;_LogFormat=B;_LogOptions=C;_LogOptionsManager=D;_SingletonManager=E;_handle_dynamic_imports=lambda:_A
+
+__all__ = (
+    "ConsoleLogManager",
+)
+
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from .log_options import LogOptions
+
+_logging: Any = None
+_LogFormat: Any = None
+_LogOptions: Any = None
+_LogOptionsManager: Any = None
+_SingletonManager: Any = None
+
+
+def _handle_dynamic_imports() -> None:
+    global _handle_dynamic_imports
+    global _logging
+    global _LogFormat
+    global _LogOptions
+    global _LogOptionsManager
+    global _SingletonManager
+
+    import logging
+
+    from .log_format import LogFormat
+    from .log_options import LogOptions
+    from .log_options_manager import LogOptionsManager
+    from .singleton_manager import SingletonManager
+
+    _logging = logging
+    _LogFormat = LogFormat
+    _LogOptions = LogOptions
+    _LogOptionsManager = (
+        LogOptionsManager
+    )
+    _SingletonManager = (
+        SingletonManager
+    )
+
+    _handle_dynamic_imports = lambda: None
+
+
 class ConsoleLogManager:
-	__slots__='_logger','_options','_log_options_manager'
-	def __init__(A):_handle_dynamic_imports();A._log_options_manager=_SingletonManager.get_singleton(_LogOptionsManager);A._logger=_logging.getLogger('console-logger');A._logger.setLevel(_logging.DEBUG);A._logger.propagate=False;A._logger.handlers.clear();B=_logging.StreamHandler();B.setFormatter(_LogFormat());A._logger.addHandler(B);A._options=_LogOptions()
-	@property
-	def options(self):return self._options
-	@options.setter
-	def options(self,value):self._options=value
-	def log(C,message,options):
-		B=options;A=message
-		if not B.is_enabled:return''
-		A=str(A).strip()
-		if B.is_verbose_enabled:C._logger.log(B.log_level,A,stacklevel=B.stack_level)
-		else:print(A)
-		return A
-	def log_debug(A,message):return A.log(message,A._log_options_manager.generate_modified_defaults(A._options,log_level=_logging.DEBUG))
-	def log_info(A,message):return A.log(message,A._log_options_manager.generate_modified_defaults(A._options,log_level=_logging.INFO))
-	def log_warning(A,message):return A.log(message,A._log_options_manager.generate_modified_defaults(A._options,log_level=_logging.WARNING))
-	def log_error(A,message):return A.log(message,A._log_options_manager.generate_modified_defaults(A._options,log_level=_logging.ERROR))
-	def log_critical(A,message):return A.log(message,A._log_options_manager.generate_modified_defaults(A._options,log_level=_logging.CRITICAL))
+    __slots__ = (
+        "_logger",
+        "_options",
+        "_log_options_manager",
+    )
+
+    def __init__(self) -> None:
+        _handle_dynamic_imports()
+
+        self._log_options_manager = _SingletonManager.get_singleton(
+            _LogOptionsManager
+        )
+
+        self._logger = _logging.getLogger(
+            "console-logger",
+        )
+
+        self._logger.setLevel(
+            _logging.DEBUG,
+        )
+
+        self._logger.propagate = False
+
+        self._logger.handlers.clear()
+
+        handler = _logging.StreamHandler()
+
+        handler.setFormatter(
+            _LogFormat(),
+        )
+
+        self._logger.addHandler(
+            handler,
+        )
+
+        self._options: LogOptions = _LogOptions()
+
+    @property
+    def options(self) -> LogOptions:
+        return self._options
+
+    @options.setter
+    def options(
+        self,
+        value: LogOptions,
+    ) -> None:
+        self._options = value
+
+    def log(
+        self,
+        message: str,
+        options: LogOptions,
+    ) -> str:
+        if not options.is_enabled:
+            return ""
+
+        message = str(message).strip()
+
+        if options.is_verbose_enabled:
+            self._logger.log(
+                options.log_level,
+                message,
+                stacklevel=options.stack_level,
+            )
+        else:
+            print(message)
+
+        return message
+
+    def log_debug(
+        self,
+        message: str,
+    ) -> str:
+        return self.log(
+            message,
+            self._log_options_manager.generate_modified_defaults(
+                self._options,
+                log_level=_logging.DEBUG,
+            ),
+        )
+
+    def log_info(
+        self,
+        message: str,
+    ) -> str:
+        return self.log(
+            message,
+            self._log_options_manager.generate_modified_defaults(
+                self._options,
+                log_level=_logging.INFO,
+            ),
+        )
+
+    def log_warning(
+        self,
+        message: str,
+    ) -> str:
+        return self.log(
+            message,
+            self._log_options_manager.generate_modified_defaults(
+                self._options,
+                log_level=_logging.WARNING,
+            ),
+        )
+
+    def log_error(
+        self,
+        message: str,
+    ) -> str:
+        return self.log(
+            message,
+            self._log_options_manager.generate_modified_defaults(
+                self._options,
+                log_level=_logging.ERROR,
+            ),
+        )
+
+    def log_critical(
+        self,
+        message: str,
+    ) -> str:
+        return self.log(
+            message,
+            self._log_options_manager.generate_modified_defaults(
+                self._options,
+                log_level=_logging.CRITICAL,
+            ),
+        )

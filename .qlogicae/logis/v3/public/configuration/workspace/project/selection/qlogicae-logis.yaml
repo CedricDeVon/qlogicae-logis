@@ -44,6 +44,9 @@ workflow:
         - run:
             value: qlogicae-logis-archive
 
+        - run:
+            value: qlogicae-logis-post-workflow
+
         # - run:
         #     value: qlogicae-logis-test-benchmark-memory-usage-create
 
@@ -120,6 +123,13 @@ workflow:
         
       scripts:
         - run:
+            value: command-filesystem-copy          
+          argument:
+            source_path: qlogicae_logis
+            target_paths:
+              - ${{ qlogicae-logis-selection-project-filesystem-path }}/tmp
+
+        - run:
             value: hatch run minify
 
         - run:
@@ -131,7 +141,13 @@ workflow:
             source_path: dist
             target_path: ${{ qlogicae-logis-output-build-release-filesystem-path }}
 
-
+        - run:
+            value: command-filesystem-copy          
+          argument:
+            source_path: tmp
+            target_paths:
+              - ${{ qlogicae-logis-selection-project-filesystem-path }}/qlogicae_logis
+              
     qlogicae-logis-test-pip-deployment:
       filesystem-path:
         value: ${{ qlogicae-logis-selection-project-filesystem-path }}
@@ -240,7 +256,10 @@ workflow:
         
       scripts:
         - run:
-            value: qlogicae-logis-archive
+            value: command-filesystem-clean-path
+          argument:
+            target_paths:
+              - tmp
 
 
     qlogicae-logis-archive:
@@ -281,7 +300,7 @@ macros:
           value: The project orchestration tool for QLogicae projects
 
         qlogicae-logis-current-version-number:
-          value: 3.0.5
+          value: 3.0.6
 
         qlogicae-logis-active-major-version-number:
           value: 3

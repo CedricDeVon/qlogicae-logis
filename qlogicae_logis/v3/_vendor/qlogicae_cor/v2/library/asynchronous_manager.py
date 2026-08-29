@@ -1,44 +1,322 @@
 from __future__ import annotations
-_B=True
-_A=None
-__all__='AsynchronousManager',
-from typing import TYPE_CHECKING,Any
-if TYPE_CHECKING:import asyncio,threading;from collections.abc import Callable,Coroutine,Iterable;from concurrent.futures import ProcessPoolExecutor,ThreadPoolExecutor;from typing import ParamSpec,TypeVar;P=ParamSpec('P');T=TypeVar('T')
-_asyncio=_A
-_threading=_A
-_partial=_A
-_ProcessPoolExecutor=_A
-_ThreadPoolExecutor=_A
-def _handle_dynamic_imports():global _handle_dynamic_imports;global _asyncio;global _threading;global _partial;global _ProcessPoolExecutor;global _ThreadPoolExecutor;import asyncio as A,threading as B;from concurrent.futures import ProcessPoolExecutor as C,ThreadPoolExecutor as D;from functools import partial as E;_asyncio=A;_threading=B;_partial=E;_ProcessPoolExecutor=C;_ThreadPoolExecutor=D;_handle_dynamic_imports=lambda:_A
+
+__all__ = (
+    "AsynchronousManager",
+)
+
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    import asyncio
+    import threading
+    from collections.abc import (
+        Callable,
+        Coroutine,
+        Iterable,
+    )
+    from concurrent.futures import (
+        ProcessPoolExecutor,
+        ThreadPoolExecutor,
+    )
+    from typing import ParamSpec, TypeVar
+
+    P = ParamSpec("P")
+    T = TypeVar("T")
+
+_asyncio: Any = None
+_threading: Any = None
+_partial: Any = None
+_ProcessPoolExecutor: Any = None
+_ThreadPoolExecutor: Any = None
+
+
+def _handle_dynamic_imports() -> None:
+    global _handle_dynamic_imports
+    global _asyncio
+    global _threading
+    global _partial
+    global _ProcessPoolExecutor
+    global _ThreadPoolExecutor
+
+    import asyncio
+    import threading
+    from concurrent.futures import (
+        ProcessPoolExecutor,
+        ThreadPoolExecutor,
+    )
+    from functools import partial
+
+    _asyncio = asyncio
+    _threading = threading
+    _partial = partial
+    _ProcessPoolExecutor = ProcessPoolExecutor
+    _ThreadPoolExecutor = ThreadPoolExecutor
+
+    _handle_dynamic_imports = lambda: None
+
+
 class AsynchronousManager:
-	__slots__='_thread_executor','_process_executor'
-	def __init__(A):_handle_dynamic_imports();A._thread_executor=_A;A._process_executor=_A
-	@property
-	def thread_executor(self):
-		A=self
-		if A._thread_executor is _A:A._thread_executor=_ThreadPoolExecutor()
-		return A._thread_executor
-	@property
-	def process_executor(self):
-		A=self
-		if A._process_executor is _A:A._process_executor=_ProcessPoolExecutor()
-		return A._process_executor
-	async def run_thread(E,A,*B,**C):D=await _asyncio.to_thread(A,*B,**C);return D
-	async def run_thread_pool(A,B,*C,**D):E=_asyncio.get_running_loop();F=await E.run_in_executor(A.thread_executor,_partial(B,*C,**D));return F
-	async def run_process_pool(A,B,*C,**D):E=_asyncio.get_running_loop();F=await E.run_in_executor(A.process_executor,_partial(B,*C,**D));return F
-	async def gather(C,*A,return_exceptions=False):B=await _asyncio.gather(*A,return_exceptions=return_exceptions);return B
-	async def wait(D,*A,timeout=_A):B={_asyncio.create_task(A)for A in A};C=await _asyncio.wait(B,timeout=timeout);return C
-	def create_task(B,coroutine,name=_A):A=_asyncio.create_task(coroutine,name=name);return A
-	async def timeout(B,coroutine,seconds):A=await _asyncio.wait_for(coroutine,timeout=seconds);return A
-	async def map_thread(A,function,*B):C=await _asyncio.gather(*(A.run_thread(function,*B)for B in zip(*B,strict=_B)));return C
-	async def map_thread_pool(A,function,*B):C=await _asyncio.gather(*(A.run_thread_pool(function,*B)for B in zip(*B,strict=_B)));return C
-	async def map_process_pool(A,function,*B):C=await _asyncio.gather(*(A.run_process_pool(function,*B)for B in zip(*B,strict=_B)));return C
-	def create_thread(E,B,*C,daemon=False,start=_B,**D):
-		A=_threading.Thread(target=B,args=C,kwargs=D,daemon=daemon)
-		if start:A.start()
-		return A
-	def shutdown(A,*,wait=_B):
-		if A._thread_executor is not _A:A._thread_executor.shutdown(wait=wait);A._thread_executor=_A
-		if A._process_executor is not _A:A._process_executor.shutdown(wait=wait);A._process_executor=_A
-	def __enter__(A):return A
-	def __exit__(A,exc_type,exc,traceback):A.shutdown()
+    __slots__ = (
+        "_thread_executor",
+        "_process_executor",
+    )
+
+    def __init__(self) -> None:
+        _handle_dynamic_imports()
+
+        self._thread_executor: (
+            ThreadPoolExecutor | None
+        ) = None
+
+        self._process_executor: (
+            ProcessPoolExecutor | None
+        ) = None
+
+    @property
+    def thread_executor(
+        self,
+    ) -> ThreadPoolExecutor:
+        if self._thread_executor is None:
+            self._thread_executor = (
+                _ThreadPoolExecutor()
+            )
+
+        return self._thread_executor
+
+    @property
+    def process_executor(
+        self,
+    ) -> ProcessPoolExecutor:
+        if self._process_executor is None:
+            self._process_executor = (
+                _ProcessPoolExecutor()
+            )
+
+        return self._process_executor
+
+    async def run_thread(
+        self,
+        function: Callable[P, T],
+        /,
+        *args: P.args,
+        **kwargs: P.kwargs,
+    ) -> T:
+        result: T = await _asyncio.to_thread(
+            function,
+            *args,
+            **kwargs,
+        )
+
+        return result
+
+    async def run_thread_pool(
+        self,
+        function: Callable[P, T],
+        /,
+        *args: P.args,
+        **kwargs: P.kwargs,
+    ) -> T:
+        loop = _asyncio.get_running_loop()
+
+        result: T = await loop.run_in_executor(
+            self.thread_executor,
+            _partial(
+                function,
+                *args,
+                **kwargs,
+            ),
+        )
+
+        return result
+
+    async def run_process_pool(
+        self,
+        function: Callable[P, T],
+        /,
+        *args: P.args,
+        **kwargs: P.kwargs,
+    ) -> T:
+        loop = _asyncio.get_running_loop()
+
+        result: T = await loop.run_in_executor(
+            self.process_executor,
+            _partial(
+                function,
+                *args,
+                **kwargs,
+            ),
+        )
+
+        return result
+
+    async def gather(
+        self,
+        *coroutines: Coroutine[Any, Any, Any],
+        return_exceptions: bool = False,
+    ) -> list[Any]:
+        result: list[Any] = await _asyncio.gather(
+            *coroutines,
+            return_exceptions=return_exceptions,
+        )
+
+        return result
+
+    async def wait(
+        self,
+        *coroutines: Coroutine[Any, Any, Any],
+        timeout: float | None = None,
+    ) -> tuple[
+        set[asyncio.Task[Any]],
+        set[asyncio.Task[Any]],
+    ]:
+        tasks: set[Any] = {
+            _asyncio.create_task(coroutine)
+            for coroutine in coroutines
+        }
+
+        result: tuple[
+            set[asyncio.Task[Any]],
+            set[asyncio.Task[Any]],
+        ] = await _asyncio.wait(
+            tasks,
+            timeout=timeout,
+        )
+
+        return result
+
+    def create_task(
+        self,
+        coroutine: Coroutine[Any, Any, T],
+        name: str | None = None,
+    ) -> asyncio.Task[T]:
+        result: asyncio.Task[T] = _asyncio.create_task(
+            coroutine,
+            name=name,
+        )
+
+        return result
+
+    async def timeout(
+        self,
+        coroutine: Coroutine[Any, Any, T],
+        seconds: float,
+    ) -> T:
+        result: T = await _asyncio.wait_for(
+            coroutine,
+            timeout=seconds,
+        )
+
+        return result
+
+    async def map_thread(
+        self,
+        function: Callable[..., T],
+        *iterables: Iterable[Any],
+    ) -> list[T]:
+        result: list[T] = await _asyncio.gather(
+            *(
+                self.run_thread(
+                    function,
+                    *values,
+                )
+                for values in zip(
+                    *iterables,
+                    strict=True,
+                )
+            )
+        )
+
+        return result
+
+    async def map_thread_pool(
+        self,
+        function: Callable[..., T],
+        *iterables: Iterable[Any],
+    ) -> list[T]:
+        result: list[T] = await _asyncio.gather(
+            *(
+                self.run_thread_pool(
+                    function,
+                    *values,
+                )
+                for values in zip(
+                    *iterables,
+                    strict=True,
+                )
+            )
+        )
+
+        return result
+
+    async def map_process_pool(
+        self,
+        function: Callable[..., T],
+        *iterables: Iterable[Any],
+    ) -> list[T]:
+        result: list[T] = await _asyncio.gather(
+            *(
+                self.run_process_pool(
+                    function,
+                    *values,
+                )
+                for values in zip(
+                    *iterables,
+                    strict=True,
+                )
+            )
+        )
+
+        return result
+
+    def create_thread(
+        self,
+        function: Callable[..., Any],
+        /,
+        *args: Any,
+        daemon: bool = False,
+        start: bool = True,
+        **kwargs: Any,
+    ) -> threading.Thread:
+        thread: threading.Thread = _threading.Thread(
+            target=function,
+            args=args,
+            kwargs=kwargs,
+            daemon=daemon,
+        )
+
+        if start:
+            thread.start()
+
+        return thread
+
+    def shutdown(
+        self,
+        *,
+        wait: bool = True,
+    ) -> None:
+        if self._thread_executor is not None:
+            self._thread_executor.shutdown(
+                wait=wait,
+            )
+
+            self._thread_executor = None
+
+        if self._process_executor is not None:
+            self._process_executor.shutdown(
+                wait=wait,
+            )
+
+            self._process_executor = None
+
+    def __enter__(
+        self,
+    ) -> AsynchronousManager:
+        return self
+
+    def __exit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc: BaseException | None,
+        traceback: Any,
+    ) -> None:
+        self.shutdown()

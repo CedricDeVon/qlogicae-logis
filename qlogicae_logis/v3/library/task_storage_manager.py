@@ -1,28 +1,85 @@
 from __future__ import annotations
-_A=False
+
 from typing import Any
-__all__='TaskStorageManager'
-_ImportManager=None
-def _handle_dynamic_imports():global _handle_dynamic_imports;global _ImportManager;from..library import import_manager as A;_ImportManager=A.ImportManager;_handle_dynamic_imports=lambda:None
+
+__all__ = (
+    "TaskStorageManager"
+)
+
+_ImportManager: Any = None
+
+def _handle_dynamic_imports() -> None:
+    global _handle_dynamic_imports
+    global _ImportManager
+
+    from ..library import (
+        import_manager,
+    )
+
+    _ImportManager = (
+        import_manager
+            .ImportManager
+    )
+
+    _handle_dynamic_imports = lambda: None
+
 class TaskStorageManager:
-	__slots__='_tasks','_import_manager'
-	def __init__(A):_handle_dynamic_imports();A._tasks={};A._import_manager=_ImportManager.read_singleton(_ImportManager)
-	def read_tasks(A):return A._tasks
-	def read_task(A,name):
-		if not name:return{}
-		return A._tasks[name]
-	def write_task(B,name,value):
-		A=value
-		if not name or not A:return
-		B._tasks[name]=A
-	def write_tasks(B,value):
-		A=value
-		if not A:return
-		B._tasks=A
-	def remove_task(A,name):
-		if not name:return _A
-		del A._tasks[name];return True
-	def is_executed(A,label=''):B=f"{label}";C=A._tasks.get(B,_A);A._tasks[B]=True;return C
-	def reset_all_task_executed(A):
-		for(B,C)in A._tasks.items():A._tasks[B]=_A
-		return True
+    __slots__ = (
+        "_tasks",
+        "_import_manager",
+    )
+
+    def __init__(self) -> None:
+        _handle_dynamic_imports()
+
+        self._tasks: dict[str, Any] = {}
+        self._import_manager = (
+            _ImportManager.read_singleton(
+                _ImportManager
+            )
+        )
+
+    def read_tasks(self) -> dict[str, Any]:
+        return self._tasks
+
+    def read_task(self, name: str) -> Any:
+        if not name:
+            return {}
+
+        return  self._tasks[name]
+
+    def write_task(self, name: str, value: dict[str, Any]) -> None:
+        if not name or not value:
+            return
+
+        self._tasks[name] = value
+
+    def write_tasks(self, value: dict[str, Any]) -> None:
+        if not value:
+            return
+
+        self._tasks = value
+
+    def remove_task(self, name: str) -> bool:
+        if not name:
+            return False
+
+        del self._tasks[name]
+
+        return True
+
+    def is_executed(
+        self,
+        label: str = "",
+    ) -> bool:
+        key: str = f"{label}"
+        value: bool = self._tasks.get(key, False)
+        self._tasks[key] = True
+
+        return value
+
+    def reset_all_task_executed(self) -> bool:
+        for key, _item in self._tasks.items():
+            self._tasks[key] = False
+
+        return True

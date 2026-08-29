@@ -1,42 +1,89 @@
 from __future__ import annotations
-_B=True
-_A=False
+
 from typing import Any
-__all__='CommandStorageManager'
-def _handle_dynamic_imports():global _handle_dynamic_imports;_handle_dynamic_imports=lambda:None
+
+__all__ = (
+    "CommandStorageManager"
+)
+
+
+def _handle_dynamic_imports() -> None:
+    global _handle_dynamic_imports
+
+    _handle_dynamic_imports = lambda: None
+
 class CommandStorageManager:
-	__slots__='_commands'
-	def __init__(A):_handle_dynamic_imports();A._commands={}
-	def read_command_name(B,value):
-		A=value
-		if not A:return''
-		return f"command-{A.replace("_","-")}"
-	def read_commands(A):return A._commands
-	def write_commands(B,value):
-		A=value
-		if not A:return
-		B._commands=A
-	def add_command(B,name,callback):
-		A=callback
-		if not name or not A:return _A
-		B._commands[name]=A;return _B
-	def add_commands(D,items):
-		A=items
-		if not A:return _A
-		for(B,C)in A:
-			if not B or not C:continue
-			D._commands[B]=C
-		return _B
-	def run_command(A,name):
-		if not name:return _A
-		A._commands[name]();return _B
-	def read_command(A,name):
-		if not name:return _A
-		return A._commands[name]
-	def write_command(B,name,value):
-		A=value
-		if not name or not A:return
-		B._commands[name]=A
-	def remove_command(A,name):
-		if not name:return _A
-		del A._commands[name];return _B
+    __slots__ = ("_commands")
+
+    def __init__(self) -> None:
+        _handle_dynamic_imports()
+
+        self._commands: dict[str, Any] = {}
+
+    def read_command_name(
+        self,
+        value: str
+    ) -> str:
+        if not value:
+            return ""
+
+        return (
+            f"command-{value.replace("_", "-")}"
+        )
+
+    def read_commands(self) -> dict[str, Any]:
+        return self._commands
+
+    def write_commands(self, value: dict[str, Any]) -> None:
+        if not value:
+            return
+
+        self._commands = value
+
+    def add_command(self, name: str, callback: Any) -> bool:
+        if not name or not callback:
+            return False
+
+        self._commands[name] = callback
+
+        return True
+
+    def add_commands(self, items: Any) -> bool:
+        if not items:
+            return False
+
+        for (name, callback) in items:
+            if not name or not callback:
+                continue
+
+            self._commands[name] = callback
+
+        return True
+
+    def run_command(self, name: str) -> bool:
+        if not name:
+            return False
+
+        self._commands[name]()
+
+        return True
+
+    def read_command(self, name: str) -> Any:
+        if not name:
+            return False
+
+        return  self._commands[name]
+
+    def write_command(self, name: str, value: dict[str, Any]) -> None:
+        if not name or not value:
+            return
+
+        self._commands[name] = value
+
+    def remove_command(self, name: str) -> bool:
+        if not name:
+            return False
+
+        del self._commands[name]
+
+        return True

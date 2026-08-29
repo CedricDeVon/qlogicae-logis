@@ -1,60 +1,349 @@
 from __future__ import annotations
-_B=False
-_A=None
+
 from typing import Any
-from..library.decorator_manager import DecoratorManager
-__all__='CommandWorkflowManager'
-_TaskManager=_A
-_ImportManager=_A
-_DisplayManager=_A
-_DatabaseManager=_A
-_DecoratorManager=DecoratorManager
-_CommandStorageManager=_A
-_ValueCacheDatabaseManager=_A
-_PersistentCacheDatabasManager=_A
-def _handle_dynamic_imports():global _handle_dynamic_imports;global _TaskManager;global _ImportManager;global _DisplayManager;global _CommandStorageManager;global _DatabaseManager;global _ValueCacheDatabaseManager;global _PersistentCacheDatabasManager;from..library import command_storage_manager as A,database_manager as B,display_manager as C,import_manager as D,persistent_cache_database_manager as E,task_manager as F,value_cache_database_manager as G;_TaskManager=F.TaskManager;_DisplayManager=C.DisplayManager;_DatabaseManager=B.DatabaseManager;_ValueCacheDatabaseManager=G.ValueCacheDatabaseManager;_PersistentCacheDatabasManager=E.PersistentCacheDatabasManager;_ImportManager=D.ImportManager;_CommandStorageManager=A.CommandStorageManager;_handle_dynamic_imports=lambda:_A
+
+from ..library.decorator_manager import DecoratorManager
+
+__all__ = (
+    "CommandWorkflowManager"
+)
+
+_TaskManager: Any = None
+_ImportManager: Any = None
+_DisplayManager: Any = None
+_DatabaseManager: Any = None
+_DecoratorManager = DecoratorManager
+_CommandStorageManager: Any = None
+_ValueCacheDatabaseManager: Any = None
+_PersistentCacheDatabasManager: Any = None
+
+def _handle_dynamic_imports() -> None:
+    global _handle_dynamic_imports
+    global _TaskManager
+    global _ImportManager
+    global _DisplayManager
+    global _CommandStorageManager
+    global _DatabaseManager
+    global _ValueCacheDatabaseManager
+    global _PersistentCacheDatabasManager
+
+    from ..library import (
+        command_storage_manager,
+        database_manager,
+        display_manager,
+        import_manager,
+        persistent_cache_database_manager,
+        task_manager,
+        value_cache_database_manager,
+    )
+
+    _TaskManager = (
+        task_manager
+            .TaskManager
+    )
+    _DisplayManager = (
+        display_manager.DisplayManager
+    )
+    _DatabaseManager = (
+        database_manager.DatabaseManager
+    )
+    _ValueCacheDatabaseManager = (
+        value_cache_database_manager.ValueCacheDatabaseManager
+    )
+    _PersistentCacheDatabasManager = (
+        persistent_cache_database_manager.PersistentCacheDatabasManager
+    )
+    _ImportManager = (
+        import_manager
+            .ImportManager
+    )
+    _CommandStorageManager = (
+        command_storage_manager
+            .CommandStorageManager
+    )
+
+    _handle_dynamic_imports = lambda: None
+
 class CommandWorkflowManager:
-	__slots__='_command_storage_manager','_task_manager','_import_manager','_display_manager','_database_manager','_value_cache_database_manager','_persistent_cache_database_manager'
-	def __init__(A):_handle_dynamic_imports();A._command_storage_manager=_ImportManager.read_singleton(_CommandStorageManager);A._display_manager=_ImportManager.read_singleton(_DisplayManager);A._task_manager=_ImportManager.read_singleton(_TaskManager);A._import_manager=_ImportManager.read_singleton(_ImportManager);A._database_manager=_ImportManager.read_singleton(_DatabaseManager);A._value_cache_database_manager=_ImportManager.read_singleton(_ValueCacheDatabaseManager);A._persistent_cache_database_manager=_ImportManager.read_singleton(_PersistentCacheDatabasManager);A._command_storage_manager.add_commands(((A._command_storage_manager.read_command_name('workflow_run'),A.run_command_workflow_run),(A._command_storage_manager.read_command_name('workflow_list_selections'),A.run_command_workflow_list_selections)))
-	@_DecoratorManager.command_decorator
-	def run_command_workflow_run(self,**D):
-		A=self
-		if not D:return _B
-		def I(workflow_target):
-			K=workflow_target
-			if not K:return _B
-			C=M.get(K,{})
-			if not C:return _B
-			N=A._value_cache_database_manager.read_object_is_enabled_value(C)
-			if not N:return _B
-			O=A._value_cache_database_manager.read_is_object_operating_system_included(C)
-			if not O:return _B
-			P=A._value_cache_database_manager.read_object_scripts(C);E=A._value_cache_database_manager.read_object_delay_value(C);E=E if E>=0 else 0;H=A._value_cache_database_manager.read_object_filesystem_path_value(C)
-			if not H:H=L
-			A._import_manager.time_delay(value=E)
-			for B in P:
-				if not B:continue
-				Q=A._value_cache_database_manager.read_object_is_enabled_value(B)
-				if not Q:continue
-				R=A._value_cache_database_manager.read_is_object_operating_system_included(B)
-				if not R:continue
-				D=A._value_cache_database_manager.read_object_run_value(B)
-				if not D:continue
-				S=A._value_cache_database_manager.read_object_process_value(B);T=A._value_cache_database_manager.read_object_argument(B);F=A._value_cache_database_manager.read_object_delay_value(B);F=F if F>=0 else 0;A._import_manager.time_delay(value=F);A._task_manager.navigate_via_filesystem_path(H)
-				if D in J:J[D](**T)
-				elif D in G:I(D)
-				else:U=A._import_manager.run_command(script_process=S,command=D);A._import_manager.log_cache_info_to_file(message=f"{U}")
-			return True
-		A._task_manager.run_task_common_setup();A._task_manager.run_task_workflow_setup();A._task_manager.run_task_filesystem_clean_exclude_setup();A._task_manager.run_task_filesystem_clean_include_setup();B=D.get('targets',[])
-		if not B or len(B)<1:return _B
-		L=A._value_cache_database_manager.read_root_filesystem_path();J=A._command_storage_manager.read_commands();M=A._value_cache_database_manager.read_configuration_workspace_data_workflow_selection();G=A._value_cache_database_manager.read_workflow_selection()
-		for C in B:
-			if not C or C not in G:continue
-			I(G[C])
-		return True
-	@_DecoratorManager.command_decorator
-	def run_command_workflow_list_selections(self,**D):
-		A=self;A._task_manager.run_task_common_setup();A._task_manager.run_task_workflow_setup();B={};C=A._value_cache_database_manager.read_workflow_selection()or{}
-		if C:B['selections']=C
-		if not B:return _B
-		A._display_manager.display_tree_object(value=B);return True
+    __slots__ = (
+        "_command_storage_manager",
+        "_task_manager",
+        "_import_manager",
+        "_display_manager",
+        "_database_manager",
+        "_value_cache_database_manager",
+        "_persistent_cache_database_manager",
+    )
+
+    def __init__(self) -> None:
+        _handle_dynamic_imports()
+
+        self._command_storage_manager = _ImportManager.read_singleton(
+            _CommandStorageManager
+        )
+
+        self._display_manager = (
+            _ImportManager.read_singleton(
+                _DisplayManager
+            )
+        )
+        self._task_manager = (
+            _ImportManager.read_singleton(
+                _TaskManager
+            )
+        )
+        self._import_manager = (
+            _ImportManager.read_singleton(
+                _ImportManager
+            )
+        )
+        self._database_manager = (
+            _ImportManager.read_singleton(
+                _DatabaseManager
+            )
+        )
+        self._value_cache_database_manager = (
+            _ImportManager.read_singleton(
+                _ValueCacheDatabaseManager
+            )
+        )
+        self._persistent_cache_database_manager = (
+            _ImportManager.read_singleton(
+                _PersistentCacheDatabasManager
+            )
+        )
+
+        self._command_storage_manager.add_commands((
+            (
+                self._command_storage_manager
+                    .read_command_name("workflow_run"),
+                self.run_command_workflow_run,
+            ),
+            (
+                self._command_storage_manager
+                    .read_command_name("workflow_list_selections"),
+                self.run_command_workflow_list_selections,
+            ),
+        ))
+
+    @_DecoratorManager.command_decorator
+    def run_command_workflow_run(
+        self,
+        **kwargs: Any
+    ) -> bool:
+        if not kwargs:
+            return False
+
+        def handle_workflow_run_target(
+            workflow_target: str
+        ) -> bool:
+            if not workflow_target:
+                return False
+
+            workflow_selection = (
+                data_workflow.get(
+                    workflow_target,
+                    {}
+                )
+            )
+
+            if not workflow_selection:
+                return False
+
+            workflow_selection_data_is_enabled_value = (
+                self._value_cache_database_manager
+                    .read_object_is_enabled_value(
+                        workflow_selection
+                    )
+            )
+            if not workflow_selection_data_is_enabled_value:
+                return False
+
+            is_operating_system_included = (
+                self._value_cache_database_manager
+                    .read_is_object_operating_system_included(
+                        workflow_selection
+                    )
+            )
+            if not is_operating_system_included:
+                return False
+
+            workflow_selection_scripts = (
+                self._value_cache_database_manager
+                    .read_object_scripts(
+                        workflow_selection
+                    )
+            )
+            workflow_selection_delay_value = (
+                self._value_cache_database_manager
+                    .read_object_delay_value(
+                        workflow_selection
+                    )
+            )
+            workflow_selection_delay_value = (
+                workflow_selection_delay_value
+                if workflow_selection_delay_value >= 0
+                else 0
+            )
+            workflow_selection_filesystem_path_value = (
+                self._value_cache_database_manager
+                    .read_object_filesystem_path_value(
+                        workflow_selection
+                    )
+            )
+            if not workflow_selection_filesystem_path_value:
+                workflow_selection_filesystem_path_value = (
+                    root_filesystem_path
+                )
+
+            self._import_manager.time_delay(
+                value=workflow_selection_delay_value
+            )
+
+            for workflow_selection_script in workflow_selection_scripts:
+                if not workflow_selection_script:
+                    continue
+
+                workflow_selection_script_is_enabled_value = (
+                    self._value_cache_database_manager
+                        .read_object_is_enabled_value(
+                            workflow_selection_script
+                        )
+                )
+                if not workflow_selection_script_is_enabled_value:
+                    continue
+
+                workflow_selection_script_is_operating_system_included = (
+                    self._value_cache_database_manager
+                        .read_is_object_operating_system_included(
+                            workflow_selection_script
+                        )
+                )
+                if not workflow_selection_script_is_operating_system_included:
+                    continue
+
+                workflow_selection_script_run_value = (
+                    self._value_cache_database_manager
+                        .read_object_run_value(
+                            workflow_selection_script
+                        )
+                )
+                if not workflow_selection_script_run_value:
+                    continue
+
+                workflow_selection_script_process_value = (
+                    self._value_cache_database_manager
+                        .read_object_process_value(
+                            workflow_selection_script
+                        )
+                )
+
+                workflow_selection_script_argument = (
+                    self._value_cache_database_manager
+                        .read_object_argument(
+                            workflow_selection_script
+                        )
+                )
+
+                workflow_selection_script_delay_value = (
+                    self._value_cache_database_manager
+                        .read_object_delay_value(
+                            workflow_selection_script
+                        )
+                )
+                workflow_selection_script_delay_value = (
+                    workflow_selection_script_delay_value
+                    if workflow_selection_script_delay_value >= 0
+                    else 0
+                )
+
+                self._import_manager.time_delay(
+                    value=workflow_selection_script_delay_value
+                )
+
+                self._task_manager.navigate_via_filesystem_path(
+                    workflow_selection_filesystem_path_value
+                )
+
+                if workflow_selection_script_run_value in commands:
+                    commands[workflow_selection_script_run_value](**workflow_selection_script_argument)
+
+                elif workflow_selection_script_run_value in data_workflow_selections:
+                    handle_workflow_run_target(
+                        workflow_selection_script_run_value
+                    )
+
+                else:
+                    cli_output = (
+                        self._import_manager.run_command(
+                            script_process=workflow_selection_script_process_value,
+                            command=workflow_selection_script_run_value,
+                        )
+                    )
+
+                    self._import_manager.log_cache_info_to_file(
+                        message=f"{cli_output}"
+                    )
+
+            return True
+
+        self._task_manager.run_task_common_setup()
+        self._task_manager.run_task_workflow_setup()
+        self._task_manager.run_task_filesystem_clean_exclude_setup()
+        self._task_manager.run_task_filesystem_clean_include_setup()
+
+        targets = kwargs.get('targets', [])
+        if not targets or len(targets) < 1:
+            return False
+
+        root_filesystem_path = (
+            self._value_cache_database_manager
+                .read_root_filesystem_path()
+        )
+        commands = (
+            self._command_storage_manager
+                .read_commands()
+        )
+        data_workflow = (
+            self._value_cache_database_manager
+                .read_configuration_workspace_data_workflow_selection()
+        )
+        data_workflow_selections = (
+            self._value_cache_database_manager
+                .read_workflow_selection()
+        )
+
+        for target in targets:
+            if not target or target not in data_workflow_selections:
+                continue
+
+            handle_workflow_run_target(
+                data_workflow_selections[target]
+            )
+
+        return True
+
+    @_DecoratorManager.command_decorator
+    def run_command_workflow_list_selections(
+        self,
+        **kwargs: Any
+    ) -> bool:
+        self._task_manager.run_task_common_setup()
+        self._task_manager.run_task_workflow_setup()
+
+        value = {}
+        workflow_selections = (
+            self._value_cache_database_manager
+                .read_workflow_selection()
+        ) or {}
+        if workflow_selections:
+            value["selections"] = workflow_selections
+
+        if not value:
+            return False
+
+        self._display_manager.display_tree_object(
+            value=value,
+        )
+
+        return True

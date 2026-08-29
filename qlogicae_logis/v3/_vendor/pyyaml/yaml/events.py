@@ -1,23 +1,86 @@
-_A=None
+
+# Abstract classes.
+
 class Event:
-	def __init__(A,start_mark=_A,end_mark=_A):A.start_mark=start_mark;A.end_mark=end_mark
-	def __repr__(A):B=[B for B in['anchor','tag','implicit','value']if hasattr(A,B)];C=', '.join(['%s=%r'%(B,getattr(A,B))for B in B]);return'%s(%s)'%(A.__class__.__name__,C)
+    def __init__(self, start_mark=None, end_mark=None):
+        self.start_mark = start_mark
+        self.end_mark = end_mark
+    def __repr__(self):
+        attributes = [key for key in ['anchor', 'tag', 'implicit', 'value']
+                if hasattr(self, key)]
+        arguments = ', '.join(['%s=%r' % (key, getattr(self, key))
+                for key in attributes])
+        return '%s(%s)' % (self.__class__.__name__, arguments)
+
 class NodeEvent(Event):
-	def __init__(A,anchor,start_mark=_A,end_mark=_A):A.anchor=anchor;A.start_mark=start_mark;A.end_mark=end_mark
+    def __init__(self, anchor, start_mark=None, end_mark=None):
+        self.anchor = anchor
+        self.start_mark = start_mark
+        self.end_mark = end_mark
+
 class CollectionStartEvent(NodeEvent):
-	def __init__(A,anchor,tag,implicit,start_mark=_A,end_mark=_A,flow_style=_A):A.anchor=anchor;A.tag=tag;A.implicit=implicit;A.start_mark=start_mark;A.end_mark=end_mark;A.flow_style=flow_style
-class CollectionEndEvent(Event):0
+    def __init__(self, anchor, tag, implicit, start_mark=None, end_mark=None,
+            flow_style=None):
+        self.anchor = anchor
+        self.tag = tag
+        self.implicit = implicit
+        self.start_mark = start_mark
+        self.end_mark = end_mark
+        self.flow_style = flow_style
+
+class CollectionEndEvent(Event):
+    pass
+
+# Implementations.
+
 class StreamStartEvent(Event):
-	def __init__(A,start_mark=_A,end_mark=_A,encoding=_A):A.start_mark=start_mark;A.end_mark=end_mark;A.encoding=encoding
-class StreamEndEvent(Event):0
+    def __init__(self, start_mark=None, end_mark=None, encoding=None):
+        self.start_mark = start_mark
+        self.end_mark = end_mark
+        self.encoding = encoding
+
+class StreamEndEvent(Event):
+    pass
+
 class DocumentStartEvent(Event):
-	def __init__(A,start_mark=_A,end_mark=_A,explicit=_A,version=_A,tags=_A):A.start_mark=start_mark;A.end_mark=end_mark;A.explicit=explicit;A.version=version;A.tags=tags
+    def __init__(self, start_mark=None, end_mark=None,
+            explicit=None, version=None, tags=None):
+        self.start_mark = start_mark
+        self.end_mark = end_mark
+        self.explicit = explicit
+        self.version = version
+        self.tags = tags
+
 class DocumentEndEvent(Event):
-	def __init__(A,start_mark=_A,end_mark=_A,explicit=_A):A.start_mark=start_mark;A.end_mark=end_mark;A.explicit=explicit
-class AliasEvent(NodeEvent):0
+    def __init__(self, start_mark=None, end_mark=None,
+            explicit=None):
+        self.start_mark = start_mark
+        self.end_mark = end_mark
+        self.explicit = explicit
+
+class AliasEvent(NodeEvent):
+    pass
+
 class ScalarEvent(NodeEvent):
-	def __init__(A,anchor,tag,implicit,value,start_mark=_A,end_mark=_A,style=_A):A.anchor=anchor;A.tag=tag;A.implicit=implicit;A.value=value;A.start_mark=start_mark;A.end_mark=end_mark;A.style=style
-class SequenceStartEvent(CollectionStartEvent):0
-class SequenceEndEvent(CollectionEndEvent):0
-class MappingStartEvent(CollectionStartEvent):0
-class MappingEndEvent(CollectionEndEvent):0
+    def __init__(self, anchor, tag, implicit, value,
+            start_mark=None, end_mark=None, style=None):
+        self.anchor = anchor
+        self.tag = tag
+        self.implicit = implicit
+        self.value = value
+        self.start_mark = start_mark
+        self.end_mark = end_mark
+        self.style = style
+
+class SequenceStartEvent(CollectionStartEvent):
+    pass
+
+class SequenceEndEvent(CollectionEndEvent):
+    pass
+
+class MappingStartEvent(CollectionStartEvent):
+    pass
+
+class MappingEndEvent(CollectionEndEvent):
+    pass
+

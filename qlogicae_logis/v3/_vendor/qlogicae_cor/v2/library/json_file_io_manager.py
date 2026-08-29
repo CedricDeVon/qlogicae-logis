@@ -1,20 +1,105 @@
 from __future__ import annotations
-_A=None
-__all__='JsonFileIoManager',
+
+__all__ = (
+    "JsonFileIoManager",
+)
+
 from typing import Any
-_json=_A
-_Path=_A
-_SingletonManager=_A
-_JsonManager=_A
-_TextEncodingManager=_A
-def _handle_dynamic_imports():global _handle_dynamic_imports;global _json;global _Path;global _SingletonManager;global _JsonManager;global _TextEncodingManager;import json;from pathlib import Path;from.json_manager import JsonManager as A;from.singleton_manager import SingletonManager as B;from.text_encoding_manager import TextEncodingManager as C;_json=json;_Path=Path;_SingletonManager=B;_JsonManager=A;_TextEncodingManager=C;_handle_dynamic_imports=lambda:_A
+
+_json: Any = None
+_Path: Any = None
+_SingletonManager: Any = None
+_JsonManager: Any = None
+_TextEncodingManager: Any = None
+
+
+def _handle_dynamic_imports() -> None:
+    global _handle_dynamic_imports
+    global _json
+    global _Path
+    global _SingletonManager
+    global _JsonManager
+    global _TextEncodingManager
+
+    import json
+    from pathlib import Path
+
+    from .json_manager import JsonManager
+    from .singleton_manager import SingletonManager
+    from .text_encoding_manager import TextEncodingManager
+
+    _json = json
+    _Path = Path
+    _SingletonManager = (
+        SingletonManager
+    )
+    _JsonManager = (
+        JsonManager
+    )
+    _TextEncodingManager = (
+        TextEncodingManager
+    )
+
+    _handle_dynamic_imports = lambda: None
+
+
 class JsonFileIoManager:
-	def __init__(A):_handle_dynamic_imports();A._json_manager=_SingletonManager.get_singleton(_JsonManager);A._text_encoding_manager=_SingletonManager.get_singleton(_TextEncodingManager)
-	def read_file(B,file_path):
-		C=_Path(file_path);A={}
-		with C.open(mode='r',encoding=B._text_encoding_manager.selected_encoding)as D:A=_json.load(D)or{}
-		return A
-	def write_file(A,file_path,data):
-		B=True;C=_Path(file_path);C.parent.mkdir(parents=B,exist_ok=B)
-		with C.open(mode='w',encoding=A._text_encoding_manager.selected_encoding)as D:_json.dump(data,D,indent=A._json_manager.indent_count,ensure_ascii=A._json_manager.is_ascii_format_enabled,sort_keys=A._json_manager.is_key_sortable)
-		return B
+    def __init__(self) -> None:
+        _handle_dynamic_imports()
+
+        self._json_manager = _SingletonManager.get_singleton(
+            _JsonManager
+        )
+        self._text_encoding_manager = _SingletonManager.get_singleton(
+            _TextEncodingManager
+        )
+
+    def read_file(
+        self,
+        file_path: str,
+    ) -> Any:
+        path = _Path(file_path)
+
+        output_data: Any = {}
+
+        with path.open(
+            mode="r",
+            encoding=(
+                self._text_encoding_manager.selected_encoding
+            ),
+        ) as file:
+            output_data = _json.load(file) or {}
+
+        return output_data
+
+    def write_file(
+        self,
+        file_path: str,
+        data: Any,
+    ) -> bool:
+        path = _Path(file_path)
+
+        path.parent.mkdir(
+            parents=True,
+            exist_ok=True,
+        )
+
+        with path.open(
+            mode="w",
+            encoding=(
+                self._text_encoding_manager.selected_encoding
+            ),
+        ) as file:
+            _json.dump(
+                data,
+                file,
+                indent=self._json_manager.indent_count,
+                ensure_ascii=(
+                    self._json_manager.is_ascii_format_enabled
+                ),
+                sort_keys=(
+                    self._json_manager.is_key_sortable
+                ),
+            )
+
+        return True

@@ -1,4 +1,25 @@
-_A='value'
 from typing import Any
-DATA={'company-name':{_A:'qlogicae'},'project-name':{_A:'logis'},'active-major-version-label':{_A:'v3'},'debug':{'is-enabled':{_A:True}}}
-METADATA={}
+
+DATA: dict[str, dict[str, Any]]= {
+    "company-name": {
+        "value": "qlogicae"
+    },
+    "project-name": {
+        "value": "logis"
+    },
+    "active-major-version-label": {
+        "value": "v3"
+    },
+    "debug": {
+        "is-enabled": {
+            "value": True
+        }
+    },
+}
+
+METADATA: dict[str, dict[str, Any]] = {    
+
+}
+
+
+

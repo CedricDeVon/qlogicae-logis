@@ -1,56 +1,261 @@
 from __future__ import annotations
-_C=False
-_B=None
-_A=True
-__all__='FilesystemManager',
-from typing import TYPE_CHECKING,Any
-if TYPE_CHECKING:from.folder_entity_filesystem_tree_setup_options import FolderEntityFileSystemTreeSetupOptions
-_shutil=_B
-_Path=_B
-_FileEntityFileSystemTreeSetupOptions=_B
-_FolderEntityFileSystemTreeSetupOptions=_B
-def _handle_dynamic_imports():global _handle_dynamic_imports;global _shutil;global _Path;global _FileEntityFileSystemTreeSetupOptions;global _FolderEntityFileSystemTreeSetupOptions;import shutil as A;from pathlib import Path;from.file_entity_filesystem_tree_setup_options import FileEntityFileSystemTreeSetupOptions as B;from.folder_entity_filesystem_tree_setup_options import FolderEntityFileSystemTreeSetupOptions as C;_shutil=A;_Path=Path;_FileEntityFileSystemTreeSetupOptions=B;_FolderEntityFileSystemTreeSetupOptions=C;_handle_dynamic_imports=lambda:_B
+
+__all__ = (
+    "FilesystemManager",
+)
+
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from .folder_entity_filesystem_tree_setup_options import (
+        FolderEntityFileSystemTreeSetupOptions,
+    )
+
+_shutil: Any = None
+_Path: Any = None
+_FileEntityFileSystemTreeSetupOptions: Any = None
+_FolderEntityFileSystemTreeSetupOptions: Any = None
+
+
+def _handle_dynamic_imports() -> None:
+    global _handle_dynamic_imports
+    global _shutil
+    global _Path
+    global _FileEntityFileSystemTreeSetupOptions
+    global _FolderEntityFileSystemTreeSetupOptions
+
+    import shutil
+    from pathlib import Path
+
+    from .file_entity_filesystem_tree_setup_options import (
+        FileEntityFileSystemTreeSetupOptions,
+    )
+    from .folder_entity_filesystem_tree_setup_options import (
+        FolderEntityFileSystemTreeSetupOptions,
+    )
+
+    _shutil = shutil
+    _Path = Path
+    _FileEntityFileSystemTreeSetupOptions = (
+        FileEntityFileSystemTreeSetupOptions
+    )
+    _FolderEntityFileSystemTreeSetupOptions = (
+        FolderEntityFileSystemTreeSetupOptions
+    )
+
+    _handle_dynamic_imports = lambda: None
+
+
 class FilesystemManager:
-	def __init__(A):_handle_dynamic_imports()
-	def throw_if_filesystem_path_invalid(B,value):
-		A=_Path(value)
-		if not A.exists():raise ValueError(f"filesystem path '{A}' is invalid")
-		return _C
-	def throw_if_file_path_invalid(B,value):
-		A=_Path(value)
-		if not A.is_file():raise ValueError(f"file path '{A}' is invalid")
-		return _C
-	def throw_if_folder_path_invalid(B,value):
-		A=_Path(value)
-		if not A.is_dir():raise ValueError(f"folder path '{A}' is invalid")
-		return _C
-	def is_filesystem_path_valid(B,value):A=_Path(value).exists();return A
-	def is_file_path_valid(B,value):A=_Path(value).is_file();return A
-	def is_folder_path_valid(B,value):A=_Path(value).is_dir();return A
-	def clean_filesystem_path(E,path):
-		C=path;B=_Path(C).resolve();D={_Path(''),_Path('/'),_Path.home()}
-		if B in D:raise ValueError(f"folder path '{C}' is protected")
-		if not B.exists():return _A
-		if not B.is_dir():raise ValueError(f"file path '{C}' is not a folder")
-		for A in B.iterdir():
-			if A.is_file()or A.is_symlink():A.unlink()
-			elif A.is_dir():_shutil.rmtree(A)
-		return _A
-	def copy_filesystem_path(C,first_path,second_path):
-		A=_Path(first_path);B=_Path(second_path)
-		if A.is_dir():_shutil.copytree(A,B,dirs_exist_ok=_A)
-		elif A.is_file():B.parent.mkdir(parents=_A,exist_ok=_A);_shutil.copy2(A,B)
-		else:return _C
-		return _A
-	def move_filesystem_path(C,first_path,second_path):B=_Path(first_path);A=_Path(second_path);A.parent.mkdir(parents=_A,exist_ok=_A);_shutil.move(str(B),str(A));return _A
-	def setup_filesystem_tree(D,parent_path,options):
-		B=_Path(parent_path)
-		if not B.exists():raise ValueError(f"filesystem path '{B}' is invalid")
-		B.mkdir(parents=_A,exist_ok=_A)
-		for A in options.entities or[]:
-			C=B/A.name
-			if isinstance(A,_FolderEntityFileSystemTreeSetupOptions):C.mkdir(parents=_A,exist_ok=_A);D.setup_filesystem_tree(C,A)
-			elif isinstance(A,_FileEntityFileSystemTreeSetupOptions):
-				if not C.exists():C.write_text(A.content,encoding=A.encoding)
-	def rename_filesystem_entity(A,source,destination):_Path(source).rename(destination);return _A
-	def setup_filesystem_tree_path(A,directory):_Path(directory).mkdir(parents=_A,exist_ok=_A);return _A
+    def __init__(self) -> None:
+        _handle_dynamic_imports()
+
+    def throw_if_filesystem_path_invalid(
+        self,
+        value: str,
+    ) -> bool:
+        path = _Path(value)
+
+        if not path.exists():
+            raise ValueError(
+                f"filesystem path '{path}' is invalid"
+            )
+
+        return False
+
+    def throw_if_file_path_invalid(
+        self,
+        value: str,
+    ) -> bool:
+        path = _Path(value)
+
+        if not path.is_file():
+            raise ValueError(
+                f"file path '{path}' is invalid"
+            )
+
+        return False
+
+    def throw_if_folder_path_invalid(
+        self,
+        value: str,
+    ) -> bool:
+        path = _Path(value)
+
+        if not path.is_dir():
+            raise ValueError(
+                f"folder path '{path}' is invalid"
+            )
+
+        return False
+
+    def is_filesystem_path_valid(
+        self,
+        value: str,
+    ) -> bool:
+        result: bool = _Path(value).exists()
+        return result
+
+    def is_file_path_valid(
+        self,
+        value: str,
+    ) -> bool:
+        result: bool = _Path(value).is_file()
+        return result
+
+    def is_folder_path_valid(
+        self,
+        value: str,
+    ) -> bool:
+        result: bool = _Path(value).is_dir()
+        return result
+
+    def clean_filesystem_path(
+        self,
+        path: str,
+    ) -> bool:
+        directory = _Path(path).resolve()
+
+        protected_paths = {
+            _Path(""),
+            _Path("/"),
+            _Path.home(),
+        }
+
+        if directory in protected_paths:
+            raise ValueError(
+                f"folder path '{path}' is protected"
+            )
+
+        if not directory.exists():
+            return True
+
+        if not directory.is_dir():
+            raise ValueError(
+                f"file path '{path}' is not a folder"
+            )
+
+        for item in directory.iterdir():
+            if item.is_file() or item.is_symlink():
+                item.unlink()
+
+            elif item.is_dir():
+                _shutil.rmtree(item)
+
+        return True
+
+    def copy_filesystem_path(
+        self,
+        first_path: str,
+        second_path: str,
+    ) -> bool:
+        fs_first_path = _Path(first_path)
+        fs_second_path = _Path(second_path)
+
+        if fs_first_path.is_dir():
+            _shutil.copytree(
+                fs_first_path,
+                fs_second_path,
+                dirs_exist_ok=True,
+            )
+
+        elif fs_first_path.is_file():
+            fs_second_path.parent.mkdir(
+                parents=True,
+                exist_ok=True,
+            )
+
+            _shutil.copy2(
+                fs_first_path,
+                fs_second_path,
+            )
+
+        else:
+            return False
+
+        return True
+
+    def move_filesystem_path(
+        self,
+        first_path: str,
+        second_path: str,
+    ) -> bool:
+        source = _Path(first_path)
+        destination = _Path(second_path)
+
+        destination.parent.mkdir(
+            parents=True,
+            exist_ok=True,
+        )
+
+        _shutil.move(
+            str(source),
+            str(destination),
+        )
+
+        return True
+
+    def setup_filesystem_tree(
+        self,
+        parent_path: str,
+        options: FolderEntityFileSystemTreeSetupOptions,
+    ) -> None:
+        path = _Path(parent_path)
+
+        if not path.exists():
+            raise ValueError(
+                f"filesystem path '{path}' is invalid"
+            )
+
+        path.mkdir(
+            parents=True,
+            exist_ok=True,
+        )
+
+        for entity in options.entities or []:
+            entity_path = path / entity.name
+
+            if isinstance(
+                entity,
+                _FolderEntityFileSystemTreeSetupOptions,
+            ):
+                entity_path.mkdir(
+                    parents=True,
+                    exist_ok=True,
+                )
+
+                self.setup_filesystem_tree(
+                    entity_path,
+                    entity,
+                )
+
+            elif isinstance(
+                entity,
+                _FileEntityFileSystemTreeSetupOptions,
+            ):
+                if not entity_path.exists():
+                    entity_path.write_text(
+                        entity.content,
+                        encoding=entity.encoding,
+                    )
+
+    def rename_filesystem_entity(
+        self,
+        source: str,
+        destination: str,
+    ) -> bool:
+        _Path(source).rename(destination)
+
+        return True
+
+    def setup_filesystem_tree_path(
+        self,
+        directory: str,
+    ) -> bool:
+        _Path(directory).mkdir(
+            parents=True,
+            exist_ok=True,
+        )
+
+        return True
+

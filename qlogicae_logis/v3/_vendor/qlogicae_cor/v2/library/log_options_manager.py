@@ -1,14 +1,59 @@
 from __future__ import annotations
-_A=None
-__all__='LogOptionsManager',
-from typing import TYPE_CHECKING,Any
-if TYPE_CHECKING:from.log_options import LogOptions
-_logging=_A
-_LogOptions=_A
-def _handle_dynamic_imports():global _handle_dynamic_imports;global _logging;global _LogOptions;import logging as A;from.log_options import LogOptions as B;_logging=A;_LogOptions=B;_handle_dynamic_imports=lambda:_A
+
+__all__ = (
+    "LogOptionsManager",
+)
+
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+
+    from .log_options import (
+        LogOptions,
+    )
+
+_logging: Any = None
+_LogOptions: Any = None
+
+
+def _handle_dynamic_imports() -> None:
+    global _handle_dynamic_imports
+    global _logging
+    global _LogOptions
+
+    import logging
+
+    from .log_options import (
+        LogOptions,
+    )
+
+    _logging = logging
+    _LogOptions = (
+        LogOptions
+    )
+
+    _handle_dynamic_imports = lambda: None
+
+
 class LogOptionsManager:
-	def __init__(A):_handle_dynamic_imports()
-	def generate_modified_defaults(D,default_log_options,log_level=_A):
-		B=log_level;A=default_log_options
-		if B is _A:B=_logging.DEBUG
-		C=_LogOptions(is_enabled=A.is_enabled,is_verbose_enabled=A.is_verbose_enabled,log_level=B,stack_level=A.stack_level);return C
+    def __init__(self) -> None:
+        _handle_dynamic_imports()
+
+    def generate_modified_defaults(
+        self,
+        default_log_options: LogOptions,
+        log_level: object | None = None,
+    ) -> LogOptions:
+        if log_level is None:
+            log_level = _logging.DEBUG
+
+        value: LogOptions = _LogOptions(
+            is_enabled=default_log_options.is_enabled,
+            is_verbose_enabled=(
+                default_log_options.is_verbose_enabled
+            ),
+            log_level=log_level,
+            stack_level=default_log_options.stack_level,
+        )
+
+        return value
