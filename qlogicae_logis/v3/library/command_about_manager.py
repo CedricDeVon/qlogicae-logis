@@ -79,8 +79,10 @@ class CommandAboutManager:
     def __init__(self) -> None:
         _handle_dynamic_imports()
 
-        self._command_storage_manager = _ImportManager.read_singleton(
-            _CommandStorageManager
+        self._command_storage_manager = (
+            _ImportManager.read_singleton(
+                _CommandStorageManager
+            )
         )
         self._display_manager = (
             _ImportManager.read_singleton(
@@ -114,7 +116,8 @@ class CommandAboutManager:
         )
         self._command_storage_manager.add_commands((
             (
-                self._task_manager.setup_command_name("about_version"),
+                self._command_storage_manager
+                    .read_command_name("about_version"),
                 self.run_command_about_version,
             ),
         ))

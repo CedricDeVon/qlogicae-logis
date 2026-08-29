@@ -115,11 +115,13 @@ class CommandWorkflowManager:
 
         self._command_storage_manager.add_commands((
             (
-                self._task_manager.setup_command_name("workflow_run"),
+                self._command_storage_manager
+                    .read_command_name("workflow_run"),
                 self.run_command_workflow_run,
             ),
             (
-                self._task_manager.setup_command_name("workflow_list_selections"),
+                self._command_storage_manager
+                    .read_command_name("workflow_list_selections"),
                 self.run_command_workflow_list_selections,
             ),
         ))
@@ -129,6 +131,9 @@ class CommandWorkflowManager:
         self,
         **kwargs: Any
     ) -> bool:
+        if not kwargs:
+            return False
+
         def handle_workflow_run_target(
             workflow_target: str
         ) -> bool:
@@ -146,9 +151,10 @@ class CommandWorkflowManager:
                 return False
 
             workflow_selection_data_is_enabled_value = (
-                workflow_selection
-                    .get("is-enabled", {})
-                    .get("value", True)
+                self._value_cache_database_manager
+                    .read_object_is_enabled_value(
+                        workflow_selection
+                    )
             )
             if not workflow_selection_data_is_enabled_value:
                 return False
@@ -163,29 +169,32 @@ class CommandWorkflowManager:
                 return False
 
             workflow_selection_scripts = (
-                workflow_selection
-                    .get("scripts", {})
+                self._value_cache_database_manager
+                    .read_object_scripts(
+                        workflow_selection
+                    )
             )
             workflow_selection_delay_value = (
-                workflow_selection
-                    .get("delay", {})
-                    .get("value", 0)
+                self._value_cache_database_manager
+                    .read_object_delay_value(
+                        workflow_selection
+                    )
             )
             workflow_selection_delay_value = (
                 workflow_selection_delay_value
                 if workflow_selection_delay_value >= 0
                 else 0
             )
-            workflow_selection_is_atmoic_value = (
-                workflow_selection
-                    .get("is-atmoic", {})
-                    .get("value", False)
-            )
             workflow_selection_filesystem_path_value = (
-                workflow_selection
-                    .get("filesystem-path", {})
-                    .get("value", root_filesystem_path)
+                self._value_cache_database_manager
+                    .read_object_filesystem_path_value(
+                        workflow_selection
+                    )
             )
+            if not workflow_selection_filesystem_path_value:
+                workflow_selection_filesystem_path_value = (
+                    root_filesystem_path
+                )
 
             self._import_manager.time_delay(
                 value=workflow_selection_delay_value
@@ -196,9 +205,10 @@ class CommandWorkflowManager:
                     continue
 
                 workflow_selection_script_is_enabled_value = (
-                    workflow_selection_script
-                        .get("is-enabled", {})
-                        .get("value", True)
+                    self._value_cache_database_manager
+                        .read_object_is_enabled_value(
+                            workflow_selection_script
+                        )
                 )
                 if not workflow_selection_script_is_enabled_value:
                     continue
@@ -213,28 +223,33 @@ class CommandWorkflowManager:
                     continue
 
                 workflow_selection_script_run_value = (
-                    workflow_selection_script
-                        .get("run", {})
-                        .get("value", "")
+                    self._value_cache_database_manager
+                        .read_object_run_value(
+                            workflow_selection_script
+                        )
                 )
                 if not workflow_selection_script_run_value:
                     continue
 
                 workflow_selection_script_process_value = (
-                    workflow_selection_script
-                        .get("process", {})
-                        .get("value", "shell")
+                    self._value_cache_database_manager
+                        .read_object_process_value(
+                            workflow_selection_script
+                        )
                 )
 
                 workflow_selection_script_argument = (
-                    workflow_selection_script
-                        .get("argument", {})
+                    self._value_cache_database_manager
+                        .read_object_argument(
+                            workflow_selection_script
+                        )
                 )
 
                 workflow_selection_script_delay_value = (
-                    workflow_selection_script
-                        .get("delay", {})
-                        .get("value", 0)
+                    self._value_cache_database_manager
+                        .read_object_delay_value(
+                            workflow_selection_script
+                        )
                 )
                 workflow_selection_script_delay_value = (
                     workflow_selection_script_delay_value
@@ -259,16 +274,16 @@ class CommandWorkflowManager:
                     )
 
                 else:
-                    cli_output = {}
-                    if workflow_selection_script_process_value == "shell":
-                        cli_output = self._import_manager.run_shell_command(
-                            command=workflow_selection_script_run_value
+                    cli_output = (
+                        self._import_manager.run_command(
+                            script_process=workflow_selection_script_process_value,
+                            command=workflow_selection_script_run_value,
                         )
+                    )
 
-                    elif workflow_selection_script_process_value == "subprocess":
-                        cli_output = self._import_manager.run_subprocess_command(
-                            command=workflow_selection_script_run_value
-                        )
+                    self._import_manager.log_cache_info_to_file(
+                        message=f"{cli_output}"
+                    )
 
             return True
 
@@ -296,12 +311,6 @@ class CommandWorkflowManager:
         data_workflow_selections = (
             self._value_cache_database_manager
                 .read_workflow_selection()
-        )
-        workflow_selections = (
-            self._database_manager
-                .read_object_selection_origins(
-                    data_workflow_selections
-                )
         )
 
         for target in targets:

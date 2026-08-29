@@ -131,27 +131,33 @@ class CommandWorkspaceManager:
 
         self._command_storage_manager.add_commands((
             (
-                self._task_manager.setup_command_name("workspace_export"),
+                self._command_storage_manager
+                    .read_command_name("workspace_export"),
                 self.run_command_workspace_export,
             ),
             (
-                self._task_manager.setup_command_name("workspace_import"),
+                self._command_storage_manager
+                    .read_command_name("workspace_import"),
                 self.run_command_workspace_import,
             ),
             (
-                self._task_manager.setup_command_name("workspace_setup"),
+                self._command_storage_manager
+                    .read_command_name("workspace_setup"),
                 self.run_command_workspace_setup,
             ),
             (
-                self._task_manager.setup_command_name("workspace_replenish"),
+                self._command_storage_manager
+                    .read_command_name("workspace_replenish"),
                 self.run_command_workspace_replenish,
             ),
             (
-                self._task_manager.setup_command_name("workspace_install"),
+                self._command_storage_manager
+                    .read_command_name("workspace_install"),
                 self.run_command_workspace_install,
             ),
             (
-                self._task_manager.setup_command_name("workspace_list_exports"),
+                self._command_storage_manager
+                    .read_command_name("workspace_list_exports"),
                 self.run_command_workspace_list_exports,
             ),
         ))
@@ -161,6 +167,9 @@ class CommandWorkspaceManager:
         self,
         **kwargs: Any
     ) -> bool:
+        if not kwargs:
+            return False
+
         def handle_workspace_export_group(target: str) -> bool:
             if not target or target not in command_export_group:
                 return False
@@ -169,19 +178,25 @@ class CommandWorkspaceManager:
                 command_export_group[target]
             )
             is_enabled_value = (
-                export_group
-                    .get("is-enabled", {})
-                    .get("value", True)
+                self._value_cache_database_manager
+                    .read_object_is_enabled_value(
+                        export_group
+                    )
             )
             if not is_enabled_value:
                 return False
 
             export_group_selections = (
-                export_group
-                    .get("selection", {})
+                self._value_cache_database_manager
+                    .read_object_is_enabled_value(
+                        export_group
+                    )
             )
 
             for key in export_group_selections:
+                if not key:
+                    continue
+
                 if key in command_export_group:
                     handle_workspace_export_group(
                         key
@@ -207,18 +222,19 @@ class CommandWorkspaceManager:
                     )
 
             export_selection_is_enabled_value = (
-                export_selection
-                    .get("is-enabled", {})
-                    .get("value", True)
+                self._value_cache_database_manager
+                    .read_object_is_enabled_value(
+                        export_selection
+                    )
             )
             if not export_selection_is_enabled_value:
                 return False
 
             export_selection_input_exclude_targets = (
-                export_selection
-                    .get("input", {})
-                    .get("exclude", {})
-                    .get("targets", [])
+                self._value_cache_database_manager
+                    .read_object_input_exclude_targets(
+                        export_selection
+                    )
             )
             export_selection_input_exclude_targets = (
                 self._value_cache_database_manager
@@ -227,10 +243,10 @@ class CommandWorkspaceManager:
                     )
             )
             export_selection_input_include_targets = (
-                export_selection
-                    .get("input", {})
-                    .get("include", {})
-                    .get("targets", [])
+                self._value_cache_database_manager
+                    .read_object_input_include_targets(
+                        export_selection
+                    )
             )
             export_selection_input_include_targets = (
                 self._value_cache_database_manager
@@ -247,9 +263,10 @@ class CommandWorkspaceManager:
             )
 
             export_selection_output_targets = (
-                export_selection
-                    .get("output", {})
-                    .get("targets", [])
+                self._value_cache_database_manager
+                    .read_object_output_targets(
+                        export_selection
+                    )
             )
             export_selection_output_targets = (
                 self._value_cache_database_manager
@@ -258,34 +275,34 @@ class CommandWorkspaceManager:
                     )
             )
             export_selection_compression_format_value = (
-                export_selection
-                    .get("compression", {})
-                    .get("format", {})
-                    .get("value", "zip")
+                self._value_cache_database_manager
+                    .read_object_compression_format_value(
+                        export_selection
+                    )
             )
             export_selection_compression_type_value = (
-                export_selection
-                    .get("compression", {})
-                    .get("type", {})
-                    .get("value", "deflated")
+                self._value_cache_database_manager
+                    .read_object_compression_type_value(
+                        export_selection
+                    )
             )
             export_selection_compression_level_value = (
-                export_selection
-                    .get("compression", {})
-                    .get("level", {})
-                    .get("value", 6)
+                self._value_cache_database_manager
+                    .read_object_compression_level_value(
+                        export_selection
+                    )
             )
             export_selection_compression_is_zip_64_allowed_value = (
-                export_selection
-                    .get("compression", {})
-                    .get("is-zip-64-allowed", {})
-                    .get("value", True)
+                self._value_cache_database_manager
+                    .read_object_compression_is_zip_64_allowed_value(
+                        export_selection
+                    )
             )
             export_selection_compression_is_timestamp_strict_value = (
-                export_selection
-                    .get("compression", {})
-                    .get("is-timestamp-strict", {})
-                    .get("value", True)
+                self._value_cache_database_manager
+                    .read_object_compression_is_timestamp_strict_value(
+                        export_selection
+                    )
             )
 
             temporary_copy_items = []
@@ -431,6 +448,9 @@ class CommandWorkspaceManager:
         self,
         **kwargs: Any
     ) -> bool:
+        if not kwargs:
+            return False
+
         self._task_manager.run_task_common_setup()
 
         input_path = kwargs.get("input_path", "")
@@ -872,8 +892,166 @@ class CommandWorkspaceManager:
         self,
         **kwargs: Any
     ) -> bool:
-        self._task_manager.run_task_common_setup()
+        if not kwargs:
+            return False
 
-        # targets = kwargs.get("targets", [])
+        def handle_workspace_install(target: str) -> bool:
+            if not target or target not in selection_projects:
+                return False
+
+            selection_project_installation = (
+                data_selection_projects
+                    .get(target, {})
+                    .get("installation", {})
+            )
+            if not selection_project_installation:
+                return False
+
+            selection_project_installation_is_enabled_value = (
+                self._value_cache_database_manager
+                    .read_object_is_enabled_value(
+                        selection_project_installation
+                    )
+            )
+            if not selection_project_installation_is_enabled_value:
+                return False
+
+            selection_project_installation_is_operating_system_included = (
+                self._value_cache_database_manager
+                    .read_is_object_operating_system_included(
+                        selection_project_installation
+                    )
+            )
+            if not selection_project_installation_is_operating_system_included:
+                return False
+
+            selection_project_installation_filesystem_path_value = (
+                self._value_cache_database_manager
+                    .read_object_filesystem_path_value(
+                        selection_project_installation
+                    )
+            )
+            if not selection_project_installation_filesystem_path_value:
+                return False
+
+            selection_project_installation_scripts = (
+                self._value_cache_database_manager
+                    .read_object_scripts(
+                        selection_project_installation
+                    )
+            )
+            selection_project_installation_delay_value = (
+                self._value_cache_database_manager.read_object_delay_value(
+                    selection_project_installation
+                )
+            )
+            self._import_manager.time_delay(
+                value=selection_project_installation_delay_value
+            )
+
+            self._task_manager.navigate_via_filesystem_path(
+                selection_project_installation_filesystem_path_value
+            )
+
+            for installation_script in selection_project_installation_scripts:
+                if not installation_script:
+                    continue
+
+                installation_script_is_enabled_value = (
+                    self._value_cache_database_manager
+                        .read_object_is_enabled_value(
+                            installation_script
+                        )
+                )
+                if not installation_script_is_enabled_value:
+                    continue
+
+                installation_script_is_operating_system_included = (
+                    self._value_cache_database_manager
+                        .read_is_object_operating_system_included(
+                            installation_script
+                        )
+                )
+                if not installation_script_is_operating_system_included:
+                    continue
+
+                installation_script_run_value = (
+                    self._value_cache_database_manager
+                        .read_object_run_value(
+                            installation_script
+                        )
+                )
+                if not installation_script_run_value:
+                    continue
+
+                installation_script_process_value = (
+                    self._value_cache_database_manager
+                        .read_object_process_value(
+                            installation_script
+                        )
+                )
+
+                installation_script_delay_value = (
+                    self._value_cache_database_manager.read_object_delay_value(
+                        installation_script
+                    )
+                )
+
+                self._import_manager.time_delay(
+                    value=installation_script_delay_value
+                )
+
+                cli_output = (
+                    self._import_manager.run_command(
+                        script_process=installation_script_process_value,
+                        command=installation_script_run_value,
+                    )
+                )
+
+                self._import_manager.log_cache_info_to_file(
+                    message=f"{cli_output}"
+                )
+
+            self._task_manager.navigate_via_filesystem_path(
+                root_filesystem_path
+            )
+
+            return True
+
+
+        self._task_manager.run_task_common_setup()
+        self._task_manager.run_task_workspace_default_setup()
+        self._task_manager.run_task_workspace_group_setup()
+        self._task_manager.run_task_workspace_project_setup()
+        self._task_manager.run_task_filesystem_clean_exclude_setup()
+        self._task_manager.run_task_filesystem_clean_include_setup()
+
+        targets = kwargs.get("targets", [])
+        if not targets or len(targets) < 1:
+            return False
+
+        root_filesystem_path = (
+            self._value_cache_database_manager
+                .read_root_filesystem_path()
+        )
+        data_selection_projects = (
+            self._value_cache_database_manager
+                .read_configuration_workspace_data_workspace_project_selection()
+        )
+        selection_projects = (
+            self._value_cache_database_manager
+                .read_workspace_project()
+        )
+
+        for target in targets:
+            if not target or target not in selection_projects:
+                continue
+
+            handle_workspace_install(
+                selection_projects.get(
+                    target,
+                    ""
+                )
+            )
 
         return True

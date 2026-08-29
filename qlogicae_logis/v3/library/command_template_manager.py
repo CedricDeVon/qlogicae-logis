@@ -115,11 +115,13 @@ class CommandTemplateManager:
 
         self._command_storage_manager.add_commands((
             (
-                self._task_manager.setup_command_name("template_apply"),
+                self._command_storage_manager
+                    .read_command_name("template_apply"),
                 self.run_command_template_apply,
             ),
             (
-                self._task_manager.setup_command_name("template_list_selections"),
+                self._command_storage_manager
+                    .read_command_name("template_list_selections"),
                 self.run_command_template_list_selections,
             ),
         ))
@@ -129,12 +131,18 @@ class CommandTemplateManager:
         self,
         **kwargs: Any
     ) -> bool:
+        if not kwargs:
+            return False
+
         def handle_target_root() -> bool:
             destination_temporary_target_filesystem_path = (
                 f"{temporary_template_output_filesystem_path}/root/filesystem"
             )
 
             for accessibility_type in default_filesystem_accessibility_types:
+                if not accessibility_type:
+                    continue
+
                 source_all_filesystem_path = (
                     f"{root_workspace_filesystem_path}/{accessibility_type}/template/all/filesystem"
                 )
@@ -173,6 +181,9 @@ class CommandTemplateManager:
 
         def handle_target_group() -> bool:
             for selection_group in selection_groups:
+                if not selection_group:
+                    continue
+
                 handle_target_group_selection(
                     selection_group
                 )
@@ -181,6 +192,9 @@ class CommandTemplateManager:
 
         def handle_target_project() -> bool:
             for selection_project in selection_projects:
+                if not selection_project:
+                    continue
+
                 handle_target_project_selection(
                     selection_project
                 )
@@ -205,6 +219,9 @@ class CommandTemplateManager:
                 f"{temporary_template_output_filesystem_path}/group/selection/{group_target}/filesystem"
             )
             for accessibility_type in default_filesystem_accessibility_types:
+                if not accessibility_type:
+                    continue
+
                 source_all_filesystem_path = (
                     f"{root_workspace_filesystem_path}/{accessibility_type}/template/all/filesystem"
                 )
@@ -243,6 +260,9 @@ class CommandTemplateManager:
             )
 
             for selection_group_target in selection_group_targets:
+                if not selection_group_target:
+                    continue
+
                 if selection_group_target == "root":
                     source_temporary_target_filesystem_path = (
                         f"{temporary_template_output_filesystem_path}/root/filesystem"
@@ -295,6 +315,7 @@ class CommandTemplateManager:
                     .get("filesystem-path", {})
                     .get("value", "")
             )
+
             if not selection_project_filesystem_path_value:
                 return False
 
@@ -302,6 +323,9 @@ class CommandTemplateManager:
                 f"{temporary_template_output_filesystem_path}/project/selection/{project_target}/filesystem"
             )
             for accessibility_type in default_filesystem_accessibility_types:
+                if not accessibility_type:
+                    continue
+
                 source_all_filesystem_path = (
                     f"{root_workspace_filesystem_path}/{accessibility_type}/template/all/filesystem"
                 )
@@ -353,9 +377,9 @@ class CommandTemplateManager:
         self._task_manager.run_task_filesystem_clean_exclude_setup()
         self._task_manager.run_task_filesystem_clean_include_setup()
 
-        targets = kwargs.get("targets", ["all"])
-        if len(targets) < 1:
-            return False
+        targets = kwargs.get("targets", ["all"])        
+        if not targets or len(targets) < 1:
+            targets = ["all"]
 
         macros_data = (
             self._value_cache_database_manager

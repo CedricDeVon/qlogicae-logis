@@ -2,17 +2,8 @@ workspace:
   project:
     selection:
       qlogicae-pondux:
-        # filesystem-path:
-        #   value: ${{ selection-filesystem-path }}/qlogicae-pondux
-
-# script:
-#   targets:      
-#     qlogicae-pondux-deploy:
-#       enter-filesystem-path:
-#         value: ${{ selection-filesystem-path }}/qlogicae-pondux
-        
-#       commands:
-#         - run: bun run workflow:deploy
+        filesystem-path:
+          value: ${{ selection-filesystem-path }}/qlogicae-pondux
 
 macros:
   static:  

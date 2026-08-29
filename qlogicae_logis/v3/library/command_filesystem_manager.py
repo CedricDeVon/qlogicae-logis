@@ -114,35 +114,43 @@ class CommandFilesystemManager:
 
         self._command_storage_manager.add_commands((
             (
-                self._task_manager.setup_command_name("filesystem_copy"),
+                self._command_storage_manager
+                    .read_command_name("filesystem_copy"),
                 self.run_command_filesystem_copy,
             ),
             (
-                self._task_manager.setup_command_name("filesystem_move"),
+                self._command_storage_manager
+                    .read_command_name("filesystem_move"),
                 self.run_command_filesystem_move,
             ),
             (
-                self._task_manager.setup_command_name("filesystem_rename"),
+                self._command_storage_manager
+                    .read_command_name("filesystem_rename"),
                 self.run_command_filesystem_rename,
             ),
             (
-                self._task_manager.setup_command_name("filesystem_tree_setup"),
+                self._command_storage_manager
+                    .read_command_name("filesystem_tree_setup"),
                 self.run_command_filesystem_tree_setup,
             ),
             (
-                self._task_manager.setup_command_name("filesystem_clean_path"),
+                self._command_storage_manager
+                    .read_command_name("filesystem_clean_path"),
                 self.run_command_filesystem_clean_path,
             ),
             (
-                self._task_manager.setup_command_name("filesystem_clean_selection"),
+                self._command_storage_manager
+                    .read_command_name("filesystem_clean_selection"),
                 self.run_command_filesystem_clean_selection,
             ),
             (
-                self._task_manager.setup_command_name("filesystem_clean_list_included"),
+                self._command_storage_manager
+                    .read_command_name("filesystem_clean_list_included"),
                 self.run_command_filesystem_clean_list_included,
             ),
             (
-                self._task_manager.setup_command_name("filesystem_clean_list_excluded"),
+                self._command_storage_manager
+                    .read_command_name("filesystem_clean_list_excluded"),
                 self.run_command_filesystem_clean_list_excluded,
             ),
         ))
@@ -152,6 +160,9 @@ class CommandFilesystemManager:
         self,
         **kwargs: Any
     ) -> bool:
+        if not kwargs:
+            return False
+
         self._task_manager.run_task_common_setup()
 
         value: bool = self._import_manager.copy_filesystem_paths(
@@ -165,6 +176,9 @@ class CommandFilesystemManager:
         self,
         **kwargs: Any
     ) -> bool:
+        if not kwargs:
+            return False
+
         self._task_manager.run_task_common_setup()
 
         value: bool = self._import_manager.move_filesystem_path(
@@ -178,6 +192,9 @@ class CommandFilesystemManager:
         self,
         **kwargs: Any
     ) -> bool:
+        if not kwargs:
+            return False
+
         self._task_manager.run_task_common_setup()
 
         value: bool = self._import_manager.rename_filesystem_entity(
@@ -191,6 +208,9 @@ class CommandFilesystemManager:
         self,
         **kwargs: Any
     ) -> bool:
+        if not kwargs:
+            return False
+
         self._task_manager.run_task_common_setup()
 
         value: bool = self._import_manager.setup_filesystem_tree_paths(
@@ -204,6 +224,9 @@ class CommandFilesystemManager:
         self,
         **kwargs: Any
     ) -> bool:
+        if not kwargs:
+            return False
+
         self._task_manager.run_task_common_setup()
         self._task_manager.run_task_filesystem_clean_exclude_setup()
 
@@ -215,10 +238,7 @@ class CommandFilesystemManager:
             self._value_cache_database_manager.read_filesystem_clean_excluded()
         ) or {}
         for target_path in target_paths:
-            if not target_path:
-                continue
-
-            if target_path in excluded:
+            if not target_path or target_path in excluded:
                 continue
 
             self._import_manager.clean_filesystem_paths(
@@ -232,6 +252,9 @@ class CommandFilesystemManager:
         self,
         **kwargs: Any
     ) -> bool:
+        if not kwargs:
+            return False
+
         self._task_manager.run_task_common_setup()
         self._task_manager.run_task_filesystem_clean_include_setup()
         self._task_manager.run_task_filesystem_clean_exclude_setup()

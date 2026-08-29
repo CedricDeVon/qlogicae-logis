@@ -13,16 +13,13 @@ DATA: dict[str, dict[str, Any]]= {
     "debug": {
         "is-enabled": {
             "value": True
-        }        
+        }
     },
 }
 
 METADATA: dict[str, dict[str, Any]] = {    
 
 }
-
-
-
 
 
 

@@ -1,13 +1,5 @@
-# workspace:
-#   is-enabled:
-#     value: true
-
-# workflow:
-#   is-enabled:
-#     value: true
-
 command:
-  template:
+  template: ##
     cleanup:
       before:
         is-enabled:
@@ -19,18 +11,6 @@ command:
 
   filesystem: ##
     clean:
-      # is-enabled:
-      #   value: true
-
-      # default:
-      #   include:
-      #     is-enabled:
-      #       value: true
-
-      #   exclude:
-      #     is-enabled:
-      #       value: true
-
       exclude:
         targets:
           - filesystem-path:
@@ -38,13 +18,6 @@ command:
 
           - filesystem-path:
               value: ${{ root-filesystem-path }}/others
-
-            # pattern:
-            #   value: "*"
-
-            # operating-system:
-            #   exclude:
-            #     Linux-x86_64:
 
           - filesystem-path:
               value: ${{ root-filesystem-path }}/project
@@ -58,12 +31,12 @@ command:
             alias:
               benchmarks:
 
-            # operating-system:
-            #   exclude:
-            #     Linux-x86_64:
+            operating-system:
+              exclude:
+                Windows-x86_64:
 
-              # include:
-              #   Linux-x86_64:
+              include:
+                Linux-x86_64:
 
             targets:
               - filesystem-path:
@@ -192,9 +165,9 @@ log: ##
     is-verbose: 
       value: true
 
-    targets:
-      - filesystem-path:
-          value: output.log
+    # targets:
+    #   - filesystem-path:
+    #       value: output.log
 
   console:
     is-enabled:
@@ -203,10 +176,12 @@ log: ##
     is-verbose: 
       value: true
 
+
 plugin: ##
   import:
     is-enabled:
       value: true
+
 
 display: ##
   console:
@@ -230,7 +205,7 @@ display: ##
         value: green
 
       maximum-depth:
-        value: 14
+        value: 6
 
       is-skipped:
         value: True
@@ -240,6 +215,7 @@ display: ##
 
       vertical-count:
         value: 0
+
 
 macros: ##
   static:

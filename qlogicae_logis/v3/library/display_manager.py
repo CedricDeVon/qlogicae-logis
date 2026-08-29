@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-import sys
 from typing import Any
 
 __all__ = (
     "DisplayManager"
 )
 
+_sys: Any = None
 _Mapping: Any = None
 _Sequence: Any = None
 _TaskManager: Any = None
@@ -18,6 +18,7 @@ _ValueCacheDatabaseManager: Any = None
 
 def _handle_dynamic_imports() -> None:
     global _handle_dynamic_imports
+    global _sys
     global _Mapping
     global _Sequence
     global _TaskManager
@@ -26,6 +27,7 @@ def _handle_dynamic_imports() -> None:
     global _CommandStorageManager
     global _ValueCacheDatabaseManager
 
+    import sys
     from collections.abc import Mapping, Sequence
 
     from ..library import (
@@ -35,6 +37,7 @@ def _handle_dynamic_imports() -> None:
         value_cache_database_manager,
     )
 
+    _sys = sys
     _Mapping = Mapping
     _Sequence = Sequence
     _TaskManager = (
@@ -170,7 +173,7 @@ class DisplayManager:
         self,
         color: str,
     ) -> str:
-        if not sys.stdout.isatty():
+        if not _sys.stdout.isatty() or not color:
             return ""
 
         return self._color_codes.get(
@@ -181,17 +184,22 @@ class DisplayManager:
         self,
         **kwargs: Any,
     ) -> None:
+        if not kwargs:
+            return
+
         print(
             self.color_value(
                 kwargs.get("value", "")
             )
         )
 
-
     def display_tree_object(
         self,
         **kwargs: Any,
     ) -> None:
+        if not kwargs:
+            return
+
         maximum_depth: int | None = (
             self._value_cache_database_manager
                 .read_configuration_workspace_data_display_console_style_maximum_depth_value()

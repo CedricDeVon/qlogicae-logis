@@ -2,12 +2,15 @@ workspace:
   project:
     selection:
       qlogicae-logis:
-        alias:
-          ql:
+        filesystem-path:
+          value: ${{ qlogicae-logis-selection-project-filesystem-path }}
 
         installation:
-          # is-enabled:
-          #   value: true
+          is-enabled:
+            value: true
+
+          delay:
+            value: 0
 
           filesystem-path:
             value: ${{ qlogicae-logis-selection-project-filesystem-path }}
@@ -22,16 +25,6 @@ workflow:
       filesystem-path:
         value: ${{ qlogicae-logis-selection-project-filesystem-path }}
         
-      alias:
-        ql:
-
-      # operating-system:
-      #   exclude:
-      #     Linux-x86_64:
-
-      #   include:
-      #     Linux-x86_64:
-
       scripts:          
         - run:
             value: qlogicae-logis-pre-workflow
@@ -50,6 +43,7 @@ workflow:
 
         # - run:
         #     value: qlogicae-logis-test-benchmark-memory-usage-view
+
         - run:
             value: qlogicae-logis-build
             
@@ -111,7 +105,7 @@ workflow:
             value: hatch run test-benchmark-memory-usage-view      
           
         # - run:
-        #     value: filesystem-move        
+        #     value: command-filesystem-move        
         #   argument:
         #     source_path: scalene-profile.html
         #     target_path: ${{ qlogicae-logis-output-test-benchmark-filesystem-path }}/scalene-profile.html
@@ -138,7 +132,7 @@ workflow:
             value: hatch build
 
         - run:
-            value: filesystem-move       
+            value: command-filesystem-move       
           argument:
             source_path: dist
             target_path: ${{ qlogicae-logis-output-build-release-filesystem-path }}
@@ -191,7 +185,7 @@ workflow:
 
       scripts:
         - run:
-            value: filesystem-clean-path
+            value: command-filesystem-clean-path
           argument:
             target_paths:
               - ${{ qlogicae-logis-selection-project-filesystem-path }}/dist
@@ -203,27 +197,27 @@ workflow:
             value: pip freeze > requirements.txt
 
         - run:
-            value: filesystem-copy          
+            value: command-filesystem-copy          
           argument:
             source_path: requirements.txt
             target_paths:
               - ${{ qlogicae-logis-selection-project-filesystem-path }}/requirements.txt
 
         - run:
-            value: template-apply        
+            value: command-template-apply        
           argument:
             targets:
               - qlogicae-logis-complex
 
         - run:
-            value: filesystem-copy          
+            value: command-filesystem-copy          
           argument:
             source_path: qlogicae_logis
             target_paths:
               - ${{ qlogicae-logis-selection-project-filesystem-path }}/qlogicae_logis
 
         - run:
-            value: filesystem-copy          
+            value: command-filesystem-copy          
           argument:
             source_path: .qlogicae
             target_paths:
@@ -231,14 +225,14 @@ workflow:
               - ${{ qlogicae-ensemble-selection-project-filesystem-path }}/.qlogicae
 
         - run:
-            value: filesystem-copy          
+            value: command-filesystem-copy          
           argument:
             source_path: test
             target_paths:
               - ${{ qlogicae-logis-selection-project-filesystem-path }}/test
 
         - run:
-            value: filesystem-tree-setup          
+            value: command-filesystem-tree-setup          
           argument:
             target_paths:
               - ${{ qlogicae-logis-selection-project-filesystem-path }}/archive
@@ -265,7 +259,7 @@ workflow:
         
       scripts:          
         - run:
-            value: filesystem-move         
+            value: command-filesystem-move         
           argument:
             source_path: output
             target_path: ${{ qlogicae-logis-archive-filesystem-path }}
@@ -277,11 +271,22 @@ workflow:
 
       scripts:
         - run:
-            value: filesystem-clean-path
+            value: command-filesystem-clean-path
           argument:
             target_paths:
               - dist
               - output
+              - qlogicae_logis/v3/__pycache__
+              - qlogicae_logis/v3/_vendor/__pycache__
+              - qlogicae_logis/v3/_vendor/pyyaml/__pycache__
+              - qlogicae_logis/v3/_vendor/pyyaml/yaml/__pycache__
+              - qlogicae_logis/v3/_vendor/qlogicae_cor/__pycache__
+              - qlogicae_logis/v3/_vendor/qlogicae_cor/v2/__pycache__
+              - qlogicae_logis/v3/_vendor/qlogicae_cor/v2/library/__pycache__
+              - qlogicae_logis/v3/console/__pycache__
+              - qlogicae_logis/v3/library/__pycache__
+              - qlogicae_logis/v3/project/__pycache__
+              - qlogicae_logis/v3/project/configuration/__pycache__
 
 macros:
   static:  

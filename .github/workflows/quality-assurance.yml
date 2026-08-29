@@ -46,7 +46,7 @@ jobs:
             run: pip install qlogicae-logis
 
           - name: Run 'demo'
-            run: qlogicae-logis-v3
+            run: qlogicae-logis about version
 
 
     # v2-type-check-testing:

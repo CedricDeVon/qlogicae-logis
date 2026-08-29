@@ -64,21 +64,21 @@ class ValueCacheManager:
 
     def is_key_found(
         self,
-        keys: tuple[str | int, ...],
+        key_path: tuple[str | int, ...],
     ) -> bool:
-        result: bool = self._value_cache_storage_manager.is_key_found(keys)
+        result: bool = self._value_cache_storage_manager.is_key_found(key_path)
 
         return result
 
     def get_one_value(
         self,
-        keys: tuple[str | int, ...],
+        key_path: tuple[str | int, ...],
         output_type: TargetCacheValue | None = None,
     ) -> object:
         if output_type is None:
             output_type = _TargetCacheValue.DEFINED
 
-        value = self._value_cache_storage_manager.get_one_value(keys)
+        value = self._value_cache_storage_manager.get_one_value(key_path)
 
         self.throw_if_value_is_explicitly_invalid(
             value,
@@ -89,7 +89,7 @@ class ValueCacheManager:
 
     def set_one_value(
         self,
-        keys: tuple[str | int, ...],
+        key_path: tuple[str | int, ...],
         value: object,
         output_type: TargetCacheValue | None = None,
     ) -> bool:
@@ -102,7 +102,7 @@ class ValueCacheManager:
         )
 
         result: bool = self._value_cache_storage_manager.set_one_value(
-            keys,
+            key_path,
             value,
         )
 
@@ -110,11 +110,11 @@ class ValueCacheManager:
 
     def remove_one_value(
         self,
-        keys: tuple[str | int, ...],
+        key_path: tuple[str | int, ...],
     ) -> bool:
-        self.throw_if_key_not_found(keys)
+        self.throw_if_key_not_found(key_path)
 
-        result: bool = self._value_cache_storage_manager.remove_one_value(keys)
+        result: bool = self._value_cache_storage_manager.remove_one_value(key_path)
 
         return result
 
@@ -168,11 +168,11 @@ class ValueCacheManager:
 
     def throw_if_key_not_found(
         self,
-        keys: tuple[str | int, ...],
+        key_path: tuple[str | int, ...],
     ) -> bool:
-        if not self._value_cache_storage_manager.is_key_found(keys):
+        if not self._value_cache_storage_manager.is_key_found(key_path):
             raise KeyError(
-                f"key path '{keys}' does not exist",
+                f"key path '{key_path}' does not exist",
             )
 
         return False

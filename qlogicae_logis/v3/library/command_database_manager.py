@@ -2,10 +2,10 @@ from __future__ import annotations
 
 from typing import Any
 
-from ..library.decorator_manager import DecoratorManager
+from .decorator_manager import DecoratorManager
 
 __all__ = (
-    "CommandCacheManager"
+    "CommandDatabaseManager"
 )
 
 _TaskManager: Any = None
@@ -27,7 +27,7 @@ def _handle_dynamic_imports() -> None:
     global _ValueCacheDatabaseManager
     global _PersistentCacheDatabasManager
 
-    from ..library import (
+    from . import (
         command_storage_manager,
         database_manager,
         display_manager,
@@ -64,7 +64,7 @@ def _handle_dynamic_imports() -> None:
 
     _handle_dynamic_imports = lambda: None
 
-class CommandCacheManager:
+class CommandDatabaseManager:
     __slots__ = (
         "_command_storage_manager",
         "_task_manager",
@@ -113,25 +113,32 @@ class CommandCacheManager:
         )
         self._command_storage_manager.add_commands((
             (
-                self._task_manager.setup_command_name("cache_view_disk"),
-                self.run_command_cache_view_disk,
+                self._command_storage_manager
+                    .read_command_name("cache_view_disk"),
+                self.run_command_database_view_disk,
             ),
             (
-                self._task_manager.setup_command_name("cache_view_value"),
-                self.run_command_cache_view_value,
+                self._command_storage_manager
+                    .read_command_name("cache_view_value"),
+                self.run_command_database_view_value,
             ),
             (
-                self._task_manager.setup_command_name("cache_clear_disk"),
-                self.run_command_cache_clear_disk,
+                self._command_storage_manager
+                    .read_command_name("cache_clear_disk"),
+                self.run_command_database_clear_disk,
             ),
             (
-                self._task_manager.setup_command_name("cache_clear_value"),
-                self.run_command_cache_clear_value,
+                self._command_storage_manager
+                    .read_command_name("cache_clear_value"),
+                self.run_command_database_clear_value,
             ),
         ))
 
     @_DecoratorManager.command_decorator
-    def run_command_cache_view_disk(self, **kwargs: Any) -> bool:
+    def run_command_database_view_disk(self, **kwargs: Any) -> bool:
+        if not kwargs:
+            return False
+
         self._task_manager.run_task_full_debug_disk_cache_setup()
 
         key_paths = kwargs.get("key_paths", [])
@@ -159,7 +166,10 @@ class CommandCacheManager:
         return True
 
     @_DecoratorManager.command_decorator
-    def run_command_cache_view_value(self, **kwargs: Any) -> bool:
+    def run_command_database_view_value(self, **kwargs: Any) -> bool:
+        if not kwargs:
+            return False
+
         key_paths = kwargs.get("key_paths", [])
 
         if len(key_paths) < 1:
@@ -183,7 +193,7 @@ class CommandCacheManager:
         return True
 
     @_DecoratorManager.command_decorator
-    def run_command_cache_clear_disk(self, **kwargs: Any) -> bool:
+    def run_command_database_clear_disk(self, **kwargs: Any) -> bool:
         self._task_manager.run_task_full_debug_disk_cache_setup()
 
         target_path = (
@@ -202,7 +212,7 @@ class CommandCacheManager:
         return True
 
     @_DecoratorManager.command_decorator
-    def run_command_cache_clear_value(self, **kwargs: Any) -> bool:
+    def run_command_database_clear_value(self, **kwargs: Any) -> bool:
         self._import_manager.clear_all_values_via_value_cache()
 
         return True

@@ -2,8 +2,8 @@ workspace:
   project:
     selection:
       qlogicae-ensemble:
-        # filesystem-path:
-        #   value: ${{ qlogicae-ensemble-selection-project-filesystem-path }}
+        filesystem-path:
+          value: ${{ qlogicae-ensemble-selection-project-filesystem-path }}
 
 workflow:
   is-enabled:
@@ -16,13 +16,13 @@ workflow:
 
       scripts:
         - run:
-            value: template-apply
+            value: command-template-apply
           argument:
             targets:
               - ${{ qlogicae-ensemble-base-brand-name }}
 
         - run:
-            value: filesystem-copy          
+            value: command-filesystem-copy          
           argument:
             source_path: ${{ root-filesystem-path }}/.qlogicae
             target_paths:

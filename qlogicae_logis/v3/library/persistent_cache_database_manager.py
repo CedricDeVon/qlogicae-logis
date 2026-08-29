@@ -59,7 +59,10 @@ class PersistentCacheDatabasManager:
             )
         )
 
-    def read_key_path(self, key_path: Any) -> Any:
+    def read_key_path(self, key_path: Any) -> str:
+        if not key_path:
+            return ""
+
         return "-".join(
             (
                 *self._database_manager.read_root_key_path(),
@@ -69,8 +72,11 @@ class PersistentCacheDatabasManager:
 
     def read_many_values(
         self,
-        key_paths: Any
+        key_paths: tuple[str, ...]
     ) -> Any:
+        if not key_paths or len(key_paths) < 1:
+            return {}
+
         values = []
         for key_path in key_paths:
             values.append(self.read_key_path(key_path))
@@ -85,7 +91,6 @@ class PersistentCacheDatabasManager:
 
     def read_all_values(
         self,
-        **kwargs: Any,
     ) -> dict[str, Any]:
         result: dict[str, Any] = (
             self._import_manager.read_all_values_via_disk_cache()
@@ -95,8 +100,11 @@ class PersistentCacheDatabasManager:
 
     def write_many_values(
         self,
-        values: Any
+        values: dict[str, Any]
     ) -> bool:
+        if not values or len(values) < 1:
+            return False
+
         data = {}
         for key_path, value in values.items():
             data[self.read_key_path(key_path)] = value
@@ -107,12 +115,113 @@ class PersistentCacheDatabasManager:
 
         return True
 
+    def read_configuration_workspace_key_path(
+        self,
+        **kwargs: Any
+    ) -> str:
+        if not kwargs:
+            return ""
+
+        value = kwargs.get("value", "")
+
+        return (
+            f"configuration-workspace-{value}"
+        )
+
+    def read_configuration_workspace_raw_value_key_path(
+        self,
+        **kwargs: Any,
+    ) -> str:
+        if not kwargs:
+            return ""
+
+        accessibility_type = kwargs.get("accessibility_type", "")
+        path = kwargs.get("path", "")
+
+        return (
+            self.read_configuration_workspace_key_path(
+                value=f"raw-{accessibility_type}-{path}-value"
+            )
+        )
+
+    def read_configuration_workspace_raw_count_value_key_path(
+        self,
+        **kwargs: Any,
+    ) -> str:
+        if not kwargs:
+            return ""
+
+        accessibility_type = kwargs.get("accessibility_type", "")
+
+        return (
+            self.read_configuration_workspace_key_path(
+                value=f"raw-count-{accessibility_type}-value"
+            )
+        )
+
+    def read_configuration_workspace_raw_metadata_value_key_path(
+        self,
+        **kwargs: Any,
+    ) -> str:
+        if not kwargs:
+            return ""
+
+        accessibility_type = kwargs.get("accessibility_type", "")
+        path = kwargs.get("path", "")
+
+        return (
+            self.read_configuration_workspace_key_path(
+                value=f"raw-{accessibility_type}-{path}-metadata-value"
+            )
+        )
+
+    def read_configuration_workspace_data_value_key_path(
+        self,
+        **kwargs: Any,
+    ) -> str:
+        if not kwargs:
+            return ""
+
+        accessibility_type = kwargs.get("accessibility_type", "")
+        path = kwargs.get("path", "")
+
+        return (
+            self.read_configuration_workspace_key_path(
+                value=f"data-{accessibility_type}-{path}-value"
+            )
+        )
+
+    def read_configuration_workspace_data_key_path(
+        self,
+    ) -> str:
+        return (
+            self.read_configuration_workspace_key_path(
+                value="data"
+            )
+        )
+
+    def read_refresh_data_key_path(
+        self,
+    ) -> str:
+        return (
+            "refresh-data"
+        )
+
     def read_configuration_workspace_file(
         self,
         accessibility_type: str,
         path: str,
     ) -> Any:
-        key_path = f"configuration-workspace-raw-{accessibility_type}-{path}-value"
+        if not accessibility_type or not path:
+            return {}
+
+        key_path = (
+            self.read_configuration_workspace_raw_value_key_path(
+                accessibility_type=accessibility_type,
+                path=path
+            )
+        )
+
         data: Any = self.read_many_values(
             (key_path,)
         )
@@ -127,9 +236,18 @@ class PersistentCacheDatabasManager:
         self,
         accessibility_type: str,
         path: str,
-        values: Any,
+        values: dict[str, Any],
     ) -> bool:
-        key_path = f"configuration-workspace-raw-{accessibility_type}-{path}-value"
+        if not accessibility_type or not path or not values:
+            return False
+
+        key_path = (
+            self.read_configuration_workspace_raw_value_key_path(
+                accessibility_type=accessibility_type,
+                path=path
+            )
+        )
+
         self.write_many_values(
             { key_path: values }
         )
@@ -141,9 +259,14 @@ class PersistentCacheDatabasManager:
         accessibility_type: str,
         path: str,
     ) -> Any:
+        if not accessibility_type or not path:
+            return {}
+
         key_path = (
-            "configuration-workspace-raw"
-            f"-{accessibility_type}-{path}-metadata-value"
+            self.read_configuration_workspace_raw_metadata_value_key_path(
+                accessibility_type=accessibility_type,
+                path=path
+            )
         )
         data: Any = self.read_many_values(
             (key_path,)
@@ -159,11 +282,16 @@ class PersistentCacheDatabasManager:
         self,
         accessibility_type: str,
         path: str,
-        values: Any,
+        values: dict[str, Any],
     ) -> bool:
+        if not accessibility_type or not path or not values:
+            return False
+
         key_path = (
-            "configuration-workspace-raw"
-            f"-{accessibility_type}-{path}-metadata-value"
+            self.read_configuration_workspace_raw_metadata_value_key_path(
+                accessibility_type=accessibility_type,
+                path=path
+            )
         )
         self.write_many_values(
             { key_path: values }
@@ -175,8 +303,16 @@ class PersistentCacheDatabasManager:
         self,
         accessibility_type: str,
         path: str,
-    ) -> Any:
-        key_path = f"configuration-workspace-raw-{accessibility_type}-{path}-data-value"
+    ) -> dict[str, Any]:
+        if not accessibility_type or not path:
+            return {}
+
+        key_path = (
+            self.read_configuration_workspace_data_value_key_path(
+                accessibility_type=accessibility_type,
+                path=path
+            )
+        )
         data: Any = self.read_many_values(
             (key_path,)
         )
@@ -191,9 +327,17 @@ class PersistentCacheDatabasManager:
         self,
         accessibility_type: str,
         path: str,
-        values: Any,
+        values: dict[str, Any],
     ) -> bool:
-        key_path = f"configuration-workspace-raw-{accessibility_type}-{path}-data-value"
+        if not accessibility_type or not path or not values:
+            return False
+
+        key_path = (
+            self.read_configuration_workspace_data_value_key_path(
+                accessibility_type=accessibility_type,
+                path=path
+            )
+        )
         self.write_many_values(
             { key_path: values }
         )
@@ -204,7 +348,14 @@ class PersistentCacheDatabasManager:
         self,
         accessibility_type: str,
     ) -> int:
-        key_path = f"configuration-workspace-raw-count-{accessibility_type}-value"
+        if not accessibility_type:
+            return 0
+
+        key_path = (
+            self.read_configuration_workspace_raw_count_value_key_path(
+                accessibility_type=accessibility_type
+            )
+        )
 
         data: Any = self.read_many_values(
             (key_path,)
@@ -221,7 +372,14 @@ class PersistentCacheDatabasManager:
         accessibility_type: str,
         value: int
     ) -> bool:
-        key_path = f"configuration-workspace-raw-count-{accessibility_type}-value"
+        if not accessibility_type or not value:
+            return False
+
+        key_path = (
+            self.read_configuration_workspace_raw_count_value_key_path(
+                accessibility_type=accessibility_type
+            )
+        )
 
         self.write_many_values(
             { key_path: value }
@@ -232,7 +390,7 @@ class PersistentCacheDatabasManager:
     def read_merged_configuration_workspace_data(
         self,
     ) -> Any:
-        key_path = "configuration-workspace-data"
+        key_path = self.read_configuration_workspace_data_key_path()
 
         data: Any = self.read_many_values(
             (key_path,)
@@ -246,9 +404,12 @@ class PersistentCacheDatabasManager:
 
     def write_merged_configuration_workspace_data(
         self,
-        value: Any
+        value: dict[str, Any]
     ) -> bool:
-        key_path = "configuration-workspace-data"
+        if not value or len(value) < 1:
+            return False
+
+        key_path = self.read_configuration_workspace_data_key_path()
 
         self.write_many_values(
             { key_path: value }
@@ -256,13 +417,12 @@ class PersistentCacheDatabasManager:
 
         return True
 
-
     def read_refresh_data(
         self,
-    ) -> Any:
-        key_path = "refresh-data"
+    ) -> dict[str, Any]:
+        key_path = self.read_refresh_data_key_path()
 
-        data: Any = self.read_many_values(
+        data: dict[str, Any] = self.read_many_values(
             (key_path,)
         )
 
@@ -274,9 +434,12 @@ class PersistentCacheDatabasManager:
 
     def write_refresh_data(
         self,
-        value: Any
+        value: dict[str, Any]
     ) -> bool:
-        key_path = "refresh-data"
+        if not value or len(value) < 1:
+            return False
+
+        key_path = self.read_refresh_data_key_path()
 
         self.write_many_values(
             { key_path: value }

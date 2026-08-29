@@ -92,14 +92,6 @@ class TaskManager:
             )
         )
 
-    def setup_command_name(
-        self,
-        value: str
-    ) -> str:
-        return (
-            f"{value.replace("_", "-")}"
-        )
-
     @_DecoratorManager.single_task_decorator
     def run_task_system_values(self) -> bool:
         self._value_cache_database_manager.write_current_timestamp()
@@ -198,17 +190,19 @@ class TaskManager:
     def navigate_via_root_filesystem_path(
         self,
     ) -> bool:
-
         self.navigate_via_filesystem_path(
             self._value_cache_database_manager.read_root_filesystem_path()
         )
 
         return True
 
+    @_DecoratorManager.multi_task_decorator
     def navigate_via_filesystem_path(
         self,
         filesystem_path: str
     ) -> bool:
+        if not filesystem_path:
+            return False
 
         self._value_cache_database_manager.write_previous_executing_console_filesystem_path(
             self._value_cache_database_manager
@@ -223,10 +217,14 @@ class TaskManager:
 
         return True
 
+    @_DecoratorManager.multi_task_decorator
     def run_task_configuration_workspace(
         self,
         accessibility_type: str
     ) -> bool:
+        if not accessibility_type:
+            return False
+
         is_modified = (
             self._value_cache_database_manager
                 .read_is_configuration_workspace_modified()
@@ -1036,13 +1034,13 @@ class TaskManager:
 
         return True
 
-    @_DecoratorManager.single_task_decorator
+    @_DecoratorManager.multi_task_decorator
     def run_task_disk_cache_shutdown(self) -> bool:
         self._import_manager.close_via_disk_cache()
 
         return True
 
-    @_DecoratorManager.single_task_decorator
+    @_DecoratorManager.multi_task_decorator
     def run_task_disk_cache_cleanup_before(self) -> bool:
         is_enabled = (
             self._value_cache_database_manager
@@ -1053,7 +1051,7 @@ class TaskManager:
 
         return True
 
-    @_DecoratorManager.single_task_decorator
+    @_DecoratorManager.multi_task_decorator
     def run_task_disk_cache_cleanup_after(self) -> bool:
         is_enabled = (
             self._value_cache_database_manager
@@ -1061,6 +1059,24 @@ class TaskManager:
         )
         if is_enabled:
             self._import_manager.clear_all_values_via_disk_cache()
+
+        return True
+
+    @_DecoratorManager.multi_task_decorator
+    def run_task_value_cache_cleanup(self) -> bool:
+        return True
+
+    @_DecoratorManager.multi_task_decorator
+    def run_task_closing_console_execution_navigation_setup(self) -> bool:
+        self.navigate_via_filesystem_path(
+            self._value_cache_database_manager.read_root_filesystem_path()
+        )
+
+        return True
+
+    @_DecoratorManager.multi_task_decorator
+    def run_task_task_storage_shutdown(self) -> bool:
+        self._task_storage_manager.reset_all_task_executed()
 
         return True
 
@@ -1118,12 +1134,14 @@ class TaskManager:
 
         return True
 
-    @_DecoratorManager.single_task_decorator
+    @_DecoratorManager.multi_task_decorator
     def run_task_full_shutdown(self) -> bool:
+        self.run_task_closing_console_execution_navigation_setup()
         self.run_task_disk_cache_cleanup_after()
         self.run_task_disk_cache_shutdown()
         self.run_task_file_logging_setup()
         self.run_task_file_logging_shutdown()
+        self.run_task_value_cache_cleanup()
 
         return True
 
@@ -1132,6 +1150,9 @@ class TaskManager:
         self,
         target_path: str
     ) -> bool:
+        if not target_path:
+            return False
+
         self.run_task_filesystem_clean_exclude_setup()
 
         filesystem_clean_excluded = (
@@ -1143,5 +1164,15 @@ class TaskManager:
         self._import_manager.clean_filesystem_path(
             target_path=target_path
         )
+
+        return True
+
+    @_DecoratorManager.multi_task_decorator
+    def run_task_reboot_common_setup(
+        self,
+    ) -> bool:
+        self.run_task_full_shutdown()
+        self.run_task_task_storage_shutdown()
+        self.run_task_common_setup()
 
         return True

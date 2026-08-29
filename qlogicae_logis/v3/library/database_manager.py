@@ -10,32 +10,31 @@ _utility_data: Any = None
 _ImportManager: Any = None
 _utility_metadata: Any = None
 
+
 def _handle_dynamic_imports() -> None:
     global _handle_dynamic_imports
+    global _utility_data
     global _ImportManager
+    global _utility_metadata
 
     from ..library import (
         import_manager,
     )
+    from ..project.configuration import (
+        utility,
+    )
 
+    _utility_data = (
+        utility.DATA
+    )
+    _utility_metadata = (
+        utility.METADATA
+    )
     _ImportManager = (
         import_manager.ImportManager
     )
 
     _handle_dynamic_imports = lambda: None
-
-
-def _handle_utility_dynamic_imports() -> None:
-    global _utility_data
-    global _utility_metadata
-    global _handle_utility_dynamic_imports
-
-    from ..project.configuration import utility
-
-    _utility_data = utility.DATA
-    _utility_metadata = utility.METADATA
-
-    _handle_utility_dynamic_imports = lambda: None
 
 
 class DatabaseManager:
@@ -45,7 +44,6 @@ class DatabaseManager:
 
     def __init__(self) -> None:
         _handle_dynamic_imports()
-        _handle_utility_dynamic_imports()
 
         self._import_manager = (
             _ImportManager.read_singleton(
@@ -116,6 +114,25 @@ class DatabaseManager:
     def read_expunged(self) -> str:
         return "expunged"
 
+    def read_company_project_major_version(
+        self,
+        delimeter: str,
+    ) -> str:
+        return (
+            f"{self.read_company_name()}{delimeter}"
+            f"{self.read_project_name()}{delimeter}"
+            f"{self.read_active_major_version_label()}"
+        )
+
+    def read_root_key_path(
+        self,
+    ) -> tuple[str, str, str]:
+        return (
+            f"{self.read_company_name()}",
+            f"{self.read_project_name()}",
+            f"{self.read_active_major_version_label()}",
+        )
+
     def read_debug_is_enabled(self) -> bool:
         data: bool = (
             _utility_data.get(
@@ -185,9 +202,10 @@ class DatabaseManager:
         return (
             f"{self._import_manager.read_original_executing_console_filesystem_path()}/"
             f".{
-            self.read_company_project_major_version(
-            "/"
-            )}"
+                self.read_company_project_major_version(
+                    "/"
+                )
+            }"
         )
 
     def read_root_plugin_filesystem_path(
@@ -225,26 +243,40 @@ class DatabaseManager:
 
         data = set()
         for pattern in patterns:
+            if not pattern:
+                continue
+
             for target in targets:
-                if pattern not in target:
-                    data.add(target)
+                if pattern in target:
+                    continue
+
+                data.add(target)
 
         return data
 
     def read_default_disk_cache_output_file_path(
         self,
     ) -> str:
+        base_path = (
+            self.read_root_workspace_filesystem_path()
+        )
+        iso8601_date = (
+            self._import_manager.read_current_iso8601_date()
+        )
+
         return (
-            f"{self.read_root_workspace_filesystem_path()}/private"
-            f"/temporary/cache/disk/{self._import_manager.read_current_iso8601_date()}.db"
+            f"{base_path}/private/temporary/cache/disk/{iso8601_date}.db"
         )
 
     def read_default_cache_disk_output_folder_path(
         self,
     ) -> str:
+        base_path = (
+            self.read_root_workspace_filesystem_path()
+        )
+
         return (
-            f"{self.read_root_workspace_filesystem_path()}/private"
-            f"/temporary/cache/disk"
+            f"{base_path}/private/temporary/cache/disk"
         )
 
     def read_temporary_template_output_filesystem_path(
@@ -273,6 +305,9 @@ class DatabaseManager:
         self,
         target: str,
     ) -> str:
+        if not target:
+            raise ValueError("arguments must not be null")
+
         base_path = (
             self.read_root_workspace_filesystem_path()
         )
@@ -286,6 +321,9 @@ class DatabaseManager:
         target: str,
         relative_path: str,
     ) -> str:
+        if not target or not relative_path:
+            raise ValueError("arguments must not be null")
+
         base_path = (
             self.read_root_workspace_filesystem_path()
         )
@@ -298,6 +336,9 @@ class DatabaseManager:
         self,
         accessibility_type: str
     ) -> str:
+        if not accessibility_type:
+            raise ValueError("arguments must not be null")
+
         base_path = (
             self.read_root_workspace_filesystem_path()
         )
@@ -310,6 +351,9 @@ class DatabaseManager:
         self,
         accessibility_type: str
     ) -> Any:
+        if not accessibility_type:
+            raise ValueError("arguments must not be null")
+
         base_path = (
             self.read_configuration_workspace_filesystem_path(
                 accessibility_type
@@ -326,6 +370,9 @@ class DatabaseManager:
         self,
         accessibility_type: str
     ) -> Any:
+        if not accessibility_type:
+            raise ValueError("arguments must not be null")
+
         base_path = (
             self.read_configuration_workspace_filesystem_path(
                 accessibility_type
@@ -341,6 +388,9 @@ class DatabaseManager:
         self,
         filesystem_path: str
     ) -> Any:
+        if not filesystem_path:
+            raise ValueError("arguments must not be null")
+
         return {
             "timestamp_modified": {
                 "value": (
@@ -352,26 +402,6 @@ class DatabaseManager:
             }
         }
 
-    def read_company_project_major_version(
-        self,
-        delimeter: str,
-    ) -> str:
-        return (
-            f"{self.read_company_name()}{delimeter}"
-            f"{self.read_project_name()}{delimeter}"
-            f"{self.read_active_major_version_label()}"
-        )
-
-    def read_root_key_path(
-        self,
-    ) -> tuple[str, str, str]:
-        return (
-            f"{self.read_company_name()}",
-            f"{self.read_project_name()}",
-            f"{self.read_active_major_version_label()}",
-        )
-
-    # Object
     def read_object_property_timestamp_modified_value(
         self,
         data: Any,
@@ -390,6 +420,9 @@ class DatabaseManager:
         self,
         data: Any
     ) -> Any:
+        if not data:
+            raise ValueError("arguments must not be null")
+
         return { value for _key, value in data.items() }
 
     def read_plugin_data(
@@ -407,41 +440,16 @@ class DatabaseManager:
 
         return module
 
-    def read_configuration_workspace_data_file(
-        self,
-        file_path: Any,
-    ) -> Any:
-        data: Any = {}
-        file_path_suffix = (
-            self._import_manager.read_file_suffix(
-                value=file_path
-            )
-        )
-
-        if file_path_suffix in self.read_default_yaml_data_file_extensions():
-            data = self._import_manager.read_yaml_file(
-                file_path=file_path
-            ) or {}
-
-        elif file_path_suffix in self.read_default_json_data_file_extensions():
-            data = self._import_manager.read_json_file(
-                file_path=file_path
-            ) or {}
-
-        elif file_path_suffix in self.read_default_python_data_file_extensions():
-            data = self._import_manager.read_python_file(
-                file_path=file_path
-            ) or {}
-
-        return data
-
     def read_default_export_selections(
         self,
     ) -> Any:
+        company_project_major_version = (
+            self.read_company_project_major_version("-")
+        )
         data: Any = {
-            f"{self.read_company_project_major_version("-")}",
-            f"{self.read_company_project_major_version("-")}-public",
-            f"{self.read_company_project_major_version("-")}-private",
+            f"{company_project_major_version}",
+            f"{company_project_major_version}-public",
+            f"{company_project_major_version}-private",
         }
 
         return { key: key for key in data }
@@ -493,7 +501,7 @@ class DatabaseManager:
             },
         ]
 
-        def read_output_targets(tag: str = "") -> Any:
+        def handle_read_output_targets(tag: str = "") -> Any:
             if tag:
                 tag = f"-{tag}"
 
@@ -518,7 +526,7 @@ class DatabaseManager:
                         ]
                     }
                 },
-                "output": read_output_targets()
+                "output": handle_read_output_targets()
             },
             f"{export_name}-public": {
                 "input": {
@@ -528,7 +536,7 @@ class DatabaseManager:
                         ]
                     },
                 },
-                "output": read_output_targets("public")
+                "output": handle_read_output_targets("public")
             },
             f"{export_name}-private": {
                 "input": {
@@ -538,9 +546,39 @@ class DatabaseManager:
                         ]
                     }
                 },
-                "output": read_output_targets("private")
+                "output": handle_read_output_targets("private")
             },
         }
 
         return data
 
+    def read_configuration_workspace_data_file(
+        self,
+        file_path: Any,
+    ) -> Any:
+        if not file_path:
+            return {}
+
+        data: Any = {}
+        file_path_suffix = (
+            self._import_manager.read_file_suffix(
+                value=file_path
+            )
+        )
+
+        if file_path_suffix in self.read_default_yaml_data_file_extensions():
+            data = self._import_manager.read_yaml_file(
+                file_path=file_path
+            ) or {}
+
+        elif file_path_suffix in self.read_default_json_data_file_extensions():
+            data = self._import_manager.read_json_file(
+                file_path=file_path
+            ) or {}
+
+        elif file_path_suffix in self.read_default_python_data_file_extensions():
+            data = self._import_manager.read_python_file(
+                file_path=file_path
+            ) or {}
+
+        return data

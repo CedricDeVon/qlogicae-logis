@@ -123,11 +123,13 @@ class CommandDebugManager:
 
         self._command_storage_manager.add_commands((
             (
-                self._task_manager.setup_command_name("debug_view_value_cache"),
+                self._command_storage_manager
+                    .read_command_name("debug_view_value_cache"),
                 self.run_command_debug_view_value_cache,
             ),
             (
-                self._task_manager.setup_command_name("debug_view_disk_cache"),
+                self._command_storage_manager
+                    .read_command_name("debug_view_disk_cache"),
                 self.run_command_debug_view_disk_cache,
             ),
         ))
@@ -161,8 +163,6 @@ class CommandDebugManager:
     @_DecoratorManager.command_decorator
     def run_command_debug_view_disk_cache(self, **kwargs: Any) -> bool:
         self._task_manager.run_task_full_debug_disk_cache_setup()
-
-        # key_paths = kwargs.get("key_paths", [])
 
         value = self._persistent_cache_database_manager.read_all_values()
 

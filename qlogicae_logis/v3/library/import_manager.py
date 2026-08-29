@@ -15,47 +15,33 @@ _Path: Any = None
 _shutil: Any = None
 _logging: Any = None
 _ZipFile: Any = None
-_Mapping: Any = None
 _metadata: Any = None
-_Sequence: Any = None
-_argparse: Any = None
 _resource: Any = None
 _Timestamp: Any = None
 _LogOptions: Any = None
 _LogManager: Any = None
-_JsonManager: Any = None
 _TimeManager: Any = None
 _tracemalloc: Any = None
 _MacrosManager: Any = None
 _SystemManager: Any = None
 _ScriptProcess: Any = None
 _FileIoManager: Any = None
-_JsonTextManager: Any = None
-_CompletedProcess: Any = None
-_module_from_spec: Any = None
 _TimeZoneManager: Any = None
+_module_from_spec: Any = None
 _SingletonManager: Any = None
 _TimestampManager: Any = None
 _TargetCacheValue: Any = None
-_JsonFileIoManager: Any = None
 _ConsoleLogManager: Any = None
 _ValueCacheManager: Any = None
 _CorFileLogManager: Any = None
-_FilesystemManager: Any = None
 _ObjectMergeManager: Any = None
-_ThreadPoolExecutor: Any = None
-_AsynchronousManager: Any = None
 _TextEncodingManager: Any = None
-_EnumConversionValue: Any = None
 _ScriptProcessManager: Any = None
-_CorConsoleLogManager: Any = None
 _GroupSelectionManager: Any = None
 _spec_from_file_location: Any = None
 _DiskCacheStorageManager: Any = None
-_PlaceholderValueManager: Any = None
 _ScriptProcessEnumManager: Any = None
 _FilesystemCompressionManager: Any = None
-_EnumConversionValueEnumManager: Any = None
 _FileEntityFileSystemTreeSetupOptions: Any = None
 _FolderEntityFileSystemTreeSetupOptions: Any = None
 
@@ -70,52 +56,37 @@ def _handle_dynamic_imports() -> None:
     global _Path
     global _shutil
     global _logging
-    global _Mapping
     global _ZipFile
-    global _Sequence
-    global _argparse
     global _metadata
     global _resource
     global _Timestamp
     global _LogOptions
     global _LogManager
     global _tracemalloc
-    global _JsonManager
     global _TimeManager
     global _MacrosManager
     global _SystemManager
     global _ScriptProcess
     global _FileIoManager
-    global _JsonTextManager
-    global _CompletedProcess
     global _module_from_spec
     global _TimeZoneManager
     global _SingletonManager
     global _TimestampManager
     global _TargetCacheValue
-    global _JsonFileIoManager
     global _ConsoleLogManager
     global _ValueCacheManager
     global _CorFileLogManager
-    global _FilesystemManager
     global _ObjectMergeManager
-    global _ThreadPoolExecutor
-    global _AsynchronousManager
     global _TextEncodingManager
-    global _EnumConversionValue
     global _ScriptProcessManager
-    global _CorConsoleLogManager
     global _GroupSelectionManager
     global _spec_from_file_location
     global _DiskCacheStorageManager
-    global _PlaceholderValueManager
     global _ScriptProcessEnumManager
     global _FilesystemCompressionManager
-    global _EnumConversionValueEnumManager
     global _FileEntityFileSystemTreeSetupOptions
     global _FolderEntityFileSystemTreeSetupOptions
 
-    import argparse
     import gc
     import logging
     import resource
@@ -124,38 +95,26 @@ def _handle_dynamic_imports() -> None:
     import time
     import tracemalloc
     import uuid
-    from collections.abc import Mapping, Sequence
-    from concurrent.futures import ThreadPoolExecutor
     from importlib import metadata
     from importlib.util import module_from_spec, spec_from_file_location
     from pathlib import Path
-    from subprocess import CompletedProcess
     from zipfile import ZipFile
 
     from .._vendor.pyyaml import yaml
     from .._vendor.qlogicae_cor.v2.library import (
-        asynchronous_manager,
         console_log_manager,
         disk_cache_storage_manager,
-        enum_conversion_value,
-        enum_conversion_value_enum_manager,
         file_entity_filesystem_tree_setup_options,
         file_io_manager,
         file_log_manager,
         filesystem_compression_manager,
-        filesystem_manager,
         folder_entity_filesystem_tree_setup_options,
         group_selection_manager,
-        json_file_io_manager,
-        json_manager,
-        json_text_manager,
         log_manager,
         log_options,
         macros_manager,
         object_merge_manager,
-        placeholder_value_manager,
         script_process,
-        script_process_enum_manager,
         script_process_manager,
         singleton_manager,
         system_manager,
@@ -169,47 +128,33 @@ def _handle_dynamic_imports() -> None:
     )
 
     _gc = gc
-    _logging = logging
-    _resource = resource
-    _ZipFile = ZipFile
-    _tracemalloc = tracemalloc
     _sys = sys
-    _metadata = (
-        metadata
-    )
-    _Mapping = Mapping
-    _Sequence = Sequence
     _uuid = uuid
     _yaml = yaml
     _Path = Path
     _time = time
     _shutil = shutil
-    _argparse = argparse
-    _ThreadPoolExecutor = ThreadPoolExecutor
-    _CompletedProcess = CompletedProcess
+    _ZipFile = ZipFile
+    _logging = logging
+    _metadata = metadata
+    _resource = resource
+    _tracemalloc = tracemalloc
     _Timestamp = timestamp.Timestamp
     _LogOptions = log_options.LogOptions
     _LogManager = log_manager.LogManager
+    _module_from_spec = module_from_spec
     _TimeManager = time_manager.TimeManager
     _MacrosManager = macros_manager.MacrosManager
     _SystemManager = system_manager.SystemManager
+    _spec_from_file_location = spec_from_file_location
     _TimeZoneManager = time_zone_manager.TimeZoneManager
     _CorFileLogManager = file_log_manager.FileLogManager
     _SingletonManager = singleton_manager.SingletonManager
     _TimestampManager = timestamp_manager.TimestampManager
     _TargetCacheValue = target_cache_value.TargetCacheValue
     _ValueCacheManager = value_cache_manager.ValueCacheManager
-    _FilesystemManager = filesystem_manager.FilesystemManager
     _ObjectMergeManager = object_merge_manager.ObjectMergeManager
-    _CorConsoleLogManager = console_log_manager.ConsoleLogManager
-    _EnumConversionValue = enum_conversion_value.EnumConversionValue
     _ScriptProcessManager = script_process_manager.ScriptProcessManager
-    _PlaceholderValueManager = (
-        placeholder_value_manager.PlaceholderValueManager
-    )
-    _ScriptProcessEnumManager = (
-        script_process_enum_manager.ScriptProcessEnumManager
-    )
     _FilesystemCompressionManager = (
         filesystem_compression_manager.FilesystemCompressionManager
     )
@@ -221,29 +166,16 @@ def _handle_dynamic_imports() -> None:
         folder_entity_filesystem_tree_setup_options
         .FolderEntityFileSystemTreeSetupOptions
     )
-    _AsynchronousManager = asynchronous_manager.AsynchronousManager
-    _EnumConversionValueEnumManager = (
-        enum_conversion_value_enum_manager.EnumConversionValueEnumManager
-    )
     _ConsoleLogManager = console_log_manager.ConsoleLogManager
     _DiskCacheStorageManager = (
         disk_cache_storage_manager.DiskCacheStorageManager
     )
-    _JsonFileIoManager = json_file_io_manager.JsonFileIoManager
-    _JsonTextManager = json_text_manager.JsonTextManager
-    _JsonManager = json_manager.JsonManager
     _ScriptProcess = script_process.ScriptProcess
     _FileIoManager = file_io_manager.FileIoManager
     _GroupSelectionManager = group_selection_manager.GroupSelectionManager
     _TextEncodingManager = (
         text_encoding_manager
             .TextEncodingManager
-    )
-    _module_from_spec = (
-        module_from_spec
-    )
-    _spec_from_file_location = (
-        spec_from_file_location
     )
 
     _handle_dynamic_imports = lambda: None
@@ -274,10 +206,7 @@ class ImportManager:
         "_macros_manager",
         "_object_merge_manager",
         "_group_selection_manager",
-        "_json_file_io_manager",
-        "_json_text_manager",
         "_filesystem_compression_manager",
-        "_filesystem_manager",
         "_system_manager",
         "_file_io_manager",
         "_file_log_manager",
@@ -318,17 +247,8 @@ class ImportManager:
         self._group_selection_manager = self.read_singleton(
             _GroupSelectionManager
         )
-        self._json_file_io_manager = self.read_singleton(
-            _JsonFileIoManager
-        )
-        self._json_text_manager = self.read_singleton(
-            _JsonTextManager
-        )
         self._filesystem_compression_manager = self.read_singleton(
             _FilesystemCompressionManager
-        )
-        self._filesystem_manager = self.read_singleton(
-            _FilesystemManager
         )
         self._system_manager = self.read_singleton(
             _SystemManager
@@ -348,6 +268,9 @@ class ImportManager:
 
     @classmethod
     def read_singleton(self, value: Any) -> Any:
+        if not value:
+            return {}
+
         _handle_singleton_manager_imports()
 
         return (
@@ -356,10 +279,26 @@ class ImportManager:
             )
         )
 
+    def convert_to_os_specific_path_value(
+        self,
+        **kwargs: Any,
+    ) -> str:
+        filesystem_path = kwargs.get(
+            "filesystem_path",
+            ""
+        )
+
+        return f"{_Path(
+            filesystem_path
+        )}"
+
     def compress(
         self,
         **kwargs: Any,
     ) -> bool:
+        if not kwargs:
+            return False
+
         source = (
             kwargs.get("source", "")
         )
@@ -442,6 +381,9 @@ class ImportManager:
         self,
         **kwargs: Any,
     ) -> bool:
+        if not kwargs:
+            return False
+
         value = (
             kwargs.get(
                 "value",
@@ -507,6 +449,9 @@ class ImportManager:
         self,
         **kwargs: Any,
     ) -> bool:
+        if not kwargs:
+            return False
+
         value: bool = (
             self._disk_cache_storage_manager.is_keys_found(
                 key_path=kwargs.get(
@@ -522,6 +467,9 @@ class ImportManager:
         self,
         **kwargs: Any,
     ) -> bool:
+        if not kwargs:
+            return False
+
         value: bool = (
             self._disk_cache_storage_manager.is_item_expired(
                 key_path=kwargs.get(
@@ -535,7 +483,6 @@ class ImportManager:
 
     def read_all_values_via_disk_cache(
         self,
-        **kwargs: Any,
     ) -> dict[str, Any]:
         value: dict[str, Any] = (
             self._disk_cache_storage_manager.read_all_values()
@@ -547,6 +494,9 @@ class ImportManager:
         self,
         **kwargs: Any,
     ) -> dict[str, Any]:
+        if not kwargs:
+            return {}
+
         value: dict[str, Any] = (
             self._disk_cache_storage_manager.get_many_values(
                 key_paths=kwargs.get(
@@ -562,6 +512,9 @@ class ImportManager:
         self,
         **kwargs: Any,
     ) -> bool:
+        if not kwargs:
+            return False
+
         self._disk_cache_storage_manager.set_many_values(
             values=kwargs.get(
                 "values",
@@ -575,6 +528,9 @@ class ImportManager:
         self,
         **kwargs: Any,
     ) -> dict[str, bool]:
+        if not kwargs:
+            return {}
+
         value: dict[str, Any] = (
             self._disk_cache_storage_manager.remove_many_values(
                 key_paths=kwargs.get(
@@ -588,7 +544,6 @@ class ImportManager:
 
     def open_via_disk_cache(
         self,
-        **kwargs: Any,
     ) -> bool:
         self._disk_cache_storage_manager.open()
 
@@ -596,7 +551,6 @@ class ImportManager:
 
     def close_via_disk_cache(
         self,
-        **kwargs: Any,
     ) -> bool:
         self._disk_cache_storage_manager.close()
 
@@ -635,6 +589,9 @@ class ImportManager:
         self,
         value: str
     ) -> bool:
+        if not value:
+            return False
+
         self._disk_cache_storage_manager.database_path = (
             value
         )
@@ -646,9 +603,12 @@ class ImportManager:
         self,
         **kwargs: Any,
     ) -> Any:
+        if not kwargs:
+            return {}
+
         value: Any = (
             self._value_cache_manager.get_one_value(
-                keys=kwargs.get(
+                key_path=kwargs.get(
                     "key_path",
                     tuple()
                 ),
@@ -664,9 +624,12 @@ class ImportManager:
         self,
         **kwargs: Any,
     ) -> Any:
+        if not kwargs:
+            return {}
+
         value: Any = (
             self._value_cache_manager.get_one_value(
-                keys=kwargs.get(
+                key_path=kwargs.get(
                     "key_path",
                     tuple()
                 ),
@@ -682,8 +645,11 @@ class ImportManager:
         self,
         **kwargs: Any,
     ) -> bool:
+        if not kwargs:
+            return False
+
         self._value_cache_manager.set_one_value(
-            keys=kwargs.get(
+            key_path=kwargs.get(
                 "key_path",
                 tuple()
             ),
@@ -702,8 +668,11 @@ class ImportManager:
         self,
         **kwargs: Any,
     ) -> bool:
+        if not kwargs:
+            return False
+
         self._value_cache_manager.set_one_value(
-            keys=kwargs.get(
+            key_path=kwargs.get(
                 "key_path",
                 tuple()
             ),
@@ -722,8 +691,11 @@ class ImportManager:
         self,
         **kwargs: Any,
     ) -> bool:
+        if not kwargs:
+            return False
+
         self._value_cache_manager.set_one_value(
-            keys=kwargs.get(
+            key_path=kwargs.get(
                 "key_path",
                 tuple()
             ),
@@ -742,8 +714,11 @@ class ImportManager:
         self,
         **kwargs: Any,
     ) -> bool:
+        if not kwargs:
+            return False
+
         self._value_cache_manager.set_one_value(
-            keys=kwargs.get(
+            key_path=kwargs.get(
                 "key_path",
                 tuple()
             ),
@@ -762,8 +737,11 @@ class ImportManager:
         self,
         **kwargs: Any,
     ) -> bool:
+        if not kwargs:
+            return False
+
         self._value_cache_manager.set_one_value(
-            keys=kwargs.get(
+            key_path=kwargs.get(
                 "key_path",
                 tuple()
             ),
@@ -789,8 +767,11 @@ class ImportManager:
         self,
         **kwargs: Any,
     ) -> bool:
+        if not kwargs:
+            return False
+
         self._value_cache_manager.remove_one_value(
-            keys=kwargs.get(
+            key_path=kwargs.get(
                 "key_path",
                 tuple()
             ),
@@ -820,6 +801,9 @@ class ImportManager:
         self,
         **kwargs: Any,
     ) -> bool:
+        if not kwargs:
+            return False
+
         self._time_zone_manager.selected_time_zone_type = (
             kwargs.get(
                 "value",
@@ -866,6 +850,9 @@ class ImportManager:
         self,
         **kwargs: Any,
     ) -> bool:
+        if not kwargs:
+            return False
+
         self._text_encoding_manager.selected_encoding = (
             kwargs.get(
                 "value",
@@ -881,6 +868,9 @@ class ImportManager:
         self,
         **kwargs: Any,
     ) -> Any:
+        if not kwargs:
+            return False
+
         value: Any = (
             self._script_process_manager.execute_command(
                 command=kwargs.get(
@@ -899,6 +889,9 @@ class ImportManager:
         self,
         **kwargs: Any,
     ) -> Any:
+        if not kwargs:
+            return False
+
         value: Any = (
             self._script_process_manager.execute_command(
                 command=kwargs.get(
@@ -913,11 +906,49 @@ class ImportManager:
 
         return value
 
+    def run_command(
+        self,
+        **kwargs: Any,
+    ) -> Any:
+        if not kwargs:
+            return {}
+
+        script_process = (
+            kwargs.get(
+                "script_process",
+                "shell"
+            )
+        )
+        command = (
+            kwargs.get(
+                "command",
+                ""
+            )
+        )
+        if not command:
+            return {}
+
+        cli_output = {}
+        if script_process == "shell":
+            cli_output = self.run_shell_command(
+                command=command
+            )
+
+        elif script_process == "subprocess":
+            cli_output = self.run_subprocess_command(
+                command=command
+            )
+
+        return cli_output
+
     # MacrosManager
     def macros_resolve_many(
         self,
         **kwargs: Any,
     ) -> Any:
+        if not kwargs:
+            return False
+
         value: Any = (
             self._macros_manager.resolve_many(
                 kwargs.get(
@@ -933,6 +964,9 @@ class ImportManager:
         self,
         **kwargs: Any,
     ) -> object:
+        if not kwargs:
+            return False
+
         value: object = (
             self._macros_manager.parse_many(
                 values=kwargs.get(
@@ -948,11 +982,13 @@ class ImportManager:
 
         return value
 
-
     def macros_parse_filesystem(
         self,
         **kwargs: Any,
     ) -> bool:
+        if not kwargs:
+            return False
+
         value: bool = (
             self._macros_manager.parse_filesystem(
                 filesystem_path=kwargs.get(
@@ -973,6 +1009,9 @@ class ImportManager:
         self,
         **kwargs: Any,
     ) -> object:
+        if not kwargs:
+            return False
+
         value: object = (
             self._object_merge_manager.deep_merge(
                 left=kwargs.get(
@@ -992,6 +1031,9 @@ class ImportManager:
         self,
         **kwargs: Any,
     ) -> object:
+        if not kwargs:
+            return False
+
         value: object = (
             self._object_merge_manager.deep_merge_fragments(
                 left=kwargs.get(
@@ -1012,6 +1054,9 @@ class ImportManager:
         self,
         **kwargs: Any,
     ) -> Any:
+        if not kwargs:
+            return False
+
         return (
             self._group_selection_manager
                 .flatten_group(
@@ -1031,6 +1076,9 @@ class ImportManager:
         self,
         **kwargs: Any,
     ) -> object:
+        if not kwargs:
+            return {}
+
         return _yaml.safe_load(
             kwargs.get(
                 "value",
@@ -1042,6 +1090,9 @@ class ImportManager:
         self,
         **kwargs: Any,
     ) -> str:
+        if not kwargs:
+            return ""
+
         return _yaml.safe_dump(
             kwargs.get(
                 "value",
@@ -1069,6 +1120,9 @@ class ImportManager:
         self,
         **kwargs: Any,
     ) -> object:
+        if not kwargs:
+            return False
+
         return (
             _yaml.dump(
                 kwargs.get(
@@ -1098,6 +1152,9 @@ class ImportManager:
         self,
         **kwargs: Any,
     ) -> object:
+        if not kwargs:
+            return False
+
         path = _Path(
             kwargs.get(
                 "file_path",
@@ -1118,6 +1175,9 @@ class ImportManager:
         self,
         **kwargs: Any,
     ) -> bool:
+        if not kwargs:
+            return False
+
         path = _Path(
             kwargs.get(
                 "file_path",
@@ -1158,46 +1218,14 @@ class ImportManager:
 
         return True
 
-    # JSON
-    def read_json_file(
-        self,
-        **kwargs: Any,
-    ) -> object:
-        file_path = kwargs.get(
-            "file_path",
-            ""
-        )
-
-        return self._json_file_io_manager.read_file(
-            file_path
-        ) or {}
-
-
-    def write_json_file(
-        self,
-        **kwargs: Any,
-    ) -> bool:
-        file_path = kwargs.get(
-            "file_path",
-            ""
-        )
-        data = kwargs.get(
-            "data",
-            {}
-        )
-
-        self._json_file_io_manager.write_file(
-            file_path,
-            data
-        )
-
-        return True
-
     # Python
     def read_python_file(
         self,
         **kwargs: Any,
     ) -> object:
+        if not kwargs:
+            return False
+
         file_path = _Path(
             kwargs.get(
                 "file_path",
@@ -1212,26 +1240,14 @@ class ImportManager:
 
         return module or {}
 
-    # JsonTextManager
-    def convert_to_json_string(
-        self,
-        **kwargs: Any,
-    ) -> str:
-        value: str = (
-            self._json_text_manager.convert_to_string(
-                value=kwargs.get(
-                    "value", ""
-                )
-            )
-        )
-
-        return value
-
     # FilesystemManager
     def read_child_folder_paths(
         self,
         **kwargs: Any,
     ) -> Any:
+        if not kwargs:
+            return False
+
         return _Path(
             kwargs.get(
                 "value",
@@ -1243,6 +1259,9 @@ class ImportManager:
         self,
         **kwargs: Any,
     ) -> Any:
+        if not kwargs:
+            return False
+
         return _Path(
             kwargs.get(
                 "value",
@@ -1255,6 +1274,9 @@ class ImportManager:
         self,
         **kwargs: Any,
     ) -> float:
+        if not kwargs:
+            return False
+
         value: float = (
             _Path(
                 kwargs.get(
@@ -1270,6 +1292,9 @@ class ImportManager:
         self,
         **kwargs: Any,
     ) -> float:
+        if not kwargs:
+            return False
+
         value: float = (
             _Path(
                 kwargs.get(
@@ -1285,6 +1310,9 @@ class ImportManager:
         self,
         **kwargs: Any,
     ) -> float:
+        if not kwargs:
+            return False
+
         value: float = (
             _Path(
                 kwargs.get(
@@ -1300,6 +1328,9 @@ class ImportManager:
         self,
         **kwargs: Any,
     ) -> Any:
+        if not kwargs:
+            return False
+
         filesystem_path: str = kwargs.get(
             "filesystem_path",
             "",
@@ -1320,6 +1351,9 @@ class ImportManager:
         self,
         **kwargs: Any,
     ) -> bool:
+        if not kwargs:
+            return False
+
         archive_path = kwargs.get("archive_path", "")
         destination_path = kwargs.get("destination_path", "")
         if not archive_path or not destination_path:
@@ -1338,6 +1372,9 @@ class ImportManager:
         self,
         **kwargs: Any,
     ) -> Any:
+        if not kwargs:
+            return False
+
         value = kwargs.get("value", "")
         if not value:
             return False
@@ -1354,6 +1391,9 @@ class ImportManager:
         self,
         **kwargs: Any,
     ) -> bool:
+        if not kwargs:
+            return False
+
         value: bool = _Path(
             kwargs.get(
                 "value",
@@ -1367,6 +1407,9 @@ class ImportManager:
         self,
         **kwargs: Any,
     ) -> bool:
+        if not kwargs:
+            return False
+
         value: bool = _Path(
             kwargs.get(
                 "value",
@@ -1380,6 +1423,9 @@ class ImportManager:
         self,
         **kwargs: Any,
     ) -> bool:
+        if not kwargs:
+            return False
+
         value: bool = _Path(
             kwargs.get(
                 "value",
@@ -1393,6 +1439,9 @@ class ImportManager:
         self,
         **kwargs: Any,
     ) -> bool:
+        if not kwargs:
+            return False
+
         target_paths = kwargs.get("target_paths", [])
         if not target_paths or len(target_paths) < 1:
             return False
@@ -1412,11 +1461,18 @@ class ImportManager:
         self,
         **kwargs: Any,
     ) -> bool:
+        if not kwargs:
+            return False
+
         target_path = kwargs.get("target_path", "")
         if not target_path or not target_path:
             return False
 
-        _Path(target_path).mkdir(
+        target_path = _Path(target_path)
+        if target_path.exists():
+            return False
+
+        target_path.mkdir(
             parents=True,
             exist_ok=True,
         )
@@ -1427,6 +1483,9 @@ class ImportManager:
         self,
         **kwargs: Any,
     ) -> bool:
+        if not kwargs:
+            return False
+
         root_path = kwargs.get("root_path", "")
         tree = kwargs.get("tree", None)
         if not root_path or not tree:
@@ -1477,6 +1536,9 @@ class ImportManager:
         self,
         **kwargs: Any,
     ) -> bool:
+        if not kwargs:
+            return False
+
         source_path = kwargs.get("source_path", "")
         target_path = kwargs.get("target_path", "")
 
@@ -1502,6 +1564,9 @@ class ImportManager:
         self,
         **kwargs: Any,
     ) -> bool:
+        if not kwargs:
+            return False
+
         source_path = kwargs.get("source_path", "")
         target_paths = kwargs.get("target_paths", [])
 
@@ -1543,6 +1608,9 @@ class ImportManager:
         self,
         **kwargs: Any,
     ) -> bool:
+        if not kwargs:
+            return False
+
         source_path = kwargs.get("source_path", "")
         target_path = kwargs.get("target_path", "")
 
@@ -1583,6 +1651,9 @@ class ImportManager:
         self,
         **kwargs: Any,
     ) -> bool:
+        if not kwargs:
+            return False
+
         target_paths = kwargs.get("target_paths", [])
         if not target_paths or len(target_paths) < 1:
             return False
@@ -1627,6 +1698,9 @@ class ImportManager:
         self,
         **kwargs: Any,
     ) -> bool:
+        if not kwargs:
+            return False
+
         target_path = kwargs.get("target_path", "")
         if not target_path:
             return False
@@ -1667,6 +1741,9 @@ class ImportManager:
         self,
         **kwargs: Any,
     ) -> set[str]:
+        if not kwargs:
+            return set()
+
         data: set[str] = set()
         target_path = kwargs.get("target_path", "")
         if not target_path:
@@ -1688,6 +1765,9 @@ class ImportManager:
         self,
         **kwargs: Any,
     ) -> bool:
+        if not kwargs:
+            return False
+
         old_path = kwargs.get("old_path", "")
         new_path = kwargs.get("new_path", "")
         if not old_path or not new_path:
@@ -1703,6 +1783,9 @@ class ImportManager:
         self,
         **kwargs: Any,
     ) -> Any:
+        if not kwargs:
+            return False
+
         target_path = _Path(
             kwargs.get(
                 "path",
@@ -1729,6 +1812,9 @@ class ImportManager:
         self,
         **kwargs: Any,
     ) -> str:
+        if not kwargs:
+            return ""
+
         value: str = _uuid.uuid5(
             _uuid.NAMESPACE_DNS,
             kwargs.get(
@@ -1743,7 +1829,6 @@ class ImportManager:
     ) -> str:
         value: str = _uuid.uuid7()
         return value
-
 
     # SystemManager
     def read_method_name(
@@ -1787,6 +1872,9 @@ class ImportManager:
         self,
         **kwargs: Any,
     ) -> bool:
+        if not kwargs:
+            return False
+
         self._system_manager.current_executing_console_filesystem_path = (
             kwargs.get(
                 "filesystem_path",
@@ -1810,6 +1898,9 @@ class ImportManager:
         self,
         **kwargs: Any,
     ) -> str:
+        if not kwargs:
+            return ""
+
         value: str = (
             self._file_io_manager.read_file(
                 file_path=kwargs.get(
@@ -1825,6 +1916,9 @@ class ImportManager:
         self,
         **kwargs: Any,
     ) -> bool:
+        if not kwargs:
+            return False
+
         self._file_io_manager.write_file(
             file_path=kwargs.get(
                 "file_path",
@@ -1843,6 +1937,9 @@ class ImportManager:
         self,
         **kwargs: Any,
     ) -> bool:
+        if not kwargs:
+            return False
+
         is_enabled = kwargs.get(
             "is_enabled",
             True,
@@ -1874,6 +1971,9 @@ class ImportManager:
         self,
         **kwargs: Any,
     ) -> bool:
+        if not kwargs:
+            return False
+
         is_enabled = kwargs.get(
             "is_enabled",
             True,
@@ -1894,6 +1994,9 @@ class ImportManager:
         self,
         **kwargs: Any,
     ) -> bool:
+        if not kwargs:
+            return False
+
         self._file_log_manager.log_info(
             message=kwargs.get(
                 "message",
@@ -1907,6 +2010,9 @@ class ImportManager:
         self,
         **kwargs: Any,
     ) -> bool:
+        if not kwargs:
+            return False
+
         self._file_log_manager.log_warning(
             message=kwargs.get(
                 "message",
@@ -1920,6 +2026,9 @@ class ImportManager:
         self,
         **kwargs: Any,
     ) -> bool:
+        if not kwargs:
+            return False
+
         self._file_log_manager.log_info(
             message=kwargs.get(
                 "message",
@@ -1933,6 +2042,9 @@ class ImportManager:
         self,
         **kwargs: Any,
     ) -> bool:
+        if not kwargs:
+            return False
+
         self._log_manager.log_info(
             message=kwargs.get(
                 "message",
@@ -1946,6 +2058,9 @@ class ImportManager:
         self,
         **kwargs: Any,
     ) -> bool:
+        if not kwargs:
+            return False
+
         self._file_log_manager.cache_log(
             message=kwargs.get(
                 "message",
@@ -1960,12 +2075,15 @@ class ImportManager:
         self,
         **kwargs: Any,
     ) -> bool:
+        if not kwargs:
+            return False
+
         self._file_log_manager.cache_log(
             message=kwargs.get(
                 "message",
                 "",
             ),
-            log_level=_logging.INFO
+            log_level=_logging.DEBUG
         )
 
         return True
@@ -1974,6 +2092,9 @@ class ImportManager:
         self,
         **kwargs: Any,
     ) -> bool:
+        if not kwargs:
+            return False
+
         self._file_log_manager.cache_log(
             message=kwargs.get(
                 "message",
@@ -1986,28 +2107,7 @@ class ImportManager:
 
     def log_shutdown(
         self,
-        **kwargs: Any,
     ) -> bool:
         self._log_manager.shutdown()
-
-        return True
-
-    def run_async(
-        self,
-        **kwargs: Any,
-    ) -> bool:
-        tasks: Any = (
-            kwargs.get("tasks", tuple())
-        )
-
-        with _ThreadPoolExecutor(
-            max_workers=min(32, len(tasks) or 1),
-        ) as executor:
-            tuple(
-                executor.map(
-                    lambda task: task[0](task[1]),
-                    tasks,
-                )
-            )
 
         return True

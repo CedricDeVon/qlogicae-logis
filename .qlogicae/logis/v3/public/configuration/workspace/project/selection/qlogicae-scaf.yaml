@@ -2,21 +2,8 @@ workspace:
   project:
     selection:
       qlogicae-scaf:
-        # filesystem-path:
-        #   value: ${{ selection-filesystem-path }}/qlogicae-scaf
-
-# script:
-#   targets:      
-#     qlogicae-scaf-deploy:
-#       enter-filesystem-path:
-#         value: ${{ selection-filesystem-path }}/qlogicae-scaf
-        
-#       commands:
-#         - run: git add .
-#         - run: git commit -m "deployment attempt"
-#         - run: git tag ${{ qlogicae-scaf-current-version-label }}
-#         - run: git push
-#         - run: git push --tags
+        filesystem-path:
+          value: ${{ selection-filesystem-path }}/qlogicae-scaf
 
 macros:  
   static:

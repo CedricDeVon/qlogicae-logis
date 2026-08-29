@@ -2,8 +2,8 @@ workspace:
   project:
     selection:
       qlogicae-delasaurus:
-        # filesystem-path:
-        #   value: ${{ selection-filesystem-path }}/qlogicae-delasaurus
+        filesystem-path:
+          value: ${{ selection-filesystem-path }}/qlogicae-delasaurus
 
 # script:
 #   targets:      

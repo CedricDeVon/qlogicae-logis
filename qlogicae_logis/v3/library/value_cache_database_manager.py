@@ -39,6 +39,7 @@ def _handle_dynamic_imports() -> None:
 
     _handle_dynamic_imports = lambda: None
 
+
 class ValueCacheDatabaseManager:
     __slots__ = (
         "_import_manager",
@@ -74,6 +75,143 @@ class ValueCacheDatabaseManager:
             *self._database_manager.read_root_key_path(),
             *key_path,
         )
+
+    def read_debug_snapshot_key_path(
+        self,
+        key_path: Any
+    ) -> Any:
+        return (
+            *self._database_manager.read_root_key_path(),
+            "debug",
+            "snapshot",
+            *key_path,
+        )
+
+    def read_debug_snapshot_value(
+        self,
+        key_path: Any
+    ) -> Any:
+        result: Any = (
+            self._import_manager.read_any_value_via_value_cache(
+                key_path=(
+                    self.read_debug_snapshot_key_path(
+                        key_path
+                    )
+                ),
+            )
+        ) or {}
+
+        return result
+
+    def write_debug_snapshot_value(
+        self,
+        key_path: Any,
+        value: Any
+    ) -> bool:
+        result: bool = (
+            self._import_manager.write_any_value_via_value_cache(
+                key_path=(
+                    self.read_debug_snapshot_key_path(
+                        key_path
+                    )
+                ),
+                value=value,
+            )
+        )
+
+        return result
+
+    def read_configuration_workspace_data_key_path(
+        self,
+        key_path: Any
+    ) -> Any:
+        return (
+            *self._database_manager.read_root_key_path(),
+            "configuration",
+            "workspace",
+            "data",
+            *key_path,
+        )
+
+    def read_configuration_workspace_data_value(
+        self,
+        key_path: Any
+    ) -> Any:
+        result: Any = (
+            self._import_manager.read_any_value_via_value_cache(
+                key_path=(
+                    self.read_configuration_workspace_data_key_path(
+                        key_path
+                    )
+                ),
+            )
+        ) or {}
+
+        return result
+
+    def write_configuration_workspace_data_value(
+        self,
+        key_path: Any,
+        value: Any
+    ) -> bool:
+        result: bool = (
+            self._import_manager.write_any_value_via_value_cache(
+                key_path=(
+                    self.read_configuration_workspace_data_key_path(
+                        key_path
+                    )
+                ),
+                value=value,
+            )
+        )
+
+        return result
+
+    def read_configuration_workspace_raw_key_path(
+        self,
+        key_path: Any
+    ) -> Any:
+        return (
+            *self._database_manager.read_root_key_path(),
+            "configuration",
+            "workspace",
+            "raw",
+            *key_path,
+        )
+
+    def read_configuration_workspace_raw_value(
+        self,
+        key_path: Any
+    ) -> Any:
+        result: Any = (
+            self._import_manager.read_any_value_via_value_cache(
+                key_path=(
+                    self.read_configuration_workspace_raw_key_path(
+                        key_path
+                    )
+                ),
+            )
+        ) or {}
+
+        return result
+
+    def write_configuration_workspace_raw_value(
+        self,
+        key_path: Any,
+        value: Any
+    ) -> bool:
+        result: bool = (
+            self._import_manager.write_any_value_via_value_cache(
+                key_path=(
+                    self.read_configuration_workspace_raw_key_path(
+                        key_path
+                    )
+                ),
+                value=value,
+            )
+        )
+
+        return result
 
     def read_any_value(
         self,
@@ -132,10 +270,8 @@ class ValueCacheDatabaseManager:
         if not self._database_manager.read_debug_is_enabled():
             return {}
 
-        result: Any = self.read_any_value(
+        result: Any = self.read_debug_snapshot_value(
             (
-                "debug",
-                "snapshot",
                 f"{label}",
                 "timestamp",
             ),
@@ -151,10 +287,8 @@ class ValueCacheDatabaseManager:
         if not self._database_manager.read_debug_is_enabled():
             return True
 
-        self.write_any_value(
+        self.write_debug_snapshot_value(
             (
-                "debug",
-                "snapshot",
                 f"{label}",
                 "timestamp",
             ),
@@ -170,10 +304,8 @@ class ValueCacheDatabaseManager:
         if not self._database_manager.read_debug_is_enabled():
             return 0
 
-        result: int = self.read_any_value(
+        result: int = self.read_debug_snapshot_value(
             (
-                "debug",
-                "snapshot",
                 f"{label}",
                 "timestamp",
                 "start",
@@ -190,10 +322,8 @@ class ValueCacheDatabaseManager:
         if not self._database_manager.read_debug_is_enabled():
             return True
 
-        self.write_any_value(
+        self.write_debug_snapshot_value(
             (
-                "debug",
-                "snapshot",
                 f"{label}",
                 "timestamp",
                 "start",
@@ -211,10 +341,8 @@ class ValueCacheDatabaseManager:
         if not self._database_manager.read_debug_is_enabled():
             return 0
 
-        result: int = self.read_any_value(
+        result: int = self.read_debug_snapshot_value(
             (
-                "debug",
-                "snapshot",
                 f"{label}",
                 "timestamp",
                 "complete",
@@ -231,10 +359,8 @@ class ValueCacheDatabaseManager:
         if not self._database_manager.read_debug_is_enabled():
             return True
 
-        self.write_any_value(
+        self.write_debug_snapshot_value(
             (
-                "debug",
-                "snapshot",
                 f"{label}",
                 "timestamp",
                 "complete",
@@ -254,10 +380,8 @@ class ValueCacheDatabaseManager:
         if not self._database_manager.read_debug_is_enabled():
             return 0.0
 
-        result: float = self.read_any_value(
+        result: float = self.read_debug_snapshot_value(
             (
-                "debug",
-                "snapshot",
                 f"{label}",
                 "timestamp",
                 "duration",
@@ -281,10 +405,8 @@ class ValueCacheDatabaseManager:
             )) / 1000000
         )
 
-        self.write_any_value(
+        self.write_debug_snapshot_value(
             (
-                "debug",
-                "snapshot",
                 f"{label}",
                 "timestamp",
                 "duration",
@@ -302,10 +424,8 @@ class ValueCacheDatabaseManager:
         if not self._database_manager.read_debug_is_enabled():
             return {}
 
-        result: Any = self.read_any_value(
+        result: Any = self.read_debug_snapshot_value(
             (
-                "debug",
-                "snapshot",
                 f"{label}",
                 "memory",
             ),
@@ -325,10 +445,8 @@ class ValueCacheDatabaseManager:
                 .snapshot_memory_usage()
         )
 
-        self.write_any_value(
+        self.write_debug_snapshot_value(
             (
-                "debug",
-                "snapshot",
                 f"{label}",
                 "memory",
             ),
@@ -396,7 +514,7 @@ class ValueCacheDatabaseManager:
                 "operating-system-name",
                 "value",
             ),
-        ) or ""
+        ) or self._import_manager.read_operating_system_name()
 
         return result
 
@@ -428,7 +546,7 @@ class ValueCacheDatabaseManager:
                 "operating-system-architecture",
                 "value",
             ),
-        ) or ""
+        ) or self._import_manager.read_operating_system_architecture()
 
         return result
 
@@ -642,6 +760,1393 @@ class ValueCacheDatabaseManager:
 
         return True
 
+
+    def read_configuration_workspace(
+        self,
+        accessibility_type: str
+    ) -> Any:
+        result: Any = self.read_configuration_workspace_raw_value(
+            (
+                accessibility_type,
+            ),
+        ) or {}
+
+        return result
+
+    def write_configuration_workspace(
+        self,
+        accessibility_type: str,
+        value: Any
+    ) -> bool:
+        self.write_configuration_workspace_raw_value(
+            (
+                accessibility_type,
+            ),
+            value,
+        )
+
+        return True
+
+    def remove_configuration_workspace(
+        self,
+    ) -> bool:
+        self.remove_any_value(
+            (
+                "configuration",
+                "workspace",
+                "raw",
+            ),
+        )
+
+        return True
+
+    def read_configuration_workspace_data(
+        self,
+        accessibility_type: str,
+        key_path: str,
+    ) -> Any:
+        result: Any = self.read_configuration_workspace_raw_value(
+            (
+                accessibility_type,
+                key_path,
+                "data",
+                "value",
+            ),
+        ) or {}
+
+        return result
+
+    def write_configuration_workspace_rdata(
+        self,
+        accessibility_type: str,
+        key_path: str,
+        value: Any
+    ) -> bool:
+        self.write_configuration_workspace_raw_value(
+            (
+                accessibility_type,
+                key_path,
+                "data",
+                "value",
+            ),
+            value,
+        )
+
+        return True
+
+    def read_is_configuration_workspace_modified(
+        self
+    ) -> bool:
+        result: bool = self.read_configuration_workspace_raw_value(
+            (
+                "is-modified",
+                "value"
+            ),
+        )
+
+        return result
+
+    def write_is_configuration_workspace_modified(
+        self,
+        value: bool
+    ) -> bool:
+        self.write_configuration_workspace_raw_value(
+            (
+                "is-modified",
+                "value"
+            ),
+            value,
+        )
+
+        return True
+
+    def read_configuration_workspace_file_count(
+        self,
+        accessibility_type: str,
+    ) -> bool:
+        result: bool = self.read_configuration_workspace_raw_value(
+            (
+                "count",
+                accessibility_type,
+                "value"
+            ),
+        )
+
+        return result
+
+    def write_configuration_workspace_file_count(
+        self,
+        accessibility_type: str,
+        value: bool
+    ) -> bool:
+        self.write_configuration_workspace_raw_value(
+            (
+                "count",
+                accessibility_type,
+                "value"
+            ),
+            value,
+        )
+
+        return True
+
+    def read_merged_configuration_workspace_data(
+        self,
+    ) -> Any:
+        result: Any = self.read_configuration_workspace_data_value(
+            (),
+        ) or {}
+
+        return result
+
+    def write_merged_configuration_workspace_data(
+        self,
+        value: bool
+    ) -> bool:
+        self.write_configuration_workspace_data_value(
+            (
+            ),
+            value,
+        )
+
+        return True
+
+    def read_configuration_workspace_data_macros_static_value_cache_targets(
+        self
+    ) -> Any:
+        result: Any = self.read_configuration_workspace_data_value(
+            (
+                "macros",
+                "static",
+                "value-cache",
+                "targets",
+            ),
+        ) or {}
+
+        return result
+
+    def write_configuration_workspace_data_macros_static_value_cache_targets(
+        self,
+        value: bool
+    ) -> bool:
+        self.write_configuration_workspace_data_value(
+            (
+                "macros",
+                "static",
+                "value-cache",
+                "targets",
+            ),
+            value,
+        )
+
+        return True
+
+    def read_configuration_workspace_data_macros_static_file_targets(
+        self
+    ) -> Any:
+        result: Any = self.read_configuration_workspace_data_value(
+            (
+                "macros",
+                "static",
+                "file",
+                "targets",
+            ),
+        ) or {}
+
+        return result
+
+    def write_configuration_workspace_data_macros_static_file_targets(
+        self,
+        value: bool
+    ) -> bool:
+        self.write_configuration_workspace_data_value(
+            (
+                "macros",
+                "static",
+                "file",
+                "targets",
+            ),
+            value,
+        )
+
+        return True
+
+    def read_configuration_workspace_data_plugin_import_is_enabled_value(
+        self
+    ) -> bool:
+        result: Any = self.read_configuration_workspace_data_value(
+            (
+                "plugin",
+                "import",
+                "is-enabled",
+            ),
+        ) or {}
+
+        return bool(result.get("value", True))
+
+    def write_configuration_workspace_data_plugin_import_is_enabled_value(
+        self,
+        value: bool
+    ) -> bool:
+        self.write_configuration_workspace_data_value(
+            (
+                "plugin",
+                "import",
+                "is-enabled",
+                "value",
+            ),
+            value,
+        )
+
+        return True
+
+    def read_configuration_workspace_data_display_console_is_enabled_value(
+        self
+    ) -> bool:
+        result: Any = self.read_configuration_workspace_data_value(
+            (
+                "display",
+                "console",
+                "is-enabled",
+            ),
+        ) or {}
+
+        return bool(result.get("value", True))
+
+    def write_configuration_workspace_data_display_console_is_enabled_value(
+        self,
+        value: bool
+    ) -> bool:
+        self.write_configuration_workspace_data_value(
+            (
+                "display",
+                "console",
+                "is-enabled",
+                "value",
+            ),
+            value,
+        )
+
+        return True
+
+    def read_configuration_workspace_data_display_console_style(
+        self
+    ) -> Any:
+        result: Any = self.read_configuration_workspace_data_value(
+            (
+                "display",
+                "console",
+                "style",
+            ),
+        )
+
+        return result
+
+    def write_configuration_workspace_data_display_console_style(
+        self,
+        value: Any
+    ) -> bool:
+        self.write_configuration_workspace_data_value(
+            (
+                "display",
+                "console",
+                "style",
+            ),
+            value,
+        )
+
+        return True
+
+    def read_configuration_workspace_data_display_console_style_reset_value(
+        self
+    ) -> str:
+        result: Any = self.read_configuration_workspace_data_value(
+            (
+                "display",
+                "console",
+                "style",
+                "reset",
+            ),
+        ) or {}
+
+        return str(result.get("value", "reset"))
+
+    def write_configuration_workspace_data_display_console_style_reset_value(
+        self,
+        value: str
+    ) -> bool:
+        self.write_configuration_workspace_data_value(
+            (
+                "display",
+                "console",
+                "style",
+                "reset",
+                "value",
+            ),
+            value,
+        )
+
+        return True
+
+
+    def read_configuration_workspace_data_display_console_style_base_1_value(
+        self
+    ) -> str:
+        result: Any = self.read_configuration_workspace_data_value(
+            (
+                "display",
+                "console",
+                "style",
+                "base-1",
+            ),
+        ) or {}
+
+        return str(result.get("value", ""))
+
+    def write_configuration_workspace_data_display_console_style_base_1_value(
+        self,
+        value: str
+    ) -> bool:
+        self.write_configuration_workspace_data_value(
+            (
+                "display",
+                "console",
+                "style",
+                "base-1",
+                "value",
+            ),
+            value,
+        )
+
+        return True
+
+    def read_configuration_workspace_data_display_console_style_base_2_value(
+        self
+    ) -> str:
+        result: Any = self.read_configuration_workspace_data_value(
+            (
+                "display",
+                "console",
+                "style",
+                "base-2",
+            ),
+        ) or {}
+
+        return str(result.get("value", "grey"))
+
+    def write_configuration_workspace_data_display_console_style_base_2_value(
+        self,
+        value: str
+    ) -> bool:
+        self.write_configuration_workspace_data_value(
+            (
+                "display",
+                "console",
+                "style",
+                "base-2",
+                "value",
+            ),
+            value,
+        )
+
+        return True
+
+    def read_configuration_workspace_data_display_console_style_highlight_1_value(
+        self
+    ) -> str:
+        result: Any = self.read_configuration_workspace_data_value(
+            (
+                "display",
+                "console",
+                "style",
+                "highlight-1",
+            ),
+        ) or {}
+
+        return str(result.get("value", "green"))
+
+    def write_configuration_workspace_data_display_console_style_highlight_1_value(
+        self,
+        value: str
+    ) -> bool:
+        self.write_configuration_workspace_data_value(
+            (
+                "display",
+                "console",
+                "style",
+                "highlight-1",
+                "value",
+            ),
+            value,
+        )
+
+        return True
+
+    def read_configuration_workspace_data_display_console_style_highlight_2_value(
+        self
+    ) -> str:
+        result: Any = self.read_configuration_workspace_data_value(
+            (
+                "display",
+                "console",
+                "style",
+                "highlight-2",
+            ),
+        ) or {}
+
+        return str(result.get("value", "green"))
+
+    def write_configuration_workspace_data_display_console_style_highlight_2_value(
+        self,
+        value: str
+    ) -> bool:
+        self.write_configuration_workspace_data_value(
+            (
+                "display",
+                "console",
+                "style",
+                "highlight-2",
+                "value",
+            ),
+            value,
+        )
+
+        return True
+
+    def read_configuration_workspace_data_display_console_style_maximum_depth_value(
+        self
+    ) -> Any:
+        result: Any = self.read_configuration_workspace_data_value(
+            (
+                "display",
+                "console",
+                "style",
+                "maximum-depth",
+            ),
+        ) or {}
+
+        return result.get("value", None)
+
+    def write_configuration_workspace_data_display_console_style_maximum_depth_value(
+        self,
+        value: Any
+    ) -> bool:
+        self.write_configuration_workspace_data_value(
+            (
+                "display",
+                "console",
+                "style",
+                "maximum-depth",
+                "value",
+            ),
+            value,
+        )
+
+        return True
+
+    def read_configuration_workspace_data_display_console_style_indent_count_value(
+        self
+    ) -> int:
+        result: Any = self.read_configuration_workspace_data_value(
+            (
+                "display",
+                "console",
+                "style",
+                "indent-count",
+            ),
+        ) or {}
+
+        return int(result.get("value", 4))
+
+    def write_configuration_workspace_data_display_console_style_indent_count_value(
+        self,
+        value: int
+    ) -> bool:
+        self.write_configuration_workspace_data_value(
+            (
+                "display",
+                "console",
+                "style",
+                "indent-count",
+                "value",
+            ),
+            value,
+        )
+
+        return True
+
+    def read_configuration_workspace_data_display_console_style_is_skipped_value(
+        self
+    ) -> bool:
+        result: Any = self.read_configuration_workspace_data_value(
+            (
+                "display",
+                "console",
+                "style",
+                "is-skipped",
+            ),
+        ) or {}
+
+        return bool(result.get("value", True))
+
+    def write_configuration_workspace_data_display_console_style_is_skipped_value(
+        self,
+        value: int
+    ) -> bool:
+        self.write_configuration_workspace_data_value(
+            (
+                "display",
+                "console",
+                "style",
+                "is-skipped",
+                "value",
+            ),
+            value,
+        )
+
+        return True
+
+    def read_configuration_workspace_data_display_console_style_vertical_count_value(
+        self
+    ) -> int:
+        result: Any = self.read_configuration_workspace_data_value(
+            (
+                "display",
+                "console",
+                "style",
+                "vertical-count",
+            ),
+        ) or {}
+
+        return int(result.get("value", 0))
+
+    def write_configuration_workspace_data_display_console_style_vertical_count_value(
+        self,
+        value: int
+    ) -> bool:
+        self.write_configuration_workspace_data_value(
+            (
+                "display",
+                "console",
+                "style",
+                "vertical-count",
+                "value",
+            ),
+            value,
+        )
+
+        return True
+
+    def read_configuration_workspace_data_time_zone_value(
+        self
+    ) -> str:
+        result: Any = self.read_configuration_workspace_data_value(
+            (
+                "time",
+                "zone",
+            ),
+        ) or {}
+
+        return str(result.get("value", "local"))
+
+    def write_configuration_workspace_data_time_zone_value(
+        self,
+        value: str
+    ) -> bool:
+        self.write_configuration_workspace_data_value(
+            (
+                "time",
+                "zone",
+                "value",
+            ),
+            value,
+        )
+
+        return True
+
+    def read_configuration_workspace_data_operating_system_name_value(
+        self
+    ) -> str:
+        result: Any = self.read_configuration_workspace_data_value(
+            (
+                "operating-system",
+                "name",
+            ),
+        ) or {}
+
+        return str(
+            result.get(
+                "value",
+                self._import_manager
+                    .read_operating_system_name()
+            )
+        )
+
+    def write_configuration_workspace_data_operating_system_name_value(
+        self,
+        value: str
+    ) -> bool:
+        self.write_configuration_workspace_data_value(
+            (
+                "operating-system",
+                "name",
+                "value",
+            ),
+            value,
+        )
+
+        return True
+
+    def read_configuration_workspace_data_operating_system_value(
+        self
+    ) -> str:
+        result: Any = self.read_configuration_workspace_data_value(
+            (
+                "operating-system",
+            ),
+        ) or {}
+
+        return str(
+            result.get(
+                "value",
+                f"{
+                    self._import_manager
+                        .read_operating_system_name()
+                }-{
+                    self._import_manager
+                        .read_operating_system_architecture()
+                }"
+            )
+        )
+
+    def write_configuration_workspace_data_operating_system_value(
+        self,
+        value: str
+    ) -> bool:
+        self.write_configuration_workspace_data_value(
+            (
+                "operating-system",
+                "value",
+            ),
+            value,
+        )
+
+        return True
+
+    def read_configuration_workspace_data_operating_system_architecture_value(
+        self
+    ) -> str:
+        result: Any = self.read_configuration_workspace_data_value(
+            (
+                "operating-system",
+                "architecture",
+            ),
+        ) or {}
+
+        return str(
+            result.get(
+                "value",
+                self._import_manager
+                    .read_operating_system_architecture()
+            )
+        )
+
+    def write_configuration_workspace_data_operating_system_architecture_value(
+        self,
+        value: str
+    ) -> bool:
+        self.write_configuration_workspace_data_value(
+            (
+                "operating-system",
+                "architecture",
+                "value",
+            ),
+            value,
+        )
+
+        return True
+
+
+
+
+    def read_configuration_workspace_data_log_is_enabled_value(
+        self
+    ) -> bool:
+        result: Any = self.read_configuration_workspace_data_value(
+            (
+                "log",
+                "is-enabled",
+            ),
+        ) or {}
+
+        return bool(result.get("value", True))
+
+    def write_configuration_workspace_data_log_is_enabled_value(
+        self,
+        value: bool
+    ) -> bool:
+        self.write_configuration_workspace_data_value(
+            (
+                "log",
+                "is-enabled",
+                "value",
+            ),
+            value,
+        )
+
+        return True
+
+    def read_configuration_workspace_data_log_is_enabled_override(
+        self
+    ) -> bool:
+        result: Any = self.read_configuration_workspace_data_value(
+            (
+                "log",
+                "is-enabled",
+            ),
+        ) or {}
+
+        return bool(result.get("override", False))
+
+    def write_configuration_workspace_data_log_is_enabled_override(
+        self,
+        value: bool
+    ) -> bool:
+        self.write_configuration_workspace_data_value(
+            (
+                "log",
+                "is-enabled",
+                "override",
+            ),
+            value,
+        )
+
+        return True
+
+    def read_configuration_workspace_data_log_is_verbose_value(
+        self
+    ) -> bool:
+        result: Any = self.read_configuration_workspace_data_value(
+            (
+                "log",
+                "is-verbose",
+            ),
+        ) or {}
+
+        return bool(result.get("value", True))
+
+    def write_configuration_workspace_data_log_is_verbose_value(
+        self,
+        value: bool
+    ) -> bool:
+        self.write_configuration_workspace_data_value(
+            (
+                "log",
+                "is-verbose",
+                "value",
+            ),
+            value,
+        )
+
+        return True
+
+    def read_configuration_workspace_data_log_is_verbose_override(
+        self
+    ) -> bool:
+        result: Any = self.read_configuration_workspace_data_value(
+            (
+                "log",
+                "is-verbose",
+            ),
+        ) or {}
+
+        return bool(result.get("override", False))
+
+    def write_configuration_workspace_data_log_is_verbose_override(
+        self,
+        value: bool
+    ) -> bool:
+        self.write_configuration_workspace_data_value(
+            (
+                "log",
+                "is-verbose",
+                "override",
+            ),
+            value,
+        )
+
+        return True
+
+    def read_configuration_workspace_data_log_file_is_enabled_value(
+        self
+    ) -> bool:
+        result: Any = self.read_configuration_workspace_data_value(
+            (
+                "log",
+                "file",
+                "is-enabled",
+            ),
+        ) or {}
+
+        return bool(result.get("value", True))
+
+    def write_configuration_workspace_data_log_file_is_enabled_value(
+        self,
+        value: bool
+    ) -> bool:
+        self.write_configuration_workspace_data_value(
+            (
+                "log",
+                "file",
+                "is-enabled",
+                "value",
+            ),
+            value,
+        )
+
+        return True
+
+    def read_configuration_workspace_data_log_file_is_verbose_value(
+        self
+    ) -> bool:
+        result: Any = self.read_configuration_workspace_data_value(
+            (
+                "log",
+                "file",
+                "is-verbose",
+            ),
+        ) or {}
+
+        return bool(result.get("value", True))
+
+    def write_configuration_workspace_data_log_file_is_verbose_value(
+        self,
+        value: bool
+    ) -> bool:
+        self.write_configuration_workspace_data_value(
+            (
+                "log",
+                "file",
+                "is-verbose",
+                "value",
+            ),
+            value,
+        )
+
+        return True
+
+    def read_configuration_workspace_data_log_file_targets(
+        self
+    ) -> Any:
+        result: Any = self.read_configuration_workspace_data_value(
+            (
+                "log",
+                "file",
+            ),
+        ) or {}
+
+        return result.get("targets", {})
+
+    def write_configuration_workspace_data_log_file_targets(
+        self,
+        value: Any
+    ) -> bool:
+        self.write_configuration_workspace_data_value(
+            (
+                "log",
+                "file",
+                "targets",
+            ),
+            value,
+        )
+
+        return True
+
+    def read_configuration_workspace_data_log_console_is_enabled_value(
+        self
+    ) -> bool:
+        result: Any = self.read_configuration_workspace_data_value(
+            (
+                "log",
+                "console",
+                "is-enabled",
+            ),
+        ) or {}
+
+        return bool(result.get("value", True))
+
+    def write_configuration_workspace_data_log_console_is_enabled_value(
+        self,
+        value: bool
+    ) -> bool:
+        self.write_configuration_workspace_data_value(
+            (
+                "log",
+                "console",
+                "is-enabled",
+                "value",
+            ),
+            value,
+        )
+
+        return True
+
+    def read_configuration_workspace_data_log_console_is_verbose_value(
+        self
+    ) -> bool:
+        result: Any = self.read_configuration_workspace_data_value(
+            (
+                "log",
+                "console",
+                "is-verbose",
+            ),
+        ) or {}
+
+        return bool(result.get("value", False))
+
+    def write_configuration_workspace_data_log_console_is_verbose_value(
+        self,
+        value: bool
+    ) -> bool:
+        self.write_configuration_workspace_data_value(
+            (
+                "log",
+                "console",
+                "is-verbose",
+                "value",
+            ),
+            value,
+        )
+
+        return True
+
+    def read_configuration_workspace_data_log_default_file_output_is_enabled_value(
+        self
+    ) -> bool:
+        result: Any = self.read_configuration_workspace_data_value(
+            (
+                "log",
+                "default",
+                "file",
+                "output"
+                "is-enabled",
+            ),
+        ) or {}
+
+        return bool(result.get("value", True))
+
+    def write_configuration_workspace_data_log_default_file_output_is_enabled_value(
+        self,
+        value: bool
+    ) -> bool:
+        self.write_configuration_workspace_data_value(
+            (
+                "log",
+                "default",
+                "file",
+                "output"
+                "is-enabled",
+                "value",
+            ),
+            value,
+        )
+
+        return True
+
+
+    def read_configuration_workspace_data_command_filesystem_clean_exclude_targets(
+        self
+    ) -> tuple[str, ...]:
+        result: Any = self.read_configuration_workspace_data_value(
+            (
+                "command",
+                "filesystem",
+                "clean",
+                "exclude",
+            ),
+        ) or {}
+
+        return tuple(result.get("targets", tuple()))
+
+    def write_configuration_workspace_data_command_filesystem_clean_exclude_targets(
+        self,
+        value: tuple[str, ...]
+    ) -> bool:
+        self.write_configuration_workspace_data_value(
+            (
+                "command",
+                "filesystem",
+                "clean",
+                "exclude",
+                "targets",
+            ),
+            value,
+        )
+
+        return True
+
+    def read_configuration_workspace_data_command_filesystem_clean_include_selection(
+        self
+    ) -> Any:
+        result: Any = self.read_configuration_workspace_data_value(
+            (
+                "command",
+                "filesystem",
+                "clean",
+                "include",
+            ),
+        ) or {}
+
+        return result.get("selection", {})
+
+    def write_configuration_workspace_data_command_filesystem_clean_include_selection(
+        self,
+        value: Any
+    ) -> bool:
+        self.write_configuration_workspace_data_value(
+            (
+                "command",
+                "filesystem",
+                "clean",
+                "include",
+                "selection",
+            ),
+            value,
+        )
+
+        return True
+
+    def read_configuration_workspace_data_workspace_project_selection(
+        self
+    ) -> Any:
+        result: Any = self.read_configuration_workspace_data_value(
+            (
+                "workspace",
+                "project",
+            ),
+        ) or {}
+
+        return result.get("selection", {})
+
+    def write_configuration_workspace_data_workspace_project_selection(
+        self,
+        value: Any
+    ) -> bool:
+        self.write_configuration_workspace_data_value(
+            (
+                "workspace",
+                "project",
+                "selection",
+            ),
+            value,
+        )
+
+        return True
+
+    def read_configuration_workspace_data_workspace_group_selection(
+        self
+    ) -> Any:
+        result: Any = self.read_configuration_workspace_data_value(
+            (
+                "workspace",
+                "group",
+            ),
+        ) or {}
+
+        return result.get("selection", {})
+
+    def write_configuration_workspace_data_workspace_group_selection(
+        self,
+        value: Any
+    ) -> bool:
+        self.write_configuration_workspace_data_value(
+            (
+                "workspace",
+                "group",
+                "selection",
+            ),
+            value,
+        )
+
+        return True
+
+    def read_configuration_workspace_data_export_group(
+        self
+    ) -> Any:
+        result: Any = self.read_configuration_workspace_data_value(
+            (
+                "command",
+                "export",
+            ),
+        ) or {}
+
+        return result.get("group", {})
+
+    def write_configuration_export_data_export_group(
+        self,
+        value: Any
+    ) -> bool:
+        self.write_configuration_workspace_data_value(
+            (
+                "command",
+                "export",
+                "group",
+            ),
+            value,
+        )
+
+        return True
+
+    def read_configuration_workspace_data_export_selection(
+        self
+    ) -> Any:
+        result: Any = self.read_configuration_workspace_data_value(
+            (
+                "command",
+                "export",
+            ),
+        ) or {}
+
+        return result.get("selection", {})
+
+    def write_configuration_workspace_data_export_selection(
+        self,
+        value: Any
+    ) -> bool:
+        self.write_configuration_workspace_data_value(
+            (
+                "command",
+                "export",
+                "selection",
+            ),
+            value,
+        )
+
+        return True
+
+    def read_con_wor_data_export_cleanup_before_is_enabled_value(
+        self
+    ) -> bool:
+        result: Any = self.read_configuration_workspace_data_value(
+            (
+                "command",
+                "export",
+                "cleanup",
+                "before",
+                "is-enabled",
+            ),
+        ) or {}
+
+        return bool(result.get("value", True))
+
+    def write_con_wor_data_export_cleanup_before_is_enabled_value(
+        self,
+        value: bool
+    ) -> bool:
+        self.write_configuration_workspace_data_value(
+            (
+                "command",
+                "export",
+                "cleanup",
+                "before",
+                "is-enabled",
+                "value",
+            ),
+            value,
+        )
+
+        return True
+
+    def read_con_wor_data_export_cleanup_after_is_enabled_value(
+        self
+    ) -> bool:
+        result: Any = self.read_configuration_workspace_data_value(
+            (
+                "command",
+                "export",
+                "cleanup",
+                "after",
+                "is-enabled",
+            ),
+        ) or {}
+
+        return bool(result.get("value", True))
+
+    def write_con_wor_data_export_cleanup_after_is_enabled_value(
+        self,
+        value: bool
+    ) -> bool:
+        self.write_configuration_workspace_data_value(
+            (
+                "command",
+                "export",
+                "cleanup",
+                "after",
+                "is-enabled",
+                "value",
+            ),
+            value,
+        )
+
+        return True
+
+
+    def read_con_wor_data_template_cleanup_before_is_enabled_value(
+        self
+    ) -> bool:
+        result: Any = self.read_configuration_workspace_data_value(
+            (
+                "command",
+                "template",
+                "cleanup",
+                "before",
+                "is-enabled",
+            ),
+        ) or {}
+
+        return bool(result.get("value", True))
+
+    def write_con_wor_data_template_cleanup_before_is_enabled_value(
+        self,
+        value: bool
+    ) -> bool:
+        self.write_configuration_workspace_data_value(
+            (
+                "command",
+                "template",
+                "cleanup",
+                "before",
+                "is-enabled",
+                "value",
+            ),
+            value,
+        )
+
+        return True
+
+    def read_con_wor_data_template_cleanup_after_is_enabled_value(
+        self
+    ) -> bool:
+        result: Any = self.read_configuration_workspace_data_value(
+            (
+                "command",
+                "template",
+                "cleanup",
+                "after",
+                "is-enabled",
+            ),
+        ) or {}
+
+        return bool(result.get("value", True))
+
+    def write_con_wor_data_template_cleanup_after_is_enabled_value(
+        self,
+        value: bool
+    ) -> bool:
+        self.write_configuration_workspace_data_value(
+            (
+                "command",
+                "template",
+                "cleanup",
+                "after",
+                "is-enabled",
+                "value",
+            ),
+            value,
+        )
+
+        return True
+
+
+    def read_configuration_workspace_data_workflow_selection(
+        self
+    ) -> Any:
+        result: Any = self.read_configuration_workspace_data_value(
+            (
+                "workflow",
+            ),
+        ) or {}
+
+        return result.get("selection", {})
+
+    def write_configuration_workspace_data_workflow_selection(
+        self,
+        value: Any
+    ) -> bool:
+        self.write_configuration_workspace_data_value(
+            (
+                "workflow",
+                "selection",
+            ),
+            value,
+        )
+
+        return True
+
+
+    def read_con_wor_data_cache_cleanup_before_is_enabled_value(
+        self
+    ) -> bool:
+        result: Any = self.read_configuration_workspace_data_value(
+            (
+                "cache",
+                "cleanup",
+                "before",
+                "is-enabled",
+            ),
+        ) or {}
+
+        return bool(result.get("value", False))
+
+    def write_con_wor_data_cache_cleanup_before_is_enabled_value(
+        self,
+        value: bool
+    ) -> bool:
+        self.write_configuration_workspace_data_value(
+            (
+                "cache",
+                "cleanup",
+                "before",
+                "is-enabled",
+                "value",
+            ),
+            value,
+        )
+
+        return True
+
+    def read_con_wor_data_cache_cleanup_after_is_enabled_value(
+        self
+    ) -> bool:
+        result: Any = self.read_configuration_workspace_data_value(
+            (
+                "cache",
+                "cleanup",
+                "after",
+                "is-enabled",
+            ),
+        ) or {}
+
+        return bool(result.get("value", False))
+
+    def write_con_wor_data_cache_cleanup_after_is_enabled_value(
+        self,
+        value: bool
+    ) -> bool:
+        self.write_configuration_workspace_data_value(
+            (
+                "cache",
+                "cleanup",
+                "after",
+                "is-enabled",
+                "value",
+            ),
+            value,
+        )
+
+        return True
+
+
     def read_macros(
         self,
     ) -> Any:
@@ -701,1197 +2206,6 @@ class ValueCacheDatabaseManager:
     ) -> bool:
         self.write_configuration_workspace(
             "private",
-            value,
-        )
-
-        return True
-
-    def read_configuration_workspace(
-        self,
-        accessibility_type: str
-    ) -> Any:
-        result: Any = self.read_any_value(
-            (
-                "configuration",
-                "workspace",
-                "raw",
-                accessibility_type,
-            ),
-        ) or {}
-
-        return result
-
-    def write_configuration_workspace(
-        self,
-        accessibility_type: str,
-        value: Any
-    ) -> bool:
-        self.write_any_value(
-            (
-                "configuration",
-                "workspace",
-                "raw",
-                accessibility_type,
-            ),
-            value,
-        )
-
-        return True
-
-    def remove_configuration_workspace(
-        self,
-    ) -> bool:
-        self.remove_any_value(
-            (
-                "configuration",
-                "workspace",
-                "raw",
-            ),
-        )
-
-        return True
-
-    def read_configuration_workspace_data(
-        self,
-        accessibility_type: str,
-        key_path: str,
-    ) -> Any:
-        result: Any = self.read_any_value(
-            (
-                "configuration",
-                "workspace",
-                "raw",
-                accessibility_type,
-                key_path,
-                "data",
-                "value",
-            ),
-        ) or {}
-
-        return result
-
-    def write_configuration_workspace_rdata(
-        self,
-        accessibility_type: str,
-        key_path: str,
-        value: Any
-    ) -> bool:
-        self.write_any_value(
-            (
-                "configuration",
-                "workspace",
-                "raw",
-                accessibility_type,
-                key_path,
-                "data",
-                "value",
-            ),
-            value,
-        )
-
-        return True
-
-    def read_is_configuration_workspace_modified(
-        self
-    ) -> bool:
-        result: bool = self.read_any_value(
-            (
-                "configuration",
-                "workspace",
-                "raw",
-                "is-modified",
-                "value"
-            ),
-        )
-
-        return result
-
-    def write_is_configuration_workspace_modified(
-        self,
-        value: bool
-    ) -> bool:
-        self.write_any_value(
-            (
-                "configuration",
-                "workspace",
-                "raw",
-                "is-modified",
-                "value"
-            ),
-            value,
-        )
-
-        return True
-
-    def read_configuration_workspace_file_count(
-        self,
-        accessibility_type: str,
-    ) -> bool:
-        result: bool = self.read_any_value(
-            (
-                "configuration",
-                "workspace",
-                "raw",
-                "count",
-                accessibility_type,
-                "value"
-            ),
-        )
-
-        return result
-
-    def write_configuration_workspace_file_count(
-        self,
-        accessibility_type: str,
-        value: bool
-    ) -> bool:
-        self.write_any_value(
-            (
-                "configuration",
-                "workspace",
-                "raw",
-                "count",
-                accessibility_type,
-                "value"
-            ),
-            value,
-        )
-
-        return True
-
-    def read_merged_configuration_workspace_data(
-        self,
-    ) -> Any:
-        result: Any = self.read_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-            ),
-        ) or {}
-
-        return result
-
-    def write_merged_configuration_workspace_data(
-        self,
-        value: bool
-    ) -> bool:
-        self.write_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-            ),
-            value,
-        )
-
-        return True
-
-    def read_configuration_workspace_data_macros_static_value_cache_targets(
-        self
-    ) -> Any:
-        result: Any = self.read_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "macros",
-                "static",
-                "value-cache",
-                "targets",
-            ),
-        ) or {}
-
-        return result
-
-    def write_configuration_workspace_data_macros_static_value_cache_targets(
-        self,
-        value: bool
-    ) -> bool:
-        self.write_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "macros",
-                "static",
-                "value-cache",
-                "targets",
-            ),
-            value,
-        )
-
-        return True
-
-    def read_configuration_workspace_data_macros_static_file_targets(
-        self
-    ) -> Any:
-        result: Any = self.read_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "macros",
-                "static",
-                "file",
-                "targets",
-            ),
-        ) or {}
-
-        return result
-
-    def write_configuration_workspace_data_macros_static_file_targets(
-        self,
-        value: bool
-    ) -> bool:
-        self.write_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "macros",
-                "static",
-                "file",
-                "targets",
-            ),
-            value,
-        )
-
-        return True
-
-    def read_configuration_workspace_data_plugin_import_is_enabled_value(
-        self
-    ) -> bool:
-        result: Any = self.read_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "plugin",
-                "import",
-                "is-enabled",
-            ),
-        ) or {}
-
-        return bool(result.get("value", True))
-
-    def write_configuration_workspace_data_plugin_import_is_enabled_value(
-        self,
-        value: bool
-    ) -> bool:
-        self.write_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "plugin",
-                "import",
-                "is-enabled",
-                "value",
-            ),
-            value,
-        )
-
-        return True
-
-    def read_configuration_workspace_data_display_console_is_enabled_value(
-        self
-    ) -> bool:
-        result: Any = self.read_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "display",
-                "console",
-                "is-enabled",
-            ),
-        ) or {}
-
-        return bool(result.get("value", True))
-
-    def write_configuration_workspace_data_display_console_is_enabled_value(
-        self,
-        value: bool
-    ) -> bool:
-        self.write_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "display",
-                "console",
-                "is-enabled",
-                "value",
-            ),
-            value,
-        )
-
-        return True
-
-    def read_configuration_workspace_data_display_console_style(
-        self
-    ) -> Any:
-        result: Any = self.read_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "display",
-                "console",
-                "style",
-            ),
-        )
-
-        return result
-
-    def write_configuration_workspace_data_display_console_style(
-        self,
-        value: Any
-    ) -> bool:
-        self.write_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "display",
-                "console",
-                "style",
-            ),
-            value,
-        )
-
-        return True
-
-    def read_configuration_workspace_data_display_console_style_reset_value(
-        self
-    ) -> str:
-        result: Any = self.read_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "display",
-                "console",
-                "style",
-                "reset",
-            ),
-        ) or {}
-
-        return str(result.get("value", "reset"))
-
-    def write_configuration_workspace_data_display_console_style_reset_value(
-        self,
-        value: str
-    ) -> bool:
-        self.write_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "display",
-                "console",
-                "style",
-                "reset",
-                "value",
-            ),
-            value,
-        )
-
-        return True
-
-
-    def read_configuration_workspace_data_display_console_style_base_1_value(
-        self
-    ) -> str:
-        result: Any = self.read_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "display",
-                "console",
-                "style",
-                "base-1",
-            ),
-        ) or {}
-
-        return str(result.get("value", ""))
-
-    def write_configuration_workspace_data_display_console_style_base_1_value(
-        self,
-        value: str
-    ) -> bool:
-        self.write_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "display",
-                "console",
-                "style",
-                "base-1",
-                "value",
-            ),
-            value,
-        )
-
-        return True
-
-    def read_configuration_workspace_data_display_console_style_base_2_value(
-        self
-    ) -> str:
-        result: Any = self.read_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "display",
-                "console",
-                "style",
-                "base-2",
-            ),
-        ) or {}
-
-        return str(result.get("value", "grey"))
-
-    def write_configuration_workspace_data_display_console_style_base_2_value(
-        self,
-        value: str
-    ) -> bool:
-        self.write_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "display",
-                "console",
-                "style",
-                "base-2",
-                "value",
-            ),
-            value,
-        )
-
-        return True
-
-    def read_configuration_workspace_data_display_console_style_highlight_1_value(
-        self
-    ) -> str:
-        result: Any = self.read_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "display",
-                "console",
-                "style",
-                "highlight-1",
-            ),
-        ) or {}
-
-        return str(result.get("value", "green"))
-
-    def write_configuration_workspace_data_display_console_style_highlight_1_value(
-        self,
-        value: str
-    ) -> bool:
-        self.write_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "display",
-                "console",
-                "style",
-                "highlight-1",
-                "value",
-            ),
-            value,
-        )
-
-        return True
-
-    def read_configuration_workspace_data_display_console_style_highlight_2_value(
-        self
-    ) -> str:
-        result: Any = self.read_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "display",
-                "console",
-                "style",
-                "highlight-2",
-            ),
-        ) or {}
-
-        return str(result.get("value", "green"))
-
-    def write_configuration_workspace_data_display_console_style_highlight_2_value(
-        self,
-        value: str
-    ) -> bool:
-        self.write_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "display",
-                "console",
-                "style",
-                "highlight-2",
-                "value",
-            ),
-            value,
-        )
-
-        return True
-
-    def read_configuration_workspace_data_display_console_style_maximum_depth_value(
-        self
-    ) -> Any:
-        result: Any = self.read_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "display",
-                "console",
-                "style",
-                "maximum-depth",
-            ),
-        ) or {}
-
-        return result.get("value", None)
-
-    def write_configuration_workspace_data_display_console_style_maximum_depth_value(
-        self,
-        value: Any
-    ) -> bool:
-        self.write_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "display",
-                "console",
-                "style",
-                "maximum-depth",
-                "value",
-            ),
-            value,
-        )
-
-        return True
-
-    def read_configuration_workspace_data_display_console_style_indent_count_value(
-        self
-    ) -> int:
-        result: Any = self.read_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "display",
-                "console",
-                "style",
-                "indent-count",
-            ),
-        ) or {}
-
-        return int(result.get("value", 4))
-
-    def write_configuration_workspace_data_display_console_style_indent_count_value(
-        self,
-        value: int
-    ) -> bool:
-        self.write_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "display",
-                "console",
-                "style",
-                "indent-count",
-                "value",
-            ),
-            value,
-        )
-
-        return True
-
-    def read_configuration_workspace_data_display_console_style_is_skipped_value(
-        self
-    ) -> bool:
-        result: Any = self.read_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "display",
-                "console",
-                "style",
-                "is-skipped",
-            ),
-        ) or {}
-
-        return bool(result.get("value", True))
-
-    def write_configuration_workspace_data_display_console_style_is_skipped_value(
-        self,
-        value: int
-    ) -> bool:
-        self.write_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "display",
-                "console",
-                "style",
-                "is-skipped",
-                "value",
-            ),
-            value,
-        )
-
-        return True
-
-    def read_configuration_workspace_data_display_console_style_vertical_count_value(
-        self
-    ) -> int:
-        result: Any = self.read_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "display",
-                "console",
-                "style",
-                "vertical-count",
-            ),
-        ) or {}
-
-        return int(result.get("value", 0))
-
-    def write_configuration_workspace_data_display_console_style_vertical_count_value(
-        self,
-        value: int
-    ) -> bool:
-        self.write_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "display",
-                "console",
-                "style",
-                "vertical-count",
-                "value",
-            ),
-            value,
-        )
-
-        return True
-
-    def read_configuration_workspace_data_time_zone_value(
-        self
-    ) -> str:
-        result: Any = self.read_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "time",
-                "zone",
-            ),
-        ) or {}
-
-        return str(result.get("value", "local"))
-
-    def write_configuration_workspace_data_time_zone_value(
-        self,
-        value: str
-    ) -> bool:
-        self.write_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "time",
-                "zone",
-                "value",
-            ),
-            value,
-        )
-
-        return True
-
-    def read_configuration_workspace_data_operating_system_name_value(
-        self
-    ) -> str:
-        result: Any = self.read_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "operating-system",
-                "name",
-            ),
-        ) or {}
-
-        return str(
-            result.get(
-                "value",
-                self._import_manager
-                    .read_operating_system_name()
-            )
-        )
-
-    def write_configuration_workspace_data_operating_system_name_value(
-        self,
-        value: str
-    ) -> bool:
-        self.write_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "operating-system",
-                "name",
-                "value",
-            ),
-            value,
-        )
-
-        return True
-
-    def read_configuration_workspace_data_operating_system_value(
-        self
-    ) -> str:
-        result: Any = self.read_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "operating-system",
-            ),
-        ) or {}
-
-        return str(
-            result.get(
-                "value",
-                f"{
-                    self._import_manager
-                        .read_operating_system_name()
-                }-{
-                    self._import_manager
-                        .read_operating_system_architecture()
-                }"
-            )
-        )
-
-    def write_configuration_workspace_data_operating_system_value(
-        self,
-        value: str
-    ) -> bool:
-        self.write_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "operating-system",
-                "value",
-            ),
-            value,
-        )
-
-        return True
-
-    def read_configuration_workspace_data_operating_system_architecture_value(
-        self
-    ) -> str:
-        result: Any = self.read_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "operating-system",
-                "architecture",
-            ),
-        ) or {}
-
-        return str(
-            result.get(
-                "value",
-                self._import_manager
-                    .read_operating_system_architecture()
-            )
-        )
-
-    def write_configuration_workspace_data_operating_system_architecture_value(
-        self,
-        value: str
-    ) -> bool:
-        self.write_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "operating-system",
-                "architecture",
-                "value",
-            ),
-            value,
-        )
-
-        return True
-
-
-
-
-    def read_configuration_workspace_data_log_is_enabled_value(
-        self
-    ) -> bool:
-        result: Any = self.read_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "log",
-                "is-enabled",
-            ),
-        ) or {}
-
-        return bool(result.get("value", True))
-
-    def write_configuration_workspace_data_log_is_enabled_value(
-        self,
-        value: bool
-    ) -> bool:
-        self.write_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "log",
-                "is-enabled",
-                "value",
-            ),
-            value,
-        )
-
-        return True
-
-    def read_configuration_workspace_data_log_is_enabled_override(
-        self
-    ) -> bool:
-        result: Any = self.read_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "log",
-                "is-enabled",
-            ),
-        ) or {}
-
-        return bool(result.get("override", False))
-
-    def write_configuration_workspace_data_log_is_enabled_override(
-        self,
-        value: bool
-    ) -> bool:
-        self.write_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "log",
-                "is-enabled",
-                "override",
-            ),
-            value,
-        )
-
-        return True
-
-    def read_configuration_workspace_data_log_is_verbose_value(
-        self
-    ) -> bool:
-        result: Any = self.read_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "log",
-                "is-verbose",
-            ),
-        ) or {}
-
-        return bool(result.get("value", True))
-
-    def write_configuration_workspace_data_log_is_verbose_value(
-        self,
-        value: bool
-    ) -> bool:
-        self.write_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "log",
-                "is-verbose",
-                "value",
-            ),
-            value,
-        )
-
-        return True
-
-    def read_configuration_workspace_data_log_is_verbose_override(
-        self
-    ) -> bool:
-        result: Any = self.read_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "log",
-                "is-verbose",
-            ),
-        ) or {}
-
-        return bool(result.get("override", False))
-
-    def write_configuration_workspace_data_log_is_verbose_override(
-        self,
-        value: bool
-    ) -> bool:
-        self.write_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "log",
-                "is-verbose",
-                "override",
-            ),
-            value,
-        )
-
-        return True
-
-    def read_configuration_workspace_data_log_file_is_enabled_value(
-        self
-    ) -> bool:
-        result: Any = self.read_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "log",
-                "file",
-                "is-enabled",
-            ),
-        ) or {}
-
-        return bool(result.get("value", True))
-
-    def write_configuration_workspace_data_log_file_is_enabled_value(
-        self,
-        value: bool
-    ) -> bool:
-        self.write_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "log",
-                "file",
-                "is-enabled",
-                "value",
-            ),
-            value,
-        )
-
-        return True
-
-    def read_configuration_workspace_data_log_file_is_verbose_value(
-        self
-    ) -> bool:
-        result: Any = self.read_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "log",
-                "file",
-                "is-verbose",
-            ),
-        ) or {}
-
-        return bool(result.get("value", True))
-
-    def write_configuration_workspace_data_log_file_is_verbose_value(
-        self,
-        value: bool
-    ) -> bool:
-        self.write_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "log",
-                "file",
-                "is-verbose",
-                "value",
-            ),
-            value,
-        )
-
-        return True
-
-    def read_configuration_workspace_data_log_file_targets(
-        self
-    ) -> Any:
-        result: Any = self.read_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "log",
-                "file",
-            ),
-        ) or {}
-
-        return result.get("targets", {})
-
-    def write_configuration_workspace_data_log_file_targets(
-        self,
-        value: Any
-    ) -> bool:
-        self.write_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "log",
-                "file",
-                "targets",
-            ),
-            value,
-        )
-
-        return True
-
-    def read_configuration_workspace_data_log_console_is_enabled_value(
-        self
-    ) -> bool:
-        result: Any = self.read_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "log",
-                "console",
-                "is-enabled",
-            ),
-        ) or {}
-
-        return bool(result.get("value", True))
-
-    def write_configuration_workspace_data_log_console_is_enabled_value(
-        self,
-        value: bool
-    ) -> bool:
-        self.write_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "log",
-                "console",
-                "is-enabled",
-                "value",
-            ),
-            value,
-        )
-
-        return True
-
-    def read_configuration_workspace_data_log_console_is_verbose_value(
-        self
-    ) -> bool:
-        result: Any = self.read_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "log",
-                "console",
-                "is-verbose",
-            ),
-        ) or {}
-
-        return bool(result.get("value", False))
-
-    def write_configuration_workspace_data_log_console_is_verbose_value(
-        self,
-        value: bool
-    ) -> bool:
-        self.write_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "log",
-                "console",
-                "is-verbose",
-                "value",
-            ),
-            value,
-        )
-
-        return True
-
-    def read_configuration_workspace_data_log_default_file_output_is_enabled_value(
-        self
-    ) -> bool:
-        result: Any = self.read_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "log",
-                "default",
-                "file",
-                "output"
-                "is-enabled",
-            ),
-        ) or {}
-
-        return bool(result.get("value", True))
-
-    def write_configuration_workspace_data_log_default_file_output_is_enabled_value(
-        self,
-        value: bool
-    ) -> bool:
-        self.write_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "log",
-                "default",
-                "file",
-                "output"
-                "is-enabled",
-                "value",
-            ),
             value,
         )
 
@@ -2160,477 +2474,6 @@ class ValueCacheDatabaseManager:
             }
 
         return outputs
-
-    def read_configuration_workspace_data_command_filesystem_clean_exclude_targets(
-        self
-    ) -> tuple[str, ...]:
-        result: Any = self.read_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "command",
-                "filesystem",
-                "clean",
-                "exclude",
-            ),
-        ) or {}
-
-        return tuple(result.get("targets", tuple()))
-
-    def write_configuration_workspace_data_command_filesystem_clean_exclude_targets(
-        self,
-        value: tuple[str, ...]
-    ) -> bool:
-        self.write_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "command",
-                "filesystem",
-                "clean",
-                "exclude",
-                "targets",
-            ),
-            value,
-        )
-
-        return True
-
-    def read_configuration_workspace_data_command_filesystem_clean_include_selection(
-        self
-    ) -> Any:
-        result: Any = self.read_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "command",
-                "filesystem",
-                "clean",
-                "include",
-            ),
-        ) or {}
-
-        return result.get("selection", {})
-
-    def write_configuration_workspace_data_command_filesystem_clean_include_selection(
-        self,
-        value: Any
-    ) -> bool:
-        self.write_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "command",
-                "filesystem",
-                "clean",
-                "include",
-                "selection",
-            ),
-            value,
-        )
-
-        return True
-
-    def read_configuration_workspace_data_workspace_project_selection(
-        self
-    ) -> Any:
-        result: Any = self.read_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "workspace",
-                "project",
-            ),
-        ) or {}
-
-        return result.get("selection", {})
-
-    def write_configuration_workspace_data_workspace_project_selection(
-        self,
-        value: Any
-    ) -> bool:
-        self.write_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "workspace",
-                "project",
-                "selection",
-            ),
-            value,
-        )
-
-        return True
-
-    def read_configuration_workspace_data_workspace_group_selection(
-        self
-    ) -> Any:
-        result: Any = self.read_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "workspace",
-                "group",
-            ),
-        ) or {}
-
-        return result.get("selection", {})
-
-    def write_configuration_workspace_data_workspace_group_selection(
-        self,
-        value: Any
-    ) -> bool:
-        self.write_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "workspace",
-                "group",
-                "selection",
-            ),
-            value,
-        )
-
-        return True
-
-    def read_configuration_workspace_data_export_group(
-        self
-    ) -> Any:
-        result: Any = self.read_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "command",
-                "export",
-            ),
-        ) or {}
-
-        return result.get("group", {})
-
-    def write_configuration_export_data_export_group(
-        self,
-        value: Any
-    ) -> bool:
-        self.write_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "command",
-                "export",
-                "group",
-            ),
-            value,
-        )
-
-        return True
-
-    def read_configuration_workspace_data_export_selection(
-        self
-    ) -> Any:
-        result: Any = self.read_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "command",
-                "export",
-            ),
-        ) or {}
-
-        return result.get("selection", {})
-
-    def write_configuration_workspace_data_export_selection(
-        self,
-        value: Any
-    ) -> bool:
-        self.write_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "command",
-                "export",
-                "selection",
-            ),
-            value,
-        )
-
-        return True
-
-    def read_con_wor_data_export_cleanup_before_is_enabled_value(
-        self
-    ) -> bool:
-        result: Any = self.read_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "command",
-                "export",
-                "cleanup",
-                "before",
-                "is-enabled",
-            ),
-        ) or {}
-
-        return bool(result.get("value", True))
-
-    def write_con_wor_data_export_cleanup_before_is_enabled_value(
-        self,
-        value: bool
-    ) -> bool:
-        self.write_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "command",
-                "export",
-                "cleanup",
-                "before",
-                "is-enabled",
-                "value",
-            ),
-            value,
-        )
-
-        return True
-
-    def read_con_wor_data_export_cleanup_after_is_enabled_value(
-        self
-    ) -> bool:
-        result: Any = self.read_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "command",
-                "export",
-                "cleanup",
-                "after",
-                "is-enabled",
-            ),
-        ) or {}
-
-        return bool(result.get("value", True))
-
-    def write_con_wor_data_export_cleanup_after_is_enabled_value(
-        self,
-        value: bool
-    ) -> bool:
-        self.write_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "command",
-                "export",
-                "cleanup",
-                "after",
-                "is-enabled",
-                "value",
-            ),
-            value,
-        )
-
-        return True
-
-
-    def read_con_wor_data_template_cleanup_before_is_enabled_value(
-        self
-    ) -> bool:
-        result: Any = self.read_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "command",
-                "template",
-                "cleanup",
-                "before",
-                "is-enabled",
-            ),
-        ) or {}
-
-        return bool(result.get("value", True))
-
-    def write_con_wor_data_template_cleanup_before_is_enabled_value(
-        self,
-        value: bool
-    ) -> bool:
-        self.write_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "command",
-                "template",
-                "cleanup",
-                "before",
-                "is-enabled",
-                "value",
-            ),
-            value,
-        )
-
-        return True
-
-    def read_con_wor_data_template_cleanup_after_is_enabled_value(
-        self
-    ) -> bool:
-        result: Any = self.read_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "command",
-                "template",
-                "cleanup",
-                "after",
-                "is-enabled",
-            ),
-        ) or {}
-
-        return bool(result.get("value", True))
-
-    def write_con_wor_data_template_cleanup_after_is_enabled_value(
-        self,
-        value: bool
-    ) -> bool:
-        self.write_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "command",
-                "template",
-                "cleanup",
-                "after",
-                "is-enabled",
-                "value",
-            ),
-            value,
-        )
-
-        return True
-
-
-    def read_configuration_workspace_data_workflow_selection(
-        self
-    ) -> Any:
-        result: Any = self.read_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "workflow",
-            ),
-        ) or {}
-
-        return result.get("selection", {})
-
-    def write_configuration_workspace_data_workflow_selection(
-        self,
-        value: Any
-    ) -> bool:
-        self.write_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "workflow",
-                "selection",
-            ),
-            value,
-        )
-
-        return True
-
-
-    def read_con_wor_data_cache_cleanup_before_is_enabled_value(
-        self
-    ) -> bool:
-        result: Any = self.read_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "cache",
-                "cleanup",
-                "before",
-                "is-enabled",
-            ),
-        ) or {}
-
-        return bool(result.get("value", False))
-
-    def write_con_wor_data_cache_cleanup_before_is_enabled_value(
-        self,
-        value: bool
-    ) -> bool:
-        self.write_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "cache",
-                "cleanup",
-                "before",
-                "is-enabled",
-                "value",
-            ),
-            value,
-        )
-
-        return True
-
-    def read_con_wor_data_cache_cleanup_after_is_enabled_value(
-        self
-    ) -> bool:
-        result: Any = self.read_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "cache",
-                "cleanup",
-                "after",
-                "is-enabled",
-            ),
-        ) or {}
-
-        return bool(result.get("value", False))
-
-    def write_con_wor_data_cache_cleanup_after_is_enabled_value(
-        self,
-        value: bool
-    ) -> bool:
-        self.write_any_value(
-            (
-                "configuration",
-                "workspace",
-                "data",
-                "cache",
-                "cleanup",
-                "after",
-                "is-enabled",
-                "value",
-            ),
-            value,
-        )
-
-        return True
-
 
 
     def read_filesystem_clean_excluded(
@@ -3002,7 +2845,7 @@ class ValueCacheDatabaseManager:
                 continue
 
             item_filesystem_path_value = item_filesystem_path["value"]
-            item_pattern_value = item.get("pattern", {}).get("value", "")
+            item_pattern_value = self.read_object_pattern_value(item)
 
             if item_pattern_value:
                 paths = (
@@ -3041,7 +2884,7 @@ class ValueCacheDatabaseManager:
             ):
                 continue
 
-            value = item.get("pattern", {}).get("value", "")
+            value = self.read_object_pattern_value(item)
             if not value:
                 continue
 
@@ -3111,6 +2954,197 @@ class ValueCacheDatabaseManager:
             outputs.add(key)
 
         return outputs
+
+    def read_object_pattern_value(
+        self,
+        data: Any,
+    ) -> str:
+        value: str = (
+            data.get("pattern", {})
+                .get("value", "")
+        )
+
+        return value
+    
+    def read_object_selection(
+        self,
+        data: Any,
+    ) -> Any:
+        value: Any = (
+            data.get("selection", {})
+        )
+
+        return value
+
+    def read_object_output_targets(
+        self,
+        data: Any,
+    ) -> list[str]:
+        value: list[str] = (
+            data.get("output", {})
+                .get("targets", [])
+        )
+
+        return value
+
+    def read_object_input_exclude_targets(
+        self,
+        data: Any,
+    ) -> list[str]:
+        value: list[str] = (
+            data.get("input", {})
+                .get("exclude", {})
+                .get("targets", [])
+        )
+
+        return value
+
+    def read_object_input_include_targets(
+        self,
+        data: Any,
+    ) -> list[str]:
+        value: list[str] = (
+            data.get("input", {})
+                .get("include", {})
+                .get("targets", [])
+        )
+
+        return value
+
+    def read_object_is_enabled_value(
+        self,
+        data: Any,
+    ) -> bool:
+        value: bool = (
+            data.get("is-enabled", {})
+                .get("value", True)
+        )
+
+        return value
+
+    def read_object_filesystem_path_value(
+        self,
+        data: Any,
+    ) -> str:
+        value: str = (
+            data.get("filesystem-path", {})
+                .get("value", "")
+        )
+
+        return value
+
+    def read_object_argument(
+        self,
+        data: Any,
+    ) -> Any:
+        value: Any = (
+            data.get("argument", {})
+        )
+
+        return value
+
+    def read_object_process_value(
+        self,
+        data: Any,
+    ) -> str:
+        value: str = (
+            data.get("process", {})
+                .get("value", "shell")
+        )
+
+        return value
+
+    def read_object_run_value(
+        self,
+        data: Any,
+    ) -> str:
+        value: str = (
+            data.get("run", {})
+                .get("value", "")
+        )
+
+        return value
+
+    def read_object_delay_value(
+        self,
+        data: Any,
+    ) -> str:
+        value: str = (
+            data.get("delay", {})
+                .get("value", 0)
+        )
+
+        return value
+
+    def read_object_scripts(
+        self,
+        data: Any,
+    ) -> list[str]:
+        value: list[str] = (
+            data.get("scripts", [])
+        )
+
+        return value
+
+    def read_object_compression_format_value(
+        self,
+        data: Any,
+    ) -> str:
+        value: str = (
+            data.get("compression", {})
+                .get("format", {})
+                .get("value", "zip")
+        )
+
+        return value
+
+    def read_object_compression_type_value(
+            self,
+            data: Any,
+        ) -> str:
+            value: str = (
+                data.get("compression", {})
+                    .get("type", {})
+                    .get("value", "deflated")
+            )
+
+            return value
+
+    def read_object_compression_level_value(
+        self,
+        data: Any,
+    ) -> int:
+        value: int = (
+            data.get("compression", {})
+                .get("level", {})
+                .get("value", 6)
+        )
+
+        return value
+
+    def read_object_compression_is_zip_64_allowed_value(
+        self,
+        data: Any,
+    ) -> int:
+        value: int = (
+            data.get("compression", {})
+                .get("is-zip-64-allowed", {})
+                .get("value", True)
+        )
+
+        return value
+
+    def read_object_compression_is_timestamp_strict_value(
+        self,
+        data: Any,
+    ) -> int:
+        value: int = (
+            data.get("compression", {})
+                .get("is-timestamp-strict", {})
+                .get("value", True)
+        )
+
+        return value
 
     def read_is_object_operating_system_included(
         self,

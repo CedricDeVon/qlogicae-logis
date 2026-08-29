@@ -7,9 +7,14 @@ def main() -> None:
         import_manager,
     )
 
-    import_manager.ImportManager.read_singleton(
-        console_manager.ConsoleManager
-    ).run()
+    console_application = (
+        import_manager.ImportManager.read_singleton(
+            console_manager.ConsoleManager
+        )
+    )
+
+    console_application.run()
+    console_application.shutdown()
 
 
 if __name__ == "__main__":
