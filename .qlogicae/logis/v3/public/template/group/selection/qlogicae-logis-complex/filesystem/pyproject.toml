@@ -189,7 +189,6 @@ packages = ["${{ qlogicae-logis-source-brand-name }}"]
 minify = """
     pyminify \
         --in-place \
-        --rename-globals \
         --remove-debug \
         --remove-asserts \
         --remove-literal-statements \

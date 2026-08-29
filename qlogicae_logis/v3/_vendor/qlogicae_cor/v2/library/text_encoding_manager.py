@@ -1,5 +1,5 @@
 __all__='TextEncodingManager',
-class A:
+class TextEncodingManager:
 	__slots__='_selected_encoding',
 	def __init__(A):A._selected_encoding='utf-8'
 	@property

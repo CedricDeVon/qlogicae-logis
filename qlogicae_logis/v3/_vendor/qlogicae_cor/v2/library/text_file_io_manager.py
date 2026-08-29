@@ -1,20 +1,20 @@
 from __future__ import annotations
-B=None
+_A=None
 __all__='TextFileIoManager',
-from typing import TYPE_CHECKING as F,Any
-if F:from pathlib import Path
-A=B
-C=B
-D=B
-def E():global E;global A;global C;global D;import pathlib as F;from.singleton_manager import SingletonManager as G;from.text_encoding_manager import TextEncodingManager as H;A=F;C=G;D=H;E=lambda:B
-class G:
+from typing import TYPE_CHECKING,Any
+if TYPE_CHECKING:from pathlib import Path
+_pathlib=_A
+_SingletonManager=_A
+_TextEncodingManager=_A
+def _handle_dynamic_imports():global _handle_dynamic_imports;global _pathlib;global _SingletonManager;global _TextEncodingManager;import pathlib as A;from.singleton_manager import SingletonManager as B;from.text_encoding_manager import TextEncodingManager as C;_pathlib=A;_SingletonManager=B;_TextEncodingManager=C;_handle_dynamic_imports=lambda:_A
+class TextFileIoManager:
 	__slots__='_text_encoding_manager',
-	def __init__(A):E();A._text_encoding_manager=C.get_singleton(D)
-	def read_file(C,file_path):
-		D=A.Path(file_path);B=''
-		with D.open(mode='r',encoding=C._text_encoding_manager.selected_encoding)as E:B=E.read()or''
-		return B
-	def write_file(D,file_path,data):
-		B=True;C=A.Path(file_path);C.parent.mkdir(parents=B,exist_ok=B)
-		with C.open(mode='w',encoding=D._text_encoding_manager.selected_encoding)as E:E.write(str(data))
-		return B
+	def __init__(A):_handle_dynamic_imports();A._text_encoding_manager=_SingletonManager.get_singleton(_TextEncodingManager)
+	def read_file(B,file_path):
+		C=_pathlib.Path(file_path);A=''
+		with C.open(mode='r',encoding=B._text_encoding_manager.selected_encoding)as D:A=D.read()or''
+		return A
+	def write_file(C,file_path,data):
+		A=True;B=_pathlib.Path(file_path);B.parent.mkdir(parents=A,exist_ok=A)
+		with B.open(mode='w',encoding=C._text_encoding_manager.selected_encoding)as D:D.write(str(data))
+		return A

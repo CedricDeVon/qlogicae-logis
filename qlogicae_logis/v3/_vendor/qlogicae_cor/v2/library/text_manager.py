@@ -1,6 +1,6 @@
 from typing import Any
 __all__='TextManager',
-class A:
+class TextManager:
 	__slots__='_valid_file_extensions',
 	def __init__(A):A._valid_file_extensions={'.txt'}
 	@property

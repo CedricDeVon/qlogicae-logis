@@ -1,21 +1,21 @@
 from __future__ import annotations
-E=None
+_A=None
 __all__='LogManager',
-from typing import TYPE_CHECKING as H,Any
-if H:from.log_options import LogOptions
-B=E
-C=E
-D=E
-F=E
-A=E
-def G():global G;global B;global C;global D;global F;global A;import logging as H;from.console_log_manager import ConsoleLogManager as I;from.file_log_manager import FileLogManager as J;from.log_options_manager import LogOptionsManager as K;from.singleton_manager import SingletonManager as L;B=H;C=I;D=J;F=K;A=L;G=lambda:E
-class I:
+from typing import TYPE_CHECKING,Any
+if TYPE_CHECKING:from.log_options import LogOptions
+_logging=_A
+_ConsoleLogManager=_A
+_FileLogManager=_A
+_LogOptionsManager=_A
+_SingletonManager=_A
+def _handle_dynamic_imports():global _handle_dynamic_imports;global _logging;global _ConsoleLogManager;global _FileLogManager;global _LogOptionsManager;global _SingletonManager;import logging as A;from.console_log_manager import ConsoleLogManager as B;from.file_log_manager import FileLogManager as C;from.log_options_manager import LogOptionsManager as D;from.singleton_manager import SingletonManager as E;_logging=A;_ConsoleLogManager=B;_FileLogManager=C;_LogOptionsManager=D;_SingletonManager=E;_handle_dynamic_imports=lambda:_A
+class LogManager:
 	__slots__='_file_log_manager','_console_log_manager','_log_options_manager'
-	def __init__(B):G();B._file_log_manager=A.get_singleton(D);B._console_log_manager=A.get_singleton(C);B._log_options_manager=A.get_singleton(F)
+	def __init__(A):_handle_dynamic_imports();A._file_log_manager=_SingletonManager.get_singleton(_FileLogManager);A._console_log_manager=_SingletonManager.get_singleton(_ConsoleLogManager);A._log_options_manager=_SingletonManager.get_singleton(_LogOptionsManager)
 	def log(B,message,console_options,file_options):A=message;B._console_log_manager.log(A,console_options);B._file_log_manager.log(A,file_options);return A
-	def log_debug(E,message):return E.log(message,E._log_options_manager.generate_modified_defaults(A.get_singleton(C).options,log_level=B.DEBUG),E._log_options_manager.generate_modified_defaults(A.get_singleton(D).options,log_level=B.DEBUG))
-	def log_info(E,message):return E.log(message,E._log_options_manager.generate_modified_defaults(A.get_singleton(C).options,log_level=B.INFO),E._log_options_manager.generate_modified_defaults(A.get_singleton(D).options,log_level=B.INFO))
-	def log_warning(E,message):return E.log(message,E._log_options_manager.generate_modified_defaults(A.get_singleton(C).options,log_level=B.WARNING),E._log_options_manager.generate_modified_defaults(A.get_singleton(D).options,log_level=B.WARNING))
-	def log_error(E,message):return E.log(message,E._log_options_manager.generate_modified_defaults(A.get_singleton(C).options,log_level=B.ERROR),E._log_options_manager.generate_modified_defaults(A.get_singleton(D).options,log_level=B.ERROR))
-	def log_critical(E,message):return E.log(message,E._log_options_manager.generate_modified_defaults(A.get_singleton(C).options,log_level=B.CRITICAL),E._log_options_manager.generate_modified_defaults(A.get_singleton(D).options,log_level=B.CRITICAL))
+	def log_debug(A,message):return A.log(message,A._log_options_manager.generate_modified_defaults(_SingletonManager.get_singleton(_ConsoleLogManager).options,log_level=_logging.DEBUG),A._log_options_manager.generate_modified_defaults(_SingletonManager.get_singleton(_FileLogManager).options,log_level=_logging.DEBUG))
+	def log_info(A,message):return A.log(message,A._log_options_manager.generate_modified_defaults(_SingletonManager.get_singleton(_ConsoleLogManager).options,log_level=_logging.INFO),A._log_options_manager.generate_modified_defaults(_SingletonManager.get_singleton(_FileLogManager).options,log_level=_logging.INFO))
+	def log_warning(A,message):return A.log(message,A._log_options_manager.generate_modified_defaults(_SingletonManager.get_singleton(_ConsoleLogManager).options,log_level=_logging.WARNING),A._log_options_manager.generate_modified_defaults(_SingletonManager.get_singleton(_FileLogManager).options,log_level=_logging.WARNING))
+	def log_error(A,message):return A.log(message,A._log_options_manager.generate_modified_defaults(_SingletonManager.get_singleton(_ConsoleLogManager).options,log_level=_logging.ERROR),A._log_options_manager.generate_modified_defaults(_SingletonManager.get_singleton(_FileLogManager).options,log_level=_logging.ERROR))
+	def log_critical(A,message):return A.log(message,A._log_options_manager.generate_modified_defaults(_SingletonManager.get_singleton(_ConsoleLogManager).options,log_level=_logging.CRITICAL),A._log_options_manager.generate_modified_defaults(_SingletonManager.get_singleton(_FileLogManager).options,log_level=_logging.CRITICAL))
 	def shutdown(A):A._file_log_manager.shutdown();return True

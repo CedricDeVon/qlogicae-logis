@@ -1,13 +1,12 @@
 from __future__ import annotations
-D=True
-C=False
+_A=False
 from typing import Any
 __all__='TaskStorageManager'
-A=None
-def B():global B;global A;from..library import import_manager as C;A=C.ImportManager;B=lambda:None
-class E:
+_ImportManager=None
+def _handle_dynamic_imports():global _handle_dynamic_imports;global _ImportManager;from..library import import_manager as A;_ImportManager=A.ImportManager;_handle_dynamic_imports=lambda:None
+class TaskStorageManager:
 	__slots__='_tasks','_import_manager'
-	def __init__(C):B();C._tasks={};C._import_manager=A.read_singleton(A)
+	def __init__(A):_handle_dynamic_imports();A._tasks={};A._import_manager=_ImportManager.read_singleton(_ImportManager)
 	def read_tasks(A):return A._tasks
 	def read_task(A,name):
 		if not name:return{}
@@ -21,9 +20,9 @@ class E:
 		if not A:return
 		B._tasks=A
 	def remove_task(A,name):
-		if not name:return C
-		del A._tasks[name];return D
-	def is_executed(A,label=''):B=f"{label}";E=A._tasks.get(B,C);A._tasks[B]=D;return E
+		if not name:return _A
+		del A._tasks[name];return True
+	def is_executed(A,label=''):B=f"{label}";C=A._tasks.get(B,_A);A._tasks[B]=True;return C
 	def reset_all_task_executed(A):
-		for(B,E)in A._tasks.items():A._tasks[B]=C
-		return D
+		for(B,C)in A._tasks.items():A._tasks[B]=_A
+		return True

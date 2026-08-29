@@ -1,14 +1,14 @@
 from __future__ import annotations
-B=None
+_A=None
 __all__='JsonTextManager',
 from typing import Any
-A=B
-C=B
-D=B
-def E():global E;global A;global C;global D;import json;from.json_manager import JsonManager as F;from.singleton_manager import SingletonManager as G;A=json;C=G;D=F;E=lambda:B
-class F:
+_json=_A
+_SingletonManager=_A
+_JsonManager=_A
+def _handle_dynamic_imports():global _handle_dynamic_imports;global _json;global _SingletonManager;global _JsonManager;import json;from.json_manager import JsonManager as A;from.singleton_manager import SingletonManager as B;_json=json;_SingletonManager=B;_JsonManager=A;_handle_dynamic_imports=lambda:_A
+class JsonTextManager:
 	__slots__='_json_manager',
-	def __init__(A):E();A._json_manager=C.get_singleton(D)
-	def is_valid(B,value):A.loads(value);return True
-	def convert_to_object(B,value):return A.loads(value)
-	def convert_to_string(B,value):C=A.dumps(value,indent=B._json_manager.indent_count,ensure_ascii=B._json_manager.is_ascii_format_enabled);return C
+	def __init__(A):_handle_dynamic_imports();A._json_manager=_SingletonManager.get_singleton(_JsonManager)
+	def is_valid(A,value):_json.loads(value);return True
+	def convert_to_object(A,value):return _json.loads(value)
+	def convert_to_string(A,value):B=_json.dumps(value,indent=A._json_manager.indent_count,ensure_ascii=A._json_manager.is_ascii_format_enabled);return B

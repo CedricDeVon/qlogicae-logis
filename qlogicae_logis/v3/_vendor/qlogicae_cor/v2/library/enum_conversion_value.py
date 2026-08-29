@@ -1,3 +1,3 @@
 from enum import Enum
 __all__='EnumConversionValue',
-class A(Enum):STRING=0;ENUM=1;CUSTOM=2;NONE=3
+class EnumConversionValue(Enum):STRING=0;ENUM=1;CUSTOM=2;NONE=3

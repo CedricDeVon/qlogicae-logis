@@ -1,14 +1,14 @@
 from __future__ import annotations
-A=None
+_A=None
 __all__='LogOptionsManager',
-from typing import TYPE_CHECKING as E,Any
-if E:from.log_options import LogOptions
-B=A
-C=A
-def D():global D;global B;global C;import logging as E;from.log_options import LogOptions as F;B=E;C=F;D=lambda:A
-class F:
-	def __init__(A):D()
-	def generate_modified_defaults(G,default_log_options,log_level=A):
-		E=log_level;D=default_log_options
-		if E is A:E=B.DEBUG
-		F=C(is_enabled=D.is_enabled,is_verbose_enabled=D.is_verbose_enabled,log_level=E,stack_level=D.stack_level);return F
+from typing import TYPE_CHECKING,Any
+if TYPE_CHECKING:from.log_options import LogOptions
+_logging=_A
+_LogOptions=_A
+def _handle_dynamic_imports():global _handle_dynamic_imports;global _logging;global _LogOptions;import logging as A;from.log_options import LogOptions as B;_logging=A;_LogOptions=B;_handle_dynamic_imports=lambda:_A
+class LogOptionsManager:
+	def __init__(A):_handle_dynamic_imports()
+	def generate_modified_defaults(D,default_log_options,log_level=_A):
+		B=log_level;A=default_log_options
+		if B is _A:B=_logging.DEBUG
+		C=_LogOptions(is_enabled=A.is_enabled,is_verbose_enabled=A.is_verbose_enabled,log_level=B,stack_level=A.stack_level);return C

@@ -1,25 +1,25 @@
 from __future__ import annotations
-C=None
+_A=None
 __all__='ScriptProcessEnumManager',
-from typing import TYPE_CHECKING as E,Any
-if E:from.enum_conversion_value import EnumConversionValue
-B=C
-A=C
-def D():global D;global B;global A;from.enum_conversion_value import EnumConversionValue as E;from.script_process import ScriptProcess as F;B=E;A=F;D=lambda:C
-class F:
-	def __init__(A):D()
-	def convert_value(F,input_type,output_type=C):
-		E=input_type;D=output_type
-		if D is C:D=B.STRING
-		match D:
-			case B.STRING:
-				match E:
-					case A.SHELL:return'shell'
-					case A.SUBPROCESS:return'subprocess'
+from typing import TYPE_CHECKING,Any
+if TYPE_CHECKING:from.enum_conversion_value import EnumConversionValue
+_EnumConversionValue=_A
+_ScriptProcess=_A
+def _handle_dynamic_imports():global _handle_dynamic_imports;global _EnumConversionValue;global _ScriptProcess;from.enum_conversion_value import EnumConversionValue as A;from.script_process import ScriptProcess as B;_EnumConversionValue=A;_ScriptProcess=B;_handle_dynamic_imports=lambda:_A
+class ScriptProcessEnumManager:
+	def __init__(A):_handle_dynamic_imports()
+	def convert_value(C,input_type,output_type=_A):
+		B=input_type;A=output_type
+		if A is _A:A=_EnumConversionValue.STRING
+		match A:
+			case _EnumConversionValue.STRING:
+				match B:
+					case _ScriptProcess.SHELL:return'shell'
+					case _ScriptProcess.SUBPROCESS:return'subprocess'
 					case _:return'none'
-			case B.ENUM:
-				match str(E).lower():
-					case'shell':return A.SHELL
-					case'subprocess':return A.SUBPROCESS
-					case _:return A.SUBPROCESS
-			case _:return B.NONE
+			case _EnumConversionValue.ENUM:
+				match str(B).lower():
+					case'shell':return _ScriptProcess.SHELL
+					case'subprocess':return _ScriptProcess.SUBPROCESS
+					case _:return _ScriptProcess.SUBPROCESS
+			case _:return _EnumConversionValue.NONE

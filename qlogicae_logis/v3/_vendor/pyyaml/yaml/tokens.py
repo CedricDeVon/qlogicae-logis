@@ -1,36 +1,36 @@
-B=None
-class A:
+_A=None
+class Token:
 	def __init__(A,start_mark,end_mark):A.start_mark=start_mark;A.end_mark=end_mark
 	def __repr__(A):B=[A for A in A.__dict__ if not A.endswith('_mark')];B.sort();C=', '.join(['%s=%r'%(B,getattr(A,B))for B in B]);return'%s(%s)'%(A.__class__.__name__,C)
-class C(A):
+class DirectiveToken(Token):
 	id='<directive>'
 	def __init__(A,name,value,start_mark,end_mark):A.name=name;A.value=value;A.start_mark=start_mark;A.end_mark=end_mark
-class D(A):id='<document start>'
-class E(A):id='<document end>'
-class F(A):
+class DocumentStartToken(Token):id='<document start>'
+class DocumentEndToken(Token):id='<document end>'
+class StreamStartToken(Token):
 	id='<stream start>'
-	def __init__(A,start_mark=B,end_mark=B,encoding=B):A.start_mark=start_mark;A.end_mark=end_mark;A.encoding=encoding
-class G(A):id='<stream end>'
-class H(A):id='<block sequence start>'
-class I(A):id='<block mapping start>'
-class J(A):id='<block end>'
-class K(A):id='['
-class L(A):id='{'
-class M(A):id=']'
-class N(A):id='}'
-class O(A):id='?'
-class P(A):id=':'
-class Q(A):id='-'
-class R(A):id=','
-class S(A):
+	def __init__(A,start_mark=_A,end_mark=_A,encoding=_A):A.start_mark=start_mark;A.end_mark=end_mark;A.encoding=encoding
+class StreamEndToken(Token):id='<stream end>'
+class BlockSequenceStartToken(Token):id='<block sequence start>'
+class BlockMappingStartToken(Token):id='<block mapping start>'
+class BlockEndToken(Token):id='<block end>'
+class FlowSequenceStartToken(Token):id='['
+class FlowMappingStartToken(Token):id='{'
+class FlowSequenceEndToken(Token):id=']'
+class FlowMappingEndToken(Token):id='}'
+class KeyToken(Token):id='?'
+class ValueToken(Token):id=':'
+class BlockEntryToken(Token):id='-'
+class FlowEntryToken(Token):id=','
+class AliasToken(Token):
 	id='<alias>'
 	def __init__(A,value,start_mark,end_mark):A.value=value;A.start_mark=start_mark;A.end_mark=end_mark
-class T(A):
+class AnchorToken(Token):
 	id='<anchor>'
 	def __init__(A,value,start_mark,end_mark):A.value=value;A.start_mark=start_mark;A.end_mark=end_mark
-class U(A):
+class TagToken(Token):
 	id='<tag>'
 	def __init__(A,value,start_mark,end_mark):A.value=value;A.start_mark=start_mark;A.end_mark=end_mark
-class V(A):
+class ScalarToken(Token):
 	id='<scalar>'
-	def __init__(A,value,plain,start_mark,end_mark,style=B):A.value=value;A.plain=plain;A.start_mark=start_mark;A.end_mark=end_mark;A.style=style
+	def __init__(A,value,plain,start_mark,end_mark,style=_A):A.value=value;A.plain=plain;A.start_mark=start_mark;A.end_mark=end_mark;A.style=style

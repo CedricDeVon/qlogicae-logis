@@ -1,35 +1,32 @@
 from __future__ import annotations
-H=list
-G=dict
-D=None
-B=isinstance
+_A=None
 __all__='ObjectMergeManager',
 from typing import Any
-A=D
-def C():global C;global A;from copy import deepcopy as B;A=B;C=lambda:D
-class E:
-	def __init__(A):C()
-	def deep_merge(K,left,right):
-		E=left;C=right
-		if E is D:return A(C)
-		if C is D:return A(E)
-		if B(E,G)and B(C,G):
-			F=A(E)
-			for(I,J)in C.items():
-				if I in F:F[I]=K.deep_merge(F[I],J)
-				else:F[I]=A(J)
-			return F
-		if B(E,H)and B(C,H):return A(E)+A(C)
-		return A(C)
-	def deep_merge_fragments(K,left,right):
-		E=left;C=right
-		if E is D:return A(C)
-		if C is D:return A(E)
-		if B(E,G)and B(C,G):
-			F=A(E)
-			for(I,J)in C.items():
-				if I in F:F[I]=K.deep_merge_fragments(F[I],J)
-				else:F[I]=A(J)
-			return F
-		if B(E,H)and B(C,H):return A(C)
-		return A(C)
+_deepcopy=_A
+def _handle_dynamic_imports():global _handle_dynamic_imports;global _deepcopy;from copy import deepcopy as A;_deepcopy=A;_handle_dynamic_imports=lambda:_A
+class ObjectMergeManager:
+	def __init__(A):_handle_dynamic_imports()
+	def deep_merge(F,left,right):
+		B=left;A=right
+		if B is _A:return _deepcopy(A)
+		if A is _A:return _deepcopy(B)
+		if isinstance(B,dict)and isinstance(A,dict):
+			C=_deepcopy(B)
+			for(D,E)in A.items():
+				if D in C:C[D]=F.deep_merge(C[D],E)
+				else:C[D]=_deepcopy(E)
+			return C
+		if isinstance(B,list)and isinstance(A,list):return _deepcopy(B)+_deepcopy(A)
+		return _deepcopy(A)
+	def deep_merge_fragments(F,left,right):
+		B=left;A=right
+		if B is _A:return _deepcopy(A)
+		if A is _A:return _deepcopy(B)
+		if isinstance(B,dict)and isinstance(A,dict):
+			C=_deepcopy(B)
+			for(D,E)in A.items():
+				if D in C:C[D]=F.deep_merge_fragments(C[D],E)
+				else:C[D]=_deepcopy(E)
+			return C
+		if isinstance(B,list)and isinstance(A,list):return _deepcopy(A)
+		return _deepcopy(A)

@@ -1,47 +1,44 @@
 from __future__ import annotations
-K=False
-J=property
-I=zip
-C=True
-A=None
+_B=True
+_A=None
 __all__='AsynchronousManager',
-from typing import TYPE_CHECKING as L,Any
-if L:import asyncio,threading;from collections.abc import Callable,Coroutine,Iterable;from concurrent.futures import ProcessPoolExecutor,ThreadPoolExecutor;from typing import ParamSpec as M,TypeVar as N;O=M('P');P=N('T')
-B=A
-E=A
-D=A
-F=A
-G=A
-def H():global H;global B;global E;global D;global F;global G;import asyncio as C,threading as I;from concurrent.futures import ProcessPoolExecutor as J,ThreadPoolExecutor as K;from functools import partial as L;B=C;E=I;D=L;F=J;G=K;H=lambda:A
-class Q:
+from typing import TYPE_CHECKING,Any
+if TYPE_CHECKING:import asyncio,threading;from collections.abc import Callable,Coroutine,Iterable;from concurrent.futures import ProcessPoolExecutor,ThreadPoolExecutor;from typing import ParamSpec,TypeVar;P=ParamSpec('P');T=TypeVar('T')
+_asyncio=_A
+_threading=_A
+_partial=_A
+_ProcessPoolExecutor=_A
+_ThreadPoolExecutor=_A
+def _handle_dynamic_imports():global _handle_dynamic_imports;global _asyncio;global _threading;global _partial;global _ProcessPoolExecutor;global _ThreadPoolExecutor;import asyncio as A,threading as B;from concurrent.futures import ProcessPoolExecutor as C,ThreadPoolExecutor as D;from functools import partial as E;_asyncio=A;_threading=B;_partial=E;_ProcessPoolExecutor=C;_ThreadPoolExecutor=D;_handle_dynamic_imports=lambda:_A
+class AsynchronousManager:
 	__slots__='_thread_executor','_process_executor'
-	def __init__(B):H();B._thread_executor=A;B._process_executor=A
-	@J
+	def __init__(A):_handle_dynamic_imports();A._thread_executor=_A;A._process_executor=_A
+	@property
 	def thread_executor(self):
-		B=self
-		if B._thread_executor is A:B._thread_executor=G()
-		return B._thread_executor
-	@J
+		A=self
+		if A._thread_executor is _A:A._thread_executor=_ThreadPoolExecutor()
+		return A._thread_executor
+	@property
 	def process_executor(self):
-		B=self
-		if B._process_executor is A:B._process_executor=F()
-		return B._process_executor
-	async def run_thread(F,A,*C,**D):E=await B.to_thread(A,*C,**D);return E
-	async def run_thread_pool(A,C,*E,**F):G=B.get_running_loop();H=await G.run_in_executor(A.thread_executor,D(C,*E,**F));return H
-	async def run_process_pool(A,C,*E,**F):G=B.get_running_loop();H=await G.run_in_executor(A.process_executor,D(C,*E,**F));return H
-	async def gather(D,*A,return_exceptions=K):C=await B.gather(*A,return_exceptions=return_exceptions);return C
-	async def wait(E,*A,timeout=A):C={B.create_task(A)for A in A};D=await B.wait(C,timeout=timeout);return D
-	def create_task(C,coroutine,name=A):A=B.create_task(coroutine,name=name);return A
-	async def timeout(C,coroutine,seconds):A=await B.wait_for(coroutine,timeout=seconds);return A
-	async def map_thread(A,function,*D):E=await B.gather(*(A.run_thread(function,*B)for B in I(*D,strict=C)));return E
-	async def map_thread_pool(A,function,*D):E=await B.gather(*(A.run_thread_pool(function,*B)for B in I(*D,strict=C)));return E
-	async def map_process_pool(A,function,*D):E=await B.gather(*(A.run_process_pool(function,*B)for B in I(*D,strict=C)));return E
-	def create_thread(F,B,*C,daemon=K,start=C,**D):
-		A=E.Thread(target=B,args=C,kwargs=D,daemon=daemon)
+		A=self
+		if A._process_executor is _A:A._process_executor=_ProcessPoolExecutor()
+		return A._process_executor
+	async def run_thread(E,A,*B,**C):D=await _asyncio.to_thread(A,*B,**C);return D
+	async def run_thread_pool(A,B,*C,**D):E=_asyncio.get_running_loop();F=await E.run_in_executor(A.thread_executor,_partial(B,*C,**D));return F
+	async def run_process_pool(A,B,*C,**D):E=_asyncio.get_running_loop();F=await E.run_in_executor(A.process_executor,_partial(B,*C,**D));return F
+	async def gather(C,*A,return_exceptions=False):B=await _asyncio.gather(*A,return_exceptions=return_exceptions);return B
+	async def wait(D,*A,timeout=_A):B={_asyncio.create_task(A)for A in A};C=await _asyncio.wait(B,timeout=timeout);return C
+	def create_task(B,coroutine,name=_A):A=_asyncio.create_task(coroutine,name=name);return A
+	async def timeout(B,coroutine,seconds):A=await _asyncio.wait_for(coroutine,timeout=seconds);return A
+	async def map_thread(A,function,*B):C=await _asyncio.gather(*(A.run_thread(function,*B)for B in zip(*B,strict=_B)));return C
+	async def map_thread_pool(A,function,*B):C=await _asyncio.gather(*(A.run_thread_pool(function,*B)for B in zip(*B,strict=_B)));return C
+	async def map_process_pool(A,function,*B):C=await _asyncio.gather(*(A.run_process_pool(function,*B)for B in zip(*B,strict=_B)));return C
+	def create_thread(E,B,*C,daemon=False,start=_B,**D):
+		A=_threading.Thread(target=B,args=C,kwargs=D,daemon=daemon)
 		if start:A.start()
 		return A
-	def shutdown(B,*,wait=C):
-		if B._thread_executor is not A:B._thread_executor.shutdown(wait=wait);B._thread_executor=A
-		if B._process_executor is not A:B._process_executor.shutdown(wait=wait);B._process_executor=A
+	def shutdown(A,*,wait=_B):
+		if A._thread_executor is not _A:A._thread_executor.shutdown(wait=wait);A._thread_executor=_A
+		if A._process_executor is not _A:A._process_executor.shutdown(wait=wait);A._process_executor=_A
 	def __enter__(A):return A
 	def __exit__(A,exc_type,exc,traceback):A.shutdown()

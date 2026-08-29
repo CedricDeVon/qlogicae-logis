@@ -1,94 +1,94 @@
 from __future__ import annotations
-E='all'
-G=True
-F=False
-A=None
+_D='all'
+_C=True
+_B=False
+_A=None
 from typing import Any
-from..library.decorator_manager import DecoratorManager as N
+from..library.decorator_manager import DecoratorManager
 __all__='CommandTemplateManager'
-C=A
-B=A
-D=A
-H=A
-M=N
-I=A
-J=A
-K=A
-def L():global L;global C;global B;global D;global H;global I;global J;global K;from..library import command_storage_manager as E,database_manager as F,display_manager as G,import_manager as M,persistent_cache_database_manager as N,task_manager as O,value_cache_database_manager as P;C=O.TaskManager;D=G.DisplayManager;H=F.DatabaseManager;J=P.ValueCacheDatabaseManager;K=N.PersistentCacheDatabasManager;B=M.ImportManager;I=E.CommandStorageManager;L=lambda:A
-class O:
+_TaskManager=_A
+_ImportManager=_A
+_DisplayManager=_A
+_DatabaseManager=_A
+_DecoratorManager=DecoratorManager
+_CommandStorageManager=_A
+_ValueCacheDatabaseManager=_A
+_PersistentCacheDatabasManager=_A
+def _handle_dynamic_imports():global _handle_dynamic_imports;global _TaskManager;global _ImportManager;global _DisplayManager;global _DatabaseManager;global _CommandStorageManager;global _ValueCacheDatabaseManager;global _PersistentCacheDatabasManager;from..library import command_storage_manager as A,database_manager as B,display_manager as C,import_manager as D,persistent_cache_database_manager as E,task_manager as F,value_cache_database_manager as G;_TaskManager=F.TaskManager;_DisplayManager=C.DisplayManager;_DatabaseManager=B.DatabaseManager;_ValueCacheDatabaseManager=G.ValueCacheDatabaseManager;_PersistentCacheDatabasManager=E.PersistentCacheDatabasManager;_ImportManager=D.ImportManager;_CommandStorageManager=A.CommandStorageManager;_handle_dynamic_imports=lambda:_A
+class CommandTemplateManager:
 	__slots__='_command_storage_manager','_task_manager','_import_manager','_display_manager','_database_manager','_value_cache_database_manager','_persistent_cache_database_manager'
-	def __init__(A):L();A._command_storage_manager=B.read_singleton(I);A._display_manager=B.read_singleton(D);A._task_manager=B.read_singleton(C);A._import_manager=B.read_singleton(B);A._database_manager=B.read_singleton(H);A._value_cache_database_manager=B.read_singleton(J);A._persistent_cache_database_manager=B.read_singleton(K);A._command_storage_manager.add_commands(((A._command_storage_manager.read_command_name('template_apply'),A.run_command_template_apply),(A._command_storage_manager.read_command_name('template_list_selections'),A.run_command_template_list_selections)))
-	@M.command_decorator
-	def run_command_template_apply(self,**K):
-		T='root';S='targets';A=self
-		if not K:return F
-		def M():
+	def __init__(A):_handle_dynamic_imports();A._command_storage_manager=_ImportManager.read_singleton(_CommandStorageManager);A._display_manager=_ImportManager.read_singleton(_DisplayManager);A._task_manager=_ImportManager.read_singleton(_TaskManager);A._import_manager=_ImportManager.read_singleton(_ImportManager);A._database_manager=_ImportManager.read_singleton(_DatabaseManager);A._value_cache_database_manager=_ImportManager.read_singleton(_ValueCacheDatabaseManager);A._persistent_cache_database_manager=_ImportManager.read_singleton(_PersistentCacheDatabasManager);A._command_storage_manager.add_commands(((A._command_storage_manager.read_command_name('template_apply'),A.run_command_template_apply),(A._command_storage_manager.read_command_name('template_list_selections'),A.run_command_template_list_selections)))
+	@_DecoratorManager.command_decorator
+	def run_command_template_apply(self,**H):
+		Q='root';P='targets';A=self
+		if not H:return _B
+		def K():
 			B=f"{D}/root/filesystem"
-			for E in Q:
+			for E in O:
 				if not E:continue
-				F=f"{C}/{E}/template/all/filesystem";H=f"{C}/{E}/template/root/filesystem";A._import_manager.setup_filesystem_tree_paths(target_paths=(F,H,B));A._import_manager.copy_filesystem_path(source_path=F,target_path=B);A._import_manager.copy_filesystem_path(source_path=H,target_path=B)
-			A._import_manager.macros_parse_filesystem(filesystem_path=B,workspace_macros=P);A._import_manager.copy_filesystem_path(source_path=B,target_path=V);return G
-		def L():
-			for A in I:
+				F=f"{C}/{E}/template/all/filesystem";G=f"{C}/{E}/template/root/filesystem";A._import_manager.setup_filesystem_tree_paths(target_paths=(F,G,B));A._import_manager.copy_filesystem_path(source_path=F,target_path=B);A._import_manager.copy_filesystem_path(source_path=G,target_path=B)
+			A._import_manager.macros_parse_filesystem(filesystem_path=B,workspace_macros=N);A._import_manager.copy_filesystem_path(source_path=B,target_path=S);return _C
+		def I():
+			for A in G:
 				if not A:continue
-				N(A)
-			return G
-		def R():
-			for A in H:
+				L(A)
+			return _C
+		def J():
+			for A in F:
 				if not A:continue
-				O(A)
-			return G
-		def N(group_target):
-			K=group_target
-			if not K:return F
-			R=X.get(K,{})
-			if not R:return F
-			Y=set(R.get(S,{}));B=f"{D}/group/selection/{K}/filesystem"
-			for L in Q:
-				if not L:continue
-				U=f"{C}/{L}/template/all/filesystem";V=f"{C}/{L}/template/group/filesystem";W=f"{C}/{L}/template/group/selection/{K}/filesystem";A._import_manager.setup_filesystem_tree_paths(target_paths=(U,V,W,B));A._import_manager.copy_filesystem_path(source_path=U,target_path=B);A._import_manager.copy_filesystem_path(source_path=V,target_path=B);A._import_manager.copy_filesystem_path(source_path=W,target_path=B)
-			A._import_manager.macros_parse_filesystem(filesystem_path=B,workspace_macros=P)
-			for E in Y:
+				M(A)
+			return _C
+		def L(group_target):
+			I=group_target
+			if not I:return _B
+			R=V.get(I,{})
+			if not R:return _B
+			W=set(R.get(P,{}));B=f"{D}/group/selection/{I}/filesystem"
+			for J in O:
+				if not J:continue
+				S=f"{C}/{J}/template/all/filesystem";T=f"{C}/{J}/template/group/filesystem";U=f"{C}/{J}/template/group/selection/{I}/filesystem";A._import_manager.setup_filesystem_tree_paths(target_paths=(S,T,U,B));A._import_manager.copy_filesystem_path(source_path=S,target_path=B);A._import_manager.copy_filesystem_path(source_path=T,target_path=B);A._import_manager.copy_filesystem_path(source_path=U,target_path=B)
+			A._import_manager.macros_parse_filesystem(filesystem_path=B,workspace_macros=N)
+			for E in W:
 				if not E:continue
-				if E==T:J=f"{D}/root/filesystem";A._import_manager.copy_filesystem_path(source_path=B,target_path=J);M()
-				elif E in H:J=f"{D}/project/selection/{E}/filesystem";A._import_manager.copy_filesystem_path(source_path=B,target_path=J);O(E)
-				elif E in I:J=f"{D}/group/selection/{E}/filesystem";A._import_manager.copy_filesystem_path(source_path=B,target_path=J);N(E)
-			return G
-		def O(project_target):
+				if E==Q:H=f"{D}/root/filesystem";A._import_manager.copy_filesystem_path(source_path=B,target_path=H);K()
+				elif E in F:H=f"{D}/project/selection/{E}/filesystem";A._import_manager.copy_filesystem_path(source_path=B,target_path=H);M(E)
+				elif E in G:H=f"{D}/group/selection/{E}/filesystem";A._import_manager.copy_filesystem_path(source_path=B,target_path=H);L(E)
+			return _C
+		def M(project_target):
 			E=project_target
-			if not E:return F
-			I=U.get(E,{})
-			if not I:return F
-			J=I.get('filesystem-path',{}).get('value','')
-			if not J:return F
+			if not E:return _B
+			G=R.get(E,{})
+			if not G:return _B
+			H=G.get('filesystem-path',{}).get('value','')
+			if not H:return _B
 			B=f"{D}/project/selection/{E}/filesystem"
-			for H in Q:
-				if not H:continue
-				K=f"{C}/{H}/template/all/filesystem";L=f"{C}/{H}/template/project/filesystem";M=f"{C}/{H}/template/project/selection/{E}/filesystem";A._import_manager.setup_filesystem_tree_paths(target_paths=(K,L,M,B));A._import_manager.copy_filesystem_path(source_path=K,target_path=B);A._import_manager.copy_filesystem_path(source_path=L,target_path=B);A._import_manager.copy_filesystem_path(source_path=M,target_path=B)
-			A._import_manager.macros_parse_filesystem(filesystem_path=B,workspace_macros=P);A._import_manager.copy_filesystem_path(source_path=B,target_path=J);return G
-		A._task_manager.run_task_common_setup();A._task_manager.run_task_workspace_default_setup();A._task_manager.run_task_workspace_group_setup();A._task_manager.run_task_workspace_project_setup();A._task_manager.run_task_filesystem_clean_exclude_setup();A._task_manager.run_task_filesystem_clean_include_setup();J=K.get(S,[E])
-		if not J or len(J)<1:J=[E]
-		P=A._value_cache_database_manager.read_macros();Q=A._database_manager.read_default_filesystem_accessibility_types();U=A._value_cache_database_manager.read_configuration_workspace_data_workspace_project_selection();H=A._value_cache_database_manager.read_workspace_project();H=A._database_manager.read_object_selection_origins(H);X=A._value_cache_database_manager.read_configuration_workspace_data_workspace_group_selection();I=A._value_cache_database_manager.read_workspace_group();I=A._database_manager.read_object_selection_origins(I);V=A._value_cache_database_manager.read_root_filesystem_path();C=A._database_manager.read_root_workspace_filesystem_path();D=A._database_manager.read_temporary_template_output_filesystem_path();W=A._value_cache_database_manager.read_con_wor_data_template_cleanup_before_is_enabled_value();Y=A._value_cache_database_manager.read_con_wor_data_template_cleanup_after_is_enabled_value()
-		if W:A._task_manager.run_task_safe_clean_filesystem_path(target_path=D)
-		for B in J:
+			for F in O:
+				if not F:continue
+				I=f"{C}/{F}/template/all/filesystem";J=f"{C}/{F}/template/project/filesystem";K=f"{C}/{F}/template/project/selection/{E}/filesystem";A._import_manager.setup_filesystem_tree_paths(target_paths=(I,J,K,B));A._import_manager.copy_filesystem_path(source_path=I,target_path=B);A._import_manager.copy_filesystem_path(source_path=J,target_path=B);A._import_manager.copy_filesystem_path(source_path=K,target_path=B)
+			A._import_manager.macros_parse_filesystem(filesystem_path=B,workspace_macros=N);A._import_manager.copy_filesystem_path(source_path=B,target_path=H);return _C
+		A._task_manager.run_task_common_setup();A._task_manager.run_task_workspace_default_setup();A._task_manager.run_task_workspace_group_setup();A._task_manager.run_task_workspace_project_setup();A._task_manager.run_task_filesystem_clean_exclude_setup();A._task_manager.run_task_filesystem_clean_include_setup();E=H.get(P,[_D])
+		if not E or len(E)<1:E=[_D]
+		N=A._value_cache_database_manager.read_macros();O=A._database_manager.read_default_filesystem_accessibility_types();R=A._value_cache_database_manager.read_configuration_workspace_data_workspace_project_selection();F=A._value_cache_database_manager.read_workspace_project();F=A._database_manager.read_object_selection_origins(F);V=A._value_cache_database_manager.read_configuration_workspace_data_workspace_group_selection();G=A._value_cache_database_manager.read_workspace_group();G=A._database_manager.read_object_selection_origins(G);S=A._value_cache_database_manager.read_root_filesystem_path();C=A._database_manager.read_root_workspace_filesystem_path();D=A._database_manager.read_temporary_template_output_filesystem_path();T=A._value_cache_database_manager.read_con_wor_data_template_cleanup_before_is_enabled_value();U=A._value_cache_database_manager.read_con_wor_data_template_cleanup_after_is_enabled_value()
+		if T:A._task_manager.run_task_safe_clean_filesystem_path(target_path=D)
+		for B in E:
 			if not B:continue
-			if B==E:M();L();R()
-			elif B==T:M()
-			elif B=='group':L()
-			elif B=='project':R()
-			elif B in I:N(B)
-			elif B in H:O(B)
-		if Y:A._task_manager.run_task_safe_clean_filesystem_path(target_path=D)
-		return G
-	@M.command_decorator
-	def run_command_template_list_selections(self,**J):
+			if B==_D:K();I();J()
+			elif B==Q:K()
+			elif B=='group':I()
+			elif B=='project':J()
+			elif B in G:L(B)
+			elif B in F:M(B)
+		if U:A._task_manager.run_task_safe_clean_filesystem_path(target_path=D)
+		return _C
+	@_DecoratorManager.command_decorator
+	def run_command_template_list_selections(self,**G):
 		A=self;A._task_manager.run_task_common_setup();A._task_manager.run_task_workspace_default_setup();A._task_manager.run_task_workspace_group_setup();A._task_manager.run_task_workspace_project_setup();B={};C=A._value_cache_database_manager.read_workspace_default()or{}
 		if C:B['defaults']=C
 		D=A._value_cache_database_manager.read_workspace_project()or{}
 		if D:B['projects']=D
-		H=A._value_cache_database_manager.read_workspace_group()or{}
-		if H:B['groups']=H
-		I=A._value_cache_database_manager.read_workspace_all()or{}
-		if I:B[E]=I
-		if not B:return F
-		A._display_manager.display_tree_object(value=B);return G
+		E=A._value_cache_database_manager.read_workspace_group()or{}
+		if E:B['groups']=E
+		F=A._value_cache_database_manager.read_workspace_all()or{}
+		if F:B[_D]=F
+		if not B:return _B
+		A._display_manager.display_tree_object(value=B);return _C

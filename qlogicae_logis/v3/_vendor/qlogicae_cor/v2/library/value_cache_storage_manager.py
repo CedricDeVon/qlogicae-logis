@@ -1,99 +1,86 @@
 from __future__ import annotations
-R='destination is neither a dictionary nor a list'
-Q=print
-P=ValueError
-L=tuple
-O=None
-N=IndexError
-M=KeyError
-K=type
-J=len
-I=int
-G=True
-B=False
-F=list
-E=dict
-D=TypeError
-A=isinstance
+_C='destination is neither a dictionary nor a list'
+_B=True
+_A=False
 __all__='ValueCacheStorageManager',
 from typing import Any
-C=O
-def H():global H;global C;import json;C=json;H=lambda:O
-class S:
+_json=None
+def _handle_dynamic_imports():global _handle_dynamic_imports;global _json;import json;_json=json;_handle_dynamic_imports=lambda:None
+class ValueCacheStorageManager:
 	__slots__='_collection',
-	def __init__(A):H();A._collection={}
+	def __init__(A):_handle_dynamic_imports();A._collection={}
 	@property
 	def collection(self):return self._collection
-	def is_key_found(H,keys):
-		if not keys:return B
-		C=H._collection
-		for D in keys:
-			if A(C,E):
-				if D not in C:return B
-			elif A(C,(F,L)):
-				if not A(D,I):return B
-				if D<0 or D>=J(C):return B
-			else:return B
-			C=C[D]
-		return G
-	def get_one_value(D,keys):
+	def is_key_found(C,keys):
+		if not keys:return _A
+		A=C._collection
+		for B in keys:
+			if isinstance(A,dict):
+				if B not in A:return _A
+			elif isinstance(A,(list,tuple)):
+				if not isinstance(B,int):return _A
+				if B<0 or B>=len(A):return _A
+			else:return _A
+			A=A[B]
+		return _B
+	def get_one_value(C,keys):
 		if not keys:return
-		B=D._collection
-		for C in keys:
-			if A(B,E):
-				if C not in B:return
-			elif A(B,(F,L)):
-				if not A(C,I):return
-				if C<0 or C>=J(B):return
+		A=C._collection
+		for B in keys:
+			if isinstance(A,dict):
+				if B not in A:return
+			elif isinstance(A,(list,tuple)):
+				if not isinstance(B,int):return
+				if B<0 or B>=len(A):return
 			else:return
-			B=B[C]
-		return B
-	def set_one_value(Q,keys,value,create_missing=G):
-		O=value;L=keys
-		if not L:raise P("'keys' cannot be empty")
-		B=Q._collection
-		for C in L[:-1]:
-			if A(B,E):
-				if C not in B:
-					if not create_missing:raise M(f"key path '{L}' not found")
-					B[C]={}
-				elif not A(B[C],(E,F)):raise D(f"key path '{L}' does not reference a dictionary or list")
-				B=B[C]
-			elif A(B,F):
-				if not A(C,I):raise D(f"expected an index, got '{K(C).__name__}'")
-				if C<0 or C>=J(B):raise N(f"index '{C}' is out of range")
-				B=B[C]
-			else:raise D(f"cannot traverse into '{K(B).__name__}'")
-		H=L[-1]
-		if A(B,E):B[H]=O
-		elif A(B,F):
-			if not A(H,I):raise D(f"expected an index, got {K(H).__name__}")
-			if H<0 or H>=J(B):raise N(f"index '{H}' is out of range")
-			B[H]=O
-		else:raise D(R)
-		return G
-	def remove_one_value(Q,keys):
-		L=keys
-		if not L:raise P('keys cannot be empty')
-		B=Q._collection
-		for H in L[:-1]:
-			if A(B,E):
-				if H not in B:raise M(f"key path '{L}' not found")
-			elif A(B,F):
-				if not A(H,I):raise D(f"expected an index, got {K(H).__name__}")
-				if H<0 or H>=J(B):raise N(f"index path '{L}' is out of range")
-			else:raise D(f"cannot traverse into '{K(B).__name__}'")
-			B=B[H]
-		C=L[-1]
-		if A(B,E):
-			try:del B[C]
-			except M:raise M(f"key '{C}' not found")from O
-		elif A(B,F):
-			if not A(C,I):raise D(f"expected an index, got {K(C).__name__}")
-			if C<0 or C>=J(B):raise N(f"index '{C}' is out of range")
-			del B[C]
-		else:raise D(R)
-		return G
-	def clear_all_values(A):A._collection.clear();return G
-	def display_one_item(A,key):Q(f"- {key}: {A._collection[key]}");return G
-	def display_all_items(A):Q(C.dumps(A._collection,indent=2,sort_keys=B,ensure_ascii=B,default=str));return G
+			A=A[B]
+		return A
+	def set_one_value(F,keys,value,create_missing=_B):
+		E=value;D=keys
+		if not D:raise ValueError("'keys' cannot be empty")
+		A=F._collection
+		for B in D[:-1]:
+			if isinstance(A,dict):
+				if B not in A:
+					if not create_missing:raise KeyError(f"key path '{D}' not found")
+					A[B]={}
+				elif not isinstance(A[B],(dict,list)):raise TypeError(f"key path '{D}' does not reference a dictionary or list")
+				A=A[B]
+			elif isinstance(A,list):
+				if not isinstance(B,int):raise TypeError(f"expected an index, got '{type(B).__name__}'")
+				if B<0 or B>=len(A):raise IndexError(f"index '{B}' is out of range")
+				A=A[B]
+			else:raise TypeError(f"cannot traverse into '{type(A).__name__}'")
+		C=D[-1]
+		if isinstance(A,dict):A[C]=E
+		elif isinstance(A,list):
+			if not isinstance(C,int):raise TypeError(f"expected an index, got {type(C).__name__}")
+			if C<0 or C>=len(A):raise IndexError(f"index '{C}' is out of range")
+			A[C]=E
+		else:raise TypeError(_C)
+		return _B
+	def remove_one_value(E,keys):
+		D=keys
+		if not D:raise ValueError('keys cannot be empty')
+		A=E._collection
+		for C in D[:-1]:
+			if isinstance(A,dict):
+				if C not in A:raise KeyError(f"key path '{D}' not found")
+			elif isinstance(A,list):
+				if not isinstance(C,int):raise TypeError(f"expected an index, got {type(C).__name__}")
+				if C<0 or C>=len(A):raise IndexError(f"index path '{D}' is out of range")
+			else:raise TypeError(f"cannot traverse into '{type(A).__name__}'")
+			A=A[C]
+		B=D[-1]
+		if isinstance(A,dict):
+			try:del A[B]
+			except KeyError:raise KeyError(f"key '{B}' not found")from None
+		elif isinstance(A,list):
+			if not isinstance(B,int):raise TypeError(f"expected an index, got {type(B).__name__}")
+			if B<0 or B>=len(A):raise IndexError(f"index '{B}' is out of range")
+			del A[B]
+		else:raise TypeError(_C)
+		return _B
+	def clear_all_values(A):A._collection.clear();return _B
+	def display_one_item(A,key):print(f"- {key}: {A._collection[key]}");return _B
+	def display_all_items(A):print(_json.dumps(A._collection,indent=2,sort_keys=_A,ensure_ascii=_A,default=str));return _B

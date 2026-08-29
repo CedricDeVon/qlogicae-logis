@@ -1,21 +1,21 @@
 from __future__ import annotations
-B=None
+_A=None
 from typing import Any
-from..library.decorator_manager import DecoratorManager as J
+from..library.decorator_manager import DecoratorManager
 __all__='CommandAboutManager'
-C=B
-A=B
-D=B
-E=B
-K=J
-F=B
-G=B
-H=B
-def I():global I;global C;global A;global D;global F;global E;global G;global H;from..library import command_storage_manager as J,database_manager as K,display_manager as L,import_manager as M,persistent_cache_database_manager as N,task_manager as O,value_cache_database_manager as P;C=O.TaskManager;D=L.DisplayManager;E=K.DatabaseManager;G=P.ValueCacheDatabaseManager;H=N.PersistentCacheDatabasManager;A=M.ImportManager;F=J.CommandStorageManager;I=lambda:B
-class L:
+_TaskManager=_A
+_ImportManager=_A
+_DisplayManager=_A
+_DatabaseManager=_A
+_DecoratorManager=DecoratorManager
+_CommandStorageManager=_A
+_ValueCacheDatabaseManager=_A
+_PersistentCacheDatabasManager=_A
+def _handle_dynamic_imports():global _handle_dynamic_imports;global _TaskManager;global _ImportManager;global _DisplayManager;global _CommandStorageManager;global _DatabaseManager;global _ValueCacheDatabaseManager;global _PersistentCacheDatabasManager;from..library import command_storage_manager as A,database_manager as B,display_manager as C,import_manager as D,persistent_cache_database_manager as E,task_manager as F,value_cache_database_manager as G;_TaskManager=F.TaskManager;_DisplayManager=C.DisplayManager;_DatabaseManager=B.DatabaseManager;_ValueCacheDatabaseManager=G.ValueCacheDatabaseManager;_PersistentCacheDatabasManager=E.PersistentCacheDatabasManager;_ImportManager=D.ImportManager;_CommandStorageManager=A.CommandStorageManager;_handle_dynamic_imports=lambda:_A
+class CommandAboutManager:
 	__slots__='_command_storage_manager','_task_manager','_import_manager','_display_manager','_database_manager','_value_cache_database_manager','_persistent_cache_database_manager'
-	def __init__(B):I();B._command_storage_manager=A.read_singleton(F);B._display_manager=A.read_singleton(D);B._task_manager=A.read_singleton(C);B._import_manager=A.read_singleton(A);B._database_manager=A.read_singleton(E);B._value_cache_database_manager=A.read_singleton(G);B._persistent_cache_database_manager=A.read_singleton(H);B._command_storage_manager.add_commands(((B._command_storage_manager.read_command_name('about_version'),B.run_command_about_version),))
-	@K.command_decorator
+	def __init__(A):_handle_dynamic_imports();A._command_storage_manager=_ImportManager.read_singleton(_CommandStorageManager);A._display_manager=_ImportManager.read_singleton(_DisplayManager);A._task_manager=_ImportManager.read_singleton(_TaskManager);A._import_manager=_ImportManager.read_singleton(_ImportManager);A._database_manager=_ImportManager.read_singleton(_DatabaseManager);A._value_cache_database_manager=_ImportManager.read_singleton(_ValueCacheDatabaseManager);A._persistent_cache_database_manager=_ImportManager.read_singleton(_PersistentCacheDatabasManager);A._command_storage_manager.add_commands(((A._command_storage_manager.read_command_name('about_version'),A.run_command_about_version),))
+	@_DecoratorManager.command_decorator
 	def run_command_about_version(self,**E):
 		D=False;A=self;B=A._database_manager.read_company_project_name()
 		if not B:return D

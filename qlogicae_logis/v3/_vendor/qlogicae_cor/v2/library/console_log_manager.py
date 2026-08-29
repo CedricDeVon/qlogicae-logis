@@ -1,17 +1,17 @@
 from __future__ import annotations
-B=None
+_A=None
 __all__='ConsoleLogManager',
-from typing import TYPE_CHECKING as H,Any
-if H:from.log_options import LogOptions
-A=B
-C=B
-D=B
-E=B
-F=B
-def G():global G;global A;global C;global D;global E;global F;import logging as H;from.log_format import LogFormat as I;from.log_options import LogOptions as J;from.log_options_manager import LogOptionsManager as K;from.singleton_manager import SingletonManager as L;A=H;C=I;D=J;E=K;F=L;G=lambda:B
-class I:
+from typing import TYPE_CHECKING,Any
+if TYPE_CHECKING:from.log_options import LogOptions
+_logging=_A
+_LogFormat=_A
+_LogOptions=_A
+_LogOptionsManager=_A
+_SingletonManager=_A
+def _handle_dynamic_imports():global _handle_dynamic_imports;global _logging;global _LogFormat;global _LogOptions;global _LogOptionsManager;global _SingletonManager;import logging as A;from.log_format import LogFormat as B;from.log_options import LogOptions as C;from.log_options_manager import LogOptionsManager as D;from.singleton_manager import SingletonManager as E;_logging=A;_LogFormat=B;_LogOptions=C;_LogOptionsManager=D;_SingletonManager=E;_handle_dynamic_imports=lambda:_A
+class ConsoleLogManager:
 	__slots__='_logger','_options','_log_options_manager'
-	def __init__(B):G();B._log_options_manager=F.get_singleton(E);B._logger=A.getLogger('console-logger');B._logger.setLevel(A.DEBUG);B._logger.propagate=False;B._logger.handlers.clear();H=A.StreamHandler();H.setFormatter(C());B._logger.addHandler(H);B._options=D()
+	def __init__(A):_handle_dynamic_imports();A._log_options_manager=_SingletonManager.get_singleton(_LogOptionsManager);A._logger=_logging.getLogger('console-logger');A._logger.setLevel(_logging.DEBUG);A._logger.propagate=False;A._logger.handlers.clear();B=_logging.StreamHandler();B.setFormatter(_LogFormat());A._logger.addHandler(B);A._options=_LogOptions()
 	@property
 	def options(self):return self._options
 	@options.setter
@@ -23,8 +23,8 @@ class I:
 		if B.is_verbose_enabled:C._logger.log(B.log_level,A,stacklevel=B.stack_level)
 		else:print(A)
 		return A
-	def log_debug(B,message):return B.log(message,B._log_options_manager.generate_modified_defaults(B._options,log_level=A.DEBUG))
-	def log_info(B,message):return B.log(message,B._log_options_manager.generate_modified_defaults(B._options,log_level=A.INFO))
-	def log_warning(B,message):return B.log(message,B._log_options_manager.generate_modified_defaults(B._options,log_level=A.WARNING))
-	def log_error(B,message):return B.log(message,B._log_options_manager.generate_modified_defaults(B._options,log_level=A.ERROR))
-	def log_critical(B,message):return B.log(message,B._log_options_manager.generate_modified_defaults(B._options,log_level=A.CRITICAL))
+	def log_debug(A,message):return A.log(message,A._log_options_manager.generate_modified_defaults(A._options,log_level=_logging.DEBUG))
+	def log_info(A,message):return A.log(message,A._log_options_manager.generate_modified_defaults(A._options,log_level=_logging.INFO))
+	def log_warning(A,message):return A.log(message,A._log_options_manager.generate_modified_defaults(A._options,log_level=_logging.WARNING))
+	def log_error(A,message):return A.log(message,A._log_options_manager.generate_modified_defaults(A._options,log_level=_logging.ERROR))
+	def log_critical(A,message):return A.log(message,A._log_options_manager.generate_modified_defaults(A._options,log_level=_logging.CRITICAL))

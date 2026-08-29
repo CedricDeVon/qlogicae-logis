@@ -182,11 +182,6 @@ workflow:
               - qlogicae_logis/v3/library/__pycache__
               - qlogicae_logis/v3/project/__pycache__
               - qlogicae_logis/v3/project/configuration/__pycache__
-
-        - run:
-            value: command-filesystem-clean-path
-          argument:
-            target_paths:
               - ${{ qlogicae-logis-selection-project-filesystem-path }}/dist
               - ${{ qlogicae-logis-selection-project-filesystem-path }}/output
               - ${{ qlogicae-logis-selection-project-filesystem-path }}/test
@@ -286,7 +281,7 @@ macros:
           value: The project orchestration tool for QLogicae projects
 
         qlogicae-logis-current-version-number:
-          value: 3.0.3
+          value: 3.0.4
 
         qlogicae-logis-active-major-version-number:
           value: 3

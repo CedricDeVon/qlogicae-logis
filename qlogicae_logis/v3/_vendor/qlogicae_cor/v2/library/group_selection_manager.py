@@ -1,9 +1,9 @@
 from __future__ import annotations
 from collections.abc import Hashable,Mapping,Sequence
 __all__='GroupSelectionManager'
-def A():global A;A=lambda:None
-class B:
-	def __init__(B):A()
+def _handle_dynamic_imports():global _handle_dynamic_imports;_handle_dynamic_imports=lambda:None
+class GroupSelectionManager:
+	def __init__(A):_handle_dynamic_imports()
 	def flatten_group(E,target,data):
 		C=[];D=set();B=[target]
 		while B:
