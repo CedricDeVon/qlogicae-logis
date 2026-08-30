@@ -49,7 +49,7 @@ dev = [
 ]
 
 [project.scripts]
-qlogicae-logis = "${{ qlogicae-logis-source-brand-name }}.v3.console.app:A"
+qlogicae-logis = "${{ qlogicae-logis-source-brand-name }}.v3.console.app:main"
 
 
 [project.urls]

@@ -1,6 +1,6 @@
 [project]
 name = "qlogicae-logis"
-version = "3.0.8"
+version = "3.0.9"
 description = "The project orchestration tool for QLogicae projects"
 readme = { file = "README.md", content-type = "text/markdown" }
 requires-python = ">=3.12"
@@ -49,7 +49,7 @@ dev = [
 ]
 
 [project.scripts]
-qlogicae-logis = "qlogicae_logis.v3.console.app:A"
+qlogicae-logis = "qlogicae_logis.v3.console.app:main"
 
 
 [project.urls]
