@@ -14,18 +14,18 @@ class Composer:
     def __init__(self):
         self.anchors = {}
 
-    def check_node(self):
-        # Drop the STREAM-START event.
-        if self.check_event(StreamStartEvent):
-            self.get_event()
+    # def check_node(self):
+    #     # Drop the STREAM-START event.
+    #     if self.check_event(StreamStartEvent):
+    #         self.get_event()
 
-        # If there are more documents available?
-        return not self.check_event(StreamEndEvent)
+    #     # If there are more documents available?
+    #     return not self.check_event(StreamEndEvent)
 
-    def get_node(self):
-        # Get the root node of the next document.
-        if not self.check_event(StreamEndEvent):
-            return self.compose_document()
+    # def get_node(self):
+    #     # Get the root node of the next document.
+    #     if not self.check_event(StreamEndEvent):
+    #         return self.compose_document()
 
     def get_single_node(self):
         # Drop the STREAM-START event.

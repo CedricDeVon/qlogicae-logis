@@ -30,9 +30,9 @@ class ValueCacheStorageManager:
 
         self._collection: dict[str, Any] = {}
 
-    @property
-    def collection(self) -> dict[str, Any]:
-        return self._collection
+    # @property
+    # def collection(self) -> dict[str, Any]:
+    #     return self._collection
 
     def is_key_found(
         self,
@@ -245,16 +245,16 @@ class ValueCacheStorageManager:
 
         return True
 
-    def display_one_item(
-        self,
-        key: str,
-    ) -> bool:
-        print(
-            f"- {key}: "
-            f"{self._collection[key]}"
-        )
+    # def display_one_item(
+    #     self,
+    #     key: str,
+    # ) -> bool:
+    #     print(
+    #         f"- {key}: "
+    #         f"{self._collection[key]}"
+    #     )
 
-        return True
+    #     return True
 
     def display_all_items(self) -> bool:
         print(

@@ -128,21 +128,21 @@ class PersistentCacheDatabasManager:
             f"configuration-workspace-{value}"
         )
 
-    def read_configuration_workspace_raw_value_key_path(
-        self,
-        **kwargs: Any,
-    ) -> str:
-        if not kwargs:
-            return ""
+    # def read_configuration_workspace_raw_value_key_path(
+    #     self,
+    #     **kwargs: Any,
+    # ) -> str:
+    #     if not kwargs:
+    #         return ""
 
-        accessibility_type = kwargs.get("accessibility_type", "")
-        path = kwargs.get("path", "")
+    #     accessibility_type = kwargs.get("accessibility_type", "")
+    #     path = kwargs.get("path", "")
 
-        return (
-            self.read_configuration_workspace_key_path(
-                value=f"raw-{accessibility_type}-{path}-value"
-            )
-        )
+    #     return (
+    #         self.read_configuration_workspace_key_path(
+    #             value=f"raw-{accessibility_type}-{path}-value"
+    #         )
+    #     )
 
     def read_configuration_workspace_raw_count_value_key_path(
         self,
@@ -207,52 +207,52 @@ class PersistentCacheDatabasManager:
             "refresh-data"
         )
 
-    def read_configuration_workspace_file(
-        self,
-        accessibility_type: str,
-        path: str,
-    ) -> Any:
-        if not accessibility_type or not path:
-            return {}
+    # def read_configuration_workspace_file(
+    #     self,
+    #     accessibility_type: str,
+    #     path: str,
+    # ) -> Any:
+    #     if not accessibility_type or not path:
+    #         return {}
 
-        key_path = (
-            self.read_configuration_workspace_raw_value_key_path(
-                accessibility_type=accessibility_type,
-                path=path
-            )
-        )
+    #     key_path = (
+    #         self.read_configuration_workspace_raw_value_key_path(
+    #             accessibility_type=accessibility_type,
+    #             path=path
+    #         )
+    #     )
 
-        data: Any = self.read_many_values(
-            (key_path,)
-        )
+    #     data: Any = self.read_many_values(
+    #         (key_path,)
+    #     )
 
-        return data.get(
-            self.read_key_path(
-                key_path
-            ), {}
-        ) or {}
+    #     return data.get(
+    #         self.read_key_path(
+    #             key_path
+    #         ), {}
+    #     ) or {}
 
-    def write_configuration_workspace_file(
-        self,
-        accessibility_type: str,
-        path: str,
-        values: dict[str, Any],
-    ) -> bool:
-        if not accessibility_type or not path or not values:
-            return False
+    # def write_configuration_workspace_file(
+    #     self,
+    #     accessibility_type: str,
+    #     path: str,
+    #     values: dict[str, Any],
+    # ) -> bool:
+    #     if not accessibility_type or not path or not values:
+    #         return False
 
-        key_path = (
-            self.read_configuration_workspace_raw_value_key_path(
-                accessibility_type=accessibility_type,
-                path=path
-            )
-        )
+    #     key_path = (
+    #         self.read_configuration_workspace_raw_value_key_path(
+    #             accessibility_type=accessibility_type,
+    #             path=path
+    #         )
+    #     )
 
-        self.write_many_values(
-            { key_path: values }
-        )
+    #     self.write_many_values(
+    #         { key_path: values }
+    #     )
 
-        return True
+    #     return True
 
     def read_configuration_workspace_metadata(
         self,
@@ -417,20 +417,20 @@ class PersistentCacheDatabasManager:
 
         return True
 
-    def read_refresh_data(
-        self,
-    ) -> dict[str, Any]:
-        key_path = self.read_refresh_data_key_path()
+    # def read_refresh_data(
+    #     self,
+    # ) -> dict[str, Any]:
+    #     key_path = self.read_refresh_data_key_path()
 
-        data: dict[str, Any] = self.read_many_values(
-            (key_path,)
-        )
+    #     data: dict[str, Any] = self.read_many_values(
+    #         (key_path,)
+    #     )
 
-        return data.get(
-            self.read_key_path(
-                key_path
-            ), {}
-        ) or {}
+    #     return data.get(
+    #         self.read_key_path(
+    #             key_path
+    #         ), {}
+    #     ) or {}
 
     def write_refresh_data(
         self,

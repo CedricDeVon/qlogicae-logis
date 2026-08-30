@@ -114,62 +114,62 @@ class ConsoleLogManager:
 
         return message
 
-    def log_debug(
-        self,
-        message: str,
-    ) -> str:
-        return self.log(
-            message,
-            self._log_options_manager.generate_modified_defaults(
-                self._options,
-                log_level=_logging.DEBUG,
-            ),
-        )
+    # def log_debug(
+    #     self,
+    #     message: str,
+    # ) -> str:
+    #     return self.log(
+    #         message,
+    #         self._log_options_manager.generate_modified_defaults(
+    #             self._options,
+    #             log_level=_logging.DEBUG,
+    #         ),
+    #     )
 
-    def log_info(
-        self,
-        message: str,
-    ) -> str:
-        return self.log(
-            message,
-            self._log_options_manager.generate_modified_defaults(
-                self._options,
-                log_level=_logging.INFO,
-            ),
-        )
+    # def log_info(
+    #     self,
+    #     message: str,
+    # ) -> str:
+    #     return self.log(
+    #         message,
+    #         self._log_options_manager.generate_modified_defaults(
+    #             self._options,
+    #             log_level=_logging.INFO,
+    #         ),
+    #     )
 
-    def log_warning(
-        self,
-        message: str,
-    ) -> str:
-        return self.log(
-            message,
-            self._log_options_manager.generate_modified_defaults(
-                self._options,
-                log_level=_logging.WARNING,
-            ),
-        )
+    # def log_warning(
+    #     self,
+    #     message: str,
+    # ) -> str:
+    #     return self.log(
+    #         message,
+    #         self._log_options_manager.generate_modified_defaults(
+    #             self._options,
+    #             log_level=_logging.WARNING,
+    #         ),
+    #     )
 
-    def log_error(
-        self,
-        message: str,
-    ) -> str:
-        return self.log(
-            message,
-            self._log_options_manager.generate_modified_defaults(
-                self._options,
-                log_level=_logging.ERROR,
-            ),
-        )
+    # def log_error(
+    #     self,
+    #     message: str,
+    # ) -> str:
+    #     return self.log(
+    #         message,
+    #         self._log_options_manager.generate_modified_defaults(
+    #             self._options,
+    #             log_level=_logging.ERROR,
+    #         ),
+    #     )
 
-    def log_critical(
-        self,
-        message: str,
-    ) -> str:
-        return self.log(
-            message,
-            self._log_options_manager.generate_modified_defaults(
-                self._options,
-                log_level=_logging.CRITICAL,
-            ),
-        )
+    # def log_critical(
+    #     self,
+    #     message: str,
+    # ) -> str:
+    #     return self.log(
+    #         message,
+    #         self._log_options_manager.generate_modified_defaults(
+    #             self._options,
+    #             log_level=_logging.CRITICAL,
+    #         ),
+    #     )

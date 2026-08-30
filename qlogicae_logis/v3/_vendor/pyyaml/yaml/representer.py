@@ -28,12 +28,12 @@ class BaseRepresenter:
         self.object_keeper = []
         self.alias_key = None
 
-    def represent(self, data):
-        node = self.represent_data(data)
-        self.serialize(node)
-        self.represented_objects = {}
-        self.object_keeper = []
-        self.alias_key = None
+    # def represent(self, data):
+    #     node = self.represent_data(data)
+    #     self.serialize(node)
+    #     self.represented_objects = {}
+    #     self.object_keeper = []
+    #     self.alias_key = None
 
     def represent_data(self, data):
         if self.ignore_aliases(data):
@@ -225,12 +225,12 @@ class SafeRepresenter(BaseRepresenter):
         value = data.isoformat(' ')
         return self.represent_scalar('tag:yaml.org,2002:timestamp', value)
 
-    def represent_yaml_object(self, tag, data, cls, flow_style=None):
-        if hasattr(data, '__getstate__'):
-            state = data.__getstate__()
-        else:
-            state = data.__dict__.copy()
-        return self.represent_mapping(tag, state, flow_style=flow_style)
+    # def represent_yaml_object(self, tag, data, cls, flow_style=None):
+    #     if hasattr(data, '__getstate__'):
+    #         state = data.__getstate__()
+    #     else:
+    #         state = data.__dict__.copy()
+    #     return self.represent_mapping(tag, state, flow_style=flow_style)
 
     def represent_undefined(self, data):
         raise RepresenterError("cannot represent an object", data)

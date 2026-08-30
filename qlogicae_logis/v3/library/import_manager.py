@@ -37,7 +37,7 @@ _CorFileLogManager: Any = None
 _ObjectMergeManager: Any = None
 _TextEncodingManager: Any = None
 _ScriptProcessManager: Any = None
-_GroupSelectionManager: Any = None
+# _GroupSelectionManager: Any = None
 _spec_from_file_location: Any = None
 _DiskCacheStorageManager: Any = None
 _ScriptProcessEnumManager: Any = None
@@ -79,7 +79,6 @@ def _handle_dynamic_imports() -> None:
     global _ObjectMergeManager
     global _TextEncodingManager
     global _ScriptProcessManager
-    global _GroupSelectionManager
     global _spec_from_file_location
     global _DiskCacheStorageManager
     global _ScriptProcessEnumManager
@@ -109,7 +108,6 @@ def _handle_dynamic_imports() -> None:
         file_log_manager,
         filesystem_compression_manager,
         folder_entity_filesystem_tree_setup_options,
-        group_selection_manager,
         log_manager,
         log_options,
         macros_manager,
@@ -172,7 +170,6 @@ def _handle_dynamic_imports() -> None:
     )
     _ScriptProcess = script_process.ScriptProcess
     _FileIoManager = file_io_manager.FileIoManager
-    _GroupSelectionManager = group_selection_manager.GroupSelectionManager
     _TextEncodingManager = (
         text_encoding_manager
             .TextEncodingManager
@@ -200,12 +197,12 @@ class ImportManager:
         "_disk_cache_storage_manager",
         "_value_cache_manager",
         "_time_zone_manager",
-        "_timestamp_manager",
+        # "_timestamp_manager",
         "_text_encoding_manager",
         "_script_process_manager",
         "_macros_manager",
         "_object_merge_manager",
-        "_group_selection_manager",
+        # "_group_selection_manager",
         "_filesystem_compression_manager",
         "_system_manager",
         "_file_io_manager",
@@ -229,9 +226,9 @@ class ImportManager:
         self._time_zone_manager = self.read_singleton(
             _TimeZoneManager
         )
-        self._timestamp_manager = self.read_singleton(
-            _TimestampManager
-        )
+        # self._timestamp_manager = self.read_singleton(
+        #     _TimestampManager
+        # )
         self._text_encoding_manager = self.read_singleton(
             _TextEncodingManager
         )
@@ -244,9 +241,9 @@ class ImportManager:
         self._object_merge_manager = self.read_singleton(
             _ObjectMergeManager
         )
-        self._group_selection_manager = self.read_singleton(
-            _GroupSelectionManager
-        )
+        # self._group_selection_manager = self.read_singleton(
+        #     _GroupSelectionManager
+        # )
         self._filesystem_compression_manager = self.read_singleton(
             _FilesystemCompressionManager
         )
@@ -279,18 +276,18 @@ class ImportManager:
             )
         )
 
-    def convert_to_os_specific_path_value(
-        self,
-        **kwargs: Any,
-    ) -> str:
-        filesystem_path = kwargs.get(
-            "filesystem_path",
-            ""
-        )
+    # def convert_to_os_specific_path_value(
+    #     self,
+    #     **kwargs: Any,
+    # ) -> str:
+    #     filesystem_path = kwargs.get(
+    #         "filesystem_path",
+    #         ""
+    #     )
 
-        return f"{_Path(
-            filesystem_path
-        )}"
+    #     return f"{_Path(
+    #         filesystem_path
+    #     )}"
 
     def compress(
         self,
@@ -355,26 +352,26 @@ class ImportManager:
             _metadata.version(target) or "v0.0.0"
         )
 
-    def snapshot_memory_usage(self) -> Any:
-        current_bytes, peak_bytes = (
-            _tracemalloc.get_traced_memory()
-            if _tracemalloc.is_tracing()
-            else (0, 0)
-        )
+    # def snapshot_memory_usage(self) -> Any:
+    #     current_bytes, peak_bytes = (
+    #         _tracemalloc.get_traced_memory()
+    #         if _tracemalloc.is_tracing()
+    #         else (0, 0)
+    #     )
 
-        peak_rss = _resource.getrusage(
-            _resource.RUSAGE_SELF,
-        ).ru_maxrss
+    #     peak_rss = _resource.getrusage(
+    #         _resource.RUSAGE_SELF,
+    #     ).ru_maxrss
 
-        if _sys.platform != "darwin":
-            peak_rss *= 1024
+    #     if _sys.platform != "darwin":
+    #         peak_rss *= 1024
 
-        return {
-            "tracemalloc-current": { "value": current_bytes },
-            "tracemalloc-peak": { "value": peak_bytes },
-            "process-peak-rss": { "value": peak_rss },
-            "gc-tracked-objects": { "value": len(_gc.get_objects(),) },
-        }
+    #     return {
+    #         "tracemalloc-current": { "value": current_bytes },
+    #         "tracemalloc-peak": { "value": peak_bytes },
+    #         "process-peak-rss": { "value": peak_rss },
+    #         "gc-tracked-objects": { "value": len(_gc.get_objects(),) },
+    #     }
 
     # TimeManager
     def time_delay(
@@ -417,23 +414,23 @@ class ImportManager:
 
         return value
 
-    def read_current_day(
-        self,
-    ) -> int:
-        value: int = (
-            self._time_manager.current_day
-        )
+    # def read_current_day(
+    #     self,
+    # ) -> int:
+    #     value: int = (
+    #         self._time_manager.current_day
+    #     )
 
-        return value
+    #     return value
 
-    def read_current_month(
-        self,
-    ) -> int:
-        value: int = (
-            self._time_manager.current_month
-        )
+    # def read_current_month(
+    #     self,
+    # ) -> int:
+    #     value: int = (
+    #         self._time_manager.current_month
+    #     )
 
-        return value
+    #     return value
 
     def read_current_year(
         self,
@@ -445,41 +442,41 @@ class ImportManager:
         return value
 
     # DiskCacheStorageManager
-    def is_key_found_via_disk_cache(
-        self,
-        **kwargs: Any,
-    ) -> bool:
-        if not kwargs:
-            return False
+    # def is_key_found_via_disk_cache(
+    #     self,
+    #     **kwargs: Any,
+    # ) -> bool:
+    #     if not kwargs:
+    #         return False
 
-        value: bool = (
-            self._disk_cache_storage_manager.is_keys_found(
-                key_path=kwargs.get(
-                    "key_path",
-                    ""
-                ),
-            )
-        )
+    #     value: bool = (
+    #         self._disk_cache_storage_manager.is_keys_found(
+    #             key_path=kwargs.get(
+    #                 "key_path",
+    #                 ""
+    #             ),
+    #         )
+    #     )
 
-        return value
+    #     return value
 
-    def is_item_expired_via_disk_cache(
-        self,
-        **kwargs: Any,
-    ) -> bool:
-        if not kwargs:
-            return False
+    # def is_item_expired_via_disk_cache(
+    #     self,
+    #     **kwargs: Any,
+    # ) -> bool:
+    #     if not kwargs:
+    #         return False
 
-        value: bool = (
-            self._disk_cache_storage_manager.is_item_expired(
-                key_path=kwargs.get(
-                    "key_path",
-                    ""
-                ),
-            )
-        )
+    #     value: bool = (
+    #         self._disk_cache_storage_manager.is_item_expired(
+    #             key_path=kwargs.get(
+    #                 "key_path",
+    #                 ""
+    #             ),
+    #         )
+    #     )
 
-        return value
+    #     return value
 
     def read_all_values_via_disk_cache(
         self,
@@ -524,23 +521,23 @@ class ImportManager:
 
         return True
 
-    def remove_many_values_via_disk_cache(
-        self,
-        **kwargs: Any,
-    ) -> dict[str, bool]:
-        if not kwargs:
-            return {}
+    # def remove_many_values_via_disk_cache(
+    #     self,
+    #     **kwargs: Any,
+    # ) -> dict[str, bool]:
+    #     if not kwargs:
+    #         return {}
 
-        value: dict[str, Any] = (
-            self._disk_cache_storage_manager.remove_many_values(
-                key_paths=kwargs.get(
-                    "key_paths",
-                    tuple()
-                ),
-            )
-        )
+    #     value: dict[str, Any] = (
+    #         self._disk_cache_storage_manager.remove_many_values(
+    #             key_paths=kwargs.get(
+    #                 "key_paths",
+    #                 tuple()
+    #             ),
+    #         )
+    #     )
 
-        return value
+    #     return value
 
     def open_via_disk_cache(
         self,
@@ -563,27 +560,27 @@ class ImportManager:
 
         return True
 
-    def remove_expired_values_via_disk_cache(self) -> int:
-        value: int = (
-            self._disk_cache_storage_manager.remove_expired_values()
-        )
+    # def remove_expired_values_via_disk_cache(self) -> int:
+    #     value: int = (
+    #         self._disk_cache_storage_manager.remove_expired_values()
+    #     )
 
-        return value
+    #     return value
 
-    def sync_via_disk_cache(self) -> bool:
-        self._disk_cache_storage_manager.sync()
+    # def sync_via_disk_cache(self) -> bool:
+    #     self._disk_cache_storage_manager.sync()
 
-        return True
+    #     return True
 
-    def reorganize_via_disk_cache(self) -> bool:
-        self._disk_cache_storage_manager.reorganize()
+    # def reorganize_via_disk_cache(self) -> bool:
+    #     self._disk_cache_storage_manager.reorganize()
 
-        return True
+    #     return True
 
-    def display_all_items_via_disk_cache(self) -> bool:
-        self._disk_cache_storage_manager.display_all_items()
+    # def display_all_items_via_disk_cache(self) -> bool:
+    #     self._disk_cache_storage_manager.display_all_items()
 
-        return True
+    #     return True
 
     def write_database_path_via_disk_cache(
         self,
@@ -620,26 +617,26 @@ class ImportManager:
 
         return value
 
-    def read_defined_value_via_value_cache(
-        self,
-        **kwargs: Any,
-    ) -> Any:
-        if not kwargs:
-            return {}
+    # def read_defined_value_via_value_cache(
+    #     self,
+    #     **kwargs: Any,
+    # ) -> Any:
+    #     if not kwargs:
+    #         return {}
 
-        value: Any = (
-            self._value_cache_manager.get_one_value(
-                key_path=kwargs.get(
-                    "key_path",
-                    tuple()
-                ),
-                output_type=(
-                    _TargetCacheValue.DEFINED
-                )
-            )
-        )
+    #     value: Any = (
+    #         self._value_cache_manager.get_one_value(
+    #             key_path=kwargs.get(
+    #                 "key_path",
+    #                 tuple()
+    #             ),
+    #             output_type=(
+    #                 _TargetCacheValue.DEFINED
+    #             )
+    #         )
+    #     )
 
-        return value
+    #     return value
 
     def write_any_value_via_value_cache(
         self,
@@ -664,104 +661,104 @@ class ImportManager:
 
         return True
 
-    def write_defined_value_via_value_cache(
-        self,
-        **kwargs: Any,
-    ) -> bool:
-        if not kwargs:
-            return False
+    # def write_defined_value_via_value_cache(
+    #     self,
+    #     **kwargs: Any,
+    # ) -> bool:
+    #     if not kwargs:
+    #         return False
 
-        self._value_cache_manager.set_one_value(
-            key_path=kwargs.get(
-                "key_path",
-                tuple()
-            ),
-            value=kwargs.get(
-                "value",
-                {}
-            ),
-            output_type=(
-                _TargetCacheValue.DEFINED
-            )
-        )
+    #     self._value_cache_manager.set_one_value(
+    #         key_path=kwargs.get(
+    #             "key_path",
+    #             tuple()
+    #         ),
+    #         value=kwargs.get(
+    #             "value",
+    #             {}
+    #         ),
+    #         output_type=(
+    #             _TargetCacheValue.DEFINED
+    #         )
+    #     )
 
-        return True
+    #     return True
 
-    def write_file_path_value_via_value_cache(
-        self,
-        **kwargs: Any,
-    ) -> bool:
-        if not kwargs:
-            return False
+    # def write_file_path_value_via_value_cache(
+    #     self,
+    #     **kwargs: Any,
+    # ) -> bool:
+    #     if not kwargs:
+    #         return False
 
-        self._value_cache_manager.set_one_value(
-            key_path=kwargs.get(
-                "key_path",
-                tuple()
-            ),
-            value=kwargs.get(
-                "value",
-                {}
-            ),
-            output_type=(
-                _TargetCacheValue.FILE_PATH
-            )
-        )
+    #     self._value_cache_manager.set_one_value(
+    #         key_path=kwargs.get(
+    #             "key_path",
+    #             tuple()
+    #         ),
+    #         value=kwargs.get(
+    #             "value",
+    #             {}
+    #         ),
+    #         output_type=(
+    #             _TargetCacheValue.FILE_PATH
+    #         )
+    #     )
 
-        return True
+    #     return True
 
-    def write_folder_path_value_via_value_cache(
-        self,
-        **kwargs: Any,
-    ) -> bool:
-        if not kwargs:
-            return False
+    # def write_folder_path_value_via_value_cache(
+    #     self,
+    #     **kwargs: Any,
+    # ) -> bool:
+    #     if not kwargs:
+    #         return False
 
-        self._value_cache_manager.set_one_value(
-            key_path=kwargs.get(
-                "key_path",
-                tuple()
-            ),
-            value=kwargs.get(
-                "value",
-                {}
-            ),
-            output_type=(
-                _TargetCacheValue.FOLDER_PATH
-            )
-        )
+    #     self._value_cache_manager.set_one_value(
+    #         key_path=kwargs.get(
+    #             "key_path",
+    #             tuple()
+    #         ),
+    #         value=kwargs.get(
+    #             "value",
+    #             {}
+    #         ),
+    #         output_type=(
+    #             _TargetCacheValue.FOLDER_PATH
+    #         )
+    #     )
 
-        return True
+    #     return True
 
-    def write_filesystem_path_value_via_value_cache(
-        self,
-        **kwargs: Any,
-    ) -> bool:
-        if not kwargs:
-            return False
+    # def write_filesystem_path_value_via_value_cache(
+    #     self,
+    #     **kwargs: Any,
+    # ) -> bool:
+    #     if not kwargs:
+    #         return False
 
-        self._value_cache_manager.set_one_value(
-            key_path=kwargs.get(
-                "key_path",
-                tuple()
-            ),
-            value=kwargs.get(
-                "value",
-                {}
-            ),
-            output_type=(
-                _TargetCacheValue.FILESYSTEM_PATH
-            )
-        )
+    #     self._value_cache_manager.set_one_value(
+    #         key_path=kwargs.get(
+    #             "key_path",
+    #             tuple()
+    #         ),
+    #         value=kwargs.get(
+    #             "value",
+    #             {}
+    #         ),
+    #         output_type=(
+    #             _TargetCacheValue.FILESYSTEM_PATH
+    #         )
+    #     )
 
-        return True
+    #     return True
 
-    def display_all_items_via_value_cache(
-        self,
-    ) -> bool:
-        self._value_cache_manager.display_all_items()
+    # def display_all_items_via_value_cache(
+    #     self,
+    # ) -> bool:
+    #     self._value_cache_manager.display_all_items()
 
-        return True
+    #     return True
 
     def remove_one_value_via_value_cache(
         self,
@@ -788,79 +785,79 @@ class ImportManager:
 
 
     # TimeManager
-    def read_selected_time_zone(
-        self,
-    ) -> str:
-        value: str = (
-            self._time_zone_manager.selected_time_zone_type
-        )
+    # def read_selected_time_zone(
+    #     self,
+    # ) -> str:
+    #     value: str = (
+    #         self._time_zone_manager.selected_time_zone_type
+    #     )
 
-        return value
+    #     return value
 
-    def write_selected_time_zone(
-        self,
-        **kwargs: Any,
-    ) -> bool:
-        if not kwargs:
-            return False
+    # def write_selected_time_zone(
+    #     self,
+    #     **kwargs: Any,
+    # ) -> bool:
+    #     if not kwargs:
+    #         return False
 
-        self._time_zone_manager.selected_time_zone_type = (
-            kwargs.get(
-                "value",
-                "local"
-            ),
-        )
+    #     self._time_zone_manager.selected_time_zone_type = (
+    #         kwargs.get(
+    #             "value",
+    #             "local"
+    #         ),
+    #     )
 
-        return True
+    #     return True
 
-    # TimestampManager
-    def generate_current_date_timestamp(
-        self,
-    ) -> str:
-        value: str = (
-            self._timestamp_manager.generate_current_timestamp(
-                _Timestamp.ISO_DATE_STRING
-            )
-        )
+    # # TimestampManager
+    # def generate_current_date_timestamp(
+    #     self,
+    # ) -> str:
+    #     value: str = (
+    #         self._timestamp_manager.generate_current_timestamp(
+    #             _Timestamp.ISO_DATE_STRING
+    #         )
+    #     )
 
-        return value
+    #     return value
 
-    def generate_current_filesystem_timestamp(
-        self,
-    ) -> str:
-        value: str = (
-            self._timestamp_manager.generate_current_timestamp(
-                _Timestamp.ISO_FILESYSTEM_STRING
-            )
-        )
+    # def generate_current_filesystem_timestamp(
+    #     self,
+    # ) -> str:
+    #     value: str = (
+    #         self._timestamp_manager.generate_current_timestamp(
+    #             _Timestamp.ISO_FILESYSTEM_STRING
+    #         )
+    #     )
 
-        return value
+    #     return value
 
-    # TextEncodingManager
-    def read_selected_encoding(
-        self,
-    ) -> str:
-        value: str = (
-            self._text_encoding_manager.selected_encoding
-        )
+    # # TextEncodingManager
+    # def read_selected_encoding(
+    #     self,
+    # ) -> str:
+    #     value: str = (
+    #         self._text_encoding_manager.selected_encoding
+    #     )
 
-        return value
+    #     return value
 
-    def write_selected_encoding(
-        self,
-        **kwargs: Any,
-    ) -> bool:
-        if not kwargs:
-            return False
+    # def write_selected_encoding(
+    #     self,
+    #     **kwargs: Any,
+    # ) -> bool:
+    #     if not kwargs:
+    #         return False
 
-        self._text_encoding_manager.selected_encoding = (
-            kwargs.get(
-                "value",
-                "utf-8"
-            ),
-        )
+    #     self._text_encoding_manager.selected_encoding = (
+    #         kwargs.get(
+    #             "value",
+    #             "utf-8"
+    #         ),
+    #     )
 
-        return True
+    #     return True
 
 
     # ScriptProcess
@@ -1027,126 +1024,126 @@ class ImportManager:
 
         return value
 
-    def object_deep_merge_fragments(
-        self,
-        **kwargs: Any,
-    ) -> object:
-        if not kwargs:
-            return False
+    # def object_deep_merge_fragments(
+    #     self,
+    #     **kwargs: Any,
+    # ) -> object:
+    #     if not kwargs:
+    #         return False
 
-        value: object = (
-            self._object_merge_manager.deep_merge_fragments(
-                left=kwargs.get(
-                    "left",
-                    {}
-                ),
-                right=kwargs.get(
-                    "right",
-                    {}
-                ),
-            )
-        )
+    #     value: object = (
+    #         self._object_merge_manager.deep_merge_fragments(
+    #             left=kwargs.get(
+    #                 "left",
+    #                 {}
+    #             ),
+    #             right=kwargs.get(
+    #                 "right",
+    #                 {}
+    #             ),
+    #         )
+    #     )
 
-        return value
+    #     return value
 
     # group_selection_manager
-    def object_flatten_group(
-        self,
-        **kwargs: Any,
-    ) -> Any:
-        if not kwargs:
-            return False
+    # def object_flatten_group(
+    #     self,
+    #     **kwargs: Any,
+    # ) -> Any:
+    #     if not kwargs:
+    #         return False
 
-        return (
-            self._group_selection_manager
-                .flatten_group(
-                    kwargs.get(
-                        "target",
-                        ""
-                    ),
-                    kwargs.get(
-                        "data",
-                        {}
-                    ),
-                )
-        ) or {}
+    #     return (
+    #         self._group_selection_manager
+    #             .flatten_group(
+    #                 kwargs.get(
+    #                     "target",
+    #                     ""
+    #                 ),
+    #                 kwargs.get(
+    #                     "data",
+    #                     {}
+    #                 ),
+    #             )
+    #     ) or {}
 
-    # yaml
-    def convert_yaml_string_to_object(
-        self,
-        **kwargs: Any,
-    ) -> object:
-        if not kwargs:
-            return {}
+    # # yaml
+    # def convert_yaml_string_to_object(
+    #     self,
+    #     **kwargs: Any,
+    # ) -> object:
+    #     if not kwargs:
+    #         return {}
 
-        return _yaml.safe_load(
-            kwargs.get(
-                "value",
-                ""
-            )
-        ) or {}
+    #     return _yaml.safe_load(
+    #         kwargs.get(
+    #             "value",
+    #             ""
+    #         )
+    #     ) or {}
 
-    def convert_yaml_object_to_string(
-        self,
-        **kwargs: Any,
-    ) -> str:
-        if not kwargs:
-            return ""
+    # def convert_yaml_object_to_string(
+    #     self,
+    #     **kwargs: Any,
+    # ) -> str:
+    #     if not kwargs:
+    #         return ""
 
-        return _yaml.safe_dump(
-            kwargs.get(
-                "value",
-                ""
-            ),
-            sort_keys=kwargs.get(
-                "sort_keys",
-                False,
-            ),
-            default_flow_style=kwargs.get(
-                "default_flow_style",
-                False,
-            ),
-            allow_unicode=kwargs.get(
-                "allow_unicode",
-                True,
-            ),
-            indent=kwargs.get(
-                "indent",
-                4,
-            )
-        ) or ""
+    #     return _yaml.safe_dump(
+    #         kwargs.get(
+    #             "value",
+    #             ""
+    #         ),
+    #         sort_keys=kwargs.get(
+    #             "sort_keys",
+    #             False,
+    #         ),
+    #         default_flow_style=kwargs.get(
+    #             "default_flow_style",
+    #             False,
+    #         ),
+    #         allow_unicode=kwargs.get(
+    #             "allow_unicode",
+    #             True,
+    #         ),
+    #         indent=kwargs.get(
+    #             "indent",
+    #             4,
+    #         )
+    #     ) or ""
 
-    def format_yaml_to_string(
-        self,
-        **kwargs: Any,
-    ) -> object:
-        if not kwargs:
-            return False
+    # def format_yaml_to_string(
+    #     self,
+    #     **kwargs: Any,
+    # ) -> object:
+    #     if not kwargs:
+    #         return False
 
-        return (
-            _yaml.dump(
-                kwargs.get(
-                    "value",
-                    ""
-                ),
-                sort_keys=kwargs.get(
-                    "sort_keys",
-                    False,
-                ),
-                default_flow_style=kwargs.get(
-                    "default_flow_style",
-                    False,
-                ),
-                allow_unicode=kwargs.get(
-                    "allow_unicode",
-                    True,
-                ),
-                indent=kwargs.get(
-                    "indent",
-                    4,
-                )
-            )
-        )
+    #     return (
+    #         _yaml.dump(
+    #             kwargs.get(
+    #                 "value",
+    #                 ""
+    #             ),
+    #             sort_keys=kwargs.get(
+    #                 "sort_keys",
+    #                 False,
+    #             ),
+    #             default_flow_style=kwargs.get(
+    #                 "default_flow_style",
+    #                 False,
+    #             ),
+    #             allow_unicode=kwargs.get(
+    #                 "allow_unicode",
+    #                 True,
+    #             ),
+    #             indent=kwargs.get(
+    #                 "indent",
+    #                 4,
+    #             )
+    #         )
+    #     )
 
     def read_yaml_file(
         self,
@@ -1171,52 +1168,52 @@ class ImportManager:
         ) as file:
             return _yaml.safe_load(file) or {}
 
-    def write_yaml_file(
-        self,
-        **kwargs: Any,
-    ) -> bool:
-        if not kwargs:
-            return False
+    # def write_yaml_file(
+    #     self,
+    #     **kwargs: Any,
+    # ) -> bool:
+    #     if not kwargs:
+    #         return False
 
-        path = _Path(
-            kwargs.get(
-                "file_path",
-                ""
-            ),
-        )
+    #     path = _Path(
+    #         kwargs.get(
+    #             "file_path",
+    #             ""
+    #         ),
+    #     )
 
-        with path.open(
-            mode="w",
-            encoding=kwargs.get(
-                "encoding",
-                "utf-8"
-            ),
-        ) as file:
-            _yaml.safe_dump(
-                kwargs.get(
-                    "value",
-                    ""
-                ),
-                file,
-                sort_keys=kwargs.get(
-                    "sort_keys",
-                    False,
-                ),
-                default_flow_style=kwargs.get(
-                    "default_flow_style",
-                    False,
-                ),
-                allow_unicode=kwargs.get(
-                    "allow_unicode",
-                    True,
-                ),
-                indent=kwargs.get(
-                    "indent",
-                    4,
-                )
-            )
+    #     with path.open(
+    #         mode="w",
+    #         encoding=kwargs.get(
+    #             "encoding",
+    #             "utf-8"
+    #         ),
+    #     ) as file:
+    #         _yaml.safe_dump(
+    #             kwargs.get(
+    #                 "value",
+    #                 ""
+    #             ),
+    #             file,
+    #             sort_keys=kwargs.get(
+    #                 "sort_keys",
+    #                 False,
+    #             ),
+    #             default_flow_style=kwargs.get(
+    #                 "default_flow_style",
+    #                 False,
+    #             ),
+    #             allow_unicode=kwargs.get(
+    #                 "allow_unicode",
+    #                 True,
+    #             ),
+    #             indent=kwargs.get(
+    #                 "indent",
+    #                 4,
+    #             )
+    #         )
 
-        return True
+    #     return True
 
     # Python
     def read_python_file(
@@ -1288,41 +1285,41 @@ class ImportManager:
 
         return value
 
-    def read_filesystem_status_change_timestamp(
-        self,
-        **kwargs: Any,
-    ) -> float:
-        if not kwargs:
-            return False
+    # def read_filesystem_status_change_timestamp(
+    #     self,
+    #     **kwargs: Any,
+    # ) -> float:
+    #     if not kwargs:
+    #         return False
 
-        value: float = (
-            _Path(
-                kwargs.get(
-                    "value",
-                    "",
-                ),
-            ).stat().st_ctime
-        )
+    #     value: float = (
+    #         _Path(
+    #             kwargs.get(
+    #                 "value",
+    #                 "",
+    #             ),
+    #         ).stat().st_ctime
+    #     )
 
-        return value
+    #     return value
 
-    def read_filesystem_access_timestamp(
-        self,
-        **kwargs: Any,
-    ) -> float:
-        if not kwargs:
-            return False
+    # def read_filesystem_access_timestamp(
+    #     self,
+    #     **kwargs: Any,
+    # ) -> float:
+    #     if not kwargs:
+    #         return False
 
-        value: float = (
-            _Path(
-                kwargs.get(
-                    "value",
-                    "",
-                ),
-            ).stat().st_atime
-        )
+    #     value: float = (
+    #         _Path(
+    #             kwargs.get(
+    #                 "value",
+    #                 "",
+    #             ),
+    #         ).stat().st_atime
+    #     )
 
-        return value
+    #     return value
 
     def read_filesystem_via_pattern(
         self,
@@ -1387,21 +1384,21 @@ class ImportManager:
 
         return value
 
-    def is_filesystem_path_valid(
-        self,
-        **kwargs: Any,
-    ) -> bool:
-        if not kwargs:
-            return False
+    # def is_filesystem_path_valid(
+    #     self,
+    #     **kwargs: Any,
+    # ) -> bool:
+    #     if not kwargs:
+    #         return False
 
-        value: bool = _Path(
-            kwargs.get(
-                "value",
-                "",
-            )
-        ).exists()
+    #     value: bool = _Path(
+    #         kwargs.get(
+    #             "value",
+    #             "",
+    #         )
+    #     ).exists()
 
-        return value
+    #     return value
 
     def is_file_path_valid(
         self,
@@ -1802,41 +1799,41 @@ class ImportManager:
         return value
 
     # uuid
-    def generate_uuidv4(
-        self
-    ) -> str:
-        value: str = _uuid.uuid4()
-        return value
+    # def generate_uuidv4(
+    #     self
+    # ) -> str:
+    #     value: str = _uuid.uuid4()
+    #     return value
 
-    def generate_uuidv5(
-        self,
-        **kwargs: Any,
-    ) -> str:
-        if not kwargs:
-            return ""
+    # def generate_uuidv5(
+    #     self,
+    #     **kwargs: Any,
+    # ) -> str:
+    #     if not kwargs:
+    #         return ""
 
-        value: str = _uuid.uuid5(
-            _uuid.NAMESPACE_DNS,
-            kwargs.get(
-                "key",
-                "key",
-            )
-        )
-        return value
+    #     value: str = _uuid.uuid5(
+    #         _uuid.NAMESPACE_DNS,
+    #         kwargs.get(
+    #             "key",
+    #             "key",
+    #         )
+    #     )
+    #     return value
 
-    def generate_uuidv7(
-        self,
-    ) -> str:
-        value: str = _uuid.uuid7()
-        return value
+    # def generate_uuidv7(
+    #     self,
+    # ) -> str:
+    #     value: str = _uuid.uuid7()
+    #     return value
 
     # SystemManager
-    def read_method_name(
-        self,
-        level: int = 2,
-    ) -> str:
-        value: str = f"{_sys._getframe(level).f_code.co_name}"
-        return value
+    # def read_method_name(
+    #     self,
+    #     level: int = 2,
+    # ) -> str:
+    #     value: str = f"{_sys._getframe(level).f_code.co_name}"
+    #     return value
 
     def read_operating_system_name(
         self,
@@ -1850,23 +1847,23 @@ class ImportManager:
         value: str = self._system_manager.operating_system_architecture
         return value
 
-    def read_current_executing_script_filesystem_path(
-        self,
-    ) -> str:
-        value: str = (
-            self._system_manager
-                .current_executing_script_filesystem_path
-        )
-        return value
+    # def read_current_executing_script_filesystem_path(
+    #     self,
+    # ) -> str:
+    #     value: str = (
+    #         self._system_manager
+    #             .current_executing_script_filesystem_path
+    #     )
+    #     return value
 
-    def read_current_executing_console_filesystem_path(
-        self,
-    ) -> str:
-        value: str = (
-            self._system_manager
-                .current_executing_console_filesystem_path
-        )
-        return value
+    # def read_current_executing_console_filesystem_path(
+    #     self,
+    # ) -> str:
+    #     value: str = (
+    #         self._system_manager
+    #             .current_executing_console_filesystem_path
+    #     )
+    #     return value
 
     def write_current_executing_console_filesystem_path(
         self,
@@ -1990,69 +1987,69 @@ class ImportManager:
 
         return True
 
-    def log_info_to_file(
-        self,
-        **kwargs: Any,
-    ) -> bool:
-        if not kwargs:
-            return False
+    # def log_info_to_file(
+    #     self,
+    #     **kwargs: Any,
+    # ) -> bool:
+    #     if not kwargs:
+    #         return False
 
-        self._file_log_manager.log_info(
-            message=kwargs.get(
-                "message",
-                "",
-            ),
-        )
+    #     self._file_log_manager.log_info(
+    #         message=kwargs.get(
+    #             "message",
+    #             "",
+    #         ),
+    #     )
 
-        return True
+    #     return True
 
-    def log_warning_to_file(
-        self,
-        **kwargs: Any,
-    ) -> bool:
-        if not kwargs:
-            return False
+    # def log_warning_to_file(
+    #     self,
+    #     **kwargs: Any,
+    # ) -> bool:
+    #     if not kwargs:
+    #         return False
 
-        self._file_log_manager.log_warning(
-            message=kwargs.get(
-                "message",
-                "",
-            ),
-        )
+    #     self._file_log_manager.log_warning(
+    #         message=kwargs.get(
+    #             "message",
+    #             "",
+    #         ),
+    #     )
 
-        return True
+    #     return True
 
-    def log_debug_to_file(
-        self,
-        **kwargs: Any,
-    ) -> bool:
-        if not kwargs:
-            return False
+    # def log_debug_to_file(
+    #     self,
+    #     **kwargs: Any,
+    # ) -> bool:
+    #     if not kwargs:
+    #         return False
 
-        self._file_log_manager.log_info(
-            message=kwargs.get(
-                "message",
-                "",
-            ),
-        )
+    #     self._file_log_manager.log_info(
+    #         message=kwargs.get(
+    #             "message",
+    #             "",
+    #         ),
+    #     )
 
-        return True
+    #     return True
 
-    def log_info_to_all(
-        self,
-        **kwargs: Any,
-    ) -> bool:
-        if not kwargs:
-            return False
+    # def log_info_to_all(
+    #     self,
+    #     **kwargs: Any,
+    # ) -> bool:
+    #     if not kwargs:
+    #         return False
 
-        self._log_manager.log_info(
-            message=kwargs.get(
-                "message",
-                "",
-            ),
-        )
+    #     self._log_manager.log_info(
+    #         message=kwargs.get(
+    #             "message",
+    #             "",
+    #         ),
+    #     )
 
-        return True
+    #     return True
 
     def log_cache_info_to_file(
         self,
@@ -2088,22 +2085,22 @@ class ImportManager:
 
         return True
 
-    def log_cache_warning_to_file(
-        self,
-        **kwargs: Any,
-    ) -> bool:
-        if not kwargs:
-            return False
+    # def log_cache_warning_to_file(
+    #     self,
+    #     **kwargs: Any,
+    # ) -> bool:
+    #     if not kwargs:
+    #         return False
 
-        self._file_log_manager.cache_log(
-            message=kwargs.get(
-                "message",
-                "",
-            ),
-            log_level=_logging.WARNING
-        )
+    #     self._file_log_manager.cache_log(
+    #         message=kwargs.get(
+    #             "message",
+    #             "",
+    #         ),
+    #         log_level=_logging.WARNING
+    #     )
 
-        return True
+    #     return True
 
     def log_shutdown(
         self,

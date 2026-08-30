@@ -6,11 +6,11 @@ workspace:
           value: ${{ qlogicae-logis-selection-project-filesystem-path }}
 
         installation:
-          is-enabled:
-            value: true
+          # is-enabled:
+          #   value: true
 
-          delay:
-            value: 0
+          # delay:
+          #   value: 0
 
           filesystem-path:
             value: ${{ qlogicae-logis-selection-project-filesystem-path }}
@@ -25,9 +25,12 @@ workflow:
       filesystem-path:
         value: ${{ qlogicae-logis-selection-project-filesystem-path }}
         
-      scripts:          
+      scripts:
         - run:
             value: qlogicae-logis-pre-workflow
+
+        - run:
+            value: qlogicae-logis-test-import-references
 
         - run:
             value: qlogicae-logis-test-type-check
@@ -65,6 +68,13 @@ workflow:
         - run:
             value: qlogicae-logis-git-deployment
 
+    qlogicae-logis-test-import-references:
+      filesystem-path:
+        value: ${{ qlogicae-logis-selection-project-filesystem-path }}
+        
+      scripts:
+        - run:
+            value: hatch run test-import-references
 
     qlogicae-logis-test-lint:
       filesystem-path:
@@ -300,7 +310,7 @@ macros:
           value: The project orchestration tool for QLogicae projects
 
         qlogicae-logis-current-version-number:
-          value: 3.0.6
+          value: 3.0.7
 
         qlogicae-logis-active-major-version-number:
           value: 3

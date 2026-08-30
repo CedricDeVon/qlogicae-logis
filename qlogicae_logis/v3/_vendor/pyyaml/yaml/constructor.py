@@ -34,9 +34,9 @@ class BaseConstructor:
         self.state_generators = []
         self.deep_construct = False
 
-    def check_data(self):
-        # If there are more documents available?
-        return self.check_node()
+    # def check_data(self):
+    #     # If there are more documents available?
+    #     return self.check_node()
 
     def check_state_key(self, key):
         """Block special attributes/methods from being set in a newly created
@@ -46,10 +46,10 @@ class BaseConstructor:
             raise ConstructorError(None, None,
                 "blacklisted key '%s' in instance state found" % (key,), None)
 
-    def get_data(self):
-        # Construct and return the next document.
-        if self.check_node():
-            return self.construct_document(self.get_node())
+    # def get_data(self):
+    #     # Construct and return the next document.
+    #     if self.check_node():
+    #         return self.construct_document(self.get_node())
 
     def get_single_data(self):
         # Ensure that the stream contains a single document and construct it.
@@ -64,7 +64,7 @@ class BaseConstructor:
             state_generators = self.state_generators
             self.state_generators = []
             for generator in state_generators:
-                for dummy in generator:
+                for _dummy in generator:
                     pass
         self.constructed_objects = {}
         self.recursive_objects = {}
@@ -111,7 +111,7 @@ class BaseConstructor:
             generator = data
             data = next(generator)
             if self.deep_construct:
-                for dummy in generator:
+                for _dummy in generator:
                     pass
             else:
                 self.state_generators.append(generator)
@@ -151,17 +151,17 @@ class BaseConstructor:
             mapping[key] = value
         return mapping
 
-    def construct_pairs(self, node, deep=False):
-        if not isinstance(node, MappingNode):
-            raise ConstructorError(None, None,
-                    "expected a mapping node, but found %s" % node.id,
-                    node.start_mark)
-        pairs = []
-        for key_node, value_node in node.value:
-            key = self.construct_object(key_node, deep=deep)
-            value = self.construct_object(value_node, deep=deep)
-            pairs.append((key, value))
-        return pairs
+    # def construct_pairs(self, node, deep=False):
+    #     if not isinstance(node, MappingNode):
+    #         raise ConstructorError(None, None,
+    #                 "expected a mapping node, but found %s" % node.id,
+    #                 node.start_mark)
+    #     pairs = []
+    #     for key_node, value_node in node.value:
+    #         key = self.construct_object(key_node, deep=deep)
+    #         value = self.construct_object(value_node, deep=deep)
+    #         pairs.append((key, value))
+    #     return pairs
 
     @classmethod
     def add_constructor(cls, tag, constructor):
@@ -420,15 +420,15 @@ class SafeConstructor(BaseConstructor):
         value = self.construct_mapping(node)
         data.update(value)
 
-    def construct_yaml_object(self, node, cls):
-        data = cls.__new__(cls)
-        yield data
-        if hasattr(data, '__setstate__'):
-            state = self.construct_mapping(node, deep=True)
-            data.__setstate__(state)
-        else:
-            state = self.construct_mapping(node)
-            data.__dict__.update(state)
+    # def construct_yaml_object(self, node, cls):
+    #     data = cls.__new__(cls)
+    #     yield data
+    #     if hasattr(data, '__setstate__'):
+    #         state = self.construct_mapping(node, deep=True)
+    #         data.__setstate__(state)
+    #     else:
+    #         state = self.construct_mapping(node)
+    #         data.__dict__.update(state)
 
     def construct_undefined(self, node):
         raise ConstructorError(None, None,

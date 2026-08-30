@@ -49,11 +49,11 @@ class SystemManager:
     ) -> str:
         return self._original_executing_console_filesystem_path
 
-    @property
-    def current_executing_script_filesystem_path(
-        self,
-    ) -> str:
-        return f"{_path(__file__).resolve()}"
+    # @property
+    # def current_executing_script_filesystem_path(
+    #     self,
+    # ) -> str:
+    #     return f"{_path(__file__).resolve()}"
 
     @property
     def current_executing_console_filesystem_path(

@@ -88,105 +88,105 @@ class LogManager:
 
         return message
 
-    def log_debug(
-        self,
-        message: str,
-    ) -> str:
-        return self.log(
-            message,
-            self._log_options_manager.generate_modified_defaults(
-                _SingletonManager.get_singleton(
-                    _ConsoleLogManager,
-                ).options,
-                log_level=_logging.DEBUG,
-            ),
-            self._log_options_manager.generate_modified_defaults(
-                _SingletonManager.get_singleton(
-                    _FileLogManager,
-                ).options,
-                log_level=_logging.DEBUG,
-            ),
-        )
+    # def log_debug(
+    #     self,
+    #     message: str,
+    # ) -> str:
+    #     return self.log(
+    #         message,
+    #         self._log_options_manager.generate_modified_defaults(
+    #             _SingletonManager.get_singleton(
+    #                 _ConsoleLogManager,
+    #             ).options,
+    #             log_level=_logging.DEBUG,
+    #         ),
+    #         self._log_options_manager.generate_modified_defaults(
+    #             _SingletonManager.get_singleton(
+    #                 _FileLogManager,
+    #             ).options,
+    #             log_level=_logging.DEBUG,
+    #         ),
+    #     )
 
-    def log_info(
-        self,
-        message: str,
-    ) -> str:
-        return self.log(
-            message,
-            self._log_options_manager.generate_modified_defaults(
-                _SingletonManager.get_singleton(
-                    _ConsoleLogManager,
-                ).options,
-                log_level=_logging.INFO,
-            ),
-            self._log_options_manager.generate_modified_defaults(
-                _SingletonManager.get_singleton(
-                    _FileLogManager,
-                ).options,
-                log_level=_logging.INFO,
-            ),
-        )
+    # def log_info(
+    #     self,
+    #     message: str,
+    # ) -> str:
+    #     return self.log(
+    #         message,
+    #         self._log_options_manager.generate_modified_defaults(
+    #             _SingletonManager.get_singleton(
+    #                 _ConsoleLogManager,
+    #             ).options,
+    #             log_level=_logging.INFO,
+    #         ),
+    #         self._log_options_manager.generate_modified_defaults(
+    #             _SingletonManager.get_singleton(
+    #                 _FileLogManager,
+    #             ).options,
+    #             log_level=_logging.INFO,
+    #         ),
+    #     )
 
-    def log_warning(
-        self,
-        message: str,
-    ) -> str:
-        return self.log(
-            message,
-            self._log_options_manager.generate_modified_defaults(
-                _SingletonManager.get_singleton(
-                    _ConsoleLogManager,
-                ).options,
-                log_level=_logging.WARNING,
-            ),
-            self._log_options_manager.generate_modified_defaults(
-                _SingletonManager.get_singleton(
-                    _FileLogManager,
-                ).options,
-                log_level=_logging.WARNING,
-            ),
-        )
+    # def log_warning(
+    #     self,
+    #     message: str,
+    # ) -> str:
+    #     return self.log(
+    #         message,
+    #         self._log_options_manager.generate_modified_defaults(
+    #             _SingletonManager.get_singleton(
+    #                 _ConsoleLogManager,
+    #             ).options,
+    #             log_level=_logging.WARNING,
+    #         ),
+    #         self._log_options_manager.generate_modified_defaults(
+    #             _SingletonManager.get_singleton(
+    #                 _FileLogManager,
+    #             ).options,
+    #             log_level=_logging.WARNING,
+    #         ),
+    #     )
 
-    def log_error(
-        self,
-        message: str,
-    ) -> str:
-        return self.log(
-            message,
-            self._log_options_manager.generate_modified_defaults(
-                _SingletonManager.get_singleton(
-                    _ConsoleLogManager,
-                ).options,
-                log_level=_logging.ERROR,
-            ),
-            self._log_options_manager.generate_modified_defaults(
-                _SingletonManager.get_singleton(
-                    _FileLogManager,
-                ).options,
-                log_level=_logging.ERROR,
-            ),
-        )
+    # def log_error(
+    #     self,
+    #     message: str,
+    # ) -> str:
+    #     return self.log(
+    #         message,
+    #         self._log_options_manager.generate_modified_defaults(
+    #             _SingletonManager.get_singleton(
+    #                 _ConsoleLogManager,
+    #             ).options,
+    #             log_level=_logging.ERROR,
+    #         ),
+    #         self._log_options_manager.generate_modified_defaults(
+    #             _SingletonManager.get_singleton(
+    #                 _FileLogManager,
+    #             ).options,
+    #             log_level=_logging.ERROR,
+    #         ),
+    #     )
 
-    def log_critical(
-        self,
-        message: str,
-    ) -> str:
-        return self.log(
-            message,
-            self._log_options_manager.generate_modified_defaults(
-                _SingletonManager.get_singleton(
-                    _ConsoleLogManager,
-                ).options,
-                log_level=_logging.CRITICAL,
-            ),
-            self._log_options_manager.generate_modified_defaults(
-                _SingletonManager.get_singleton(
-                    _FileLogManager,
-                ).options,
-                log_level=_logging.CRITICAL,
-            ),
-        )
+    # def log_critical(
+    #     self,
+    #     message: str,
+    # ) -> str:
+    #     return self.log(
+    #         message,
+    #         self._log_options_manager.generate_modified_defaults(
+    #             _SingletonManager.get_singleton(
+    #                 _ConsoleLogManager,
+    #             ).options,
+    #             log_level=_logging.CRITICAL,
+    #         ),
+    #         self._log_options_manager.generate_modified_defaults(
+    #             _SingletonManager.get_singleton(
+    #                 _FileLogManager,
+    #             ).options,
+    #             log_level=_logging.CRITICAL,
+    #         ),
+    #     )
 
     def shutdown(self) -> bool:
         self._file_log_manager.shutdown()

@@ -312,13 +312,13 @@ class DisplayManager:
 
             return attributes
 
-        def is_container(value: Any) -> bool:
-            return (
-                isinstance(value, _Mapping)
-                or is_sequence(value)
-                or is_set(value)
-                or bool(get_attributes(value))
-            )
+        # def is_container(value: Any) -> bool:
+        #     return (
+        #         isinstance(value, _Mapping)
+        #         or is_sequence(value)
+        #         or is_set(value)
+        #         or bool(get_attributes(value))
+        #     )
 
         def tree_prefix(
             prefixes: tuple[bool, ...],

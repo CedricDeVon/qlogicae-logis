@@ -206,65 +206,65 @@ class FileLogManager:
 
         return message
 
-    def log_debug(
-        self,
-        message: Any,
-    ) -> Any:
-        return self.log(
-            message,
-            self._log_options_manager.generate_modified_defaults(
-                self._options,
-                log_level=_logging.DEBUG,
-            ),
-        )
+    # def log_debug(
+    #     self,
+    #     message: Any,
+    # ) -> Any:
+    #     return self.log(
+    #         message,
+    #         self._log_options_manager.generate_modified_defaults(
+    #             self._options,
+    #             log_level=_logging.DEBUG,
+    #         ),
+    #     )
 
-    def log_info(
-        self,
-        message: Any,
-    ) -> Any:
-        return self.log(
-            message,
-            self._log_options_manager.generate_modified_defaults(
-                self._options,
-                log_level=_logging.INFO,
-            ),
-        )
+    # def log_info(
+    #     self,
+    #     message: Any,
+    # ) -> Any:
+    #     return self.log(
+    #         message,
+    #         self._log_options_manager.generate_modified_defaults(
+    #             self._options,
+    #             log_level=_logging.INFO,
+    #         ),
+    #     )
 
-    def log_warning(
-        self,
-        message: Any,
-    ) -> Any:
-        return self.log(
-            message,
-            self._log_options_manager.generate_modified_defaults(
-                self._options,
-                log_level=_logging.WARNING,
-            ),
-        )
+    # def log_warning(
+    #     self,
+    #     message: Any,
+    # ) -> Any:
+    #     return self.log(
+    #         message,
+    #         self._log_options_manager.generate_modified_defaults(
+    #             self._options,
+    #             log_level=_logging.WARNING,
+    #         ),
+    #     )
 
-    def log_error(
-        self,
-        message: Any,
-    ) -> Any:
-        return self.log(
-            message,
-            self._log_options_manager.generate_modified_defaults(
-                self._options,
-                log_level=_logging.ERROR,
-            ),
-        )
+    # def log_error(
+    #     self,
+    #     message: Any,
+    # ) -> Any:
+    #     return self.log(
+    #         message,
+    #         self._log_options_manager.generate_modified_defaults(
+    #             self._options,
+    #             log_level=_logging.ERROR,
+    #         ),
+    #     )
 
-    def log_critical(
-        self,
-        message: Any,
-    ) -> Any:
-        return self.log(
-            message,
-            self._log_options_manager.generate_modified_defaults(
-                self._options,
-                log_level=_logging.CRITICAL,
-            ),
-        )
+    # def log_critical(
+    #     self,
+    #     message: Any,
+    # ) -> Any:
+    #     return self.log(
+    #         message,
+    #         self._log_options_manager.generate_modified_defaults(
+    #             self._options,
+    #             log_level=_logging.CRITICAL,
+    #         ),
+    #     )
 
     def rebuild_listener(self) -> bool:
         self.listener.stop()
@@ -308,36 +308,36 @@ class FileLogManager:
 
         return True
 
-    def remove_file_output(
-        self,
-        file_path: str,
-    ) -> bool:
-        path = _Path(file_path).resolve()
+    # def remove_file_output(
+    #     self,
+    #     file_path: str,
+    # ) -> bool:
+    #     path = _Path(file_path).resolve()
 
-        handler = self.file_handlers.get(path)
+    #     handler = self.file_handlers.get(path)
 
-        if handler is None:
-            return False
+    #     if handler is None:
+    #         return False
 
-        handler.close()
+    #     handler.close()
 
-        del self.file_handlers[path]
+    #     del self.file_handlers[path]
 
-        self.rebuild_listener()
+    #     self.rebuild_listener()
 
-        return True
+    #     return True
 
-    def clear_file_outputs(self) -> bool:
-        for handler in self.file_handlers.values():
-            handler.close()
+    # def clear_file_outputs(self) -> bool:
+    #     for handler in self.file_handlers.values():
+    #         handler.close()
 
-        self.file_handlers.clear()
+    #     self.file_handlers.clear()
 
-        self.rebuild_listener()
+    #     self.rebuild_listener()
 
-        self._cache.clear()
+    #     self._cache.clear()
 
-        return True
+    #     return True
 
     def shutdown(self) -> bool:
         self.log_cached()

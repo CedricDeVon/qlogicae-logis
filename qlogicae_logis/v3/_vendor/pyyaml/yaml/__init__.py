@@ -20,55 +20,55 @@ import io
 # XXX "Warnings control" is now deprecated. Leaving in the API function to not
 # break code that uses it.
 #------------------------------------------------------------------------------
-def warnings(settings=None):
-    if settings is None:
-        return {}
+# def warnings(settings=None):
+#     if settings is None:
+#         return {}
 
-#------------------------------------------------------------------------------
-def scan(stream, Loader=Loader):
-    """
-    Scan a YAML stream and produce scanning tokens.
-    """
-    loader = Loader(stream)
-    try:
-        while loader.check_token():
-            yield loader.get_token()
-    finally:
-        loader.dispose()
+# #------------------------------------------------------------------------------
+# def scan(stream, Loader=Loader):
+#     """
+#     Scan a YAML stream and produce scanning tokens.
+#     """
+#     loader = Loader(stream)
+#     try:
+#         while loader.check_token():
+#             yield loader.get_token()
+#     finally:
+#         loader.dispose()
 
-def parse(stream, Loader=Loader):
-    """
-    Parse a YAML stream and produce parsing events.
-    """
-    loader = Loader(stream)
-    try:
-        while loader.check_event():
-            yield loader.get_event()
-    finally:
-        loader.dispose()
+# def parse(stream, Loader=Loader):
+#     """
+#     Parse a YAML stream and produce parsing events.
+#     """
+#     loader = Loader(stream)
+#     try:
+#         while loader.check_event():
+#             yield loader.get_event()
+#     finally:
+#         loader.dispose()
 
-def compose(stream, Loader=Loader):
-    """
-    Parse the first YAML document in a stream
-    and produce the corresponding representation tree.
-    """
-    loader = Loader(stream)
-    try:
-        return loader.get_single_node()
-    finally:
-        loader.dispose()
+# def compose(stream, Loader=Loader):
+#     """
+#     Parse the first YAML document in a stream
+#     and produce the corresponding representation tree.
+#     """
+#     loader = Loader(stream)
+#     try:
+#         return loader.get_single_node()
+#     finally:
+#         loader.dispose()
 
-def compose_all(stream, Loader=Loader):
-    """
-    Parse all YAML documents in a stream
-    and produce corresponding representation trees.
-    """
-    loader = Loader(stream)
-    try:
-        while loader.check_node():
-            yield loader.get_node()
-    finally:
-        loader.dispose()
+# def compose_all(stream, Loader=Loader):
+#     """
+#     Parse all YAML documents in a stream
+#     and produce corresponding representation trees.
+#     """
+#     loader = Loader(stream)
+#     try:
+#         while loader.check_node():
+#             yield loader.get_node()
+#     finally:
+#         loader.dispose()
 
 def load(stream, Loader):
     """
@@ -81,37 +81,37 @@ def load(stream, Loader):
     finally:
         loader.dispose()
 
-def load_all(stream, Loader):
-    """
-    Parse all YAML documents in a stream
-    and produce corresponding Python objects.
-    """
-    loader = Loader(stream)
-    try:
-        while loader.check_data():
-            yield loader.get_data()
-    finally:
-        loader.dispose()
+# def load_all(stream, Loader):
+#     """
+#     Parse all YAML documents in a stream
+#     and produce corresponding Python objects.
+#     """
+#     loader = Loader(stream)
+#     try:
+#         while loader.check_data():
+#             yield loader.get_data()
+#     finally:
+#         loader.dispose()
 
-def full_load(stream):
-    """
-    Parse the first YAML document in a stream
-    and produce the corresponding Python object.
+# def full_load(stream):
+#     """
+#     Parse the first YAML document in a stream
+#     and produce the corresponding Python object.
 
-    Resolve all tags except those known to be
-    unsafe on untrusted input.
-    """
-    return load(stream, FullLoader)
+#     Resolve all tags except those known to be
+#     unsafe on untrusted input.
+#     """
+#     return load(stream, FullLoader)
 
-def full_load_all(stream):
-    """
-    Parse all YAML documents in a stream
-    and produce corresponding Python objects.
+# def full_load_all(stream):
+#     """
+#     Parse all YAML documents in a stream
+#     and produce corresponding Python objects.
 
-    Resolve all tags except those known to be
-    unsafe on untrusted input.
-    """
-    return load_all(stream, FullLoader)
+#     Resolve all tags except those known to be
+#     unsafe on untrusted input.
+#     """
+#     return load_all(stream, FullLoader)
 
 def safe_load(stream):
     """
@@ -123,35 +123,35 @@ def safe_load(stream):
     """
     return load(stream, SafeLoader)
 
-def safe_load_all(stream):
-    """
-    Parse all YAML documents in a stream
-    and produce corresponding Python objects.
+# def safe_load_all(stream):
+#     """
+#     Parse all YAML documents in a stream
+#     and produce corresponding Python objects.
 
-    Resolve only basic YAML tags. This is known
-    to be safe for untrusted input.
-    """
-    return load_all(stream, SafeLoader)
+#     Resolve only basic YAML tags. This is known
+#     to be safe for untrusted input.
+#     """
+#     return load_all(stream, SafeLoader)
 
-def unsafe_load(stream):
-    """
-    Parse the first YAML document in a stream
-    and produce the corresponding Python object.
+# def unsafe_load(stream):
+#     """
+#     Parse the first YAML document in a stream
+#     and produce the corresponding Python object.
 
-    Resolve all tags, even those known to be
-    unsafe on untrusted input.
-    """
-    return load(stream, UnsafeLoader)
+#     Resolve all tags, even those known to be
+#     unsafe on untrusted input.
+#     """
+#     return load(stream, UnsafeLoader)
 
-def unsafe_load_all(stream):
-    """
-    Parse all YAML documents in a stream
-    and produce corresponding Python objects.
+# def unsafe_load_all(stream):
+#     """
+#     Parse all YAML documents in a stream
+#     and produce corresponding Python objects.
 
-    Resolve all tags, even those known to be
-    unsafe on untrusted input.
-    """
-    return load_all(stream, UnsafeLoader)
+#     Resolve all tags, even those known to be
+#     unsafe on untrusted input.
+#     """
+#     return load_all(stream, UnsafeLoader)
 
 def emit(events, stream=None, Dumper=Dumper,
         canonical=None, indent=None, width=None,
@@ -211,61 +211,61 @@ def serialize(node, stream=None, Dumper=Dumper, **kwds):
     """
     return serialize_all([node], stream, Dumper=Dumper, **kwds)
 
-def dump_all(documents, stream=None, Dumper=Dumper,
-        default_style=None, default_flow_style=False,
-        canonical=None, indent=None, width=None,
-        allow_unicode=None, line_break=None,
-        encoding=None, explicit_start=None, explicit_end=None,
-        version=None, tags=None, sort_keys=True):
-    """
-    Serialize a sequence of Python objects into a YAML stream.
-    If stream is None, return the produced string instead.
-    """
-    getvalue = None
-    if stream is None:
-        if encoding is None:
-            stream = io.StringIO()
-        else:
-            stream = io.BytesIO()
-        getvalue = stream.getvalue
-    dumper = Dumper(stream, default_style=default_style,
-            default_flow_style=default_flow_style,
-            canonical=canonical, indent=indent, width=width,
-            allow_unicode=allow_unicode, line_break=line_break,
-            encoding=encoding, version=version, tags=tags,
-            explicit_start=explicit_start, explicit_end=explicit_end, sort_keys=sort_keys)
-    try:
-        dumper.open()
-        for data in documents:
-            dumper.represent(data)
-        dumper.close()
-    finally:
-        dumper.dispose()
-    if getvalue:
-        return getvalue()
+# def dump_all(documents, stream=None, Dumper=Dumper,
+#         default_style=None, default_flow_style=False,
+#         canonical=None, indent=None, width=None,
+#         allow_unicode=None, line_break=None,
+#         encoding=None, explicit_start=None, explicit_end=None,
+#         version=None, tags=None, sort_keys=True):
+#     """
+#     Serialize a sequence of Python objects into a YAML stream.
+#     If stream is None, return the produced string instead.
+#     """
+#     getvalue = None
+#     if stream is None:
+#         if encoding is None:
+#             stream = io.StringIO()
+#         else:
+#             stream = io.BytesIO()
+#         getvalue = stream.getvalue
+#     dumper = Dumper(stream, default_style=default_style,
+#             default_flow_style=default_flow_style,
+#             canonical=canonical, indent=indent, width=width,
+#             allow_unicode=allow_unicode, line_break=line_break,
+#             encoding=encoding, version=version, tags=tags,
+#             explicit_start=explicit_start, explicit_end=explicit_end, sort_keys=sort_keys)
+#     try:
+#         dumper.open()
+#         for data in documents:
+#             dumper.represent(data)
+#         dumper.close()
+#     finally:
+#         dumper.dispose()
+#     if getvalue:
+#         return getvalue()
 
-def dump(data, stream=None, Dumper=Dumper, **kwds):
-    """
-    Serialize a Python object into a YAML stream.
-    If stream is None, return the produced string instead.
-    """
-    return dump_all([data], stream, Dumper=Dumper, **kwds)
+# def dump(data, stream=None, Dumper=Dumper, **kwds):
+#     """
+#     Serialize a Python object into a YAML stream.
+#     If stream is None, return the produced string instead.
+#     """
+#     return dump_all([data], stream, Dumper=Dumper, **kwds)
 
-def safe_dump_all(documents, stream=None, **kwds):
-    """
-    Serialize a sequence of Python objects into a YAML stream.
-    Produce only basic YAML tags.
-    If stream is None, return the produced string instead.
-    """
-    return dump_all(documents, stream, Dumper=SafeDumper, **kwds)
+# def safe_dump_all(documents, stream=None, **kwds):
+#     """
+#     Serialize a sequence of Python objects into a YAML stream.
+#     Produce only basic YAML tags.
+#     If stream is None, return the produced string instead.
+#     """
+#     return dump_all(documents, stream, Dumper=SafeDumper, **kwds)
 
-def safe_dump(data, stream=None, **kwds):
-    """
-    Serialize a Python object into a YAML stream.
-    Produce only basic YAML tags.
-    If stream is None, return the produced string instead.
-    """
-    return dump_all([data], stream, Dumper=SafeDumper, **kwds)
+# def safe_dump(data, stream=None, **kwds):
+#     """
+#     Serialize a Python object into a YAML stream.
+#     Produce only basic YAML tags.
+#     If stream is None, return the produced string instead.
+#     """
+#     return dump_all([data], stream, Dumper=SafeDumper, **kwds)
 
 def add_implicit_resolver(tag, regexp, first=None,
         Loader=None, Dumper=Dumper):
@@ -343,47 +343,47 @@ def add_multi_representer(data_type, multi_representer, Dumper=Dumper):
     """
     Dumper.add_multi_representer(data_type, multi_representer)
 
-class YAMLObjectMetaclass(type):
-    """
-    The metaclass for YAMLObject.
-    """
-    def __init__(cls, name, bases, kwds):
-        super().__init__(name, bases, kwds)
-        if 'yaml_tag' in kwds and kwds['yaml_tag'] is not None:
-            if isinstance(cls.yaml_loader, list):
-                for loader in cls.yaml_loader:
-                    loader.add_constructor(cls.yaml_tag, cls.from_yaml)
-            else:
-                cls.yaml_loader.add_constructor(cls.yaml_tag, cls.from_yaml)
+# class YAMLObjectMetaclass(type):
+#     """
+#     The metaclass for YAMLObject.
+#     """
+#     def __init__(cls, name, bases, kwds):
+#         super().__init__(name, bases, kwds)
+#         if 'yaml_tag' in kwds and kwds['yaml_tag'] is not None:
+#             if isinstance(cls.yaml_loader, list):
+#                 for loader in cls.yaml_loader:
+#                     loader.add_constructor(cls.yaml_tag, cls.from_yaml)
+#             else:
+#                 cls.yaml_loader.add_constructor(cls.yaml_tag, cls.from_yaml)
 
-            cls.yaml_dumper.add_representer(cls, cls.to_yaml)
+#             cls.yaml_dumper.add_representer(cls, cls.to_yaml)
 
-class YAMLObject(metaclass=YAMLObjectMetaclass):
-    """
-    An object that can dump itself to a YAML stream
-    and load itself from a YAML stream.
-    """
+# class YAMLObject(metaclass=YAMLObjectMetaclass):
+#     """
+#     An object that can dump itself to a YAML stream
+#     and load itself from a YAML stream.
+#     """
 
-    __slots__ = ()  # no direct instantiation, so allow immutable subclasses
+#     __slots__ = ()  # no direct instantiation, so allow immutable subclasses
 
-    yaml_loader = [Loader, FullLoader, UnsafeLoader]
-    yaml_dumper = Dumper
+#     yaml_loader = [Loader, FullLoader, UnsafeLoader]
+#     yaml_dumper = Dumper
 
-    yaml_tag = None
-    yaml_flow_style = None
+#     yaml_tag = None
+#     yaml_flow_style = None
 
-    @classmethod
-    def from_yaml(cls, loader, node):
-        """
-        Convert a representation node to a Python object.
-        """
-        return loader.construct_yaml_object(node, cls)
+#     @classmethod
+#     def from_yaml(cls, loader, node):
+#         """
+#         Convert a representation node to a Python object.
+#         """
+#         return loader.construct_yaml_object(node, cls)
 
-    @classmethod
-    def to_yaml(cls, dumper, data):
-        """
-        Convert a Python object to a representation node.
-        """
-        return dumper.represent_yaml_object(cls.yaml_tag, data, cls,
-                flow_style=cls.yaml_flow_style)
+#     @classmethod
+#     def to_yaml(cls, dumper, data):
+#         """
+#         Convert a Python object to a representation node.
+#         """
+#         return dumper.represent_yaml_object(cls.yaml_tag, data, cls,
+#                 flow_style=cls.yaml_flow_style)
 

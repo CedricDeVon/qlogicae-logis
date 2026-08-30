@@ -182,110 +182,110 @@ class MacrosManager:
         return cache
 
 
-    def resolve_one(
-        self,
-        key: object,
-        values: object,
-        cache: dict[str, object],
-        stack: set[str],
-    ) -> object:
-        if not isinstance(key, str):
-            raise TypeError("'key' must be a string")
+    # def resolve_one(
+    #     self,
+    #     key: object,
+    #     values: object,
+    #     cache: dict[str, object],
+    #     stack: set[str],
+    # ) -> object:
+    #     if not isinstance(key, str):
+    #         raise TypeError("'key' must be a string")
 
-        if not isinstance(values, _Mapping):
-            raise TypeError("'values' must be a mapping")
+    #     if not isinstance(values, _Mapping):
+    #         raise TypeError("'values' must be a mapping")
 
-        if not isinstance(cache, dict):
-            raise TypeError("'cache' must be a dictionary")
+    #     if not isinstance(cache, dict):
+    #         raise TypeError("'cache' must be a dictionary")
 
-        if not isinstance(stack, set):
-            raise TypeError("'stack' must be a set")
+    #     if not isinstance(stack, set):
+    #         raise TypeError("'stack' must be a set")
 
-        if key not in values:
-            raise KeyError(f"unknown macro '{key}'")
+    #     if key not in values:
+    #         raise KeyError(f"unknown macro '{key}'")
 
-        if key in cache:
-            return cache[key]
+    #     if key in cache:
+    #         return cache[key]
 
-        frames: list[tuple[str, bool]] = [
-            (key, False),
-        ]
+    #     frames: list[tuple[str, bool]] = [
+    #         (key, False),
+    #     ]
 
-        while frames:
-            current_key, expanded = frames.pop()
+    #     while frames:
+    #         current_key, expanded = frames.pop()
 
-            if current_key in cache:
-                continue
+    #         if current_key in cache:
+    #             continue
 
-            if not expanded:
-                if current_key in stack:
-                    raise ValueError(
-                        f"key path '{current_key}' is a circular reference",
-                    )
+    #         if not expanded:
+    #             if current_key in stack:
+    #                 raise ValueError(
+    #                     f"key path '{current_key}' is a circular reference",
+    #                 )
 
-                if current_key not in values:
-                    raise ValueError(
-                        f"key path '{current_key}' is an unknown macro",
-                    )
+    #             if current_key not in values:
+    #                 raise ValueError(
+    #                     f"key path '{current_key}' is an unknown macro",
+    #                 )
 
-                value = values[current_key]
+    #             value = values[current_key]
 
-                if not isinstance(value, str):
-                    cache[current_key] = self._resolve_value(value)
-                    continue
+    #             if not isinstance(value, str):
+    #                 cache[current_key] = self._resolve_value(value)
+    #                 continue
 
-                stack.add(current_key)
+    #             stack.add(current_key)
 
-                frames.append(
-                    (current_key, True),
-                )
+    #             frames.append(
+    #                 (current_key, True),
+    #             )
 
-                dependencies: list[str] = []
+    #             dependencies: list[str] = []
 
-                for match in self._selected_macros_pattern.finditer(
-                    value,
-                ):
-                    dependency = match.group(1)
+    #             for match in self._selected_macros_pattern.finditer(
+    #                 value,
+    #             ):
+    #                 dependency = match.group(1)
 
-                    if dependency not in values:
-                        raise KeyError(
-                            f"macro '{current_key}' references unknown macro "
-                            f"'{dependency}'",
-                        )
+    #                 if dependency not in values:
+    #                     raise KeyError(
+    #                         f"macro '{current_key}' references unknown macro "
+    #                         f"'{dependency}'",
+    #                     )
 
-                    if dependency in stack:
-                        raise ValueError(
-                            f"circular macro reference: "
-                            f"'{current_key}' -> '{dependency}'",
-                        )
+    #                 if dependency in stack:
+    #                     raise ValueError(
+    #                         f"circular macro reference: "
+    #                         f"'{current_key}' -> '{dependency}'",
+    #                     )
 
-                    if dependency not in cache:
-                        if dependency not in dependencies:
-                            dependencies.append(dependency)
+    #                 if dependency not in cache:
+    #                     if dependency not in dependencies:
+    #                         dependencies.append(dependency)
 
-                frames.extend(
-                    (dependency, False)
-                    for dependency in reversed(dependencies)
-                )
+    #             frames.extend(
+    #                 (dependency, False)
+    #                 for dependency in reversed(dependencies)
+    #             )
 
-            else:
-                value = values[current_key]
+    #         else:
+    #             value = values[current_key]
 
-                if not isinstance(value, str):
-                    cache[current_key] = self._resolve_value(value)
-                else:
-                    cache[current_key] = (
-                        self._selected_macros_pattern.sub(
-                            lambda match: str(
-                                cache[match.group(1)],
-                            ),
-                            value,
-                        )
-                    )
+    #             if not isinstance(value, str):
+    #                 cache[current_key] = self._resolve_value(value)
+    #             else:
+    #                 cache[current_key] = (
+    #                     self._selected_macros_pattern.sub(
+    #                         lambda match: str(
+    #                             cache[match.group(1)],
+    #                         ),
+    #                         value,
+    #                     )
+    #                 )
 
-                stack.remove(current_key)
+    #             stack.remove(current_key)
 
-        return cache[key]
+    #     return cache[key]
 
 
     def parse_many(

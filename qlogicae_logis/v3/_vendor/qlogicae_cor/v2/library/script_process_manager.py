@@ -86,9 +86,9 @@ class ScriptProcessManager:
 
         self._selected_script_process = value
 
-    @property
-    def valid_script_processes(self) -> set[str]:
-        return self._valid_script_processes
+    # @property
+    # def valid_script_processes(self) -> set[str]:
+    #     return self._valid_script_processes
 
     def execute_command(
         self,

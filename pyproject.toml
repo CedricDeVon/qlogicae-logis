@@ -1,6 +1,6 @@
 [project]
 name = "qlogicae-logis"
-version = "3.0.6"
+version = "3.0.7"
 description = "The project orchestration tool for QLogicae projects"
 readme = { file = "README.md", content-type = "text/markdown" }
 requires-python = ">=3.12"
@@ -44,11 +44,12 @@ dev = [
     "twine",
     "memray",
     "scalene",
-    "pympler"
+    "pympler",
+    "vulture",
 ]
 
 [project.scripts]
-qlogicae-logis = "qlogicae_logis.v3.console.app:main"
+qlogicae-logis = "qlogicae_logis.v3.console.app:A"
 
 
 [project.urls]
@@ -97,7 +98,6 @@ exclude = [
 [tool.coverage.report]
 show_missing = true
 skip_covered = false
-
 
 [tool.ruff]
 target-version = "py314"
@@ -177,6 +177,15 @@ module = [
 ]
 ignore_errors = true
 
+
+[tool.vulture]
+exclude = [
+    "qlogicae_logis/v3/_vendor/qlogicae_cor/v2/library/log_format.py",
+    "qlogicae_logis/v3/_vendor/qlogicae_cor/v2/library/timestamp_manager.py",
+]
+
+
+
 [tool.hatch.build.targets.wheel]
 packages = ["qlogicae_logis"]
 
@@ -184,14 +193,20 @@ packages = ["qlogicae_logis"]
 [tool.hatch.build.targets.wheel.force-include]
 "qlogicae_logis/py.typed" = "qlogicae_logis/py.typed"
 
-
 [tool.hatch.envs.default.scripts]
+test-import-references = """
+    vulture qlogicae_logis
+"""
+
 minify = """
     pyminify \
         --in-place \
+        --prefer-single-line \
+        --rename-globals \
         --remove-debug \
         --remove-asserts \
         --remove-literal-statements \
+        --remove-class-attribute-annotations \
         qlogicae_logis/v3
 """
 test-lint = """

@@ -44,11 +44,12 @@ dev = [
     "twine",
     "memray",
     "scalene",
-    "pympler"
+    "pympler",
+    "vulture",
 ]
 
 [project.scripts]
-qlogicae-logis = "${{ qlogicae-logis-source-brand-name }}.v3.console.app:main"
+qlogicae-logis = "${{ qlogicae-logis-source-brand-name }}.v3.console.app:A"
 
 
 [project.urls]
@@ -97,7 +98,6 @@ exclude = [
 [tool.coverage.report]
 show_missing = true
 skip_covered = false
-
 
 [tool.ruff]
 target-version = "py314"
@@ -177,6 +177,15 @@ module = [
 ]
 ignore_errors = true
 
+
+[tool.vulture]
+exclude = [
+    "qlogicae_logis/v3/_vendor/qlogicae_cor/v2/library/log_format.py",
+    "qlogicae_logis/v3/_vendor/qlogicae_cor/v2/library/timestamp_manager.py",
+]
+
+
+
 [tool.hatch.build.targets.wheel]
 packages = ["${{ qlogicae-logis-source-brand-name }}"]
 
@@ -184,14 +193,20 @@ packages = ["${{ qlogicae-logis-source-brand-name }}"]
 [tool.hatch.build.targets.wheel.force-include]
 "${{ qlogicae-logis-source-brand-name }}/py.typed" = "${{ qlogicae-logis-source-brand-name }}/py.typed"
 
-
 [tool.hatch.envs.default.scripts]
+test-import-references = """
+    vulture qlogicae_logis
+"""
+
 minify = """
     pyminify \
         --in-place \
+        --prefer-single-line \
+        --rename-globals \
         --remove-debug \
         --remove-asserts \
         --remove-literal-statements \
+        --remove-class-attribute-annotations \
         ${{ qlogicae-logis-source-brand-name }}/v3
 """
 test-lint = """

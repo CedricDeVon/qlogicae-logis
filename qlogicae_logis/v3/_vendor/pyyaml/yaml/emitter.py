@@ -63,7 +63,7 @@ class Emitter:
 
         # Contexts.
         self.root_context = False
-        self.sequence_context = False
+        # self.sequence_context = False
         self.mapping_context = False
         self.simple_key_context = False
 
@@ -233,7 +233,7 @@ class Emitter:
     def expect_node(self, root=False, sequence=False, mapping=False,
             simple_key=False):
         self.root_context = root
-        self.sequence_context = sequence
+        # self.sequence_context = sequence
         self.mapping_context = mapping
         self.simple_key_context = simple_key
         if isinstance(self.event, AliasEvent):
@@ -701,7 +701,7 @@ class Emitter:
                 if (ch == '\x85' or '\xA0' <= ch <= '\uD7FF'
                         or '\uE000' <= ch <= '\uFFFD'
                         or '\U00010000' <= ch < '\U0010ffff') and ch != '\uFEFF':
-                    unicode_characters = True
+                    # unicode_characters = True
                     if not self.allow_unicode:
                         special_characters = True
                 else:

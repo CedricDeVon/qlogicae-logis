@@ -62,9 +62,9 @@ class DiskCacheStorageManager:
 
     def __exit__(
         self,
-        exc_type: object,
-        exc_value: object,
-        traceback: object,
+        # exc_type: object,
+        # exc_value: object,
+        # traceback: object,
     ) -> None:
         self.close()
 
@@ -79,9 +79,9 @@ class DiskCacheStorageManager:
 
             self._database = None
 
-    @property
-    def is_open(self) -> bool:
-        return self._database is not None
+    # @property
+    # def is_open(self) -> bool:
+    #     return self._database is not None
 
     @property
     def database_path(self) -> str:
@@ -321,13 +321,13 @@ class DiskCacheStorageManager:
             self.key_encoding,
         )
 
-    def _decode_key(
-        self,
-        key_path: bytes,
-    ) -> str:
-        return key_path.decode(
-            self.key_encoding,
-        )
+    # def _decode_key(
+    #     self,
+    #     key_path: bytes,
+    # ) -> str:
+    #     return key_path.decode(
+    #         self.key_encoding,
+    #     )
 
     def _serialize(
         self,
@@ -447,69 +447,69 @@ class DiskCacheStorageManager:
             (key_path,),
         )[key_path]
 
-    def is_key_expired(
-        self,
-        key_paths: tuple[str, ...],
-    ) -> dict[str, bool | None]:
-        database = self._require_database()
-        current_time = _time.time()
-        result: dict[str, bool | None] = {}
+    # def is_key_expired(
+    #     self,
+    #     key_paths: tuple[str, ...],
+    # ) -> dict[str, bool | None]:
+    #     database = self._require_database()
+    #     current_time = _time.time()
+    #     result: dict[str, bool | None] = {}
 
-        for key_path in key_paths:
-            encoded_key = self._encode_key(
-                key_path,
-            )
+    #     for key_path in key_paths:
+    #         encoded_key = self._encode_key(
+    #             key_path,
+    #         )
 
-            if encoded_key not in database:
-                result[key_path] = None
-                continue
+    #         if encoded_key not in database:
+    #             result[key_path] = None
+    #             continue
 
-            try:
-                item = self._deserialize(
-                    database[encoded_key],
-                )
-            except Exception:
-                if self.auto_remove_invalid:
-                    del database[encoded_key]
+    #         try:
+    #             item = self._deserialize(
+    #                 database[encoded_key],
+    #             )
+    #         except Exception:
+    #             if self.auto_remove_invalid:
+    #                 del database[encoded_key]
 
-                result[key_path] = None
-                continue
+    #             result[key_path] = None
+    #             continue
 
-            if not isinstance(item, dict):
-                if self.auto_remove_invalid:
-                    del database[encoded_key]
+    #         if not isinstance(item, dict):
+    #             if self.auto_remove_invalid:
+    #                 del database[encoded_key]
 
-                result[key_path] = None
-                continue
+    #             result[key_path] = None
+    #             continue
 
-            created_at = item.get(
-                "created_at",
-            )
+    #         created_at = item.get(
+    #             "created_at",
+    #         )
 
-            if not isinstance(
-                created_at,
-                (int, float),
-            ):
-                if self.auto_remove_invalid:
-                    del database[encoded_key]
+    #         if not isinstance(
+    #             created_at,
+    #             (int, float),
+    #         ):
+    #             if self.auto_remove_invalid:
+    #                 del database[encoded_key]
 
-                result[key_path] = None
-                continue
+    #             result[key_path] = None
+    #             continue
 
-            result[key_path] = self._is_expired(
-                float(created_at),
-                current_time,
-            )
+    #         result[key_path] = self._is_expired(
+    #             float(created_at),
+    #             current_time,
+    #         )
 
-        return result
+    #     return result
 
-    def is_item_expired(
-        self,
-        key_path: str,
-    ) -> bool | None:
-        return self.is_key_expired(
-            (key_path,),
-        )[key_path]
+    # def is_item_expired(
+    #     self,
+    #     key_path: str,
+    # ) -> bool | None:
+    #     return self.is_key_expired(
+    #         (key_path,),
+    #     )[key_path]
 
     def get_many_values(
         self,
@@ -620,54 +620,54 @@ class DiskCacheStorageManager:
 
         return True
 
-    def remove_expired_values(self) -> int:
-        database = self._require_database()
-        current_time = _time.time()
-        removed = 0
+    # def remove_expired_values(self) -> int:
+    #     database = self._require_database()
+    #     current_time = _time.time()
+    #     removed = 0
 
-        for encoded_key in tuple(database.keys()):
-            try:
-                item = self._deserialize(
-                    database[encoded_key],
-                )
-            except Exception:
-                if self.auto_remove_invalid:
-                    del database[encoded_key]
-                    removed += 1
+    #     for encoded_key in tuple(database.keys()):
+    #         try:
+    #             item = self._deserialize(
+    #                 database[encoded_key],
+    #             )
+    #         except Exception:
+    #             if self.auto_remove_invalid:
+    #                 del database[encoded_key]
+    #                 removed += 1
 
-                continue
+    #             continue
 
-            if not isinstance(item, dict):
-                if self.auto_remove_invalid:
-                    del database[encoded_key]
-                    removed += 1
+    #         if not isinstance(item, dict):
+    #             if self.auto_remove_invalid:
+    #                 del database[encoded_key]
+    #                 removed += 1
 
-                continue
+    #             continue
 
-            created_at = item.get(
-                "created_at",
-            )
+    #         created_at = item.get(
+    #             "created_at",
+    #         )
 
-            if not isinstance(
-                created_at,
-                (int, float),
-            ):
-                if self.auto_remove_invalid:
-                    del database[encoded_key]
-                    removed += 1
+    #         if not isinstance(
+    #             created_at,
+    #             (int, float),
+    #         ):
+    #             if self.auto_remove_invalid:
+    #                 del database[encoded_key]
+    #                 removed += 1
 
-                continue
+    #             continue
 
-            if self._is_expired(
-                float(created_at),
-                current_time,
-            ):
-                del database[encoded_key]
-                removed += 1
+    #         if self._is_expired(
+    #             float(created_at),
+    #             current_time,
+    #         ):
+    #             del database[encoded_key]
+    #             removed += 1
 
-        self._sync_database(database)
+    #     self._sync_database(database)
 
-        return removed
+    #     return removed
 
     def reorganize(self) -> bool:
         database = self._require_database()
@@ -683,55 +683,55 @@ class DiskCacheStorageManager:
 
         return True
 
-    def display_many_items(
-        self,
-        key_paths: tuple[str, ...],
-    ) -> bool:
-        values = self.get_many_values(
-            key_paths,
-        )
+    # def display_many_items(
+    #     self,
+    #     key_paths: tuple[str, ...],
+    # ) -> bool:
+    #     values = self.get_many_values(
+    #         key_paths,
+    #     )
 
-        for key_path, value in values.items():
-            print(
-                {
-                    "key": key_path,
-                    "value": value,
-                },
-            )
+    #     for key_path, value in values.items():
+    #         print(
+    #             {
+    #                 "key": key_path,
+    #                 "value": value,
+    #             },
+    #         )
 
-        return True
+    #     return True
 
-    def display_one_item(
-        self,
-        key_path: str,
-    ) -> bool:
-        return self.display_many_items(
-            (key_path,),
-        )
+    # def display_one_item(
+    #     self,
+    #     key_path: str,
+    # ) -> bool:
+    #     return self.display_many_items(
+    #         (key_path,),
+    #     )
 
-    def display_all_items(self) -> bool:
-        database = self._require_database()
-        current_time = _time.time()
+    # def display_all_items(self) -> bool:
+    #     database = self._require_database()
+    #     current_time = _time.time()
 
-        for encoded_key in tuple(database.keys()):
-            key_path = self._decode_key(
-                encoded_key,
-            )
+    #     for encoded_key in tuple(database.keys()):
+    #         key_path = self._decode_key(
+    #             encoded_key,
+    #         )
 
-            item = self._read_item(
-                database,
-                encoded_key,
-                current_time,
-            )
+    #         item = self._read_item(
+    #             database,
+    #             encoded_key,
+    #             current_time,
+    #         )
 
-            if item is None:
-                continue
+    #         if item is None:
+    #             continue
 
-            print(
-                {
-                    "key": key_path,
-                    "value": item["value"],
-                },
-            )
+    #         print(
+    #             {
+    #                 "key": key_path,
+    #                 "value": item["value"],
+    #             },
+    #         )
 
-        return True
+    #     return True

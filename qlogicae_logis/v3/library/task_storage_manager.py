@@ -39,34 +39,34 @@ class TaskStorageManager:
             )
         )
 
-    def read_tasks(self) -> dict[str, Any]:
-        return self._tasks
+    # def read_tasks(self) -> dict[str, Any]:
+    #     return self._tasks
 
-    def read_task(self, name: str) -> Any:
-        if not name:
-            return {}
+    # def read_task(self, name: str) -> Any:
+    #     if not name:
+    #         return {}
 
-        return  self._tasks[name]
+    #     return  self._tasks[name]
 
-    def write_task(self, name: str, value: dict[str, Any]) -> None:
-        if not name or not value:
-            return
+    # def write_task(self, name: str, value: dict[str, Any]) -> None:
+    #     if not name or not value:
+    #         return
 
-        self._tasks[name] = value
+    #     self._tasks[name] = value
 
-    def write_tasks(self, value: dict[str, Any]) -> None:
-        if not value:
-            return
+    # def write_tasks(self, value: dict[str, Any]) -> None:
+    #     if not value:
+    #         return
 
-        self._tasks = value
+    #     self._tasks = value
 
-    def remove_task(self, name: str) -> bool:
-        if not name:
-            return False
+    # def remove_task(self, name: str) -> bool:
+    #     if not name:
+    #         return False
 
-        del self._tasks[name]
+    #     del self._tasks[name]
 
-        return True
+    #     return True
 
     def is_executed(
         self,
@@ -78,8 +78,8 @@ class TaskStorageManager:
 
         return value
 
-    def reset_all_task_executed(self) -> bool:
-        for key, _item in self._tasks.items():
-            self._tasks[key] = False
+    # def reset_all_task_executed(self) -> bool:
+    #     for key, _item in self._tasks.items():
+    #         self._tasks[key] = False
 
-        return True
+    #     return True

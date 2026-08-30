@@ -7,41 +7,9 @@ workspace:
 
 workflow:
   selection:      
-    demo-1:
-      filesystem-path:
-        value: ${{ qlogicae-cor-python-selection-project-filesystem-path }}
-
-      scripts:
-        - run:
-            value: "echo 'hello'"
-
-    demo:
-      filesystem-path:
-        value: ${{ qlogicae-cor-python-selection-project-filesystem-path }}
-
-      alias:
-        dm:
-
-      scripts:
-        - run:
-            value: "echo 'start'"
-
-        - run:
-            value: demo-1
-
-        - run:
-            value: "echo 'end'"
-
     qlogicae-cor-python-quality-assurance:
       filesystem-path:
         value: ${{ qlogicae-cor-python-selection-project-filesystem-path }}
-      
-      # operating-system:
-      #   exclude:
-      #     Linux-x86_64:
-
-      #   include:
-      #     Linux-x86_64:
       
       scripts:
         - run:
@@ -75,14 +43,7 @@ workflow:
         
       scripts:
         - run:
-            value: qlogicae-cor-python-pre-workflow
-
-        - run:
             value: qlogicae-cor-python-pip-deployment          
-
-        - run:
-            value: qlogicae-cor-python-post-workflow
-
 
     qlogicae-cor-python-test-lint:
       filesystem-path:
@@ -226,40 +187,24 @@ workflow:
         - run:
             value: qlogicae-cor-python-archive
 
-        - run:
-            value: qlogicae-cor-python-cleanup
-
-
     qlogicae-cor-python-archive:
       filesystem-path:
         value: ${{ qlogicae-cor-python-selection-project-filesystem-path }}
 
       scripts:          
         - run:
-            value: command-filesystem-move         
+            value: command-filesystem-copy
           argument:
             source_path: output
-            target_path: ${{ qlogicae-cor-python-archive-filesystem-path }}
-
-
-    qlogicae-cor-python-cleanup:
-      filesystem-path:
-        value: ${{ qlogicae-cor-python-selection-project-filesystem-path }}
-
-      scripts:
-        - run:
-            value: command-filesystem-clean-path
-          argument:
             target_paths:
-              - dist
-              - output
+              - ${{ qlogicae-cor-python-archive-filesystem-path }}
 
 macros:  
   static:
     file:
       targets:
         qlogicae-cor-python-current-version-number:
-          value: 2.1.0
+          value: 2.2.1
 
         qlogicae-cor-python-current-version-label:
           value: python-v${{ qlogicae-cor-python-current-version-number }}

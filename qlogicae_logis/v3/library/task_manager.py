@@ -58,7 +58,7 @@ class TaskManager:
     __slots__ = (
         "_import_manager",
         "_database_manager",
-        "_task_storage_manager",
+        # "_task_storage_manager",
         "_value_cache_database_manager",
         "_persistent_cache_database_manager",
     )
@@ -86,11 +86,11 @@ class TaskManager:
                 _PersistentCacheDatabasManager
             )
         )
-        self._task_storage_manager = (
-            _ImportManager.read_singleton(
-                _TaskStorageManager
-            )
-        )
+        # self._task_storage_manager = (
+        #     _ImportManager.read_singleton(
+        #         _TaskStorageManager
+        #     )
+        # )
 
     @_DecoratorManager.single_task_decorator
     def run_task_system_values(self) -> bool:
@@ -1074,11 +1074,11 @@ class TaskManager:
 
         return True
 
-    @_DecoratorManager.multi_task_decorator
-    def run_task_task_storage_shutdown(self) -> bool:
-        self._task_storage_manager.reset_all_task_executed()
+    # @_DecoratorManager.multi_task_decorator
+    # def run_task_task_storage_shutdown(self) -> bool:
+    #     self._task_storage_manager.reset_all_task_executed()
 
-        return True
+    #     return True
 
     @_DecoratorManager.multi_task_decorator
     def run_task_system_setup(self) -> bool:
@@ -1167,12 +1167,12 @@ class TaskManager:
 
         return True
 
-    @_DecoratorManager.multi_task_decorator
-    def run_task_reboot_common_setup(
-        self,
-    ) -> bool:
-        self.run_task_full_shutdown()
-        self.run_task_task_storage_shutdown()
-        self.run_task_common_setup()
+    # @_DecoratorManager.multi_task_decorator
+    # def run_task_reboot_common_setup(
+    #     self,
+    # ) -> bool:
+    #     self.run_task_full_shutdown()
+    #     self.run_task_task_storage_shutdown()
+    #     self.run_task_common_setup()
 
-        return True
+    #     return True

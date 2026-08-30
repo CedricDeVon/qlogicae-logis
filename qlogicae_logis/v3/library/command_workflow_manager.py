@@ -200,6 +200,10 @@ class CommandWorkflowManager:
                 value=workflow_selection_delay_value
             )
 
+            self._task_manager.navigate_via_filesystem_path(
+                workflow_selection_filesystem_path_value
+            )
+
             for workflow_selection_script in workflow_selection_scripts:
                 if not workflow_selection_script:
                     continue
@@ -256,13 +260,23 @@ class CommandWorkflowManager:
                     if workflow_selection_script_delay_value >= 0
                     else 0
                 )
+                workflow_selection_script_filesystem_path_value = (
+                    self._value_cache_database_manager
+                        .read_object_filesystem_path_value(
+                            workflow_selection_script
+                        )
+                )
+                if not workflow_selection_script_filesystem_path_value:
+                    workflow_selection_script_filesystem_path_value = (
+                        workflow_selection_filesystem_path_value
+                    )
 
                 self._import_manager.time_delay(
                     value=workflow_selection_script_delay_value
                 )
 
                 self._task_manager.navigate_via_filesystem_path(
-                    workflow_selection_filesystem_path_value
+                    workflow_selection_script_filesystem_path_value
                 )
 
                 if workflow_selection_script_run_value in commands:

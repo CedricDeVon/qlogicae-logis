@@ -72,7 +72,6 @@ class CommandDebugManager:
         "_task_manager",
         "_import_manager",
         "_database_manager",
-        "_decorator_manager",
         "_value_cache_database_manager",
         "_display_manager",
         "_persistent_cache_database_manager",
@@ -85,11 +84,6 @@ class CommandDebugManager:
             _CommandStorageManager
         )
 
-        self._decorator_manager = (
-            _ImportManager.read_singleton(
-                _DecoratorManager
-            )
-        )
         self._database_manager = (
             _ImportManager.read_singleton(
                 _DatabaseManager

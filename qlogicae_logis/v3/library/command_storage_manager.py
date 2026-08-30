@@ -34,19 +34,19 @@ class CommandStorageManager:
     def read_commands(self) -> dict[str, Any]:
         return self._commands
 
-    def write_commands(self, value: dict[str, Any]) -> None:
-        if not value:
-            return
+    # def write_commands(self, value: dict[str, Any]) -> None:
+    #     if not value:
+    #         return
 
-        self._commands = value
+    #     self._commands = value
 
-    def add_command(self, name: str, callback: Any) -> bool:
-        if not name or not callback:
-            return False
+    # def add_command(self, name: str, callback: Any) -> bool:
+    #     if not name or not callback:
+    #         return False
 
-        self._commands[name] = callback
+    #     self._commands[name] = callback
 
-        return True
+    #     return True
 
     def add_commands(self, items: Any) -> bool:
         if not items:
@@ -68,22 +68,22 @@ class CommandStorageManager:
 
         return True
 
-    def read_command(self, name: str) -> Any:
-        if not name:
-            return False
+    # def read_command(self, name: str) -> Any:
+    #     if not name:
+    #         return False
 
-        return  self._commands[name]
+    #     return  self._commands[name]
 
-    def write_command(self, name: str, value: dict[str, Any]) -> None:
-        if not name or not value:
-            return
+    # def write_command(self, name: str, value: dict[str, Any]) -> None:
+    #     if not name or not value:
+    #         return
 
-        self._commands[name] = value
+    #     self._commands[name] = value
 
-    def remove_command(self, name: str) -> bool:
-        if not name:
-            return False
+    # def remove_command(self, name: str) -> bool:
+    #     if not name:
+    #         return False
 
-        del self._commands[name]
+    #     del self._commands[name]
 
-        return True
+    #     return True
