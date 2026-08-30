@@ -202,7 +202,6 @@ minify = """
     pyminify \
         --in-place \
         --prefer-single-line \
-        --rename-globals \
         --remove-debug \
         --remove-asserts \
         --remove-literal-statements \
