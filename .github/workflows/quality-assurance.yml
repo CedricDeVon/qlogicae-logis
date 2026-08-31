@@ -99,7 +99,7 @@ jobs:
             working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/about/version/suite/help"
 
           - command: "qlogicae-logis about version"
-            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/about/version/suite/common"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/about/version/suite/empty"
 
         python-version:
           - "3.14"
@@ -166,7 +166,7 @@ jobs:
             working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/workflow/list/selections/suite/help"
 
           - command: "qlogicae-logis workflow list selections"
-            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/workflow/list/selections/suite/common"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/workflow/list/selections/suite/empty"
 
         python-version:
           - "3.14"
@@ -234,7 +234,7 @@ jobs:
             working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/template/list/selections/suite/help"
 
           - command: "qlogicae-logis template list selections"
-            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/template/list/selections/suite/common"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/template/list/selections/suite/empty"
 
         python-version:
           - "3.14"
@@ -302,7 +302,7 @@ jobs:
             working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/debug/view/value-cache/suite/help"
 
           - command: "qlogicae-logis debug view value-cache"
-            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/debug/view/value-cache/suite/common"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/debug/view/value-cache/suite/empty"
 
           - command: "qlogicae-logis debug view disk-cache -h"
             working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/debug/view/suite/help"
@@ -311,7 +311,7 @@ jobs:
             working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/debug/view/disk-cache/suite/help"
 
           - command: "qlogicae-logis debug view disk-cache"
-            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/debug/view/disk-cache/suite/common"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/debug/view/disk-cache/suite/empty"
 
         python-version:
           - "3.14"
@@ -398,7 +398,7 @@ jobs:
             working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/filesystem/list/clean/included/suite/help"
 
           - command: "qlogicae-logis filesystem list clean included"
-            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/filesystem/list/clean/included/suite/common"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/filesystem/list/clean/included/suite/empty"
 
           - command: "qlogicae-logis filesystem list clean excluded -h"
             working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/filesystem/list/clean/suite/help"
@@ -407,7 +407,7 @@ jobs:
             working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/filesystem/list/clean/excluded/suite/help"
 
           - command: "qlogicae-logis filesystem list clean excluded"
-            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/filesystem/list/clean/excluded/suite/common"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/filesystem/list/clean/excluded/suite/empty"
 
         python-version:
           - "3.14"
@@ -494,7 +494,7 @@ jobs:
             working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/workspace/list/exports/suite/help"
 
           - command: "qlogicae-logis workspace list exports"
-            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/workspace/list/exports/suite/common"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/workspace/list/exports/suite/empty"
 
         python-version:
           - "3.14"
@@ -521,7 +521,7 @@ jobs:
       - name: Run '${{ matrix.targets.command }}' Command
         run: ${{ matrix.targets.command }}
 
-        
+
 
   v3-type-check-testing:
     name: "Python ${{ matrix.python-version }} | V3 | Type Check Testing"
