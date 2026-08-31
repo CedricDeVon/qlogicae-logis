@@ -46,6 +46,8 @@ jobs:
           - "3.12"
 
     steps:
+      - uses: actions/checkout@v4
+      
       - uses: ./.github/actions/setup-e2e-testing-environment
         with:
           python-version: ${{ matrix.python-version }}
@@ -95,6 +97,8 @@ jobs:
           - "3.12"
 
     steps:
+      - uses: actions/checkout@v4
+      
       - uses: ./.github/actions/setup-e2e-testing-environment
         with:
           python-version: ${{ matrix.python-version }}
@@ -150,6 +154,8 @@ jobs:
           - "3.12"
 
     steps:
+      - uses: actions/checkout@v4
+      
       - uses: ./.github/actions/setup-e2e-testing-environment
         with:
           python-version: ${{ matrix.python-version }}
@@ -206,6 +212,8 @@ jobs:
           - "3.12"
 
     steps:
+      - uses: actions/checkout@v4
+      
       - uses: ./.github/actions/setup-e2e-testing-environment
         with:
           python-version: ${{ matrix.python-version }}
@@ -271,6 +279,8 @@ jobs:
           - "3.12"
 
     steps:
+      - uses: actions/checkout@v4
+      
       - uses: ./.github/actions/setup-e2e-testing-environment
         with:
           python-version: ${{ matrix.python-version }}
@@ -355,6 +365,8 @@ jobs:
           - "3.12"
 
     steps:
+      - uses: actions/checkout@v4
+      
       - uses: ./.github/actions/setup-e2e-testing-environment
         with:
           python-version: ${{ matrix.python-version }}
@@ -430,6 +442,8 @@ jobs:
           - "3.12"
 
     steps:
+      - uses: actions/checkout@v4
+      
       - uses: ./.github/actions/setup-e2e-testing-environment
         with:
           python-version: ${{ matrix.python-version }}
@@ -458,7 +472,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      
+
       - uses: ./.github/actions/setup-hatch-environment
         with:
           python-version: ${{ matrix.python-version }}
@@ -487,7 +501,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      
+
       - uses: ./.github/actions/setup-hatch-environment
         with:
           python-version: ${{ matrix.python-version }}
@@ -516,7 +530,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      
+
       - uses: ./.github/actions/setup-hatch-environment
         with:
           python-version: ${{ matrix.python-version }}
