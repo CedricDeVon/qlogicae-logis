@@ -9,8 +9,6 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - uses: actions/checkout@v4
-
     - name: Setup Python
       uses: actions/setup-python@v5
       with:
@@ -29,3 +27,7 @@ runs:
     - name: Create Hatch environment
       shell: bash
       run: hatch env create
+
+    - name: Add venv to PATH
+      shell: bash
+      run: echo "$PWD/.venv/bin" >> "$GITHUB_PATH"
