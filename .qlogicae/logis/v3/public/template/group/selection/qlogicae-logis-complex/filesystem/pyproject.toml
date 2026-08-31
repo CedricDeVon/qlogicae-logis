@@ -244,6 +244,10 @@ github-workflow-setup = """
     mkdir -p ${{ qlogicae-logis-output-test-unit-filesystem-path }} &&
     mkdir -p ${{ qlogicae-logis-output-test-benchmark-filesystem-path }}
 """
+github-workflow-test-import-references = """
+    hatch run github-workflow-setup &&
+    hatch run test-import-references
+"""
 github-workflow-test-type-check = """
     hatch run github-workflow-setup &&
     hatch run test-type-check

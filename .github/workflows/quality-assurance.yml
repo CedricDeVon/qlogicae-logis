@@ -12,16 +12,17 @@ defaults:
     shell: bash
 
 jobs:
-  v3-wait:
+  v3-pypi-package-upload-wait:
+    name: "V3 | PyPi Package Upload | Wait"
     runs-on: ubuntu-latest
     steps:
-      - name: PyPi Wait
+      - name: Forced Delay
         run: sleep 30
 
   v3-e2e-testing-command-help:
     name: "V3 | E2E Testing | Command | 'qlogicae-logis ${{ matrix.targets.command }} ${{ matrix.arguments }}'"
     runs-on: ubuntu-latest
-    needs: v3-wait
+    needs: v3-pypi-package-upload-wait
 
     defaults:
       run:
@@ -162,13 +163,13 @@ jobs:
       - name: Install Package
         run: pip install qlogicae-logis
 
-      - name: Run 'qlogicae-logis ${{ matrix.targets.command }} ${{ matrix.arguments }}
+      - name: Run 'qlogicae-logis ${{ matrix.targets.command }} ${{ matrix.arguments }}' Command
         run: qlogicae-logis ${{ matrix.targets.command }} ${{ matrix.arguments }}
 
   v3-type-check-testing:
-    name: "V3 | Type Check"
+    name: "V3 | Type Check Testing"
     runs-on: ubuntu-latest
-    needs: v3-wait
+    needs: v3-pypi-package-upload-wait
 
     defaults:
       run:
@@ -201,13 +202,13 @@ jobs:
       - name: Create Hatch environment
         run: hatch env create
 
-      - name: Run Scripts        
+      - name: Run Script        
         run: hatch run github-workflow-test-type-check
 
   v3-lint-testing:
-    name: "V3 | Lint"
+    name: "V3 | Lint Testing"
     runs-on: ubuntu-latest
-    needs: v3-wait
+    needs: v3-pypi-package-upload-wait
 
     defaults:
       run:
@@ -240,5 +241,44 @@ jobs:
       - name: Create Hatch environment
         run: hatch env create
 
-      - name: Run Scripts        
+      - name: Run Script        
         run: hatch run github-workflow-test-lint
+
+  v3-import-reference-testing:
+    name: "V3 | Import Reference Testing"
+    runs-on: ubuntu-latest
+    needs: v3-pypi-package-upload-wait
+
+    defaults:
+      run:
+        working-directory: .
+
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version:
+          - "3.14"
+          - "3.13"
+          - "3.12"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install Hatch
+        run: |
+          python -m pip install --upgrade pip
+          pip install hatch
+
+      - name: Install Dev Dependencies
+        run: python3 -m pip install -r requirements.txt
+
+      - name: Create Hatch environment
+        run: hatch env create
+
+      - name: Run Script
+        run: hatch run github-workflow-test-import-references

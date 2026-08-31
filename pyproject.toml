@@ -244,6 +244,10 @@ github-workflow-setup = """
     mkdir -p output/test/unit &&
     mkdir -p output/test/benchmark
 """
+github-workflow-test-import-references = """
+    hatch run github-workflow-setup &&
+    hatch run test-import-references
+"""
 github-workflow-test-type-check = """
     hatch run github-workflow-setup &&
     hatch run test-type-check
