@@ -141,8 +141,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Navigate to Suite
-
       - name: PyPi Wait
         run: sleep 30
 
