@@ -13,7 +13,7 @@ defaults:
 
 jobs:
   v3-e2e-testing-command-help:
-    name: V3 | E2E Testing | Command | 'qlogicae-logis ${{ matrix.targets.command }} ${{ matrix.arguments }}'
+    name: "V3 | E2E Testing | Command | 'qlogicae-logis ${{ matrix.targets.command }} ${{ matrix.arguments }}'"
     runs-on: ubuntu-latest
 
     defaults:
@@ -162,7 +162,7 @@ jobs:
         run: qlogicae-logis ${{ matrix.targets.command }} ${{ matrix.arguments }}
 
   v3-type-check-testing:
-      name: V3 | Type Check
+      name: "V3 | Type Check"
       runs-on: ubuntu-latest
 
       defaults:
@@ -200,7 +200,7 @@ jobs:
           run: hatch run github-workflow-test-type-check
 
     v3-lint-testing:
-        name: V3 | Lint
+        name: "V3 | Lint"
         runs-on: ubuntu-latest
 
         defaults:
