@@ -191,8 +191,6 @@ jobs:
       - name: Run '${{ matrix.targets.command }}' Command
         run: ${{ matrix.targets.command }}
 
-
-
   v3-e2e-testing-command-template:
     name: "Python ${{ matrix.python-version }} | V3 | E2E Testing | Command | '${{ matrix.targets.command }}'"
     runs-on: ubuntu-latest
