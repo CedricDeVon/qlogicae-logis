@@ -44,6 +44,7 @@ jobs:
           - "3.14"
           - "3.13"
           - "3.12"
+          - "3.11"
 
     steps:
       - uses: actions/checkout@v4
@@ -95,6 +96,7 @@ jobs:
           - "3.14"
           - "3.13"
           - "3.12"
+          - "3.11"
 
     steps:
       - uses: actions/checkout@v4
@@ -152,6 +154,7 @@ jobs:
           - "3.14"
           - "3.13"
           - "3.12"
+          - "3.11"
 
     steps:
       - uses: actions/checkout@v4
@@ -210,6 +213,7 @@ jobs:
           - "3.14"
           - "3.13"
           - "3.12"
+          - "3.11"
 
     steps:
       - uses: actions/checkout@v4
@@ -277,6 +281,7 @@ jobs:
           - "3.14"
           - "3.13"
           - "3.12"
+          - "3.11"
 
     steps:
       - uses: actions/checkout@v4
@@ -363,6 +368,7 @@ jobs:
           - "3.14"
           - "3.13"
           - "3.12"
+          - "3.11"
 
     steps:
       - uses: actions/checkout@v4
@@ -440,6 +446,7 @@ jobs:
           - "3.14"
           - "3.13"
           - "3.12"
+          - "3.11"
 
     steps:
       - uses: actions/checkout@v4
@@ -469,6 +476,7 @@ jobs:
           - "3.14"
           - "3.13"
           - "3.12"
+          - "3.11"
 
     steps:
       - uses: actions/checkout@v4
@@ -498,6 +506,7 @@ jobs:
           - "3.14"
           - "3.13"
           - "3.12"
+          - "3.11"
 
     steps:
       - uses: actions/checkout@v4
@@ -527,6 +536,7 @@ jobs:
           - "3.14"
           - "3.13"
           - "3.12"
+          - "3.11"
 
     steps:
       - uses: actions/checkout@v4
