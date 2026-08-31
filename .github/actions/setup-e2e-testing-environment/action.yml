@@ -5,6 +5,12 @@ inputs:
   python-version:
     description: 'Python version to set up'
     required: true
+  source-path:
+    description: 'Path to the source folder to copy'
+    required: true
+  target-path:
+    description: 'Path to the target working directory to copy into'
+    required: true
 
 runs:
   using: 'composite'
@@ -24,6 +30,13 @@ runs:
         source .venv/bin/activate
         pip install qlogicae-logis
 
+    - name: Setup Template
+      shell: bash
+      run: |
+        mkdir -p "${{ inputs.target-path }}"
+        cp -r "${{ inputs.source-path }}" "${{ inputs.target-path }}"
+
     - name: Add venv to PATH
       shell: bash
       run: echo "$PWD/.venv/bin" >> "$GITHUB_PATH"
+

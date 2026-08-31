@@ -1,0 +1,19 @@
+workspace:
+  group:
+    selection:
+      demo-main-group:
+        alias:
+          demo-main-group-alias-1:
+          demo-main-group-alias-2:
+
+        targets:
+          root:          
+          demo-sub-group:
+
+      demo-sub-group:
+        alias:
+          demo-sub-group-alias-1:
+          demo-sub-group-alias-2:
+
+        targets:
+          demo-project-1:

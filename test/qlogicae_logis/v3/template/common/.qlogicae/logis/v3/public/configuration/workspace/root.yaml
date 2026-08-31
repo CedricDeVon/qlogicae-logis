@@ -16,20 +16,12 @@ command:
           - filesystem-path:
               value: ${{ root-filesystem-path }}/.venv
 
-          - filesystem-path:
-              value: ${{ root-filesystem-path }}/others
-
-          - filesystem-path:
-              value: ${{ root-filesystem-path }}/project
-
-          - filesystem-path:
-              value: ${{ root-filesystem-path }}/qlogicae_logis
-
       include:
         selection:
-          root:
+          clean-target:
             alias:
-              benchmarks:
+              clean-target-1:
+              clean-target-2:
 
             operating-system:
               exclude:
@@ -56,17 +48,19 @@ command:
           value: false
 
     group:
-      custom-group:
+      export-group:
         alias:
-          cg:
+          export-group-alias-1:
+          export-group-alias-2:
 
         selection:
-          custom-selection:
+          export-selection:
 
     selection:
-      custom-selection:
+      export-selection:
         alias:
-          cs:
+          export-selection-alias-1:
+          export-selection-alias-2:
 
         input:    
           include:
@@ -100,7 +94,7 @@ command:
         output:
           targets:
             - filesystem-path:
-                value: ${{ root-filesystem-path }}/abc
+                value: ${{ root-filesystem-path }}/exports
 
         compression:
           format:
@@ -165,9 +159,9 @@ log:
     is-verbose: 
       value: true
 
-    # targets:
-    #   - filesystem-path:
-    #       value: output.log
+    targets:
+      - filesystem-path:
+          value: ${{ root-filesystem-path }}/output.log
 
   console:
     is-enabled:
@@ -225,19 +219,8 @@ macros:
     file:
       targets:
         main-author-full-name:
-          value: Vaughn Cedric L. Araneta
+          value: John Smith
 
           alias:
-            author:
-
-        main-author-base-email:
-          value: vaughncedriclipardoaraneta@gmail.com
-        
-        main-company-display-name:
-          value: QLogicae
-
-        main-company-base-name:
-          value: qlogicae
-        
-        main-company-base-logo-filesystem-path:
-          value: ./project/asset/${{ main-company-base-name }}1.png
+            main-author-full-name-alias-1:
+            main-author-full-name-alias-2:
