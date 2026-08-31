@@ -516,7 +516,7 @@ class ImportManager:
             values=kwargs.get(
                 "values",
                 {}
-            ),
+            ) or {},
         )
 
         return True

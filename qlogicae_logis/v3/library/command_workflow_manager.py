@@ -140,7 +140,7 @@ class CommandWorkflowManager:
                 data_workflow.get(
                     workflow_target,
                     {}
-                )
+                ) or {}
             )
 
             if not workflow_selection:
@@ -337,7 +337,7 @@ class CommandWorkflowManager:
             )
             return False
 
-        targets = kwargs.get('targets', [])
+        targets = (kwargs.get('targets', []) or [])
         if not targets or len(targets) < 1:
             self._import_manager.log_cache_warning_to_file(
                 message="no targets selected"

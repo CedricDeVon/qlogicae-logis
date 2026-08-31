@@ -240,7 +240,7 @@ class CommandFilesystemManager:
             )
             return False
 
-        target_paths = kwargs.get("target_paths", tuple())
+        target_paths = kwargs.get("target_paths", tuple()) or tuple()
         if len(target_paths) < 1:
             self._import_manager.log_cache_warning_to_file(
                 message="no target paths"
@@ -274,7 +274,7 @@ class CommandFilesystemManager:
             )
             return False
 
-        targets = kwargs.get("targets", tuple())
+        targets = kwargs.get("targets", tuple()) or tuple()
         selections = (
             self._value_cache_database_manager
                 .read_configuration_workspace_data_command_filesystem_clean_include_selection()
@@ -306,7 +306,7 @@ class CommandFilesystemManager:
             paths = (
                 self._value_cache_database_manager
                     .read_object_filesystem_pattern_values(
-                        selection.get("targets", {})
+                        selection.get("targets", {}) or {}
                     )
             )
             for path in paths:

@@ -143,7 +143,7 @@ class CommandDatabaseManager:
 
         self._task_manager.run_task_full_debug_disk_cache_setup()
 
-        key_paths = kwargs.get("key_paths", [])
+        key_paths = kwargs.get("key_paths", []) or []
         values = self._persistent_cache_database_manager.read_all_values()
 
         if len(key_paths) < 1:
@@ -174,7 +174,7 @@ class CommandDatabaseManager:
             )
             return False
 
-        key_paths = kwargs.get("key_paths", [])
+        key_paths = kwargs.get("key_paths", []) or []
 
         if len(key_paths) < 1:
             self._display_manager.display_tree_object(

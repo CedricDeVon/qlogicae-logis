@@ -1642,7 +1642,7 @@ class ValueCacheDatabaseManager:
             ),
         ) or {}
 
-        return result.get("targets", {})
+        return result.get("targets", {}) or {}
 
     # def write_configuration_workspace_data_log_file_targets(
     #     self,
@@ -1763,7 +1763,7 @@ class ValueCacheDatabaseManager:
             ),
         ) or {}
 
-        return tuple(result.get("targets", tuple()))
+        return tuple(result.get("targets", tuple())) or tuple()
 
     # def write_configuration_workspace_data_command_filesystem_clean_exclude_targets(
     #     self,
@@ -1794,7 +1794,7 @@ class ValueCacheDatabaseManager:
             ),
         ) or {}
 
-        return result.get("selection", {})
+        return result.get("selection", {}) or {}
 
     # def write_configuration_workspace_data_command_filesystem_clean_include_selection(
     #     self,
@@ -1823,7 +1823,7 @@ class ValueCacheDatabaseManager:
             ),
         ) or {}
 
-        return result.get("selection", {})
+        return result.get("selection", {}) or {}
 
     # def write_configuration_workspace_data_workspace_project_selection(
     #     self,
@@ -1850,7 +1850,7 @@ class ValueCacheDatabaseManager:
             ),
         ) or {}
 
-        return result.get("selection", {})
+        return result.get("selection", {}) or {}
 
     # def write_configuration_workspace_data_workspace_group_selection(
     #     self,
@@ -1877,7 +1877,7 @@ class ValueCacheDatabaseManager:
             ),
         ) or {}
 
-        return result.get("group", {})
+        return result.get("group", {}) or {}
 
     # def write_configuration_export_data_export_group(
     #     self,
@@ -1904,7 +1904,7 @@ class ValueCacheDatabaseManager:
             ),
         ) or {}
 
-        return result.get("selection", {})
+        return result.get("selection", {}) or {}
 
     # def write_configuration_workspace_data_export_selection(
     #     self,
@@ -2064,7 +2064,7 @@ class ValueCacheDatabaseManager:
             ),
         ) or {}
 
-        return result.get("selection", {})
+        return result.get("selection", {}) or {}
 
     # def write_configuration_workspace_data_workflow_selection(
     #     self,
@@ -2461,6 +2461,9 @@ class ValueCacheDatabaseManager:
             return outputs
 
         for value in data:
+            if not value:
+                continue
+
             outputs[value] = {
                 "value": (
                     self.read_any_value((
@@ -2483,7 +2486,7 @@ class ValueCacheDatabaseManager:
             ),
         ) or {}
 
-        return set(result.get("excluded", set()))
+        return set(result.get("excluded", set())) or set()
 
     def write_filesystem_clean_excluded(
         self,
@@ -2510,7 +2513,7 @@ class ValueCacheDatabaseManager:
             ),
         ) or {}
 
-        return result.get("included", {})
+        return result.get("included", {}) or {}
 
     def write_filesystem_clean_included(
         self,
@@ -2538,7 +2541,7 @@ class ValueCacheDatabaseManager:
             ),
         ) or {}
 
-        return result.get("group", {})
+        return result.get("group", {}) or {}
 
     def write_workspace_group(
         self,
@@ -2563,7 +2566,7 @@ class ValueCacheDatabaseManager:
             ),
         ) or {}
 
-        return result.get("project", {})
+        return result.get("project", {}) or {}
 
     def write_workspace_project(
         self,
@@ -2588,7 +2591,7 @@ class ValueCacheDatabaseManager:
             ),
         ) or {}
 
-        return result.get("default", {})
+        return result.get("default", {}) or {}
 
     def write_workspace_default(
         self,
@@ -2613,7 +2616,7 @@ class ValueCacheDatabaseManager:
             ),
         ) or {}
 
-        return result.get("all", {})
+        return result.get("all", {}) or {}
 
     # def write_workspace_all(
     #     self,
@@ -2638,7 +2641,7 @@ class ValueCacheDatabaseManager:
             ),
         ) or {}
 
-        return result.get("selection", {})
+        return result.get("selection", {}) or {}
 
     def write_export_selection(
         self,
@@ -2663,7 +2666,7 @@ class ValueCacheDatabaseManager:
             ),
         ) or {}
 
-        return result.get("group", {})
+        return result.get("group", {}) or {}
 
     def write_export_group(
         self,
@@ -2688,7 +2691,7 @@ class ValueCacheDatabaseManager:
             ),
         ) or {}
 
-        return result.get("selection", {})
+        return result.get("selection", {}) or {}
 
     def write_workflow_selection(
         self,
@@ -2937,6 +2940,9 @@ class ValueCacheDatabaseManager:
         outputs: set[str] = set()
 
         for key, _item in data.items():
+            if not key:
+                continue
+
             outputs.add(key)
 
         return outputs
@@ -2980,7 +2986,7 @@ class ValueCacheDatabaseManager:
         value: list[str] = (
             data.get("output", {})
                 .get("targets", [])
-        )
+        ) or []
 
         return value
 
@@ -2992,7 +2998,7 @@ class ValueCacheDatabaseManager:
             data.get("input", {})
                 .get("exclude", {})
                 .get("targets", [])
-        )
+        ) or []
 
         return value
 
@@ -3004,7 +3010,7 @@ class ValueCacheDatabaseManager:
             data.get("input", {})
                 .get("include", {})
                 .get("targets", [])
-        )
+        ) or []
 
         return value
 
@@ -3058,7 +3064,7 @@ class ValueCacheDatabaseManager:
     ) -> Any:
         value: Any = (
             data.get("argument", {})
-        )
+        ) or {}
 
         return value
 
@@ -3101,7 +3107,7 @@ class ValueCacheDatabaseManager:
     ) -> list[str]:
         value: list[str] = (
             data.get("scripts", [])
-        )
+        ) or []
 
         return value
 
@@ -3181,8 +3187,8 @@ class ValueCacheDatabaseManager:
         target = (
             f"{operating_system_name}-{operating_system_architecture}"
         )
-        included = data.get("include", {})
-        excluded = data.get("exclude", {})
+        included = (data.get("include", {}) or {})
+        excluded = (data.get("exclude", {}) or {})
 
         if target in excluded:
             return False

@@ -130,7 +130,7 @@ class CommandDebugManager:
     def run_command_debug_view_value_cache(self, **kwargs: Any) -> bool:
         self._task_manager.run_task_full_debug_value_cache_setup()
 
-        key_paths = kwargs.get("key_paths", [])
+        key_paths = kwargs.get("key_paths", []) or []
 
         if len(key_paths) < 1:
             self._display_manager.display_tree_object(

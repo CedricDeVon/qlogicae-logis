@@ -202,13 +202,13 @@ class CommandTemplateManager:
                 return False
 
             selection_group = (
-                data_selection_groups.get(group_target, {})
+                data_selection_groups.get(group_target, {}) or {}
             )
             if not selection_group:
                 return False
 
             selection_group_targets = (
-                set(selection_group.get("targets", {}))
+                set(selection_group.get("targets", {})) or set()
             )
 
             destination_temporary_target_filesystem_path = (
@@ -301,7 +301,7 @@ class CommandTemplateManager:
 
             selection_project = (
                 data_selection_projects
-                    .get(project_target, {})
+                    .get(project_target, {}) or {}
             )
             if not selection_project:
                 return False
@@ -379,7 +379,7 @@ class CommandTemplateManager:
             )
             return False
 
-        targets = kwargs.get("targets", ["all"])
+        targets = (kwargs.get("targets", ["all"]) or ["all"])
         if not targets or len(targets) < 1:
             targets = ["all"]
 

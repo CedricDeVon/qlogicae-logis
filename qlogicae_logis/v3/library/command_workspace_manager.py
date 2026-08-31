@@ -211,13 +211,13 @@ class CommandWorkspaceManager:
         def handle_workspace_export_selection(target: str) -> bool:
             export_selection = (
                 command_export_selection
-                    .get(target, {})
+                    .get(target, {}) or {}
             )
             if target in default_export_selection_data:
                 if not export_selection:
                     export_selection = (
                         default_export_selection_data
-                            .get(target, {})
+                            .get(target, {}) or {}
                     )
 
             export_selection_is_enabled_value = (
@@ -330,8 +330,8 @@ class CommandWorkspaceManager:
                 if not item or "input" not in item or "output" not in item:
                     continue
 
-                input_path = item.get("input", "")
-                output_path = item.get("output", "")
+                input_path = (item.get("input", "") or "")
+                output_path = (item.get("output", "") or "")
                 if not input_path or not output_path:
                     continue
 
@@ -363,7 +363,7 @@ class CommandWorkspaceManager:
         self._task_manager.run_task_filesystem_clean_exclude_setup()
         self._task_manager.run_task_filesystem_clean_include_setup()
 
-        targets = kwargs.get("targets", [])
+        targets = (kwargs.get("targets", []) or [])
         if len(targets) < 1:
             return False
 
@@ -451,8 +451,8 @@ class CommandWorkspaceManager:
 
         self._task_manager.run_task_common_setup()
 
-        input_path = kwargs.get("input_path", "")
-        output_path = kwargs.get("output_path", "")
+        input_path = (kwargs.get("input_path", "") or "")
+        output_path = (kwargs.get("output_path", "") or "")
         if not input_path or not output_path:
             return False
 
@@ -893,7 +893,7 @@ class CommandWorkspaceManager:
             selection_project_installation = (
                 data_selection_projects
                     .get(target, {})
-                    .get("installation", {})
+                    .get("installation", {}) or {}
             )
             if not selection_project_installation:
                 return False
@@ -1022,7 +1022,7 @@ class CommandWorkspaceManager:
             )
             return False
 
-        targets = kwargs.get("targets", [])
+        targets = (kwargs.get("targets", []) or [])
         if not targets or len(targets) < 1:
             self._import_manager.log_cache_warning_to_file(
                 message="no targets selected"
