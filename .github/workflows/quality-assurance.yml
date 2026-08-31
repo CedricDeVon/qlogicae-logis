@@ -162,77 +162,77 @@ jobs:
         run: qlogicae-logis ${{ matrix.targets.command }} ${{ matrix.arguments }}
 
   v3-type-check-testing:
-      name: "V3 | Type Check"
-      runs-on: ubuntu-latest
+    name: "V3 | Type Check"
+    runs-on: ubuntu-latest
 
-      defaults:
-        run:
-          working-directory: .
+    defaults:
+      run:
+        working-directory: .
 
-      strategy:
-        fail-fast: false
-        matrix:
-          python-version:
-            - "3.14"
-            - "3.13"
-            - "3.12"
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version:
+          - "3.14"
+          - "3.13"
+          - "3.12"
 
-      steps:
-        - uses: actions/checkout@v4
+    steps:
+      - uses: actions/checkout@v4
 
-        - name: Setup Python
-          uses: actions/setup-python@v5
-          with:
-            python-version: ${{ matrix.python-version }}
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
 
-        - name: Install Hatch
-          run: |
-            python -m pip install --upgrade pip
-            pip install hatch
+      - name: Install Hatch
+        run: |
+          python -m pip install --upgrade pip
+          pip install hatch
 
-        - name: Install Dev Dependencies
-          run: python3 -m pip install -r requirements.txt
+      - name: Install Dev Dependencies
+        run: python3 -m pip install -r requirements.txt
 
-        - name: Create Hatch environment
-          run: hatch env create
+      - name: Create Hatch environment
+        run: hatch env create
 
-        - name: Run Scripts        
-          run: hatch run github-workflow-test-type-check
+      - name: Run Scripts        
+        run: hatch run github-workflow-test-type-check
 
-    v3-lint-testing:
-        name: "V3 | Lint"
-        runs-on: ubuntu-latest
+  v3-lint-testing:
+    name: "V3 | Lint"
+    runs-on: ubuntu-latest
 
-        defaults:
-          run:
-            working-directory: .
+    defaults:
+      run:
+        working-directory: .
 
-        strategy:
-          fail-fast: false
-          matrix:
-            python-version:
-              - "3.14"
-              - "3.13"
-              - "3.12"
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version:
+          - "3.14"
+          - "3.13"
+          - "3.12"
 
-        steps:
-          - uses: actions/checkout@v4
+    steps:
+      - uses: actions/checkout@v4
 
-          - name: Setup Python
-            uses: actions/setup-python@v5
-            with:
-              python-version: ${{ matrix.python-version }}
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
 
-          - name: Install Hatch
-            run: |
-              python -m pip install --upgrade pip
-              pip install hatch
+      - name: Install Hatch
+        run: |
+          python -m pip install --upgrade pip
+          pip install hatch
 
-          - name: Install Dev Dependencies
-            run: python3 -m pip install -r requirements.txt
+      - name: Install Dev Dependencies
+        run: python3 -m pip install -r requirements.txt
 
-          - name: Create Hatch environment
-            run: hatch env create
+      - name: Create Hatch environment
+        run: hatch env create
 
-          - name: Run Scripts        
-            run: hatch run github-workflow-test-lint
+      - name: Run Scripts        
+        run: hatch run github-workflow-test-lint
