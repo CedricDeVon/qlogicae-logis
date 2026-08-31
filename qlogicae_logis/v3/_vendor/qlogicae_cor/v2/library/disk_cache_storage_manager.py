@@ -321,13 +321,13 @@ class DiskCacheStorageManager:
             self.key_encoding,
         )
 
-    # def _decode_key(
-    #     self,
-    #     key_path: bytes,
-    # ) -> str:
-    #     return key_path.decode(
-    #         self.key_encoding,
-    #     )
+    def _decode_key(
+        self,
+        key_path: bytes,
+    ) -> str:
+        return key_path.decode(
+            self.key_encoding,
+        )
 
     def _serialize(
         self,
@@ -510,6 +510,29 @@ class DiskCacheStorageManager:
     #     return self.is_key_expired(
     #         (key_path,),
     #     )[key_path]
+
+    def get_all_values(self) -> dict[str, Any]:
+        database = self._require_database()
+        current_time = _time.time()
+        result: dict[str, Any] = {}
+
+        for encoded_key in tuple(database.keys()):
+            key_path = self._decode_key(
+                encoded_key,
+            )
+
+            item = self._read_item(
+                database,
+                encoded_key,
+                current_time,
+            )
+
+            if item is None:
+                continue
+
+            result[key_path] = item["value"]
+
+        return result
 
     def get_many_values(
         self,

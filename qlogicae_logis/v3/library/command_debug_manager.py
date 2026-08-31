@@ -156,10 +156,10 @@ class CommandDebugManager:
         self._task_manager.run_task_full_debug_disk_cache_setup()
 
         value = self._persistent_cache_database_manager.read_all_values()
-
-        self._display_manager.display_tree_object(
-            value=value,
-        )
+        if value and len(value) > 0:
+            self._display_manager.display_tree_object(
+                value=value,
+            )
 
         return True
 

@@ -482,7 +482,7 @@ class ImportManager:
         self,
     ) -> dict[str, Any]:
         value: dict[str, Any] = (
-            self._disk_cache_storage_manager.read_all_values()
+            self._disk_cache_storage_manager.get_all_values()
         )
 
         return value
