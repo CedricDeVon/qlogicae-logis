@@ -307,8 +307,8 @@ class CommandTemplateManager:
                 return False
 
             selection_project_filesystem_path_value = (
-                selection_project
-                    .get("filesystem-path", {})
+                (selection_project
+                    .get("filesystem-path", {}) or {})
                     .get("value", "")
             )
 

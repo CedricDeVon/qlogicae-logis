@@ -122,7 +122,7 @@ class PersistentCacheDatabasManager:
         if not kwargs:
             return ""
 
-        value = kwargs.get("value", "")
+        value = kwargs.get("value", "") or ""
 
         return (
             f"configuration-workspace-{value}"
@@ -151,7 +151,7 @@ class PersistentCacheDatabasManager:
         if not kwargs:
             return ""
 
-        accessibility_type = kwargs.get("accessibility_type", "")
+        accessibility_type = kwargs.get("accessibility_type", "") or ""
 
         return (
             self.read_configuration_workspace_key_path(
@@ -166,8 +166,8 @@ class PersistentCacheDatabasManager:
         if not kwargs:
             return ""
 
-        accessibility_type = kwargs.get("accessibility_type", "")
-        path = kwargs.get("path", "")
+        accessibility_type = kwargs.get("accessibility_type", "") or ""
+        path = kwargs.get("path", "") or ""
 
         return (
             self.read_configuration_workspace_key_path(
@@ -182,8 +182,8 @@ class PersistentCacheDatabasManager:
         if not kwargs:
             return ""
 
-        accessibility_type = kwargs.get("accessibility_type", "")
-        path = kwargs.get("path", "")
+        accessibility_type = kwargs.get("accessibility_type", "") or ""
+        path = kwargs.get("path", "") or ""
 
         return (
             self.read_configuration_workspace_key_path(

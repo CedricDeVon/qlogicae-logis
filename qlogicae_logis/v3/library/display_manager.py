@@ -178,7 +178,7 @@ class DisplayManager:
 
         return self._color_codes.get(
             color.lower(), ""
-        )
+        ) or ""
 
     def display_highlight_value(
         self,
@@ -189,7 +189,7 @@ class DisplayManager:
 
         print(
             self.color_value(
-                kwargs.get("value", "")
+                kwargs.get("value", "") or ""
             )
         )
 
@@ -221,19 +221,19 @@ class DisplayManager:
         is_skipped = kwargs.get(
             "is_skipped",
             is_skipped,
-        )
+        ) or is_skipped
         indent_count = kwargs.get(
             "indent_count",
             indent_count,
-        )
+        ) or indent_count
         maximum_depth = kwargs.get(
             "maximum_depth",
             maximum_depth,
-        )
+        ) or maximum_depth
         vertical_space_count = kwargs.get(
             "vertical_space_count",
             vertical_space_count,
-        )
+        ) or vertical_space_count
 
         visited: set[int] = set()
 

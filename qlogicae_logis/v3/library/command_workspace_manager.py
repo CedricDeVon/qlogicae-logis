@@ -891,8 +891,8 @@ class CommandWorkspaceManager:
                 return False
 
             selection_project_installation = (
-                data_selection_projects
-                    .get(target, {})
+                (data_selection_projects
+                    .get(target, {}) or {})
                     .get("installation", {}) or {}
             )
             if not selection_project_installation:
@@ -1053,7 +1053,7 @@ class CommandWorkspaceManager:
                 selection_projects.get(
                     target,
                     ""
-                )
+                ) or ""
             )
 
         return True

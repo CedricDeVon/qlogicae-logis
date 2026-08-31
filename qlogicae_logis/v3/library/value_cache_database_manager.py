@@ -1069,7 +1069,7 @@ class ValueCacheDatabaseManager:
             ),
         ) or {}
 
-        return str(result.get("value", "reset"))
+        return str(result.get("value", "reset")) or "reset"
 
     # def write_configuration_workspace_data_display_console_style_reset_value(
     #     self,
@@ -1132,7 +1132,7 @@ class ValueCacheDatabaseManager:
             ),
         ) or {}
 
-        return str(result.get("value", "grey"))
+        return str(result.get("value", "grey")) or "grey"
 
     # def write_configuration_workspace_data_display_console_style_base_2_value(
     #     self,
@@ -1163,7 +1163,7 @@ class ValueCacheDatabaseManager:
             ),
         ) or {}
 
-        return str(result.get("value", "green"))
+        return str(result.get("value", "green")) or "green"
 
     # def write_configuration_workspace_data_display_console_style_highlight_1_value(
     #     self,
@@ -1256,7 +1256,7 @@ class ValueCacheDatabaseManager:
             ),
         ) or {}
 
-        return int(result.get("value", 4))
+        return int(result.get("value", 4)) or 4
 
     # def write_configuration_workspace_data_display_console_style_indent_count_value(
     #     self,
@@ -1318,7 +1318,7 @@ class ValueCacheDatabaseManager:
             ),
         ) or {}
 
-        return int(result.get("value", 0))
+        return int(result.get("value", 0)) or 0
 
     # def write_configuration_workspace_data_display_console_style_vertical_count_value(
     #     self,
@@ -1347,7 +1347,7 @@ class ValueCacheDatabaseManager:
             ),
         ) or {}
 
-        return str(result.get("value", "local"))
+        return str(result.get("value", "local")) or "local"
 
     # def write_configuration_workspace_data_time_zone_value(
     #     self,
@@ -2963,7 +2963,7 @@ class ValueCacheDatabaseManager:
         data: Any,
     ) -> str:
         value: str = (
-            data.get("pattern", {})
+            (data.get("pattern", {}) or {})
                 .get("value", "")
         )
 
@@ -2984,7 +2984,7 @@ class ValueCacheDatabaseManager:
         data: Any,
     ) -> list[str]:
         value: list[str] = (
-            data.get("output", {})
+            (data.get("output", {}) or {})
                 .get("targets", [])
         ) or []
 
@@ -2995,8 +2995,8 @@ class ValueCacheDatabaseManager:
         data: Any,
     ) -> list[str]:
         value: list[str] = (
-            data.get("input", {})
-                .get("exclude", {})
+            ((data.get("input", {}) or {})
+                .get("exclude", {}) or {})
                 .get("targets", [])
         ) or []
 
@@ -3007,8 +3007,8 @@ class ValueCacheDatabaseManager:
         data: Any,
     ) -> list[str]:
         value: list[str] = (
-            data.get("input", {})
-                .get("include", {})
+            ((data.get("input", {}) or {})
+                .get("include", {}) or {})
                 .get("targets", [])
         ) or []
 
@@ -3019,7 +3019,7 @@ class ValueCacheDatabaseManager:
         data: Any,
     ) -> bool:
         value: bool = (
-            data.get("is-enabled", {})
+            (data.get("is-enabled", {}) or {})
                 .get("value", True)
         )
 
@@ -3030,7 +3030,7 @@ class ValueCacheDatabaseManager:
         data: Any,
     ) -> bool:
         value: bool = (
-            data.get("is-atomic", {})
+            (data.get("is-atomic", {}) or {})
                 .get("value", False)
         )
 
@@ -3052,7 +3052,7 @@ class ValueCacheDatabaseManager:
         data: Any,
     ) -> str:
         value: str = (
-            data.get("filesystem-path", {})
+            (data.get("filesystem-path", {}) or {})
                 .get("value", "")
         )
 
@@ -3063,7 +3063,7 @@ class ValueCacheDatabaseManager:
         data: Any,
     ) -> Any:
         value: Any = (
-            data.get("argument", {})
+            data.get("argument", {}) or {}
         ) or {}
 
         return value
@@ -3073,7 +3073,7 @@ class ValueCacheDatabaseManager:
         data: Any,
     ) -> str:
         value: str = (
-            data.get("process", {})
+            (data.get("process", {}) or {})
                 .get("value", "shell")
         )
 
@@ -3084,7 +3084,7 @@ class ValueCacheDatabaseManager:
         data: Any,
     ) -> str:
         value: str = (
-            data.get("run", {})
+            (data.get("run", {}) or {})
                 .get("value", "")
         )
 
@@ -3095,7 +3095,7 @@ class ValueCacheDatabaseManager:
         data: Any,
     ) -> str:
         value: str = (
-            data.get("delay", {})
+            (data.get("delay", {}) or {})
                 .get("value", 0)
         )
 
@@ -3115,10 +3115,14 @@ class ValueCacheDatabaseManager:
         self,
         data: Any,
     ) -> str:
+        data = (
+            data.get("compression", {}) or {}
+        )
+        data = (
+            data.get("format", {}) or {}
+        )
         value: str = (
-            data.get("compression", {})
-                .get("format", {})
-                .get("value", "zip")
+            data.get("value", "zip")
         )
 
         return value
@@ -3127,10 +3131,14 @@ class ValueCacheDatabaseManager:
             self,
             data: Any,
         ) -> str:
+            data = (
+                data.get("compression", {}) or {}
+            )
+            data = (
+                data.get("type", {}) or {}
+            )
             value: str = (
-                data.get("compression", {})
-                    .get("type", {})
-                    .get("value", "deflated")
+                data.get("value", "deflated")
             )
 
             return value
@@ -3139,10 +3147,14 @@ class ValueCacheDatabaseManager:
         self,
         data: Any,
     ) -> int:
+        data = (
+            data.get("compression", {}) or {}
+        )
+        data = (
+            data.get("level", {}) or {}
+        )
         value: int = (
-            data.get("compression", {})
-                .get("level", {})
-                .get("value", 6)
+            data.get("value", 6)
         )
 
         return value
@@ -3150,11 +3162,15 @@ class ValueCacheDatabaseManager:
     def read_object_compression_is_zip_64_allowed_value(
         self,
         data: Any,
-    ) -> int:
-        value: int = (
-            data.get("compression", {})
-                .get("is-zip-64-allowed", {})
-                .get("value", True)
+    ) -> bool:
+        data = (
+            data.get("compression", {}) or {}
+        )
+        data = (
+            data.get("is-zip-64-allowed", {}) or {}
+        )
+        value: bool = (
+            data.get("value", True)
         )
 
         return value
@@ -3162,11 +3178,15 @@ class ValueCacheDatabaseManager:
     def read_object_compression_is_timestamp_strict_value(
         self,
         data: Any,
-    ) -> int:
-        value: int = (
-            data.get("compression", {})
-                .get("is-timestamp-strict", {})
-                .get("value", True)
+    ) -> bool:
+        data = (
+            data.get("compression", {}) or {}
+        )
+        data = (
+            data.get("is-timestamp-strict", {}) or {}
+        )
+        value: bool = (
+            data.get("value", True)
         )
 
         return value

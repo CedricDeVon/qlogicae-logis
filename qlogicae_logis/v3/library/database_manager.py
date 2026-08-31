@@ -135,13 +135,13 @@ class DatabaseManager:
 
     def read_debug_is_enabled(self) -> bool:
         data: bool = (
-            _utility_data.get(
+            ((_utility_data.get(
                 "debug",
                 {}
-            ).get(
+            ) or {}).get(
                 "is-enabled",
                 {}
-            ).get(
+            ) or {}).get(
                 "value",
                 False
             )
@@ -151,26 +151,26 @@ class DatabaseManager:
 
     def read_company_name(self) -> str:
         data: str = (
-            _utility_data.get(
+            (_utility_data.get(
                 "company-name",
                 {}
-            ).get(
+            ) or {}).get(
                 "value",
                 "company"
-            )
+            ) or "company"
         )
 
         return data
 
     def read_project_name(self) -> str:
         data: str = (
-            _utility_data.get(
+            (_utility_data.get(
                 "project-name",
                 {}
-            ).get(
+            ) or {}).get(
                 "value",
                 "project"
-            )
+            ) or "project"
         )
 
         return data
@@ -191,7 +191,7 @@ class DatabaseManager:
             ).get(
                 "value",
                 "v0"
-            )
+            ) or "v0"
         )
 
         return data
@@ -406,12 +406,12 @@ class DatabaseManager:
         self,
         data: Any,
     ) -> int:
-        value: int = data.get(
+        value: int = (data.get(
             "timestamp_modified",
             {},
-        ).get(
+        ) or {}).get(
             "value",
-            None
+            0
         )
 
         return value
