@@ -34,7 +34,7 @@ runs:
       shell: bash
       run: |
         mkdir -p "${{ inputs.target-path }}"
-        cp -r "${{ inputs.source-path }}" "${{ inputs.target-path }}"
+        cp -r "${{ inputs.source-path }}/." "${{ inputs.target-path }}/"
 
     - name: Add venv to PATH
       shell: bash
