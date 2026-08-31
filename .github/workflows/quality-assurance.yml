@@ -12,17 +12,18 @@ defaults:
     shell: bash
 
 jobs:
-  v3-pypi-package-upload-wait:
-    name: "V3 | PyPi Package Upload | Wait"
+  pypi-package-upload-wait:
+    name: "PyPi Package Upload | Wait"
     runs-on: ubuntu-latest
     steps:
       - name: Forced Delay
         run: sleep 30
 
-  v3-e2e-testing-command-help:
-    name: "V3 | E2E Testing | Command | 'qlogicae-logis ${{ matrix.targets.command }} ${{ matrix.arguments }}'"
+
+  v3-e2e-testing-command:
+    name: "Python ${{ matrix.python-version }} | V3 | E2E Testing | Command | '${{ matrix.targets.command }}'"
     runs-on: ubuntu-latest
-    needs: v3-pypi-package-upload-wait
+    needs: pypi-package-upload-wait
 
     defaults:
       run:
@@ -33,118 +34,16 @@ jobs:
 
       matrix:
         targets:
-          - command: ""
+          - command: "qlogicae-logis -h"
             working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/root/suite/help"
 
-
-
-          - command: "about"
-            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/about/suite/help"
-
-          - command: "about version"
-            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/about/version/suite/help"
-
-
-
-          - command: "database"
-            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/database/suite/help"
-        
-
-
-          - command: "debug"
-            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/debug/suite/help"
-
-          - command: "debug view"
-            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/debug/view/suite/help"
-
-          - command: "debug view disk-cache"
-            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/debug/view/disk-cache/suite/help"
-
-          - command: "debug view value-cache"
-            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/debug/view/value-cache/suite/help"
-
-
-
-          - command: "filesystem"
-            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/filesystem/suite/help"
-
-          - command: "filesystem copy"
-            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/filesystem/copy/suite/help"
-
-          - command: "filesystem move"
-            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/filesystem/move/suite/help"
-
-          - command: "filesystem rename"
-            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/filesystem/rename/suite/help"
-
-          - command: "filesystem tree"
-            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/filesystem/tree/suite/help"
-
-          - command: "filesystem clean"
-            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/filesystem/clean/suite/help"
-
-          - command: "filesystem list"
-            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/filesystem/list/suite/help"
-
-
-
-          - command: "template"
-            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/template/suite/help"
-
-          - command: "template apply"
-            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/template/apply/suite/help"
-
-          - command: "template list"
-            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/template/list/suite/help"
-
-          - command: "template list selections"
-            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/template/list/selections/suite/help"
-
-
-
-          - command: "workflow"
-            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/workflow/suite/help"
-
-          - command: "workflow run"
-            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/workflow/run/suite/help"
-
-          - command: "workflow list selections"
-            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/workflow/list/selections/suite/help"
-
-
-
-          - command: "workspace"
-            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/workspace/suite/help"
-
-          - command: "workspace export"
-            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/workspace/export/suite/help"
-
-          - command: "workspace import"
-            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/workspace/import/suite/help"
-
-          - command: "workspace setup"
-            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/workspace/setup/suite/help"
-
-          - command: "workspace replenish"
-            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/workspace/replenish/suite/help"
-
-          - command: "workspace install"
-            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/workspace/install/suite/help"
-
-          - command: "workspace list"
-            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/workspace/list/suite/help"
-
-          - command: "workspace list exports"
-            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/workspace/list/exports/suite/help"
+          - command: "qlogicae-logis --help"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/root/suite/help"
 
         python-version:
           - "3.14"
           - "3.13"
           - "3.12"
-
-        arguments:
-          - "-h"
-          - "--help"
 
     steps:
       - uses: actions/checkout@v4
@@ -163,13 +62,471 @@ jobs:
       - name: Install Package
         run: pip install qlogicae-logis
 
-      - name: Run 'qlogicae-logis ${{ matrix.targets.command }} ${{ matrix.arguments }}' Command
-        run: qlogicae-logis ${{ matrix.targets.command }} ${{ matrix.arguments }}
+      - name: Run '${{ matrix.targets.command }}' Command
+        run: ${{ matrix.targets.command }}
+
+
+  v3-e2e-testing-command-about:
+    name: "Python ${{ matrix.python-version }} | V3 | E2E Testing | Command | '${{ matrix.targets.command }}'"
+    runs-on: ubuntu-latest
+    needs: pypi-package-upload-wait
+
+    defaults:
+      run:
+        working-directory: ${{ matrix.targets.working-directory }}
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+        targets:
+          - command: "qlogicae-logis about -h"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/about/suite/help"
+
+          - command: "qlogicae-logis about --help"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/about/suite/help"
+
+          - command: "qlogicae-logis about version -h"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/about/version/suite/help"
+
+          - command: "qlogicae-logis about version --help"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/about/version/suite/help"
+
+          - command: "qlogicae-logis about version -h"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/about/version/suite/help"
+
+          - command: "qlogicae-logis about version --help"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/about/version/suite/help"
+
+          - command: "qlogicae-logis about version"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/about/version/suite/common"
+
+        python-version:
+          - "3.14"
+          - "3.13"
+          - "3.12"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Setup Virtual Environment
+        run: python3 -m venv .venv
+
+      - name: Activate Virtual Environment
+        run: source .venv/bin/activate
+
+      - name: Install Package
+        run: pip install qlogicae-logis
+
+      - name: Run '${{ matrix.targets.command }}' Command
+        run: ${{ matrix.targets.command }}
+
+
+  v3-e2e-testing-command-workflow:
+    name: "Python ${{ matrix.python-version }} | V3 | E2E Testing | Command | '${{ matrix.targets.command }}'"
+    runs-on: ubuntu-latest
+    needs: pypi-package-upload-wait
+
+    defaults:
+      run:
+        working-directory: ${{ matrix.targets.working-directory }}
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+        targets:
+          - command: "qlogicae-logis workflow -h"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/workflow/suite/help"
+
+          - command: "qlogicae-logis workflow --help"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/workflow/suite/help"
+
+          - command: "qlogicae-logis workflow list -h"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/workflow/list/suite/help"
+
+          - command: "qlogicae-logis workflow list --help"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/workflow/list/suite/help"
+
+          - command: "qlogicae-logis workflow list -h"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/workflow/list/suite/help"
+
+          - command: "qlogicae-logis workflow list --help"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/workflow/list/suite/help"
+
+          - command: "qlogicae-logis workflow list selections -h"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/workflow/list/suite/help"
+
+          - command: "qlogicae-logis workflow list selections --help"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/workflow/list/selections/suite/help"
+
+          - command: "qlogicae-logis workflow list selections"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/workflow/list/selections/suite/common"
+
+        python-version:
+          - "3.14"
+          - "3.13"
+          - "3.12"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Setup Virtual Environment
+        run: python3 -m venv .venv
+
+      - name: Activate Virtual Environment
+        run: source .venv/bin/activate
+
+      - name: Install Package
+        run: pip install qlogicae-logis
+
+      - name: Run '${{ matrix.targets.command }}' Command
+        run: ${{ matrix.targets.command }}
+
+
+
+  v3-e2e-testing-command-template:
+    name: "Python ${{ matrix.python-version }} | V3 | E2E Testing | Command | '${{ matrix.targets.command }}'"
+    runs-on: ubuntu-latest
+    needs: pypi-package-upload-wait
+
+    defaults:
+      run:
+        working-directory: ${{ matrix.targets.working-directory }}
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+        targets:
+          - command: "qlogicae-logis template -h"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/template/suite/help"
+
+          - command: "qlogicae-logis template --help"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/template/suite/help"
+
+          - command: "qlogicae-logis template list -h"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/template/list/suite/help"
+
+          - command: "qlogicae-logis template list --help"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/template/list/suite/help"
+
+          - command: "qlogicae-logis template list -h"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/template/list/suite/help"
+
+          - command: "qlogicae-logis template list --help"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/template/list/suite/help"
+
+          - command: "qlogicae-logis template list selections -h"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/template/list/suite/help"
+
+          - command: "qlogicae-logis template list selections --help"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/template/list/selections/suite/help"
+
+          - command: "qlogicae-logis template list selections"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/template/list/selections/suite/common"
+
+        python-version:
+          - "3.14"
+          - "3.13"
+          - "3.12"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Setup Virtual Environment
+        run: python3 -m venv .venv
+
+      - name: Activate Virtual Environment
+        run: source .venv/bin/activate
+
+      - name: Install Package
+        run: pip install qlogicae-logis
+
+      - name: Run '${{ matrix.targets.command }}' Command
+        run: ${{ matrix.targets.command }}
+
+
+
+  v3-e2e-testing-command-debug:
+    name: "Python ${{ matrix.python-version }} | V3 | E2E Testing | Command | '${{ matrix.targets.command }}'"
+    runs-on: ubuntu-latest
+    needs: pypi-package-upload-wait
+
+    defaults:
+      run:
+        working-directory: ${{ matrix.targets.working-directory }}
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+        targets:
+          - command: "qlogicae-logis debug -h"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/debug/suite/help"
+
+          - command: "qlogicae-logis debug --help"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/debug/suite/help"
+
+          - command: "qlogicae-logis debug view -h"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/debug/view/suite/help"
+
+          - command: "qlogicae-logis debug view --help"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/debug/view/suite/help"
+
+          - command: "qlogicae-logis debug view -h"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/debug/view/suite/help"
+
+          - command: "qlogicae-logis debug view --help"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/debug/view/suite/help"
+
+          - command: "qlogicae-logis debug view value-cache -h"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/debug/view/suite/help"
+
+          - command: "qlogicae-logis debug view value-cache --help"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/debug/view/value-cache/suite/help"
+
+          - command: "qlogicae-logis debug view value-cache"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/debug/view/value-cache/suite/common"
+
+          - command: "qlogicae-logis debug view disk-cache -h"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/debug/view/suite/help"
+
+          - command: "qlogicae-logis debug view disk-cache --help"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/debug/view/disk-cache/suite/help"
+
+          - command: "qlogicae-logis debug view disk-cache"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/debug/view/disk-cache/suite/common"
+
+        python-version:
+          - "3.14"
+          - "3.13"
+          - "3.12"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Setup Virtual Environment
+        run: python3 -m venv .venv
+
+      - name: Activate Virtual Environment
+        run: source .venv/bin/activate
+
+      - name: Install Package
+        run: pip install qlogicae-logis
+
+      - name: Run '${{ matrix.targets.command }}' Command
+        run: ${{ matrix.targets.command }}
+
+
+
+    
+  v3-e2e-testing-command-filesystem:
+    name: "Python ${{ matrix.python-version }} | V3 | E2E Testing | Command | '${{ matrix.targets.command }}'"
+    runs-on: ubuntu-latest
+    needs: pypi-package-upload-wait
+
+    defaults:
+      run:
+        working-directory: ${{ matrix.targets.working-directory }}
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+        targets:
+          - command: "qlogicae-logis filesystem -h"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/filesystem/suite/help"
+
+          - command: "qlogicae-logis filesystem --help"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/filesystem/suite/help"
+
+          - command: "qlogicae-logis filesystem copy -h"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/filesystem/copy/suite/help"
+
+          - command: "qlogicae-logis filesystem copy --help"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/filesystem/copy/suite/help"
+
+          - command: "qlogicae-logis filesystem move -h"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/filesystem/move/suite/help"
+
+          - command: "qlogicae-logis filesystem move --help"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/filesystem/move/suite/help"
+
+          - command: "qlogicae-logis filesystem tree -h"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/filesystem/tree/suite/help"
+
+          - command: "qlogicae-logis filesystem tree --help"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/filesystem/tree/suite/help"
+
+          - command: "qlogicae-logis filesystem clean -h"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/filesystem/clean/suite/help"
+
+          - command: "qlogicae-logis filesystem clean --help"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/filesystem/clean/suite/help"
+
+          - command: "qlogicae-logis filesystem list -h"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/filesystem/list/suite/help"
+
+          - command: "qlogicae-logis filesystem list --help"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/filesystem/list/suite/help"
+
+          - command: "qlogicae-logis filesystem list clean included -h"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/filesystem/list/clean/suite/help"
+
+          - command: "qlogicae-logis filesystem list clean included --help"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/filesystem/list/clean/included/suite/help"
+
+          - command: "qlogicae-logis filesystem list clean included"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/filesystem/list/clean/included/suite/common"
+
+          - command: "qlogicae-logis filesystem list clean excluded -h"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/filesystem/list/clean/suite/help"
+
+          - command: "qlogicae-logis filesystem list clean excluded --help"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/filesystem/list/clean/excluded/suite/help"
+
+          - command: "qlogicae-logis filesystem list clean excluded"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/filesystem/list/clean/excluded/suite/common"
+
+        python-version:
+          - "3.14"
+          - "3.13"
+          - "3.12"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Setup Virtual Environment
+        run: python3 -m venv .venv
+
+      - name: Activate Virtual Environment
+        run: source .venv/bin/activate
+
+      - name: Install Package
+        run: pip install qlogicae-logis
+
+      - name: Run '${{ matrix.targets.command }}' Command
+        run: ${{ matrix.targets.command }}
+
+
+
+
+  v3-e2e-testing-command-workspace:
+    name: "Python ${{ matrix.python-version }} | V3 | E2E Testing | Command | '${{ matrix.targets.command }}'"
+    runs-on: ubuntu-latest
+    needs: pypi-package-upload-wait
+
+    defaults:
+      run:
+        working-directory: ${{ matrix.targets.working-directory }}
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+        targets:
+          - command: "qlogicae-logis workspace -h"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/workspace/suite/help"
+
+          - command: "qlogicae-logis workspace --help"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/workspace/suite/help"
+
+          - command: "qlogicae-logis workspace export -h"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/workspace/export/suite/help"
+
+          - command: "qlogicae-logis workspace export --help"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/workspace/export/suite/help"
+
+          - command: "qlogicae-logis workspace import -h"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/workspace/import/suite/help"
+
+          - command: "qlogicae-logis workspace import --help"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/workspace/import/suite/help"
+
+          - command: "qlogicae-logis workspace setup -h"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/workspace/setup/suite/help"
+
+          - command: "qlogicae-logis workspace setup --help"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/workspace/setup/suite/help"
+
+          - command: "qlogicae-logis workspace replenish -h"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/workspace/replenish/suite/help"
+
+          - command: "qlogicae-logis workspace replenish --help"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/workspace/replenish/suite/help"
+
+          - command: "qlogicae-logis workspace install -h"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/workspace/install/suite/help"
+
+          - command: "qlogicae-logis workspace install --help"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/workspace/install/suite/help"
+
+          - command: "qlogicae-logis workspace list exports -h"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/workspace/list/exports/suite/help"
+
+          - command: "qlogicae-logis workspace list exports --help"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/workspace/list/exports/suite/help"
+
+          - command: "qlogicae-logis workspace list exports"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/workspace/list/exports/suite/common"
+
+        python-version:
+          - "3.14"
+          - "3.13"
+          - "3.12"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Setup Virtual Environment
+        run: python3 -m venv .venv
+
+      - name: Activate Virtual Environment
+        run: source .venv/bin/activate
+
+      - name: Install Package
+        run: pip install qlogicae-logis
+
+      - name: Run '${{ matrix.targets.command }}' Command
+        run: ${{ matrix.targets.command }}
+
+        
 
   v3-type-check-testing:
-    name: "V3 | Type Check Testing"
+    name: "Python ${{ matrix.python-version }} | V3 | Type Check Testing"
     runs-on: ubuntu-latest
-    needs: v3-pypi-package-upload-wait
+    needs: pypi-package-upload-wait
 
     defaults:
       run:
@@ -205,10 +562,12 @@ jobs:
       - name: Run Script        
         run: hatch run github-workflow-test-type-check
 
+
+
   v3-lint-testing:
-    name: "V3 | Lint Testing"
+    name: "Python ${{ matrix.python-version }} | V3 | Lint Testing"
     runs-on: ubuntu-latest
-    needs: v3-pypi-package-upload-wait
+    needs: pypi-package-upload-wait
 
     defaults:
       run:
@@ -244,10 +603,12 @@ jobs:
       - name: Run Script        
         run: hatch run github-workflow-test-lint
 
+
+
   v3-import-reference-testing:
-    name: "V3 | Import Reference Testing"
+    name: "Python ${{ matrix.python-version }} | V3 | Import Reference Testing"
     runs-on: ubuntu-latest
-    needs: v3-pypi-package-upload-wait
+    needs: pypi-package-upload-wait
 
     defaults:
       run:

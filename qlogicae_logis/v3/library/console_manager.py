@@ -825,8 +825,8 @@ class ConsoleManager:
 
         application_workspace_setup = (
             application_workspace_commands.add_parser(
-                "setup_commands",
-                help="Complete workspace setup_commands.",
+                "setup",
+                help="Complete workspace setup.",
             )
         )
 
