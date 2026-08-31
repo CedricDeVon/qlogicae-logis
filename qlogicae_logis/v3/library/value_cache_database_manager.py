@@ -3019,6 +3019,28 @@ class ValueCacheDatabaseManager:
 
         return value
 
+    def read_object_is_atomic_value(
+        self,
+        data: Any,
+    ) -> bool:
+        value: bool = (
+            data.get("is-atomic", {})
+                .get("value", False)
+        )
+
+        return value
+
+    # def read_object_repeat_value(
+    #     self,
+    #     data: Any,
+    # ) -> int:
+    #     value: int = (
+    #         data.get("repeat", {})
+    #             .get("value", 1)
+    #     )
+
+    #     return value
+
     def read_object_filesystem_path_value(
         self,
         data: Any,

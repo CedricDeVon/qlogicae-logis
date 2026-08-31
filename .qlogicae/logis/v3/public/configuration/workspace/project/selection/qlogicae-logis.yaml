@@ -5,20 +5,6 @@ workspace:
         filesystem-path:
           value: ${{ qlogicae-logis-selection-project-filesystem-path }}
 
-        installation:
-          # is-enabled:
-          #   value: true
-
-          # delay:
-          #   value: 0
-
-          filesystem-path:
-            value: ${{ qlogicae-logis-selection-project-filesystem-path }}
-
-          scripts:
-            - run:
-                value: git clone https://github.com/CedricDeVon/LaboratoryExercise1.git
-
 workflow:
   selection:      
     qlogicae-logis-quality-assurance:
@@ -310,7 +296,7 @@ macros:
           value: The project orchestration tool for QLogicae projects
 
         qlogicae-logis-current-version-number:
-          value: 3.0.9
+          value: 3.0.10
 
         qlogicae-logis-active-major-version-number:
           value: 3

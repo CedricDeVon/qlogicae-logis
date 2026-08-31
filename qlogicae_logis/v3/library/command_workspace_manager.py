@@ -162,7 +162,6 @@ class CommandWorkspaceManager:
             ),
         ))
 
-    @_DecoratorManager.command_decorator
     def run_command_workspace_export(
         self,
         **kwargs: Any
@@ -443,7 +442,6 @@ class CommandWorkspaceManager:
 
         return True
 
-    @_DecoratorManager.command_decorator
     def run_command_workspace_import(
         self,
         **kwargs: Any
@@ -465,7 +463,6 @@ class CommandWorkspaceManager:
 
         return True
 
-    @_DecoratorManager.command_decorator
     def run_command_workspace_replenish(
         self,
         **kwargs: Any
@@ -847,7 +844,6 @@ class CommandWorkspaceManager:
 
         return True
 
-    @_DecoratorManager.command_decorator
     def run_command_workspace_list_exports(
         self,
         **kwargs: Any
@@ -878,7 +874,6 @@ class CommandWorkspaceManager:
 
         return True
 
-    @_DecoratorManager.command_decorator
     def run_command_workspace_setup(
         self,
         **kwargs: Any
@@ -887,14 +882,10 @@ class CommandWorkspaceManager:
 
         return True
 
-    @_DecoratorManager.command_decorator
     def run_command_workspace_install(
         self,
         **kwargs: Any
     ) -> bool:
-        if not kwargs:
-            return False
-
         def handle_workspace_install(target: str) -> bool:
             if not target or target not in selection_projects:
                 return False
@@ -1018,7 +1009,6 @@ class CommandWorkspaceManager:
 
             return True
 
-
         self._task_manager.run_task_common_setup()
         self._task_manager.run_task_workspace_default_setup()
         self._task_manager.run_task_workspace_group_setup()
@@ -1026,8 +1016,17 @@ class CommandWorkspaceManager:
         self._task_manager.run_task_filesystem_clean_exclude_setup()
         self._task_manager.run_task_filesystem_clean_include_setup()
 
+        if not kwargs:
+            self._import_manager.log_cache_warning_to_file(
+                message="invalid arguments"
+            )
+            return False
+
         targets = kwargs.get("targets", [])
         if not targets or len(targets) < 1:
+            self._import_manager.log_cache_warning_to_file(
+                message="no targets selected"
+            )
             return False
 
         root_filesystem_path = (
@@ -1045,6 +1044,9 @@ class CommandWorkspaceManager:
 
         for target in targets:
             if not target or target not in selection_projects:
+                self._import_manager.log_cache_warning_to_file(
+                    message=f"'{target}' is not a valid workspace"
+                )
                 continue
 
             handle_workspace_install(

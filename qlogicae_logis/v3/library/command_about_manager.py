@@ -122,7 +122,6 @@ class CommandAboutManager:
             ),
         ))
 
-    @_DecoratorManager.command_decorator
     def run_command_about_version(self, **kwargs: Any) -> bool:
         company_project_name = (
             self._database_manager

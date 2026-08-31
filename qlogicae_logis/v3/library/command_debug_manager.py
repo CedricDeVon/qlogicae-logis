@@ -28,7 +28,6 @@ def _handle_dynamic_imports() -> None:
     global _ValueCacheDatabaseManager
     global _PersistentCacheDatabasManager
 
-
     from ..library import (
         command_storage_manager,
         database_manager,
@@ -128,7 +127,6 @@ class CommandDebugManager:
             ),
         ))
 
-    @_DecoratorManager.command_decorator
     def run_command_debug_view_value_cache(self, **kwargs: Any) -> bool:
         self._task_manager.run_task_full_debug_value_cache_setup()
 
@@ -154,7 +152,6 @@ class CommandDebugManager:
 
         return True
 
-    @_DecoratorManager.command_decorator
     def run_command_debug_view_disk_cache(self, **kwargs: Any) -> bool:
         self._task_manager.run_task_full_debug_disk_cache_setup()
 

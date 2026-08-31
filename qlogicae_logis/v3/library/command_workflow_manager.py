@@ -126,14 +126,10 @@ class CommandWorkflowManager:
             ),
         ))
 
-    @_DecoratorManager.command_decorator
     def run_command_workflow_run(
         self,
         **kwargs: Any
     ) -> bool:
-        if not kwargs:
-            return False
-
         def handle_workflow_run_target(
             workflow_target: str
         ) -> bool:
@@ -185,6 +181,12 @@ class CommandWorkflowManager:
                 if workflow_selection_delay_value >= 0
                 else 0
             )
+            workflow_selection_is_atomic_value = (
+                self._value_cache_database_manager
+                    .read_object_is_atomic_value(
+                        workflow_selection
+                    )
+            )
             workflow_selection_filesystem_path_value = (
                 self._value_cache_database_manager
                     .read_object_filesystem_path_value(
@@ -195,6 +197,7 @@ class CommandWorkflowManager:
                 workflow_selection_filesystem_path_value = (
                     root_filesystem_path
                 )
+
 
             self._import_manager.time_delay(
                 value=workflow_selection_delay_value
@@ -279,13 +282,28 @@ class CommandWorkflowManager:
                     workflow_selection_script_filesystem_path_value
                 )
 
+                cli_output_returncode: Any = 0
                 if workflow_selection_script_run_value in commands:
-                    commands[workflow_selection_script_run_value](**workflow_selection_script_argument)
+                    cli_output_returncode = (
+                        commands[workflow_selection_script_run_value](**workflow_selection_script_argument)
+                    )
+                    if (
+                        not cli_output_returncode and
+                        workflow_selection_is_atomic_value
+                    ):
+                        return False
 
                 elif workflow_selection_script_run_value in data_workflow_selections:
-                    handle_workflow_run_target(
-                        workflow_selection_script_run_value
+                    cli_output_returncode = (
+                        handle_workflow_run_target(
+                            workflow_selection_script_run_value
+                        )
                     )
+                    if (
+                        not cli_output_returncode and
+                        workflow_selection_is_atomic_value
+                    ):
+                        return False
 
                 else:
                     cli_output = (
@@ -294,10 +312,17 @@ class CommandWorkflowManager:
                             command=workflow_selection_script_run_value,
                         )
                     )
-
                     self._import_manager.log_cache_info_to_file(
                         message=f"{cli_output}"
                     )
+                    cli_output_returncode = (
+                        getattr(cli_output, "returncode", None)
+                    )
+                    if (
+                        cli_output_returncode and
+                        workflow_selection_is_atomic_value
+                    ):
+                        return False
 
             return True
 
@@ -306,8 +331,17 @@ class CommandWorkflowManager:
         self._task_manager.run_task_filesystem_clean_exclude_setup()
         self._task_manager.run_task_filesystem_clean_include_setup()
 
+        if not kwargs:
+            self._import_manager.log_cache_warning_to_file(
+                message="invalid arguments"
+            )
+            return False
+
         targets = kwargs.get('targets', [])
         if not targets or len(targets) < 1:
+            self._import_manager.log_cache_warning_to_file(
+                message="no targets selected"
+            )
             return False
 
         root_filesystem_path = (
@@ -329,6 +363,9 @@ class CommandWorkflowManager:
 
         for target in targets:
             if not target or target not in data_workflow_selections:
+                self._import_manager.log_cache_warning_to_file(
+                    message=f"'{target}' is not a valid workflow"
+                )
                 continue
 
             handle_workflow_run_target(
@@ -337,7 +374,6 @@ class CommandWorkflowManager:
 
         return True
 
-    @_DecoratorManager.command_decorator
     def run_command_workflow_list_selections(
         self,
         **kwargs: Any

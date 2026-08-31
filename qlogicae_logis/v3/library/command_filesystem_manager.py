@@ -155,15 +155,17 @@ class CommandFilesystemManager:
             ),
         ))
 
-    @_DecoratorManager.command_decorator
     def run_command_filesystem_copy(
         self,
         **kwargs: Any
     ) -> bool:
-        if not kwargs:
-            return False
-
         self._task_manager.run_task_common_setup()
+
+        if not kwargs:
+            self._import_manager.log_cache_warning_to_file(
+                message="invalid arguments"
+            )
+            return False
 
         value: bool = self._import_manager.copy_filesystem_paths(
             **kwargs,
@@ -171,15 +173,17 @@ class CommandFilesystemManager:
 
         return value
 
-    @_DecoratorManager.command_decorator
     def run_command_filesystem_move(
         self,
         **kwargs: Any
     ) -> bool:
-        if not kwargs:
-            return False
-
         self._task_manager.run_task_common_setup()
+
+        if not kwargs:
+            self._import_manager.log_cache_warning_to_file(
+                message="invalid arguments"
+            )
+            return False
 
         value: bool = self._import_manager.move_filesystem_path(
             **kwargs,
@@ -187,15 +191,17 @@ class CommandFilesystemManager:
 
         return value
 
-    @_DecoratorManager.command_decorator
     def run_command_filesystem_rename(
         self,
         **kwargs: Any
     ) -> bool:
-        if not kwargs:
-            return False
-
         self._task_manager.run_task_common_setup()
+
+        if not kwargs:
+            self._import_manager.log_cache_warning_to_file(
+                message="invalid arguments"
+            )
+            return False
 
         value: bool = self._import_manager.rename_filesystem_entity(
             **kwargs,
@@ -203,15 +209,17 @@ class CommandFilesystemManager:
 
         return value
 
-    @_DecoratorManager.command_decorator
     def run_command_filesystem_tree_setup(
         self,
         **kwargs: Any
     ) -> bool:
-        if not kwargs:
-            return False
-
         self._task_manager.run_task_common_setup()
+
+        if not kwargs:
+            self._import_manager.log_cache_warning_to_file(
+                message="invalid arguments"
+            )
+            return False
 
         value: bool = self._import_manager.setup_filesystem_tree_paths(
             **kwargs,
@@ -219,19 +227,24 @@ class CommandFilesystemManager:
 
         return value
 
-    @_DecoratorManager.command_decorator
     def run_command_filesystem_clean_path(
         self,
         **kwargs: Any
     ) -> bool:
-        if not kwargs:
-            return False
-
         self._task_manager.run_task_common_setup()
         self._task_manager.run_task_filesystem_clean_exclude_setup()
 
+        if not kwargs:
+            self._import_manager.log_cache_warning_to_file(
+                message="invalid arguments"
+            )
+            return False
+
         target_paths = kwargs.get("target_paths", tuple())
         if len(target_paths) < 1:
+            self._import_manager.log_cache_warning_to_file(
+                message="no target paths"
+            )
             return False
 
         excluded = (
@@ -247,17 +260,19 @@ class CommandFilesystemManager:
 
         return True
 
-    @_DecoratorManager.command_decorator
     def run_command_filesystem_clean_selection(
         self,
         **kwargs: Any
     ) -> bool:
-        if not kwargs:
-            return False
-
         self._task_manager.run_task_common_setup()
         self._task_manager.run_task_filesystem_clean_include_setup()
         self._task_manager.run_task_filesystem_clean_exclude_setup()
+
+        if not kwargs:
+            self._import_manager.log_cache_warning_to_file(
+                message="invalid arguments"
+            )
+            return False
 
         targets = kwargs.get("targets", tuple())
         selections = (
@@ -304,7 +319,6 @@ class CommandFilesystemManager:
 
         return True
 
-    @_DecoratorManager.command_decorator
     def run_command_filesystem_clean_list_included(
         self,
         **kwargs: Any
@@ -328,7 +342,6 @@ class CommandFilesystemManager:
 
         return True
 
-    @_DecoratorManager.command_decorator
     def run_command_filesystem_clean_list_excluded(
         self,
         **kwargs: Any

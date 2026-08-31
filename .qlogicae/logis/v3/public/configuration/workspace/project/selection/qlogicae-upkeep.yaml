@@ -5,6 +5,20 @@ workspace:
         filesystem-path:
           value: ${{ selection-filesystem-path }}/qlogicae-upkeep
 
+        # installation:
+        #   is-enabled:
+        #     value: true
+
+        #   delay:
+        #     value: 0
+
+        #   filesystem-path:
+        #     value: ${{ root-filesystem-path }}/a
+
+        #   scripts:
+        #     - run:
+        #         value: git clone https://github.com/CedricDeVon/LaboratoryExercise1.git
+
 macros:
   static:
     file:

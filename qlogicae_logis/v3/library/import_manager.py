@@ -2085,22 +2085,29 @@ class ImportManager:
 
         return True
 
-    # def log_cache_warning_to_file(
-    #     self,
-    #     **kwargs: Any,
-    # ) -> bool:
-    #     if not kwargs:
-    #         return False
+    def log_cache_warning_to_file(
+        self,
+        **kwargs: Any,
+    ) -> bool:
+        if not kwargs:
+            return False
 
-    #     self._file_log_manager.cache_log(
-    #         message=kwargs.get(
-    #             "message",
-    #             "",
-    #         ),
-    #         log_level=_logging.WARNING
-    #     )
+        self._file_log_manager.cache_log(
+            message=kwargs.get(
+                "message",
+                "",
+            ),
+            log_level=_logging.WARNING
+        )
 
-    #     return True
+        return True
+
+    def read_system_console_argument_string(
+        self
+    ) -> str:
+        return "-".join(
+            _sys.argv[1:]
+        )
 
     def log_shutdown(
         self,

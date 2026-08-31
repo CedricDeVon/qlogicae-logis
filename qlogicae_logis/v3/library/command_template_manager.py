@@ -66,11 +66,11 @@ def _handle_dynamic_imports() -> None:
 
 class CommandTemplateManager:
     __slots__ = (
-        "_command_storage_manager",
         "_task_manager",
         "_import_manager",
         "_display_manager",
         "_database_manager",
+        "_command_storage_manager",
         "_value_cache_database_manager",
         "_persistent_cache_database_manager",
     )
@@ -126,14 +126,10 @@ class CommandTemplateManager:
             ),
         ))
 
-    @_DecoratorManager.command_decorator
     def run_command_template_apply(
         self,
         **kwargs: Any
     ) -> bool:
-        if not kwargs:
-            return False
-
         def handle_target_root() -> bool:
             destination_temporary_target_filesystem_path = (
                 f"{temporary_template_output_filesystem_path}/root/filesystem"
@@ -377,6 +373,12 @@ class CommandTemplateManager:
         self._task_manager.run_task_filesystem_clean_exclude_setup()
         self._task_manager.run_task_filesystem_clean_include_setup()
 
+        if not kwargs:
+            self._import_manager.log_cache_warning_to_file(
+                message="invalid arguments"
+            )
+            return False
+
         targets = kwargs.get("targets", ["all"])
         if not targets or len(targets) < 1:
             targets = ["all"]
@@ -444,9 +446,6 @@ class CommandTemplateManager:
             )
 
         for target in targets:
-            if not target:
-                continue
-
             if target == "all":
                 handle_target_root()
                 handle_target_group()
@@ -471,6 +470,11 @@ class CommandTemplateManager:
                     target
                 )
 
+            else:
+                self._import_manager.log_cache_warning_to_file(
+                    message=f"'{target}' is not a valid template"
+                )
+
         if cleanup_after_is_enabled:
             self._task_manager.run_task_safe_clean_filesystem_path(
                 target_path=temporary_template_output_filesystem_path
@@ -478,7 +482,6 @@ class CommandTemplateManager:
 
         return True
 
-    @_DecoratorManager.command_decorator
     def run_command_template_list_selections(
         self,
         **kwargs: Any

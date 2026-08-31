@@ -87,6 +87,7 @@ class ConsoleManager:
         "_import_manager",
         "_database_manager",
         "_value_cache_database_manager",
+        "_raw_string_console_arguments",
     )
 
     def __init__(self) -> None:
@@ -132,39 +133,38 @@ class ConsoleManager:
         self._application: _argparse.ArgumentParser = (
             _argparse.ArgumentParser()
         )
+        self._raw_string_console_arguments = ""
         self._commands = self._application.add_subparsers(
             dest="command",
             metavar="",
         )
 
-    @_DecoratorManager.multi_task_decorator
     def run(self) -> bool:
-        self.setup()
+        self.setup_commands()
 
-        try:
-            arguments = self.read_arguments()
+        arguments = self.read_arguments()
 
-            command_handler = getattr(
-                arguments,
-                "command_handler",
-                None,
+        command_handler = getattr(
+            arguments,
+            "command_handler",
+            None,
+        )
+
+        if command_handler is not None:
+            command_handler(
+                arguments
             )
 
-            if command_handler is not None:
-                command_handler(
-                    arguments
-                )
-
-            else:
-                self._application.print_help()
-
-        finally:
-            pass
+        else:
+            self._application.print_help()
 
         return True
 
     @_DecoratorManager.multi_task_decorator
     def setup_about_command(self) -> bool:
+        if self.is_command_not_found("about"):
+            return True
+
         def about_version(
             arguments: _argparse.Namespace,
         ) -> bool:
@@ -197,6 +197,9 @@ class ConsoleManager:
 
     @_DecoratorManager.multi_task_decorator
     def setup_database_command(self) -> bool:
+        if self.is_command_not_found("database"):
+            return True
+
         def database_view_disk_cache(
             arguments: _argparse.Namespace,
         ) -> bool:
@@ -308,6 +311,9 @@ class ConsoleManager:
 
     @_DecoratorManager.multi_task_decorator
     def setup_debug_command(self) -> bool:
+        if self.is_command_not_found("debug"):
+            return True
+
         def debug_view_value_cache(
             arguments: _argparse.Namespace,
         ) -> bool:
@@ -395,6 +401,9 @@ class ConsoleManager:
 
     @_DecoratorManager.multi_task_decorator
     def setup_filesystem_command(self) -> bool:
+        if self.is_command_not_found("filesystem"):
+            return True
+
         def filesystem_copy(
             arguments: _argparse.Namespace,
         ) -> bool:
@@ -575,7 +584,7 @@ class ConsoleManager:
 
         application_filesystem_tree_setup = (
             application_filesystem_tree_commands.add_parser(
-                "setup",
+                "setup_commands",
                 help="Setup filesystem tree.",
             )
         )
@@ -705,6 +714,9 @@ class ConsoleManager:
 
     @_DecoratorManager.multi_task_decorator
     def setup_workspace_command(self) -> bool:
+        if self.is_command_not_found("workspace"):
+            return True
+
         def workspace_export(
             arguments: _argparse.Namespace,
         ) -> bool:
@@ -813,8 +825,8 @@ class ConsoleManager:
 
         application_workspace_setup = (
             application_workspace_commands.add_parser(
-                "setup",
-                help="Complete workspace setup.",
+                "setup_commands",
+                help="Complete workspace setup_commands.",
             )
         )
 
@@ -882,6 +894,9 @@ class ConsoleManager:
         return True
 
     def setup_template_command(self) -> bool:
+        if self.is_command_not_found("template"):
+            return True
+
         def template_apply(
             arguments: _argparse.Namespace,
         ) -> bool:
@@ -959,6 +974,9 @@ class ConsoleManager:
 
     @_DecoratorManager.multi_task_decorator
     def setup_workflow_command(self) -> bool:
+        if self.is_command_not_found("workflow"):
+            return True
+
         def workflow_run(
             arguments: _argparse.Namespace,
         ) -> bool:
@@ -1041,7 +1059,11 @@ class ConsoleManager:
         return arguments
 
     @_DecoratorManager.multi_task_decorator
-    def setup(self) -> bool:
+    def setup_commands(self) -> bool:
+        self._raw_string_console_arguments = (
+            self._import_manager.read_system_console_argument_string()
+        )
+
         self.setup_about_command()
         self.setup_workflow_command()
         self.setup_workspace_command()
@@ -1057,3 +1079,10 @@ class ConsoleManager:
         self._task_manager.run_task_full_shutdown()
 
         return True
+
+    def is_command_not_found(self, base_name: str) -> bool:
+        return (
+            base_name not in self._raw_string_console_arguments and
+            "-h" not in self._raw_string_console_arguments and
+            "--help" not in self._raw_string_console_arguments
+        )

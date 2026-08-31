@@ -134,9 +134,11 @@ class CommandDatabaseManager:
             ),
         ))
 
-    @_DecoratorManager.command_decorator
     def run_command_database_view_disk(self, **kwargs: Any) -> bool:
         if not kwargs:
+            self._import_manager.log_cache_warning_to_file(
+                message="invalid arguments"
+            )
             return False
 
         self._task_manager.run_task_full_debug_disk_cache_setup()
@@ -165,9 +167,11 @@ class CommandDatabaseManager:
 
         return True
 
-    @_DecoratorManager.command_decorator
     def run_command_database_view_value(self, **kwargs: Any) -> bool:
         if not kwargs:
+            self._import_manager.log_cache_warning_to_file(
+                message="invalid arguments"
+            )
             return False
 
         key_paths = kwargs.get("key_paths", [])
@@ -192,7 +196,6 @@ class CommandDatabaseManager:
 
         return True
 
-    @_DecoratorManager.command_decorator
     def run_command_database_clear_disk(self, **kwargs: Any) -> bool:
         self._task_manager.run_task_full_debug_disk_cache_setup()
 
@@ -211,7 +214,6 @@ class CommandDatabaseManager:
 
         return True
 
-    @_DecoratorManager.command_decorator
     def run_command_database_clear_value(self, **kwargs: Any) -> bool:
         self._import_manager.clear_all_values_via_value_cache()
 
