@@ -78,6 +78,8 @@ jobs:
             working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/about/suite/help"
             template-directory: "./test/qlogicae_logis/v3/template/empty"
 
+
+
           - command: "qlogicae-logis about --help"
             working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/about/suite/help"
             template-directory: "./test/qlogicae_logis/v3/template/empty"
@@ -102,42 +104,8 @@ jobs:
             working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/about/version/suite/empty"
             template-directory: "./test/qlogicae_logis/v3/template/empty"
 
-        python-version:
-          - "3.14"
-          - "3.13"
-          - "3.12"
+            
 
-    steps:
-      - uses: actions/checkout@v4
-      
-      - uses: ./.github/actions/setup-e2e-testing-environment
-        with:
-          python-version: ${{ matrix.python-version }}
-          source-path: ${{ matrix.targets.template-directory }}
-          target-path: ${{ matrix.targets.working-directory }}
-
-      - name: Copy Template
-        shell: bash
-        run: "cp -r ${{ matrix.targets.template-directory }} ${{ matrix.targets.working-directory }}"
-
-      - name: Run '${{ matrix.targets.command }}' Command
-        run: ${{ matrix.targets.command }}
-
-
-  v3-e2e-testing-command-workflow:
-    name: "Python ${{ matrix.python-version }} | V3 | E2E Testing | Command | '${{ matrix.targets.command }}'"
-    runs-on: ubuntu-latest
-    needs: pypi-package-upload-wait
-
-    defaults:
-      run:
-        working-directory: ${{ matrix.targets.working-directory }}
-
-    strategy:
-      fail-fast: false
-
-      matrix:
-        targets:
           - command: "qlogicae-logis workflow -h"
             working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/workflow/suite/help"
             template-directory: "./test/qlogicae_logis/v3/template/empty"
@@ -174,37 +142,12 @@ jobs:
             working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/workflow/list/selections/suite/empty"
             template-directory: "./test/qlogicae_logis/v3/template/empty"
 
-        python-version:
-          - "3.14"
-          - "3.13"
-          - "3.12"
+          - command: "qlogicae-logis workflow list selections"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/workflow/list/selections/suite/common"
+            template-directory: "./test/qlogicae_logis/v3/template/common"
 
-    steps:
-      - uses: actions/checkout@v4
-      
-      - uses: ./.github/actions/setup-e2e-testing-environment
-        with:
-          python-version: ${{ matrix.python-version }}
-          source-path: ${{ matrix.targets.template-directory }}
-          target-path: ${{ matrix.targets.working-directory }}
 
-      - name: Run '${{ matrix.targets.command }}' Command
-        run: ${{ matrix.targets.command }}
 
-  v3-e2e-testing-command-template:
-    name: "Python ${{ matrix.python-version }} | V3 | E2E Testing | Command | '${{ matrix.targets.command }}'"
-    runs-on: ubuntu-latest
-    needs: pypi-package-upload-wait
-
-    defaults:
-      run:
-        working-directory: ${{ matrix.targets.working-directory }}
-
-    strategy:
-      fail-fast: false
-
-      matrix:
-        targets:
           - command: "qlogicae-logis template -h"
             working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/template/suite/help"
             template-directory: "./test/qlogicae_logis/v3/template/empty"
@@ -241,39 +184,12 @@ jobs:
             working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/template/list/selections/suite/empty"
             template-directory: "./test/qlogicae_logis/v3/template/empty"
 
-        python-version:
-          - "3.14"
-          - "3.13"
-          - "3.12"
-
-    steps:
-      - uses: actions/checkout@v4
-      
-      - uses: ./.github/actions/setup-e2e-testing-environment
-        with:
-          python-version: ${{ matrix.python-version }}
-          source-path: ${{ matrix.targets.template-directory }}
-          target-path: ${{ matrix.targets.working-directory }}
-
-      - name: Run '${{ matrix.targets.command }}' Command
-        run: ${{ matrix.targets.command }}
+          - command: "qlogicae-logis template list selections"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/template/list/selections/suite/common"
+            template-directory: "./test/qlogicae_logis/v3/template/common"
 
 
 
-  v3-e2e-testing-command-debug:
-    name: "Python ${{ matrix.python-version }} | V3 | E2E Testing | Command | '${{ matrix.targets.command }}'"
-    runs-on: ubuntu-latest
-    needs: pypi-package-upload-wait
-
-    defaults:
-      run:
-        working-directory: ${{ matrix.targets.working-directory }}
-
-    strategy:
-      fail-fast: false
-
-      matrix:
-        targets:
           - command: "qlogicae-logis debug -h"
             working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/debug/suite/help"
             template-directory: "./test/qlogicae_logis/v3/template/empty"
@@ -310,6 +226,10 @@ jobs:
             working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/debug/view/value-cache/suite/empty"
             template-directory: "./test/qlogicae_logis/v3/template/empty"
 
+          - command: "qlogicae-logis debug view value-cache"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/debug/view/value-cache/suite/common"
+            template-directory: "./test/qlogicae_logis/v3/template/common"
+
           - command: "qlogicae-logis debug view disk-cache -h"
             working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/debug/view/suite/help"
             template-directory: "./test/qlogicae_logis/v3/template/empty"
@@ -322,40 +242,12 @@ jobs:
             working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/debug/view/disk-cache/suite/empty"
             template-directory: "./test/qlogicae_logis/v3/template/empty"
 
-        python-version:
-          - "3.14"
-          - "3.13"
-          - "3.12"
-
-    steps:
-      - uses: actions/checkout@v4
-      
-      - uses: ./.github/actions/setup-e2e-testing-environment
-        with:
-          python-version: ${{ matrix.python-version }}
-          source-path: ${{ matrix.targets.template-directory }}
-          target-path: ${{ matrix.targets.working-directory }}
-
-      - name: Run '${{ matrix.targets.command }}' Command
-        run: ${{ matrix.targets.command }}
+          - command: "qlogicae-logis debug view disk-cache"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/debug/view/disk-cache/suite/common"
+            template-directory: "./test/qlogicae_logis/v3/template/common"
 
 
 
-    
-  v3-e2e-testing-command-filesystem:
-    name: "Python ${{ matrix.python-version }} | V3 | E2E Testing | Command | '${{ matrix.targets.command }}'"
-    runs-on: ubuntu-latest
-    needs: pypi-package-upload-wait
-
-    defaults:
-      run:
-        working-directory: ${{ matrix.targets.working-directory }}
-
-    strategy:
-      fail-fast: false
-
-      matrix:
-        targets:
           - command: "qlogicae-logis filesystem -h"
             working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/filesystem/suite/help"
             template-directory: "./test/qlogicae_logis/v3/template/empty"
@@ -416,6 +308,10 @@ jobs:
             working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/filesystem/list/clean/included/suite/empty"
             template-directory: "./test/qlogicae_logis/v3/template/empty"
 
+          - command: "qlogicae-logis filesystem list clean included"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/filesystem/list/clean/included/suite/common"
+            template-directory: "./test/qlogicae_logis/v3/template/common"
+
           - command: "qlogicae-logis filesystem list clean excluded -h"
             working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/filesystem/list/clean/suite/help"
             template-directory: "./test/qlogicae_logis/v3/template/empty"
@@ -428,40 +324,12 @@ jobs:
             working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/filesystem/list/clean/excluded/suite/empty"
             template-directory: "./test/qlogicae_logis/v3/template/empty"
 
-        python-version:
-          - "3.14"
-          - "3.13"
-          - "3.12"
-
-    steps:
-      - uses: actions/checkout@v4
-      
-      - uses: ./.github/actions/setup-e2e-testing-environment
-        with:
-          python-version: ${{ matrix.python-version }}
-          source-path: ${{ matrix.targets.template-directory }}
-          target-path: ${{ matrix.targets.working-directory }}
-
-      - name: Run '${{ matrix.targets.command }}' Command
-        run: ${{ matrix.targets.command }}
+          - command: "qlogicae-logis filesystem list clean excluded"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/filesystem/list/clean/excluded/suite/common"
+            template-directory: "./test/qlogicae_logis/v3/template/common"
 
 
 
-
-  v3-e2e-testing-command-workspace:
-    name: "Python ${{ matrix.python-version }} | V3 | E2E Testing | Command | '${{ matrix.targets.command }}'"
-    runs-on: ubuntu-latest
-    needs: pypi-package-upload-wait
-
-    defaults:
-      run:
-        working-directory: ${{ matrix.targets.working-directory }}
-
-    strategy:
-      fail-fast: false
-
-      matrix:
-        targets:
           - command: "qlogicae-logis workspace -h"
             working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/workspace/suite/help"
             template-directory: "./test/qlogicae_logis/v3/template/empty"
@@ -521,6 +389,10 @@ jobs:
           - command: "qlogicae-logis workspace list exports"
             working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/workspace/list/exports/suite/empty"
             template-directory: "./test/qlogicae_logis/v3/template/empty"
+
+          - command: "qlogicae-logis workspace list exports"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/workspace/list/exports/suite/common"
+            template-directory: "./test/qlogicae_logis/v3/template/common"
 
         python-version:
           - "3.14"
