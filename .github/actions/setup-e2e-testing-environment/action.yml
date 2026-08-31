@@ -1,0 +1,27 @@
+name: 'Setup PyPI Package in venv'
+description: 'Checkout, set up Python, create venv, install a package from PyPI into it'
+
+inputs:
+  python-version:
+    description: 'Python version to set up'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ inputs.python-version }}
+
+    - name: Setup Virtual Environment
+      shell: bash
+      run: python3 -m venv .venv
+
+    - name: Install Package
+      shell: bash
+      run: |
+        source .venv/bin/activate
+        pip install qlogicae-logis

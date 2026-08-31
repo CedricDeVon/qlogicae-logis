@@ -46,21 +46,9 @@ jobs:
           - "3.12"
 
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      - uses: ./.github/actions/setup-e2e-testing-environment
         with:
           python-version: ${{ matrix.python-version }}
-
-      - name: Setup Virtual Environment
-        run: python3 -m venv .venv
-
-      - name: Activate Virtual Environment
-        run: source .venv/bin/activate
-
-      - name: Install Package
-        run: pip install qlogicae-logis
 
       - name: Run '${{ matrix.targets.command }}' Command
         run: ${{ matrix.targets.command }}
@@ -107,21 +95,9 @@ jobs:
           - "3.12"
 
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      - uses: ./.github/actions/setup-e2e-testing-environment
         with:
           python-version: ${{ matrix.python-version }}
-
-      - name: Setup Virtual Environment
-        run: python3 -m venv .venv
-
-      - name: Activate Virtual Environment
-        run: source .venv/bin/activate
-
-      - name: Install Package
-        run: pip install qlogicae-logis
 
       - name: Run '${{ matrix.targets.command }}' Command
         run: ${{ matrix.targets.command }}
@@ -174,21 +150,9 @@ jobs:
           - "3.12"
 
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      - uses: ./.github/actions/setup-e2e-testing-environment
         with:
           python-version: ${{ matrix.python-version }}
-
-      - name: Setup Virtual Environment
-        run: python3 -m venv .venv
-
-      - name: Activate Virtual Environment
-        run: source .venv/bin/activate
-
-      - name: Install Package
-        run: pip install qlogicae-logis
 
       - name: Run '${{ matrix.targets.command }}' Command
         run: ${{ matrix.targets.command }}
@@ -242,21 +206,9 @@ jobs:
           - "3.12"
 
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      - uses: ./.github/actions/setup-e2e-testing-environment
         with:
           python-version: ${{ matrix.python-version }}
-
-      - name: Setup Virtual Environment
-        run: python3 -m venv .venv
-
-      - name: Activate Virtual Environment
-        run: source .venv/bin/activate
-
-      - name: Install Package
-        run: pip install qlogicae-logis
 
       - name: Run '${{ matrix.targets.command }}' Command
         run: ${{ matrix.targets.command }}
@@ -319,21 +271,9 @@ jobs:
           - "3.12"
 
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      - uses: ./.github/actions/setup-e2e-testing-environment
         with:
           python-version: ${{ matrix.python-version }}
-
-      - name: Setup Virtual Environment
-        run: python3 -m venv .venv
-
-      - name: Activate Virtual Environment
-        run: source .venv/bin/activate
-
-      - name: Install Package
-        run: pip install qlogicae-logis
 
       - name: Run '${{ matrix.targets.command }}' Command
         run: ${{ matrix.targets.command }}
@@ -415,21 +355,9 @@ jobs:
           - "3.12"
 
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      - uses: ./.github/actions/setup-e2e-testing-environment
         with:
           python-version: ${{ matrix.python-version }}
-
-      - name: Setup Virtual Environment
-        run: python3 -m venv .venv
-
-      - name: Activate Virtual Environment
-        run: source .venv/bin/activate
-
-      - name: Install Package
-        run: pip install qlogicae-logis
 
       - name: Run '${{ matrix.targets.command }}' Command
         run: ${{ matrix.targets.command }}
@@ -502,21 +430,9 @@ jobs:
           - "3.12"
 
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      - uses: ./.github/actions/setup-e2e-testing-environment
         with:
           python-version: ${{ matrix.python-version }}
-
-      - name: Setup Virtual Environment
-        run: python3 -m venv .venv
-
-      - name: Activate Virtual Environment
-        run: source .venv/bin/activate
-
-      - name: Install Package
-        run: pip install qlogicae-logis
 
       - name: Run '${{ matrix.targets.command }}' Command
         run: ${{ matrix.targets.command }}
@@ -541,23 +457,9 @@ jobs:
           - "3.12"
 
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      - uses: ./.github/actions/setup-hatch-environment
         with:
           python-version: ${{ matrix.python-version }}
-
-      - name: Install Hatch
-        run: |
-          python -m pip install --upgrade pip
-          pip install hatch
-
-      - name: Install Dev Dependencies
-        run: python3 -m pip install -r requirements.txt
-
-      - name: Create Hatch environment
-        run: hatch env create
 
       - name: Run Script        
         run: hatch run github-workflow-test-type-check
@@ -582,24 +484,10 @@ jobs:
           - "3.12"
 
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      - uses: ./.github/actions/setup-hatch-environment
         with:
           python-version: ${{ matrix.python-version }}
-
-      - name: Install Hatch
-        run: |
-          python -m pip install --upgrade pip
-          pip install hatch
-
-      - name: Install Dev Dependencies
-        run: python3 -m pip install -r requirements.txt
-
-      - name: Create Hatch environment
-        run: hatch env create
-
+          
       - name: Run Script        
         run: hatch run github-workflow-test-lint
 
@@ -623,23 +511,9 @@ jobs:
           - "3.12"
 
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      - uses: ./.github/actions/setup-hatch-environment
         with:
           python-version: ${{ matrix.python-version }}
-
-      - name: Install Hatch
-        run: |
-          python -m pip install --upgrade pip
-          pip install hatch
-
-      - name: Install Dev Dependencies
-        run: python3 -m pip install -r requirements.txt
-
-      - name: Create Hatch environment
-        run: hatch env create
-
+          
       - name: Run Script
         run: hatch run github-workflow-test-import-references
