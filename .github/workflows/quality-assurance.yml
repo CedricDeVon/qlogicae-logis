@@ -453,11 +453,11 @@ jobs:
             working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/filesystem/clean/path/suite/help"
             template-directory: "./test/qlogicae_logis/v3/template/help"
 
-          - command: "qlogicae-logis filesystem clean path -t qlogicae-logis-v3-public.zip"
+          - command: "qlogicae-logis filesystem clean path -t qlogicae-logis-v3.zip"
             working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/filesystem/clean/path/suite/empty"
             template-directory: "./test/qlogicae_logis/v3/template/empty"
 
-          - command: "qlogicae-logis filesystem clean path -t qlogicae-logis-v3-public.zip"
+          - command: "qlogicae-logis filesystem clean path -t qlogicae-logis-v3.zip"
             working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/filesystem/clean/path/suite/common"
             template-directory: "./test/qlogicae_logis/v3/template/common"
 
@@ -590,11 +590,11 @@ jobs:
             working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/workspace/import/suite/help"
             template-directory: "./test/qlogicae_logis/v3/template/help"
 
-          - command: "qlogicae-logis workspace import -t qlogicae-logis-v3-public.zip"
+          - command: "qlogicae-logis workspace import -t qlogicae-logis-v3.zip"
             working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/workspace/import/suite/empty"
             template-directory: "./test/qlogicae_logis/v3/template/empty"
 
-          - command: "qlogicae-logis workspace import -t qlogicae-logis-v3-public.zip"
+          - command: "qlogicae-logis workspace import -t qlogicae-logis-v3.zip"
             working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/workspace/import/suite/common"
             template-directory: "./test/qlogicae_logis/v3/template/common"
 
