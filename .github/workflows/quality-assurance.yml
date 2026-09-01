@@ -186,6 +186,14 @@ jobs:
             working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/workflow/run/suite/common"
             template-directory: "./test/qlogicae_logis/v3/template/common"
 
+          - command: "qlogicae-logis workflow run --target demo-workflow-main-group"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/workflow/run/suite/empty"
+            template-directory: "./test/qlogicae_logis/v3/template/empty"
+
+          - command: "qlogicae-logis workflow run --target demo-workflow-main-group"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/workflow/run/suite/common"
+            template-directory: "./test/qlogicae_logis/v3/template/common"
+
         python-version:
           - "3.14"
           - "3.13"
@@ -266,6 +274,22 @@ jobs:
             working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/template/apply/suite/common"
             template-directory: "./test/qlogicae_logis/v3/template/common"
 
+          - command: "qlogicae-logis template apply -t demo-project-1"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/template/apply/suite/empty"
+            template-directory: "./test/qlogicae_logis/v3/template/empty"
+
+          - command: "qlogicae-logis template apply -t demo-project-1"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/template/apply/suite/common"
+            template-directory: "./test/qlogicae_logis/v3/template/common"
+
+          - command: "qlogicae-logis template apply --target demo-project-1"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/template/apply/suite/empty"
+            template-directory: "./test/qlogicae_logis/v3/template/empty"
+
+          - command: "qlogicae-logis template apply --target demo-project-1"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/template/apply/suite/common"
+            template-directory: "./test/qlogicae_logis/v3/template/common"
+
         python-version:
           - "3.14"
           - "3.13"
@@ -336,6 +360,22 @@ jobs:
             template-directory: "./test/qlogicae_logis/v3/template/empty"
 
           - command: "qlogicae-logis debug view value-cache"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/debug/view/value-cache/suite/common"
+            template-directory: "./test/qlogicae_logis/v3/template/common"
+
+          - command: "qlogicae-logis debug view value-cache -kp macros"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/debug/view/value-cache/suite/empty"
+            template-directory: "./test/qlogicae_logis/v3/template/empty"
+
+          - command: "qlogicae-logis debug view value-cache -kp macros"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/debug/view/value-cache/suite/common"
+            template-directory: "./test/qlogicae_logis/v3/template/common"
+
+          - command: "qlogicae-logis debug view value-cache --key-path macros"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/debug/view/value-cache/suite/empty"
+            template-directory: "./test/qlogicae_logis/v3/template/empty"
+
+          - command: "qlogicae-logis debug view value-cache --key-path macros"
             working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/debug/view/value-cache/suite/common"
             template-directory: "./test/qlogicae_logis/v3/template/common"
 
@@ -437,6 +477,14 @@ jobs:
             working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/filesystem/tree/setup/suite/common"
             template-directory: "./test/qlogicae_logis/v3/template/common"
 
+          - command: "qlogicae-logis filesystem tree setup --target a/b/c"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/filesystem/tree/setup/suite/empty"
+            template-directory: "./test/qlogicae_logis/v3/template/empty"
+
+          - command: "qlogicae-logis filesystem tree setup --target a/b/c"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/filesystem/tree/setup/suite/common"
+            template-directory: "./test/qlogicae_logis/v3/template/common"
+
           - command: "qlogicae-logis filesystem clean -h"
             working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/filesystem/clean/suite/help"
             template-directory: "./test/qlogicae_logis/v3/template/help"
@@ -458,6 +506,14 @@ jobs:
             template-directory: "./test/qlogicae_logis/v3/template/empty"
 
           - command: "qlogicae-logis filesystem clean path -t qlogicae-logis-v3.zip"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/filesystem/clean/path/suite/common"
+            template-directory: "./test/qlogicae_logis/v3/template/common"
+
+          - command: "qlogicae-logis filesystem clean path --target qlogicae-logis-v3.zip"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/filesystem/clean/path/suite/empty"
+            template-directory: "./test/qlogicae_logis/v3/template/empty"
+
+          - command: "qlogicae-logis filesystem clean path --target qlogicae-logis-v3.zip"
             working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/filesystem/clean/path/suite/common"
             template-directory: "./test/qlogicae_logis/v3/template/common"
 
@@ -590,11 +646,19 @@ jobs:
             working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/workspace/import/suite/help"
             template-directory: "./test/qlogicae_logis/v3/template/help"
 
-          - command: "qlogicae-logis workspace import -t qlogicae-logis-v3"
+          - command: "qlogicae-logis workspace import -ip qlogicae-logis-v3.zip -op output"
             working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/workspace/import/suite/empty"
             template-directory: "./test/qlogicae_logis/v3/template/empty"
 
-          - command: "qlogicae-logis workspace import -t qlogicae-logis-v3"
+          - command: "qlogicae-logis workspace import -ip qlogicae-logis-v3.zip -op output"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/workspace/import/suite/common"
+            template-directory: "./test/qlogicae_logis/v3/template/common"
+
+          - command: "qlogicae-logis workspace import --input-path qlogicae-logis-v3.zip --output-path output"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/workspace/import/suite/empty"
+            template-directory: "./test/qlogicae_logis/v3/template/empty"
+
+          - command: "qlogicae-logis workspace import --input-path qlogicae-logis-v3.zip --output-path output"
             working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/workspace/import/suite/common"
             template-directory: "./test/qlogicae_logis/v3/template/common"
 
@@ -627,6 +691,14 @@ jobs:
             template-directory: "./test/qlogicae_logis/v3/template/empty"
 
           - command: "qlogicae-logis workspace install -t demo-project-1"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/workspace/install/suite/common"
+            template-directory: "./test/qlogicae_logis/v3/template/common"
+
+          - command: "qlogicae-logis workspace install --target demo-project-1"
+            working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/workspace/install/suite/empty"
+            template-directory: "./test/qlogicae_logis/v3/template/empty"
+
+          - command: "qlogicae-logis workspace install --target demo-project-1"
             working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/workspace/install/suite/common"
             template-directory: "./test/qlogicae_logis/v3/template/common"
 

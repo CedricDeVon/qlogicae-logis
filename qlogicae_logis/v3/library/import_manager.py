@@ -1670,19 +1670,21 @@ class ImportManager:
             }
 
             if target_path in protected_paths:
-                raise ValueError(
-                    f"folder path '{target_path}' is protected"
-                )
+                continue
 
             if not target_path.exists():
-                return True
+                continue
 
-            for item in target_path.iterdir():
-                if item.is_file() or item.is_symlink():
-                    item.unlink()
+            if target_path.is_file() or target_path.is_symlink():
+                target_path.unlink()
+                continue
 
-                elif item.is_dir():
-                    _shutil.rmtree(item)
+            if target_path.is_dir():
+                for item in target_path.iterdir():
+                    if item.is_file() or item.is_symlink():
+                        item.unlink()
+                    elif item.is_dir():
+                        _shutil.rmtree(item)
 
         return True
 
@@ -1708,19 +1710,21 @@ class ImportManager:
         }
 
         if target_path in protected_paths:
-            raise ValueError(
-                f"folder path '{target_path}' is protected"
-            )
+            return False
 
         if not target_path.exists():
-            return True
+            return False
 
-        for item in target_path.iterdir():
-            if item.is_file() or item.is_symlink():
-                item.unlink()
+        if target_path.is_file() or target_path.is_symlink():
+            target_path.unlink()
+            return False
 
-            elif item.is_dir():
-                _shutil.rmtree(item)
+        if target_path.is_dir():
+            for item in target_path.iterdir():
+                if item.is_file() or item.is_symlink():
+                    item.unlink()
+                elif item.is_dir():
+                    _shutil.rmtree(item)
 
         return True
 
