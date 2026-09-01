@@ -590,11 +590,11 @@ jobs:
             working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/workspace/import/suite/help"
             template-directory: "./test/qlogicae_logis/v3/template/help"
 
-          - command: "qlogicae-logis workspace import -t qlogicae-logis-v3.zip"
+          - command: "qlogicae-logis workspace import -t qlogicae-logis-v3"
             working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/workspace/import/suite/empty"
             template-directory: "./test/qlogicae_logis/v3/template/empty"
 
-          - command: "qlogicae-logis workspace import -t qlogicae-logis-v3.zip"
+          - command: "qlogicae-logis workspace import -t qlogicae-logis-v3"
             working-directory: "./test/qlogicae_logis/v3/e2e/github/actions/command/workspace/import/suite/common"
             template-directory: "./test/qlogicae_logis/v3/template/common"
 
