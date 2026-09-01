@@ -456,6 +456,11 @@ class CommandWorkspaceManager:
         if not input_path or not output_path:
             return False
 
+        if not self._import_manager.is_filesystem_path_valid(
+            value=input_path
+        ):
+            return False
+
         self._import_manager.uncompress_zip(
             archive_path=input_path,
             destination_path=output_path,

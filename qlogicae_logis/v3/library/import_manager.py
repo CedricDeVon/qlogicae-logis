@@ -1384,21 +1384,21 @@ class ImportManager:
 
         return value
 
-    # def is_filesystem_path_valid(
-    #     self,
-    #     **kwargs: Any,
-    # ) -> bool:
-    #     if not kwargs:
-    #         return False
+    def is_filesystem_path_valid(
+        self,
+        **kwargs: Any,
+    ) -> bool:
+        if not kwargs:
+            return False
 
-    #     value: bool = _Path(
-    #         kwargs.get(
-    #             "value",
-    #             "",
-    #         )
-    #     ).exists()
+        value: bool = _Path(
+            kwargs.get(
+                "value",
+                "",
+            )
+        ).exists()
 
-    #     return value
+        return value
 
     def is_file_path_valid(
         self,
