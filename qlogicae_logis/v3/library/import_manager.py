@@ -1677,11 +1677,6 @@ class ImportManager:
             if not target_path.exists():
                 return True
 
-            if not target_path.is_dir():
-                raise ValueError(
-                    f"file path '{target_path}' is not a folder"
-                )
-
             for item in target_path.iterdir():
                 if item.is_file() or item.is_symlink():
                     item.unlink()
@@ -1719,11 +1714,6 @@ class ImportManager:
 
         if not target_path.exists():
             return True
-
-        if not target_path.is_dir():
-            raise ValueError(
-                f"file path '{target_path}' is not a folder"
-            )
 
         for item in target_path.iterdir():
             if item.is_file() or item.is_symlink():

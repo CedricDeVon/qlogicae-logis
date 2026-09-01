@@ -584,7 +584,7 @@ class ConsoleManager:
 
         application_filesystem_tree_setup = (
             application_filesystem_tree_commands.add_parser(
-                "setup_commands",
+                "setup",
                 help="Setup filesystem tree.",
             )
         )

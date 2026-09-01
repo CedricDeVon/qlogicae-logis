@@ -421,7 +421,7 @@ class DatabaseManager:
         data: Any
     ) -> Any:
         if not data:
-            raise ValueError("arguments must not be null")
+            return {}
 
         return { value for _key, value in data.items() }
 
