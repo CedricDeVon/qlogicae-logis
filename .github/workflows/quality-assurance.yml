@@ -777,7 +777,7 @@ jobs:
           source-path: ${{ matrix.targets.template-directory }}
           target-path: ${{ matrix.targets.working-directory }}
 
-          
+  
 
       - run: qlogicae-logis about version
 
@@ -797,7 +797,7 @@ jobs:
 
       - run: qlogicae-logis debug view value-cache
 
-      - run: qlogicae-logis debug view value-cache --target debug
+      - run: qlogicae-logis debug view value-cache --key-path debug
 
       - run: qlogicae-logis debug view disk-cache
 
@@ -826,6 +826,16 @@ jobs:
       - run: qlogicae-logis template apply --target demo-group-1      
       
       - run: qlogicae-logis template apply --target all
+
+
+
+      - run: qlogicae-logis workflow list selections
+
+      - run: qlogicae-logis workflow run -t demo-workflow-project
+
+      - run: qlogicae-logis workflow run -t demo-workflow-sub-project
+
+      - run: qlogicae-logis workflow run -t demo-workflow-main-group
 
 
 
