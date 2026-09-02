@@ -40,3 +40,42 @@ runs:
       shell: bash
       run: echo "$PWD/.venv/bin" >> "$GITHUB_PATH"
 
+
+    # - name: Setup Virtual Environment
+    #   shell: bash
+    #   run: python3 -m venv .venv
+
+    # - name: Activate Environment
+    #   shell: bash
+    #   run: |
+    #     source .venv/bin/activate
+
+    # - name: Install Hatch
+    #   shell: bash
+    #   run: |
+    #     python -m pip install --upgrade pip
+    #     pip install hatch
+
+    # - name: Install Dev Dependencies
+    #   shell: bash
+    #   run: python3 -m pip install -r requirements.txt
+
+    # - name: Create Hatch environment
+    #   shell: bash
+    #   run: hatch env create
+
+    # - name: Local Deploy
+    #   shell: bash
+    #   run: |
+    #     hatch run github-workflow-test-e2e-setup        
+
+    # - name: Setup Template
+    #   shell: bash
+    #   run: |
+    #     mkdir -p "${{ inputs.target-path }}"
+    #     cp -r "${{ inputs.source-path }}/." "${{ inputs.target-path }}/"
+
+    # - name: Add venv to PATH
+    #   shell: bash
+    #   run: echo "$PWD/.venv/bin" >> "$GITHUB_PATH"
+
