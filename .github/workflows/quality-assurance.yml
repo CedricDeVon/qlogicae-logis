@@ -775,66 +775,136 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           source-path: ${{ matrix.targets.template-directory }}
-          target-path: ${{ matrix.targets.working-directory }}
+          target-path: ${{ matrix.targets.working-directory }}  
 
-  
+      - run: qlogicae-logis about -h
+      - run: qlogicae-logis about --help
 
+      - run: qlogicae-logis about version -h
+      - run: qlogicae-logis about version --help
+      - run: qlogicae-logis about version -h
+      - run: qlogicae-logis about version --help
       - run: qlogicae-logis about version
 
 
 
-      - run: qlogicae-logis workspace import -ip qlogicae-logis-v3.zip -op .
+      - run: qlogicae-logis workspace -h
+      - run: qlogicae-logis workspace --help
 
-      - run: qlogicae-logis workspace replenish
+      - run: qlogicae-logis workspace setup -h
+      - run: qlogicae-logis workspace setup --help
 
-      - run: qlogicae-logis workspace install --target demo-project-1
-
+      - run: qlogicae-logis workspace list exports -h
+      - run: qlogicae-logis workspace list exports --help
       - run: qlogicae-logis workspace list exports
 
+      - run: qlogicae-logis workspace export -h
+      - run: qlogicae-logis workspace export --help
       - run: qlogicae-logis workspace export --target all
+      
+      - run: qlogicae-logis workspace import -h
+      - run: qlogicae-logis workspace import --help
+      - run: qlogicae-logis workspace import -ip qlogicae-logis-v3.zip -op .
+      
+      - run: qlogicae-logis workspace replenish -h
+      - run: qlogicae-logis workspace replenish --help
+      - run: qlogicae-logis workspace replenish
+      
+      - run: qlogicae-logis workspace install -h
+      - run: qlogicae-logis workspace install --help
+      - run: qlogicae-logis workspace install --target demo-project-1
 
 
 
+      - run: qlogicae-logis debug -h
+      - run: qlogicae-logis debug --help
+
+      - run: qlogicae-logis debug view -h
+      - run: qlogicae-logis debug view --help
+
+      - run: qlogicae-logis debug view value-cache -h
+      - run: qlogicae-logis debug view value-cache --help  
       - run: qlogicae-logis debug view value-cache
-
       - run: qlogicae-logis debug view value-cache --key-path debug
-
+      
+      - run: qlogicae-logis debug view disk-cache -h
+      - run: qlogicae-logis debug view disk-cache --help
       - run: qlogicae-logis debug view disk-cache
 
 
+      
+      - run: qlogicae-logis filesystem -h
+      - run: qlogicae-logis filesystem --help
 
-      - run: qlogicae-logis filesystem tree setup --target a/b/c
-
+      - run: qlogicae-logis filesystem copy -h
+      - run: qlogicae-logis filesystem copy --help
       - run: qlogicae-logis filesystem copy --source-path qlogicae-logis-v3.zip --target-paths a.zip
-
+      
+      - run: qlogicae-logis filesystem move -h
+      - run: qlogicae-logis filesystem move --help
       - run: qlogicae-logis filesystem move --source-path a.zip --target-path b.zip
-
+      
+      - run: qlogicae-logis filesystem tree -h
+      - run: qlogicae-logis filesystem tree --help
+      
+      - run: qlogicae-logis filesystem tree setup -h
+      - run: qlogicae-logis filesystem tree setup --help
+      - run: qlogicae-logis filesystem tree setup --target a/b/c
+      
+      - run: qlogicae-logis filesystem clean -h
+      - run: qlogicae-logis filesystem clean --help
+      
+      - run: qlogicae-logis filesystem clean path -h
+      - run: qlogicae-logis filesystem clean path --help
       - run: qlogicae-logis filesystem clean path --target b.zip
-
+      
+      - run: qlogicae-logis filesystem clean selection -h
       - run: qlogicae-logis filesystem clean selection --help
 
+      - run: qlogicae-logis filesystem list -h
+      - run: qlogicae-logis filesystem list --help
+      
+      - run: qlogicae-logis filesystem list clean included -h
+      - run: qlogicae-logis filesystem list clean included --help
       - run: qlogicae-logis filesystem list clean included
-
+      
+      - run: qlogicae-logis filesystem list clean excluded -h
+      - run: qlogicae-logis filesystem list clean excluded --help
       - run: qlogicae-logis filesystem list clean excluded
 
 
 
-      - run: qlogicae-logis template list selections
-      
-      - run: qlogicae-logis template apply --target demo-project-1
+      - run: qlogicae-logis template -h
+      - run: qlogicae-logis template --help
 
-      - run: qlogicae-logis template apply --target demo-group-1      
+      - run: qlogicae-logis template list -h
+      - run: qlogicae-logis template list --help
       
+      - run: qlogicae-logis template list selections -h
+      - run: qlogicae-logis template list selections --help
+      - run: qlogicae-logis template list selections    
+      
+      - run: qlogicae-logis template apply -h
+      - run: qlogicae-logis template apply --help
+      - run: qlogicae-logis template apply --target demo-project-1
+      - run: qlogicae-logis template apply --target demo-group-1          
       - run: qlogicae-logis template apply --target all
 
 
 
+      - run: qlogicae-logis workflow -h
+      - run: qlogicae-logis workflow --help
+
+      - run: qlogicae-logis workflow list -h
+      - run: qlogicae-logis workflow list --help
+      - run: qlogicae-logis workflow list selections -h
+      - run: qlogicae-logis workflow list selections --help
       - run: qlogicae-logis workflow list selections
-
+      
+      - run: qlogicae-logis workflow run -h
+      - run: qlogicae-logis workflow run --help
       - run: qlogicae-logis workflow run -t demo-workflow-project
-
       - run: qlogicae-logis workflow run -t demo-workflow-sub-project
-
       - run: qlogicae-logis workflow run -t demo-workflow-main-group
 
 
