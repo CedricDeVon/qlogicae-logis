@@ -805,7 +805,7 @@ jobs:
 
       - run: qlogicae-logis filesystem tree setup --target a/b/c
 
-      - run: qlogicae-logis filesystem copy --source-path qlogicae-logis-v3.zip --target-paths a.zip
+      - run: qlogicae-logis filesystem copy --source-path qlogicae-logis-v3.zip --target-path a.zip
 
       - run: qlogicae-logis filesystem move --source-path a.zip --target-path b.zip
 

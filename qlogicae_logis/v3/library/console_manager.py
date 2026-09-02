@@ -497,7 +497,7 @@ class ConsoleManager:
         )
 
         application_filesystem_copy.add_argument(
-            "--target-path",
+            "--target-paths",
             "-tp",
             dest="target_paths",
             required=True,
