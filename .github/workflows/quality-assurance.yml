@@ -745,9 +745,9 @@ jobs:
 
 
 
-  v3-e2e-testing-mixed:
+  v3-e2e-testing-mixed-usage:
     if: true
-    name: "Python ${{ matrix.python-version }} | V3 | E2E Testing | Usage"
+    name: "Python ${{ matrix.python-version }} | V3 | E2E Testing | Mixed Usage"
     runs-on: ubuntu-latest
     needs: pypi-package-upload-wait
 
@@ -838,7 +838,7 @@ jobs:
 
       - run: qlogicae-logis filesystem copy -h
       - run: qlogicae-logis filesystem copy --help
-      - run: qlogicae-logis filesystem copy --source-path qlogicae-logis-v3.zip --target-paths a.zip
+      - run: qlogicae-logis filesystem copy --source-paths qlogicae-logis-v3.zip --target-paths a.zip
       
       - run: qlogicae-logis filesystem move -h
       - run: qlogicae-logis filesystem move --help

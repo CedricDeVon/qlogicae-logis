@@ -34,20 +34,6 @@ class CommandStorageManager:
     def read_commands(self) -> dict[str, Any]:
         return self._commands
 
-    # def write_commands(self, value: dict[str, Any]) -> None:
-    #     if not value:
-    #         return
-
-    #     self._commands = value
-
-    # def add_command(self, name: str, callback: Any) -> bool:
-    #     if not name or not callback:
-    #         return False
-
-    #     self._commands[name] = callback
-
-    #     return True
-
     def add_commands(self, items: Any) -> bool:
         if not items:
             return False
@@ -67,6 +53,20 @@ class CommandStorageManager:
         self._commands[name]()
 
         return True
+
+    # def write_commands(self, value: dict[str, Any]) -> None:
+    #     if not value:
+    #         return
+
+    #     self._commands = value
+
+    # def add_command(self, name: str, callback: Any) -> bool:
+    #     if not name or not callback:
+    #         return False
+
+    #     self._commands[name] = callback
+
+    #     return True
 
     # def read_command(self, name: str) -> Any:
     #     if not name:

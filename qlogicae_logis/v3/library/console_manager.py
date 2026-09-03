@@ -140,7 +140,12 @@ class ConsoleManager:
         )
 
     def run(self) -> bool:
-        self.setup_commands()
+        result_value: bool = True
+        method_result: bool = True
+
+        method_result = self.setup_commands()
+        if not method_result:
+            result_value = False
 
         arguments = self.read_arguments()
 
@@ -149,16 +154,17 @@ class ConsoleManager:
             "command_handler",
             None,
         )
-
         if command_handler is not None:
-            command_handler(
+            method_result = command_handler(
                 arguments
             )
+            if not method_result:
+                result_value = False
 
         else:
             self._application.print_help()
 
-        return True
+        return result_value
 
     @_DecoratorManager.multi_task_decorator
     def setup_about_command(self) -> bool:
@@ -168,8 +174,10 @@ class ConsoleManager:
         def about_version(
             arguments: _argparse.Namespace,
         ) -> bool:
-            self._command_about_manager.run_command_about_version()
-            return True
+            command_result: bool = (
+                self._command_about_manager.run_command_about_version()
+            )
+            return command_result
 
         application_about = self._commands.add_parser(
             "about",
@@ -203,31 +211,38 @@ class ConsoleManager:
         def database_view_disk_cache(
             arguments: _argparse.Namespace,
         ) -> bool:
-            self._command_database_manager.run_command_database_view_disk(
-                key_paths=(arguments.key_paths or [])
+            command_result: bool = (
+                self._command_database_manager.run_command_database_view_disk(
+                    key_paths=(arguments.key_paths or [])
+                )
             )
-            return True
+            return command_result
 
         def database_view_value_cache(
             arguments: _argparse.Namespace,
         ) -> bool:
-            self._command_database_manager.run_command_database_view_value(
+            command_result: bool = (
+                self._command_database_manager.run_command_database_view_value(
                 key_paths=(arguments.key_paths or [])
+                )
             )
-            return True
+            return command_result
 
         def database_clear_disk_cache(
             arguments: _argparse.Namespace,
         ) -> bool:
-            self._command_database_manager.run_command_database_clear_disk()
-            return True
+            command_result: bool = (
+                self._command_database_manager.run_command_database_clear_disk()
+            )
+            return command_result
 
         def database_clear_value_cache(
             arguments: _argparse.Namespace,
         ) -> bool:
-            self._command_database_manager.run_command_database_clear_value()
-            return True
-
+            command_result: bool = (
+                self._command_database_manager.run_command_database_clear_value()
+            )
+            return command_result
 
         application_database = self._commands.add_parser(
             "database",
@@ -317,18 +332,22 @@ class ConsoleManager:
         def debug_view_value_cache(
             arguments: _argparse.Namespace,
         ) -> bool:
-            self._command_debug_manager.run_command_debug_view_value_cache(
-                key_paths=(arguments.key_paths or [])
+            command_result: bool = (
+                self._command_debug_manager.run_command_debug_view_value_cache(
+                    key_paths=(arguments.key_paths or [])
+                )
             )
-            return True
+            return command_result
 
         def debug_view_disk_cache(
             arguments: _argparse.Namespace,
         ) -> bool:
-            self._command_debug_manager.run_command_debug_view_disk_cache(
-                key_paths=(arguments.key_paths or [])
+            command_result: bool = (
+                self._command_debug_manager.run_command_debug_view_disk_cache(
+                    key_paths=(arguments.key_paths or [])
+                )
             )
-            return True
+            return command_result
 
         application_debug = self._commands.add_parser(
             "debug",
@@ -407,65 +426,85 @@ class ConsoleManager:
         def filesystem_copy(
             arguments: _argparse.Namespace,
         ) -> bool:
-            self._command_filesystem_manager.run_command_filesystem_copy(
-                source_path=arguments.source_path,
-                target_paths=(arguments.target_paths or []),
+            command_result: bool = (
+                self._command_filesystem_manager.run_command_filesystem_copy(
+                    source_paths=arguments.source_paths,
+                    target_paths=(arguments.target_paths or []),
+                )
             )
-            return True
+            return command_result
 
         def filesystem_move(
             arguments: _argparse.Namespace,
         ) -> bool:
-            self._command_filesystem_manager.run_command_filesystem_move(
-                source_path=arguments.source_path,
-                target_path=arguments.target_path,
+            command_result: bool = (
+                self._command_filesystem_manager.run_command_filesystem_move(
+                    source_path=arguments.source_path,
+                    target_path=arguments.target_path,
+                )
             )
-            return True
+            return command_result
 
         def filesystem_rename(
             arguments: _argparse.Namespace,
         ) -> bool:
-            self._command_filesystem_manager.run_command_filesystem_rename(
-                old_path=arguments.old_path,
-                new_path=arguments.new_path,
+            command_result: bool = (
+                self._command_filesystem_manager.run_command_filesystem_rename(
+                    old_path=arguments.old_path,
+                    new_path=arguments.new_path,
+                )
             )
-            return True
+            return command_result
 
         def filesystem_tree_setup(
             arguments: _argparse.Namespace,
         ) -> bool:
-            self._command_filesystem_manager.run_command_filesystem_tree_setup(
-                target_paths=(arguments.target_paths or [])
+            command_result: bool = (
+                self._command_filesystem_manager.run_command_filesystem_tree_setup(
+                    target_paths=(arguments.target_paths or [])
+                )
             )
-            return True
+            return command_result
 
         def filesystem_clean_path(
             arguments: _argparse.Namespace,
         ) -> bool:
-            self._command_filesystem_manager.run_command_filesystem_clean_path(
-                target_paths=(arguments.target_paths or [])
+            command_result: bool = (
+                self._command_filesystem_manager
+                    .run_command_filesystem_clean_path(
+                        target_paths=(arguments.target_paths or [])
+                    )
             )
-            return True
+            return command_result
 
         def filesystem_clean_selection(
             arguments: _argparse.Namespace,
         ) -> bool:
-            self._command_filesystem_manager.run_command_filesystem_clean_selection(
-                targets=(arguments.targets or [])
+            command_result: bool = (
+                self._command_filesystem_manager
+                    .run_command_filesystem_clean_selection(
+                        targets=(arguments.targets or [])
+                    )
             )
-            return True
+            return command_result
 
         def filesystem_list_clean_included(
             arguments: _argparse.Namespace,
         ) -> bool:
-            self._command_filesystem_manager.run_command_filesystem_clean_list_included()
-            return True
+            command_result: bool = (
+                self._command_filesystem_manager
+                    .run_command_filesystem_clean_list_included()
+            )
+            return command_result
 
         def filesystem_list_clean_excluded(
             arguments: _argparse.Namespace,
         ) -> bool:
-            self._command_filesystem_manager.run_command_filesystem_clean_list_excluded()
-            return True
+            command_result: bool = (
+                self._command_filesystem_manager
+                    .run_command_filesystem_clean_list_excluded()
+            )
+            return command_result
 
 
         application_filesystem = self._commands.add_parser(
@@ -490,14 +529,15 @@ class ConsoleManager:
         application_filesystem_copy.add_argument(
             "--source-path",
             "-sp",
-            dest="source_path",
+            dest="source_paths",
             required=True,
+            nargs="+",
             type=str,
             help="",
         )
 
         application_filesystem_copy.add_argument(
-            "--target-paths",
+            "--target-path",
             "-tp",
             dest="target_paths",
             required=True,
@@ -720,45 +760,57 @@ class ConsoleManager:
         def workspace_export(
             arguments: _argparse.Namespace,
         ) -> bool:
-            self._command_workspace_manager.run_command_workspace_export(
-                targets=(arguments.targets or [])
+            command_result: bool = (
+                self._command_workspace_manager.run_command_workspace_export(
+                    targets=(arguments.targets or [])
+                )
             )
-            return True
+            return command_result
 
         def workspace_import(
             arguments: _argparse.Namespace,
         ) -> bool:
-            self._command_workspace_manager.run_command_workspace_import(
-                input_path=(arguments.input_path or []),
-                output_path=(arguments.output_path or []),
+            command_result: bool = (
+                self._command_workspace_manager.run_command_workspace_import(
+                    input_path=(arguments.input_path or []),
+                    output_path=(arguments.output_path or []),
+                )
             )
-            return True
+            return command_result
 
         def workspace_replenish( # Filesystem Tree Setup
             arguments: _argparse.Namespace,
         ) -> bool:
-            self._command_workspace_manager.run_command_workspace_replenish()
-            return True
+            command_result: bool = (
+                self._command_workspace_manager.run_command_workspace_replenish()
+            )
+            return command_result
 
         def workspace_list_exports(
             arguments: _argparse.Namespace,
         ) -> bool:
-            self._command_workspace_manager.run_command_workspace_list_exports()
-            return True
+            command_result: bool = (
+                self._command_workspace_manager.run_command_workspace_list_exports()
+            )
+            return command_result
 
         def workspace_setup( # import + replenish + install
             arguments: _argparse.Namespace,
         ) -> bool:
-            self._command_workspace_manager.run_command_workspace_setup()
-            return True
+            command_result: bool = (
+                self._command_workspace_manager.run_command_workspace_setup()
+            )
+            return command_result
 
         def workspace_install(
             arguments: _argparse.Namespace,
         ) -> bool:
-            self._command_workspace_manager.run_command_workspace_install(
-                targets=(arguments.targets or [])
+            command_result: bool = (
+                self._command_workspace_manager.run_command_workspace_install(
+                    targets=(arguments.targets or [])
+                )
             )
-            return True
+            return command_result
 
 
         application_workspace = self._commands.add_parser(
@@ -900,16 +952,20 @@ class ConsoleManager:
         def template_apply(
             arguments: _argparse.Namespace,
         ) -> bool:
-            self._command_template_manager.run_command_template_apply(
-                targets=(arguments.targets or [])
+            command_result: bool = (
+                self._command_template_manager.run_command_template_apply(
+                    targets=(arguments.targets or [])
+                )
             )
-            return True
+            return command_result
 
         def template_list_selections(
             arguments: _argparse.Namespace,
         ) -> bool:
+            command_result: bool = (
             self._command_template_manager.run_command_template_list_selections()
-            return True
+            )
+            return command_result
 
 
         application_template = self._commands.add_parser(
@@ -980,16 +1036,21 @@ class ConsoleManager:
         def workflow_run(
             arguments: _argparse.Namespace,
         ) -> bool:
-            self._command_workflow_manager.run_command_workflow_run(
-                targets=(arguments.targets or [])
+            command_result: bool = (
+                self._command_workflow_manager.run_command_workflow_run(
+                    targets=(arguments.targets or [])
+                )
             )
-            return True
+            return command_result
 
         def workflow_list_selections(
             arguments: _argparse.Namespace,
         ) -> bool:
-            self._command_workflow_manager.run_command_workflow_list_selections()
-            return True
+            command_result: bool = (
+                self._command_workflow_manager
+                    .run_command_workflow_list_selections()
+            )
+            return command_result
 
 
         application_workflow = self._commands.add_parser(
@@ -1076,9 +1137,9 @@ class ConsoleManager:
 
     @_DecoratorManager.multi_task_decorator
     def shutdown(self) -> bool:
-        self._task_manager.run_task_full_shutdown()
+        command_result: bool = self._task_manager.run_task_full_shutdown()
 
-        return True
+        return command_result
 
     def is_command_not_found(self, base_name: str) -> bool:
         return (

@@ -207,8 +207,10 @@ class CommandWorkflowManager:
                 workflow_selection_filesystem_path_value
             )
 
+            result: bool = True
             for workflow_selection_script in workflow_selection_scripts:
                 if not workflow_selection_script:
+                    result = False
                     continue
 
                 workflow_selection_script_is_enabled_value = (
@@ -218,6 +220,7 @@ class CommandWorkflowManager:
                         )
                 )
                 if not workflow_selection_script_is_enabled_value:
+                    result = False
                     continue
 
                 workflow_selection_script_is_operating_system_included = (
@@ -227,6 +230,7 @@ class CommandWorkflowManager:
                         )
                 )
                 if not workflow_selection_script_is_operating_system_included:
+                    result = False
                     continue
 
                 workflow_selection_script_run_value = (
@@ -236,6 +240,7 @@ class CommandWorkflowManager:
                         )
                 )
                 if not workflow_selection_script_run_value:
+                    result = False
                     continue
 
                 workflow_selection_script_process_value = (
@@ -324,7 +329,7 @@ class CommandWorkflowManager:
                     ):
                         return False
 
-            return True
+            return result
 
         self._task_manager.run_task_common_setup()
         self._task_manager.run_task_workflow_setup()
@@ -361,18 +366,22 @@ class CommandWorkflowManager:
                 .read_workflow_selection()
         )
 
+        result: bool = True
         for target in targets:
             if not target or target not in data_workflow_selections:
                 self._import_manager.log_cache_warning_to_file(
                     message=f"'{target}' is not a valid workflow"
                 )
+                result = False
                 continue
 
-            handle_workflow_run_target(
+            method_result: bool = handle_workflow_run_target(
                 data_workflow_selections[target]
             )
+            if not method_result:
+                result = False
 
-        return True
+        return result
 
     def run_command_workflow_list_selections(
         self,
@@ -392,8 +401,8 @@ class CommandWorkflowManager:
         if not value:
             return False
 
-        self._display_manager.display_tree_object(
+        result: bool = self._display_manager.display_tree_object(
             value=value,
         )
 
-        return True
+        return result

@@ -128,6 +128,10 @@ class CommandAboutManager:
                 .read_company_project_name()
         )
         if not company_project_name:
+            self._import_manager.log_warning_to_all(
+                callback=f"{self.run_command_about_version}",
+                message="company name is null",
+            )
             return False
 
         metadata_version = (
@@ -136,10 +140,14 @@ class CommandAboutManager:
             )
         )
         if not metadata_version:
+            self._import_manager.log_warning_to_all(
+                callback=f"{self.run_command_about_version}",
+                message="metadata version is null",
+            )
             return False
 
-        self._display_manager.display_highlight_value(
+        result: bool = self._display_manager.display_highlight_value(
             value=metadata_version
         )
 
-        return True
+        return result

@@ -37,10 +37,10 @@ _CorFileLogManager: Any = None
 _ObjectMergeManager: Any = None
 _TextEncodingManager: Any = None
 _ScriptProcessManager: Any = None
-# _GroupSelectionManager: Any = None
 _spec_from_file_location: Any = None
 _DiskCacheStorageManager: Any = None
 _ScriptProcessEnumManager: Any = None
+_LogMessageStorageManager: Any = None
 _FilesystemCompressionManager: Any = None
 _FileEntityFileSystemTreeSetupOptions: Any = None
 _FolderEntityFileSystemTreeSetupOptions: Any = None
@@ -82,6 +82,7 @@ def _handle_dynamic_imports() -> None:
     global _spec_from_file_location
     global _DiskCacheStorageManager
     global _ScriptProcessEnumManager
+    global _LogMessageStorageManager
     global _FilesystemCompressionManager
     global _FileEntityFileSystemTreeSetupOptions
     global _FolderEntityFileSystemTreeSetupOptions
@@ -109,6 +110,7 @@ def _handle_dynamic_imports() -> None:
         filesystem_compression_manager,
         folder_entity_filesystem_tree_setup_options,
         log_manager,
+        log_message_storage_manager,
         log_options,
         macros_manager,
         object_merge_manager,
@@ -152,6 +154,7 @@ def _handle_dynamic_imports() -> None:
     _TargetCacheValue = target_cache_value.TargetCacheValue
     _ValueCacheManager = value_cache_manager.ValueCacheManager
     _ObjectMergeManager = object_merge_manager.ObjectMergeManager
+    _LogMessageStorageManager = log_message_storage_manager.LogMessageStorageManager
     _ScriptProcessManager = script_process_manager.ScriptProcessManager
     _FilesystemCompressionManager = (
         filesystem_compression_manager.FilesystemCompressionManager
@@ -209,6 +212,7 @@ class ImportManager:
         "_file_log_manager",
         "_console_log_manager",
         "_log_manager",
+        "_log_message_storage_manager",
     )
 
     def __init__(self) -> None:
@@ -262,6 +266,9 @@ class ImportManager:
         self._log_manager = self.read_singleton(
             _LogManager
         )
+        self._log_message_storage_manager = self.read_singleton(
+            _LogMessageStorageManager
+        )
 
     @classmethod
     def read_singleton(self, value: Any) -> Any:
@@ -275,6 +282,39 @@ class ImportManager:
                 value
             )
         )
+
+    def read_all_string_formatted_cache_values(
+        self
+    ) -> str:
+        result: str = (
+            self._log_message_storage_manager
+                .read_all_string_formatted_cache_values()
+        )
+
+        return result
+
+    def write_one_cache_value_via_log_message_storage(
+        self,
+        **kwargs: Any,
+    ) -> bool:
+        if not kwargs:
+            return False
+
+        result: bool = self._log_message_storage_manager.write_one_cache_value(
+            value=kwargs.get(
+                "value",
+                ""
+            )
+        )
+
+        return result
+
+    def clear_all_cache_values_via_log_message_storage(
+        self,
+    ) -> bool:
+        result: bool = self._log_message_storage_manager.clear_all_cache_values()
+
+        return result
 
     # def convert_to_os_specific_path_value(
     #     self,
@@ -2045,6 +2085,64 @@ class ImportManager:
 
     #     return True
 
+    # def log_info_to_all(
+    #     self,
+    #     **kwargs: Any,
+    # ) -> bool:
+    #     if not kwargs:
+    #         return False
+
+    #     self._console_log_manager.log_info(
+    #         message=kwargs.get(
+    #             "message",
+    #             "",
+    #         ),
+    #     )
+    #     self._file_log_manager.cache_log(
+    #         message=kwargs.get(
+    #             "message",
+    #             "",
+    #         ),
+    #         log_level=_logging.INFO
+    #     )
+
+    #     return True
+
+    def log_warning_to_all(
+        self,
+        **kwargs: Any,
+    ) -> bool:
+        if not kwargs:
+            return False
+
+        callback: Any = (
+            kwargs.get(
+                "callback",
+                "",
+            )
+        )
+        message: str = (
+            kwargs.get(
+                "message",
+                "",
+            )
+        )
+        if callback:
+            message = f"{callback} - {message}"
+
+        self._console_log_manager.log_warning(
+            message=message,
+        )
+        self._file_log_manager.cache_log(
+            message=kwargs.get(
+                "message",
+                "",
+            ),
+            log_level=_logging.WARNING
+        )
+
+        return True
+
     def log_cache_info_to_file(
         self,
         **kwargs: Any,
@@ -2052,11 +2150,10 @@ class ImportManager:
         if not kwargs:
             return False
 
+        message: str = f"{kwargs.get("message", "")}"
+
         self._file_log_manager.cache_log(
-            message=kwargs.get(
-                "message",
-                "",
-            ),
+            message=message,
             log_level=_logging.INFO
         )
 

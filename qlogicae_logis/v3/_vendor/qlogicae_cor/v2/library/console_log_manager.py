@@ -138,17 +138,17 @@ class ConsoleLogManager:
     #         ),
     #     )
 
-    # def log_warning(
-    #     self,
-    #     message: str,
-    # ) -> str:
-    #     return self.log(
-    #         message,
-    #         self._log_options_manager.generate_modified_defaults(
-    #             self._options,
-    #             log_level=_logging.WARNING,
-    #         ),
-    #     )
+    def log_warning(
+        self,
+        message: str,
+    ) -> str:
+        return self.log(
+            message,
+            self._log_options_manager.generate_modified_defaults(
+                self._options,
+                log_level=_logging.WARNING,
+            ),
+        )
 
     # def log_error(
     #     self,

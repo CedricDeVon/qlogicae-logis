@@ -121,7 +121,8 @@ workflow:
         - run:
             value: command-filesystem-copy          
           argument:
-            source_path: qlogicae_logis
+            source_paths:
+              - qlogicae_logis
             target_paths:
               - ${{ qlogicae-logis-selection-project-filesystem-path }}/tmp
 
@@ -140,7 +141,8 @@ workflow:
         - run:
             value: command-filesystem-copy          
           argument:
-            source_path: tmp
+            source_paths:
+              - tmp
             target_paths:
               - ${{ qlogicae-logis-selection-project-filesystem-path }}/qlogicae_logis
               
@@ -205,7 +207,8 @@ workflow:
         - run:
             value: command-filesystem-copy          
           argument:
-            source_path: requirements.txt
+            source_paths:
+              - requirements.txt
             target_paths:
               - ${{ qlogicae-logis-selection-project-filesystem-path }}/requirements.txt
 
@@ -218,14 +221,16 @@ workflow:
         - run:
             value: command-filesystem-copy          
           argument:
-            source_path: qlogicae_logis
+            source_paths:
+              - qlogicae_logis
             target_paths:
               - ${{ qlogicae-logis-selection-project-filesystem-path }}/qlogicae_logis
 
         - run:
             value: command-filesystem-copy          
           argument:
-            source_path: .qlogicae
+            source_paths:
+              - .qlogicae
             target_paths:
               - ${{ qlogicae-logis-selection-project-filesystem-path }}/.qlogicae
               - ${{ qlogicae-ensemble-selection-project-filesystem-path }}/.qlogicae
@@ -233,7 +238,8 @@ workflow:
         - run:
             value: command-filesystem-copy          
           argument:
-            source_path: test
+            source_paths:
+              - test
             target_paths:
               - ${{ qlogicae-logis-selection-project-filesystem-path }}/test
 
@@ -257,7 +263,6 @@ workflow:
             target_paths:
               - tmp
 
-
     qlogicae-logis-archive:
       filesystem-path:
         value: ${{ qlogicae-logis-selection-project-filesystem-path }}
@@ -266,7 +271,8 @@ workflow:
         - run:
             value: command-filesystem-copy
           argument:
-            source_path: output
+            source_paths:
+              - output
             target_paths:
               - ${{ qlogicae-logis-archive-filesystem-path }}
 
@@ -276,9 +282,6 @@ macros:
       targets:
         qlogicae-logis-display-brand-name:
           value: ${{ main-company-display-name }} ${{ qlogicae-logis-display-project-name }}
-
-          alias:
-            qldbn:
 
         qlogicae-logis-base-brand-name:
           value: ${{ main-company-base-name }}-${{ qlogicae-logis-base-project-name }}
@@ -296,7 +299,7 @@ macros:
           value: The project orchestration tool for QLogicae projects
 
         qlogicae-logis-current-version-number:
-          value: 3.0.25
+          value: 3.1.0
 
         qlogicae-logis-active-major-version-number:
           value: 3

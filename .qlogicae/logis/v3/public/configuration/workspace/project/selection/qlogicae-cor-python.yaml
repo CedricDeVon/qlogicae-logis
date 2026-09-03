@@ -195,7 +195,8 @@ workflow:
         - run:
             value: command-filesystem-copy
           argument:
-            source_path: output
+            source_paths:
+              - output
             target_paths:
               - ${{ qlogicae-cor-python-archive-filesystem-path }}
 

@@ -130,8 +130,8 @@ class CommandDebugManager:
     def run_command_debug_view_value_cache(self, **kwargs: Any) -> bool:
         self._task_manager.run_task_full_debug_value_cache_setup()
 
+        result: bool = True
         key_paths = kwargs.get("key_paths", []) or []
-
         if len(key_paths) < 1:
             self._display_manager.display_tree_object(
                 value=self._value_cache_database_manager.read_any_value(
@@ -142,25 +142,35 @@ class CommandDebugManager:
         else:
             for target in key_paths:
                 if not target:
+                    self._import_manager.log_warning_to_all(
+                        callback=f"{self.run_command_debug_view_value_cache}",
+                        message="one or more targets are null",
+                    )
+                    result = False
                     continue
 
-                self._display_manager.display_tree_object(
-                    value=self._value_cache_database_manager.read_any_value(
-                        tuple(target.split("."))
-                    ),
+                method_result: bool = (
+                    self._display_manager.display_tree_object(
+                        value=self._value_cache_database_manager.read_any_value(
+                            tuple(target.split("."))
+                        ),
+                    )
                 )
+                if not method_result:
+                    result = False
 
-        return True
+        return result
 
     def run_command_debug_view_disk_cache(self, **kwargs: Any) -> bool:
         self._task_manager.run_task_full_debug_disk_cache_setup()
 
+        result: bool = True
         value = self._persistent_cache_database_manager.read_all_values()
         if value and len(value) > 0:
-            self._display_manager.display_tree_object(
+            result = self._display_manager.display_tree_object(
                 value=value,
             )
 
-        return True
+        return result
 
 

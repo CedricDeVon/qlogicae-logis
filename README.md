@@ -12,7 +12,7 @@
   <p style="font-style: italic;">The project orchestration tool for QLogicae projects</p>
 <div style="margin: 32px 64px;">
 
-![Version](https://img.shields.io/badge/Version-v3.0.25-blue)
+![Version](https://img.shields.io/badge/Version-v3.1.0-blue)
 ![License: MIT](https://img.shields.io/badge/License-MIT-red)
 
   </div>

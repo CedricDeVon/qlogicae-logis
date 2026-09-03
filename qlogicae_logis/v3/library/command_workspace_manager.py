@@ -192,8 +192,10 @@ class CommandWorkspaceManager:
                     )
             )
 
+            result: bool = True
             for key in export_group_selections:
                 if not key:
+                    result = False
                     continue
 
                 if key in command_export_group:
@@ -206,7 +208,7 @@ class CommandWorkspaceManager:
                         key
                     )
 
-            return True
+            return result
 
         def handle_workspace_export_selection(target: str) -> bool:
             export_selection = (
@@ -308,8 +310,10 @@ class CommandWorkspaceManager:
             temporary_output_path = (
                 f"{export_temporary_output_filesystem_path}/{target}"
             )
+            result: bool = True
             for include_target in export_selection_input_include_targets:
                 if not include_target:
+                    result = False
                     continue
 
                 temporary_input_path = (
@@ -326,26 +330,31 @@ class CommandWorkspaceManager:
                     }
                 )
 
+            method_result: bool = True
             for item in temporary_copy_items:
                 if not item or "input" not in item or "output" not in item:
+                    result = False
                     continue
 
                 input_path = (item.get("input", "") or "")
                 output_path = (item.get("output", "") or "")
                 if not input_path or not output_path:
+                    result = False
                     continue
 
-                self._import_manager.copy_filesystem_paths(
+                method_result = self._import_manager.copy_filesystem_paths(
                     source_path=input_path,
                     target_paths=(output_path,),
                 )
+                if not method_result:
+                    result = False
 
             for export_selection_output_target in export_selection_output_targets:
                 destination = (
                     f"{export_selection_output_target}.{export_selection_compression_format_value}"
                 )
 
-                self._import_manager.compress(
+                method_result = self._import_manager.compress(
                     source=temporary_output_path,
                     destination=destination,
                     mode="w",
@@ -354,8 +363,10 @@ class CommandWorkspaceManager:
                     allowZip64=export_selection_compression_is_zip_64_allowed_value,
                     strict_timestamps=export_selection_compression_is_timestamp_strict_value,
                 )
+                if not method_result:
+                    result = False
 
-            return True
+            return result
 
         self._task_manager.run_task_common_setup()
         self._task_manager.run_task_export_group_setup()
@@ -415,8 +426,10 @@ class CommandWorkspaceManager:
                 target_path=export_temporary_output_filesystem_path
             )
 
+        result: bool = True
         for target in targets:
             if not target:
+                result = False
                 continue
 
             if target == "all":
@@ -436,11 +449,15 @@ class CommandWorkspaceManager:
                 )
 
         if command_export_cleanup_after_is_enabled:
-            self._task_manager.run_task_safe_clean_filesystem_path(
-                target_path=export_temporary_output_filesystem_path
+            method_output: bool = (
+                self._task_manager.run_task_safe_clean_filesystem_path(
+                    target_path=export_temporary_output_filesystem_path
+                )
             )
+            if not method_output:
+                result = False
 
-        return True
+        return result
 
     def run_command_workspace_import(
         self,
@@ -461,12 +478,12 @@ class CommandWorkspaceManager:
         ):
             return False
 
-        self._import_manager.uncompress_zip(
+        result: bool = self._import_manager.uncompress_zip(
             archive_path=input_path,
             destination_path=output_path,
         )
 
-        return True
+        return result
 
     def run_command_workspace_replenish(
         self,
@@ -688,13 +705,21 @@ class CommandWorkspaceManager:
             ]
         )
 
-        self._import_manager.setup_filesystem_tree(
+        result: bool = self._import_manager.setup_filesystem_tree(
             root_path=root_filesystem_path,
             tree=root_filesystem_tree,
         )
 
         for current_scope in default_filesystem_accessibility_types:
+            if not current_scope:
+                result = False
+                continue
+
             for current_workspace_selection in workspace_selection_project:
+                if not current_workspace_selection:
+                    result = False
+                    continue
+
                 target_filesystem_sub_tree = _FolderEntityFileSystemTreeSetupOptions(
                     entities=[
                         _FolderEntityFileSystemTreeSetupOptions(
@@ -770,6 +795,10 @@ class CommandWorkspaceManager:
                 )
 
             for current_workspace_selection in workspace_selection_group:
+                if not current_workspace_selection:
+                    result = False
+                    continue
+
                 target_filesystem_sub_tree = _FolderEntityFileSystemTreeSetupOptions(
                     entities=[
                         _FolderEntityFileSystemTreeSetupOptions(
@@ -842,12 +871,14 @@ class CommandWorkspaceManager:
                     ]
                 )
 
-                self._import_manager.setup_filesystem_tree(
+                method_result = self._import_manager.setup_filesystem_tree(
                     root_path=root_filesystem_path,
                     tree=target_filesystem_sub_tree,
                 )
+                if not method_result:
+                    result = False
 
-        return True
+        return result
 
     def run_command_workspace_list_exports(
         self,
@@ -873,19 +904,19 @@ class CommandWorkspaceManager:
         if not value:
             return False
 
-        self._display_manager.display_tree_object(
+        result: bool = self._display_manager.display_tree_object(
             value=value,
         )
 
-        return True
+        return result
 
     def run_command_workspace_setup(
         self,
         **kwargs: Any
     ) -> bool:
-        self._task_manager.run_task_common_setup()
+        result: bool = self._task_manager.run_task_common_setup()
 
-        return True
+        return result
 
     def run_command_workspace_install(
         self,
@@ -949,8 +980,10 @@ class CommandWorkspaceManager:
                 selection_project_installation_filesystem_path_value
             )
 
+            result: bool = True
             for installation_script in selection_project_installation_scripts:
                 if not installation_script:
+                    result = False
                     continue
 
                 installation_script_is_enabled_value = (
@@ -960,6 +993,7 @@ class CommandWorkspaceManager:
                         )
                 )
                 if not installation_script_is_enabled_value:
+                    result = False
                     continue
 
                 installation_script_is_operating_system_included = (
@@ -969,6 +1003,7 @@ class CommandWorkspaceManager:
                         )
                 )
                 if not installation_script_is_operating_system_included:
+                    result = False
                     continue
 
                 installation_script_run_value = (
@@ -978,6 +1013,7 @@ class CommandWorkspaceManager:
                         )
                 )
                 if not installation_script_run_value:
+                    result = False
                     continue
 
                 installation_script_process_value = (
@@ -1012,7 +1048,7 @@ class CommandWorkspaceManager:
                 root_filesystem_path
             )
 
-            return True
+            return result
 
         self._task_manager.run_task_common_setup()
         self._task_manager.run_task_workspace_default_setup()
@@ -1047,18 +1083,23 @@ class CommandWorkspaceManager:
                 .read_workspace_project()
         )
 
+        result: bool = True
+        method_output: bool = True
         for target in targets:
             if not target or target not in selection_projects:
                 self._import_manager.log_cache_warning_to_file(
                     message=f"'{target}' is not a valid workspace"
                 )
+                result = False
                 continue
 
-            handle_workspace_install(
+            method_output = handle_workspace_install(
                 selection_projects.get(
                     target,
                     ""
                 ) or ""
             )
+            if not method_output:
+                result = False
 
-        return True
+        return result
