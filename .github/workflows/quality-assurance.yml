@@ -77,9 +77,9 @@ jobs:
       - run: qlogicae-logis workspace export --help
       - run: qlogicae-logis workspace export --target all
 
-      # - run: qlogicae-logis workspace install -h
-      # - run: qlogicae-logis workspace install --help
-      # - run: qlogicae-logis workspace install --target demo-project-1
+      - run: qlogicae-logis workspace install -h
+      - run: qlogicae-logis workspace install --help
+      - run: qlogicae-logis workspace install --target demo-project-1
       
       - run: qlogicae-logis workspace replenish -h
       - run: qlogicae-logis workspace replenish --help
@@ -165,7 +165,7 @@ jobs:
       - run: qlogicae-logis template apply --help
       - run: qlogicae-logis template apply --target demo-project-1
       - run: qlogicae-logis template apply --target demo-group-1          
-      # - run: qlogicae-logis template apply --target all
+      - run: qlogicae-logis template apply --target all
 
 
 
@@ -181,7 +181,7 @@ jobs:
       - run: qlogicae-logis workflow run -h
       - run: qlogicae-logis workflow run --help
       - run: qlogicae-logis workflow run -t demo-workflow-project
-      - run: qlogicae-logis workflow run -t demo-workflow-sub-project
+      - run: qlogicae-logis workflow run -t demo-workflow-sub-group
       - run: qlogicae-logis workflow run -t demo-workflow-main-group
 
 

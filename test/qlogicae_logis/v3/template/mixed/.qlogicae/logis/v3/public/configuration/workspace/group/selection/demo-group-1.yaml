@@ -1,7 +1,7 @@
 workspace:
   group:
     selection:
-      demo-group-1:
+      demo-main-group:
         alias:
           demo-main-group-alias-1:
           demo-main-group-alias-2:
