@@ -11,6 +11,7 @@ __all__ = (
     "DecoratorManager"
 )
 
+_LogManager: Any = None
 _ImportManager: Any = None
 _DatabaseManager: Any = None
 _TaskStorageManager: Any = None
@@ -18,6 +19,7 @@ _ValueCacheDatabaseManager: Any = None
 
 def _handle_dynamic_imports() -> None:
     global _handle_dynamic_imports
+    global _LogManager
     global _ImportManager
     global _DatabaseManager
     global _TaskStorageManager
@@ -26,6 +28,7 @@ def _handle_dynamic_imports() -> None:
     from ..library import (
         database_manager,
         import_manager,
+        log_manager,
         task_storage_manager,
         value_cache_database_manager,
     )
@@ -41,6 +44,10 @@ def _handle_dynamic_imports() -> None:
     _ValueCacheDatabaseManager = (
         value_cache_database_manager
             .ValueCacheDatabaseManager
+    )
+    _LogManager = (
+        log_manager
+            .LogManager
     )
     _ImportManager = (
         import_manager
@@ -68,11 +75,6 @@ class DecoratorManager:
                     _TaskStorageManager
                 )
             )
-            import_manager = (
-                _ImportManager.read_singleton(
-                    _ImportManager
-                )
-            )
             database_manager = (
                 _ImportManager.read_singleton(
                     _DatabaseManager
@@ -83,12 +85,17 @@ class DecoratorManager:
                     _ValueCacheDatabaseManager
                 )
             )
+            log_manager = (
+                _ImportManager.read_singleton(
+                    _LogManager
+                )
+            )
 
             if task_storage_manager.is_executed(label=callback):
                 return True
 
-            import_manager.log_cache_info_to_file(
-                message=f"{callback} - start"
+            log_manager.log_debug_method_start(
+                reference=callback
             )
 
             result: Any = True
@@ -104,15 +111,8 @@ class DecoratorManager:
                 value_cache_database_manager.write_debug_snapshot_execution_timestamp_complete(
                     label=callback
                 )
-                message = (
-                    f"{callback} - "
-                    f"{
-                        value_cache_database_manager
-                            .read_debug_snapshot_execution(label=callback)
-                    }"
-                )
-                import_manager.log_cache_debug_to_file(
-                    message=message
+                log_manager.log_debug_snapshot_execution(
+                    callback=callback
                 )
             else:
                 result = callback(
@@ -122,14 +122,13 @@ class DecoratorManager:
                 )
 
             if not result:
-                import_manager.log_cache_info_to_file(
-                    message=f"{callback} - skip"
+                log_manager.log_debug_method_interrupted(
+                    reference=callback
                 )
                 return result
 
-
-            import_manager.log_cache_info_to_file(
-                message=f"{callback} - complete"
+            log_manager.log_debug_method_complete(
+                reference=callback
             )
 
             return result
@@ -148,9 +147,9 @@ class DecoratorManager:
             *args: P.args,
             **kwargs: P.kwargs,
         ) -> Any:
-            import_manager = (
+            log_manager = (
                 _ImportManager.read_singleton(
-                    _ImportManager
+                    _LogManager
                 )
             )
             database_manager = (
@@ -164,8 +163,8 @@ class DecoratorManager:
                 )
             )
 
-            import_manager.log_cache_info_to_file(
-                message=f"{callback} - start"
+            log_manager.log_debug_method_start(
+                reference=callback
             )
 
             result: Any = True
@@ -181,17 +180,8 @@ class DecoratorManager:
                 value_cache_database_manager.write_debug_snapshot_execution_timestamp_complete(
                     label=callback
                 )
-                message = (
-                    f"{callback} - "
-                    f"{
-                        value_cache_database_manager
-                            .read_debug_snapshot_execution(
-                                label=callback
-                            )
-                    }"
-                )
-                import_manager.log_cache_debug_to_file(
-                    message=message
+                log_manager.log_debug_snapshot_execution(
+                    callback=callback
                 )
             else:
                 result = callback(
@@ -201,14 +191,14 @@ class DecoratorManager:
                 )
 
             if not result:
-                import_manager.log_cache_warning_to_file(
-                    message=f"{callback} - skip"
+                log_manager.log_debug_method_interrupted(
+                    reference=callback
                 )
                 return result
 
 
-            import_manager.log_cache_info_to_file(
-                message=f"{callback} - complete"
+            log_manager.log_debug_method_complete(
+                reference=callback
             )
 
             return result

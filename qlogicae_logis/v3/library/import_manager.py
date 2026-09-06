@@ -40,7 +40,7 @@ _ScriptProcessManager: Any = None
 _spec_from_file_location: Any = None
 _DiskCacheStorageManager: Any = None
 _ScriptProcessEnumManager: Any = None
-_LogMessageStorageManager: Any = None
+# _LogMessageStorageManager: Any = None
 _FilesystemCompressionManager: Any = None
 _FileEntityFileSystemTreeSetupOptions: Any = None
 _FolderEntityFileSystemTreeSetupOptions: Any = None
@@ -82,7 +82,7 @@ def _handle_dynamic_imports() -> None:
     global _spec_from_file_location
     global _DiskCacheStorageManager
     global _ScriptProcessEnumManager
-    global _LogMessageStorageManager
+    # global _LogMessageStorageManager
     global _FilesystemCompressionManager
     global _FileEntityFileSystemTreeSetupOptions
     global _FolderEntityFileSystemTreeSetupOptions
@@ -110,7 +110,7 @@ def _handle_dynamic_imports() -> None:
         filesystem_compression_manager,
         folder_entity_filesystem_tree_setup_options,
         log_manager,
-        log_message_storage_manager,
+        # log_message_storage_manager,
         log_options,
         macros_manager,
         object_merge_manager,
@@ -154,7 +154,7 @@ def _handle_dynamic_imports() -> None:
     _TargetCacheValue = target_cache_value.TargetCacheValue
     _ValueCacheManager = value_cache_manager.ValueCacheManager
     _ObjectMergeManager = object_merge_manager.ObjectMergeManager
-    _LogMessageStorageManager = log_message_storage_manager.LogMessageStorageManager
+    # _LogMessageStorageManager = log_message_storage_manager.LogMessageStorageManager
     _ScriptProcessManager = script_process_manager.ScriptProcessManager
     _FilesystemCompressionManager = (
         filesystem_compression_manager.FilesystemCompressionManager
@@ -200,7 +200,7 @@ class ImportManager:
         "_disk_cache_storage_manager",
         "_value_cache_manager",
         "_time_zone_manager",
-        # "_timestamp_manager",
+        "_timestamp_manager",
         "_text_encoding_manager",
         "_script_process_manager",
         "_macros_manager",
@@ -212,7 +212,7 @@ class ImportManager:
         "_file_log_manager",
         "_console_log_manager",
         "_log_manager",
-        "_log_message_storage_manager",
+        # "_log_message_storage_manager",
     )
 
     def __init__(self) -> None:
@@ -230,9 +230,9 @@ class ImportManager:
         self._time_zone_manager = self.read_singleton(
             _TimeZoneManager
         )
-        # self._timestamp_manager = self.read_singleton(
-        #     _TimestampManager
-        # )
+        self._timestamp_manager = self.read_singleton(
+            _TimestampManager
+        )
         self._text_encoding_manager = self.read_singleton(
             _TextEncodingManager
         )
@@ -266,9 +266,9 @@ class ImportManager:
         self._log_manager = self.read_singleton(
             _LogManager
         )
-        self._log_message_storage_manager = self.read_singleton(
-            _LogMessageStorageManager
-        )
+        # self._log_message_storage_manager = self.read_singleton(
+        #     _LogMessageStorageManager
+        # )
 
     @classmethod
     def read_singleton(self, value: Any) -> Any:
@@ -283,40 +283,40 @@ class ImportManager:
             )
         )
 
-    def read_all_string_formatted_cache_values(
-        self
-    ) -> str:
-        result: str = (
-            self._log_message_storage_manager
-                .read_all_string_formatted_cache_values()
-        )
+    # def read_all_string_formatted_cache_values(
+    #     self
+    # ) -> str:
+    #     result: str = (
+    #         self._log_message_storage_manager
+    #             .read_all_string_formatted_cache_values()
+    #     )
 
-        return result
+    #     return result
 
-    def write_one_cache_value_via_log_message_storage(
-        self,
-        **kwargs: Any,
-    ) -> bool:
-        if not kwargs:
-            return False
+    # def write_one_cache_value_via_log_message_storage(
+    #     self,
+    #     **kwargs: Any,
+    # ) -> bool:
+    #     if not kwargs:
+    #         return False
 
-        result: bool = self._log_message_storage_manager.write_one_cache_value(
-            value=kwargs.get(
-                "value",
-                ""
-            )
-        )
+    #     result: bool = self._log_message_storage_manager.write_one_cache_value(
+    #         value=kwargs.get(
+    #             "value",
+    #             ""
+    #         )
+    #     )
 
-        return result
+    #     return result
 
-    def clear_all_cache_values_via_log_message_storage(
-        self,
-    ) -> bool:
-        result: bool = self._log_message_storage_manager.clear_all_cache_values()
+    # def clear_all_cache_values_via_log_message_storage(
+    #     self,
+    # ) -> bool:
+    #     result: bool = self._log_message_storage_manager.clear_all_cache_values()
 
-        return result
+    #     return result
 
-    # def convert_to_os_specific_path_value(
+    # # def convert_to_os_specific_path_value(
     #     self,
     #     **kwargs: Any,
     # ) -> str:
@@ -367,6 +367,7 @@ class ImportManager:
             kwargs.get("strict_timestamps", True)
         )
 
+        result: bool = True
         with _ZipFile(
             destination,
             mode=mode,
@@ -376,13 +377,17 @@ class ImportManager:
             strict_timestamps=strict_timestamps,
         ) as archive:
             for path in source.rglob("*"):
+                if not path:
+                    result = False
+                    continue
+
                 archive.write(
                     path,
                     arcname=path.relative_to(source),
                 )
 
 
-        return True
+        return result
 
     def read_metadata_version(self, target: str) -> str:
         if not target:
@@ -552,14 +557,14 @@ class ImportManager:
         if not kwargs:
             return False
 
-        self._disk_cache_storage_manager.set_many_values(
+        result: bool = self._disk_cache_storage_manager.set_many_values(
             values=kwargs.get(
                 "values",
                 {}
             ) or {},
         )
 
-        return True
+        return result
 
     # def remove_many_values_via_disk_cache(
     #     self,
@@ -582,23 +587,20 @@ class ImportManager:
     def open_via_disk_cache(
         self,
     ) -> bool:
-        self._disk_cache_storage_manager.open()
-
-        return True
+        result: bool = self._disk_cache_storage_manager.open()
+        return result
 
     def close_via_disk_cache(
         self,
     ) -> bool:
-        self._disk_cache_storage_manager.close()
-
-        return True
+        result: bool = self._disk_cache_storage_manager.close()
+        return result
 
     def clear_all_values_via_disk_cache(
         self,
     ) -> bool:
-        self._disk_cache_storage_manager.clear_all_values()
-
-        return True
+        result: bool = self._disk_cache_storage_manager.clear_all_values()
+        return result
 
     # def remove_expired_values_via_disk_cache(self) -> int:
     #     value: int = (
@@ -617,10 +619,10 @@ class ImportManager:
 
     #     return True
 
-    # def display_all_items_via_disk_cache(self) -> bool:
-    #     self._disk_cache_storage_manager.display_all_items()
+    def display_all_items_via_disk_cache(self) -> bool:
+        self._disk_cache_storage_manager.display_all_items()
 
-    #     return True
+        return True
 
     def write_database_path_via_disk_cache(
         self,
@@ -685,7 +687,7 @@ class ImportManager:
         if not kwargs:
             return False
 
-        self._value_cache_manager.set_one_value(
+        result: bool = self._value_cache_manager.set_one_value(
             key_path=kwargs.get(
                 "key_path",
                 tuple()
@@ -699,7 +701,7 @@ class ImportManager:
             )
         )
 
-        return True
+        return result
 
     # def write_defined_value_via_value_cache(
     #     self,
@@ -807,21 +809,19 @@ class ImportManager:
         if not kwargs:
             return False
 
-        self._value_cache_manager.remove_one_value(
+        result: bool = self._value_cache_manager.remove_one_value(
             key_path=kwargs.get(
                 "key_path",
                 tuple()
             ),
         )
-
-        return True
+        return result
 
     def clear_all_values_via_value_cache(
         self,
     ) -> bool:
-        self._value_cache_manager.clear_all_values()
-
-        return True
+        result: bool = self._value_cache_manager.clear_all_values()
+        return result
 
 
     # TimeManager
@@ -862,16 +862,16 @@ class ImportManager:
 
     #     return value
 
-    # def generate_current_filesystem_timestamp(
-    #     self,
-    # ) -> str:
-    #     value: str = (
-    #         self._timestamp_manager.generate_current_timestamp(
-    #             _Timestamp.ISO_FILESYSTEM_STRING
-    #         )
-    #     )
+    def generate_current_filesystem_timestamp(
+        self,
+    ) -> str:
+        value: str = (
+            self._timestamp_manager.generate_current_timestamp(
+                _Timestamp.ISO_FILESYSTEM_STRING
+            )
+        )
 
-    #     return value
+        return value
 
     # # TextEncodingManager
     # def read_selected_encoding(
@@ -1483,8 +1483,10 @@ class ImportManager:
         if not target_paths or len(target_paths) < 1:
             return False
 
+        result: bool = True
         for target_path in target_paths:
             if not target_path:
+                result = False
                 continue
 
             _Path(target_path).mkdir(
@@ -1492,7 +1494,7 @@ class ImportManager:
                 exist_ok=True,
             )
 
-        return True
+        return result
 
     def setup_filesystem_tree_path(
         self,
@@ -1540,7 +1542,13 @@ class ImportManager:
             exist_ok=True,
         )
 
+        result: bool = True
+        method_result: bool = True
         for entity in tree.entities or []:
+            if not entity:
+                result = False
+                continue
+
             entity_path = path / entity.name
 
             if isinstance(
@@ -1552,10 +1560,12 @@ class ImportManager:
                     exist_ok=True,
                 )
 
-                self.setup_filesystem_tree(
+                method_result = self.setup_filesystem_tree(
                     root_path=entity_path,
                     tree=entity,
                 )
+                if not method_result:
+                    result = False
 
             elif isinstance(
                 entity,
@@ -1567,7 +1577,7 @@ class ImportManager:
                         encoding=entity.encoding,
                     )
 
-        return True
+        return result
 
     def move_filesystem_path(
         self,
@@ -1695,8 +1705,10 @@ class ImportManager:
         if not target_paths or len(target_paths) < 1:
             return False
 
+        result: bool = True
         for target_path in target_paths:
             if not target_path:
+                result = False
                 continue
 
             target_path = _Path(
@@ -1710,23 +1722,30 @@ class ImportManager:
             }
 
             if target_path in protected_paths:
+                result = False
                 continue
 
             if not target_path.exists():
+                result = False
                 continue
 
             if target_path.is_file() or target_path.is_symlink():
                 target_path.unlink()
+                result = False
                 continue
 
             if target_path.is_dir():
                 for item in target_path.iterdir():
+                    if not item:
+                        result = False
+                        continue
+
                     if item.is_file() or item.is_symlink():
                         item.unlink()
                     elif item.is_dir():
                         _shutil.rmtree(item)
 
-        return True
+        return result
 
     def clean_filesystem_path(
         self,
@@ -1759,14 +1778,19 @@ class ImportManager:
             target_path.unlink()
             return False
 
+        result: bool = True
         if target_path.is_dir():
             for item in target_path.iterdir():
+                if not item:
+                    result = False
+                    continue
+
                 if item.is_file() or item.is_symlink():
                     item.unlink()
                 elif item.is_dir():
                     _shutil.rmtree(item)
 
-        return True
+        return result
 
     def read_filesystem_entity_parents(
         self,
@@ -1950,7 +1974,7 @@ class ImportManager:
         if not kwargs:
             return False
 
-        self._file_io_manager.write_file(
+        result: bool = self._file_io_manager.write_file(
             file_path=kwargs.get(
                 "file_path",
                 "",
@@ -1961,7 +1985,7 @@ class ImportManager:
             ),
         )
 
-        return True
+        return result
 
     # Logging
     def setup_file_log_settings(
@@ -1985,6 +2009,8 @@ class ImportManager:
             is_verbose_enabled=is_verbose
         )
 
+        result: bool = True
+        method_result: bool = True
         if is_enabled:
             file_outputs = kwargs.get(
                 "file_outputs",
@@ -1992,11 +2018,17 @@ class ImportManager:
             )
 
             for file_output in file_outputs:
-                self._file_log_manager.add_file_output(
+                if not file_output:
+                    result = False
+                    continue
+
+                method_result = self._file_log_manager.add_file_output(
                     file_output
                 )
+                if not method_result:
+                    result = False
 
-        return True
+        return result
 
     def setup_console_log_settings(
         self,
@@ -2108,40 +2140,46 @@ class ImportManager:
 
     #     return True
 
-    def log_warning_to_all(
+    def log_warning_to_console(
         self,
         **kwargs: Any,
     ) -> bool:
         if not kwargs:
             return False
 
-        callback: Any = (
-            kwargs.get(
-                "callback",
-                "",
-            )
-        )
         message: str = (
             kwargs.get(
                 "message",
                 "",
             )
         )
-        if callback:
-            message = f"{callback} - {message}"
 
-        self._console_log_manager.log_warning(
+        result: bool = self._console_log_manager.log_warning(
             message=message,
         )
-        self._file_log_manager.cache_log(
-            message=kwargs.get(
+
+        return result
+
+    def log_warning_to_file(
+        self,
+        **kwargs: Any,
+    ) -> bool:
+        if not kwargs:
+            return False
+
+        message: str = (
+            kwargs.get(
                 "message",
                 "",
-            ),
-            log_level=_logging.WARNING
+            )
         )
 
-        return True
+        result: bool = self._file_log_manager.cache_log(
+            message=message,
+            log_level=_logging.INFO
+        )
+
+        return result
 
     def log_cache_info_to_file(
         self,
@@ -2150,14 +2188,19 @@ class ImportManager:
         if not kwargs:
             return False
 
-        message: str = f"{kwargs.get("message", "")}"
+        message: str = (
+            kwargs.get(
+                "message",
+                "",
+            )
+        )
 
-        self._file_log_manager.cache_log(
-            message=message,
+        result: bool = self._file_log_manager.cache_log(
+            message=f"{message}",
             log_level=_logging.INFO
         )
 
-        return True
+        return result
 
     def log_cache_debug_to_file(
         self,
@@ -2166,15 +2209,19 @@ class ImportManager:
         if not kwargs:
             return False
 
-        self._file_log_manager.cache_log(
-            message=kwargs.get(
+        message: str = (
+            kwargs.get(
                 "message",
                 "",
-            ),
+            )
+        )
+
+        result: bool = self._file_log_manager.cache_log(
+            message=f"{message}",
             log_level=_logging.DEBUG
         )
 
-        return True
+        return result
 
     def log_cache_warning_to_file(
         self,
@@ -2183,15 +2230,19 @@ class ImportManager:
         if not kwargs:
             return False
 
-        self._file_log_manager.cache_log(
-            message=kwargs.get(
+        message: str = (
+            kwargs.get(
                 "message",
                 "",
-            ),
+            )
+        )
+
+        result: bool = self._file_log_manager.cache_log(
+            message=f"{message}",
             log_level=_logging.WARNING
         )
 
-        return True
+        return result
 
     def read_system_console_argument_string(
         self
@@ -2203,6 +2254,6 @@ class ImportManager:
     def log_shutdown(
         self,
     ) -> bool:
-        self._log_manager.shutdown()
+        result: bool = self._log_manager.shutdown()
 
-        return True
+        return result

@@ -60,6 +60,7 @@ class DatabaseManager:
             "operating-system-name",
             "operating-system-architecture",
             "current-timestamp",
+            "filesystem-current-timestamp",
             "root-filesystem-path",
             "selection-filesystem-path",
         }
@@ -260,12 +261,9 @@ class DatabaseManager:
         base_path = (
             self.read_root_workspace_filesystem_path()
         )
-        iso8601_date = (
-            self._import_manager.read_current_iso8601_date()
-        )
 
         return (
-            f"{base_path}/private/temporary/cache/disk/{iso8601_date}.db"
+            f"{base_path}/private/temporary/cache/disk/root.db"
         )
 
     def read_default_cache_disk_output_folder_path(

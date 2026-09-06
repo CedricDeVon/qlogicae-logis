@@ -48,6 +48,7 @@ class ConsoleLogManager:
     __slots__ = (
         "_logger",
         "_options",
+        "_log_format",
         "_log_options_manager",
     )
 
@@ -56,6 +57,9 @@ class ConsoleLogManager:
 
         self._log_options_manager = _SingletonManager.get_singleton(
             _LogOptionsManager
+        )
+        self._log_format = _SingletonManager.get_singleton(
+            _LogFormat
         )
 
         self._logger = _logging.getLogger(
@@ -110,7 +114,12 @@ class ConsoleLogManager:
                 stacklevel=options.stack_level,
             )
         else:
-            print(message)
+            print(
+                self._log_format.format_log_color(
+                    message,
+                    options.log_level
+                )            
+            )
 
         return message
 

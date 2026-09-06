@@ -5,15 +5,22 @@ description = "The project orchestration tool for QLogicae projects"
 readme = { file = "README.md", content-type = "text/markdown" }
 requires-python = ">=3.12"
 license = "MIT"
-license-files = ["LICENSE"]
-authors = [
-    { name = "Vaughn Cedric L. Araneta", email = "vaughncedriclipardoaraneta@gmail.com" }
+license-files = [
+    "LICENSE"
+    ]
+dependencies = []
+keywords = [
+    "qlogicae",
+    "logis"
 ]
-maintainers = [
-    { name = "Vaughn Cedric L. Araneta", email = "vaughncedriclipardoaraneta@gmail.com" }
-]
-keywords = ["qlogicae", "logis"]
 classifiers = [
+    "Typing :: Typed",
+    "Topic :: Utilities",
+    "Topic :: Software Development",
+    "Topic :: Software Development :: Build Tools",
+    "Topic :: System :: Installation/Setup",
+    "Topic :: System :: Software Distribution",
+    "Topic :: System :: Systems Administration",
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
     "Operating System :: OS Independent",
@@ -22,15 +29,13 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3.14",
-    "Typing :: Typed",
-    "Topic :: Software Development",
-    "Topic :: Software Development :: Build Tools",
-    "Topic :: System :: Installation/Setup",
-    "Topic :: System :: Software Distribution",
-    "Topic :: System :: Systems Administration",
-    "Topic :: Utilities",
 ]
-dependencies = []
+authors = [
+    { name = "Vaughn Cedric L. Araneta", email = "vaughncedriclipardoaraneta@gmail.com" }
+]
+maintainers = [
+    { name = "Vaughn Cedric L. Araneta", email = "vaughncedriclipardoaraneta@gmail.com" }
+]
 
 
 [project.optional-dependencies]
@@ -46,6 +51,10 @@ dev = [
     "scalene",
     "pympler",
     "vulture",
+    "bandit",
+    "detect-secrets",
+    "safety",
+    "pip-audit",   
 ]
 
 [project.scripts]
@@ -61,15 +70,20 @@ Changelog = "https://github.com/CedricDeVon/qlogicae-logis/releases"
 
 
 [build-system]
-requires = ["hatchling"]
+requires = [
+    "hatchling"
+]
 build-backend = "hatchling.build"
 
 
 [tool.pytest.ini_options]
-pythonpath = ["."]
-python_files = ["test_*.py"]
+pythonpath = [
+    "."
+]
+python_files = [
+    "test_*.py"
+]
 addopts = "-ra"
-# testpaths = ["./test/qlogicae_logis/v3/unit"]
 
 
 [tool.coverage.run]
@@ -142,7 +156,9 @@ ignore = [
     "S603", # allow subprocess usage
     "PLR2004", # allow magic values
 ]
-fixable = ["ALL"]
+fixable = [
+    "ALL"
+]
 unfixable = []
 
 
@@ -187,18 +203,74 @@ exclude = [
 
 
 [tool.hatch.build.targets.wheel]
-packages = ["qlogicae_logis"]
+packages = [
+    "temporary/build/release/minified/qlogicae_logis"
+]
 
 
 [tool.hatch.build.targets.wheel.force-include]
-"qlogicae_logis/py.typed" = "qlogicae_logis/py.typed"
+"temporary/build/release/minified/qlogicae_logis/py.typed" = "temporary/build/release/minified/qlogicae_logis/py.typed"
 
 [tool.hatch.envs.default.scripts]
-test-import-references = """
-    vulture qlogicae_logis
+development-cleanup-filesystem = """
+    python3 -c "import shutil,sys; [shutil.rmtree(p, ignore_errors=True) for p in sys.argv[1:]]" \
+        temporary
 """
 
-minify = """
+development-setup-filesystem = """
+    python3 -c "import pathlib,sys; [pathlib.Path(p).mkdir(parents=True, exist_ok=True) for p in sys.argv[1:]]" \
+        temporary/build/release/dist \
+        temporary/build/release/source/qlogicae_logis \
+        temporary/build/release/minified/qlogicae_logis \
+        temporary/result
+"""
+
+build-trim-source = """
+    python3 -c "import shutil,sys; [shutil.rmtree(p, ignore_errors=True) for p in sys.argv[1:]]" \
+        qlogicae_logis/__pycache__ \
+        qlogicae_logis/v3/__pycache__ \
+        qlogicae_logis/v3/_vendor/__pycache__ \
+        qlogicae_logis/v3/_vendor/pyyaml/__pycache__ \
+        qlogicae_logis/v3/_vendor/pyyaml/yaml/__pycache__ \
+        qlogicae_logis/v3/_vendor/qlogicae_cor/__pycache__ \
+        qlogicae_logis/v3/_vendor/qlogicae_cor/v2/__pycache__ \
+        qlogicae_logis/v3/_vendor/qlogicae_cor/v2/library/__pycache__ \
+        qlogicae_logis/v3/console/__pycache__ \
+        qlogicae_logis/v3/library/__pycache__ \
+        qlogicae_logis/v3/project/__pycache__ \
+        qlogicae_logis/v3/project/configuration/__pycache__
+"""
+
+development-clean-environment = """
+    python3 -c "import shutil,sys; [shutil.rmtree(p, ignore_errors=True) for p in sys.argv[1:]]" \
+        dist \
+        test \
+        output \
+"""
+
+development-synchronize-dependencies = """
+    pip \
+        freeze > requirements.txt
+"""
+
+development-install-dependencies = """
+    pip \
+        install -r requirements.txt
+"""
+
+build-source = """
+    python3 -c "import shutil,sys; shutil.copytree(sys.argv[1], sys.argv[2], dirs_exist_ok=True)" \
+        qlogicae_logis \
+        temporary/build/release/source/qlogicae_logis
+"""
+
+pre-build-minified = """
+    python3 -c "import shutil,sys; shutil.copytree(sys.argv[1], sys.argv[2], dirs_exist_ok=True)" \
+        qlogicae_logis \
+        temporary/build/release/minified/qlogicae_logis
+"""
+
+build-minified = """
     pyminify \
         --in-place \
         --prefer-single-line \
@@ -206,47 +278,77 @@ minify = """
         --remove-asserts \
         --remove-literal-statements \
         --remove-class-attribute-annotations \
-        qlogicae_logis/v3
+        temporary/build/release/minified/qlogicae_logis
 """
+
+build-pip-package = """
+    hatch \
+        build 
+"""
+
+post-build-pip-package = """
+    python3 -c "import shutil,sys; shutil.copytree(sys.argv[1], sys.argv[2], dirs_exist_ok=True)" \
+        dist temporary/build/release/dist
+"""
+
+archive-outputs = """
+    python3 -c "import shutil,sys; shutil.copytree(sys.argv[1], sys.argv[2], dirs_exist_ok=True)" \
+        temporary archive/v3.1.0/2026-09-06T09-34-47.266859128+08-00
+"""
+
+test-dead-code = """
+    vulture \
+        qlogicae_logis 2>&1 | \
+        python3 -c "import sys; data=sys.stdin.read(); sys.stdout.write(data); [open(p,'w').write(data) for p in sys.argv[1:]]" temporary/result/test-dead-code.txt
+"""
+
+test-package-dependency-security = """
+    pip-audit \
+        -r requirements.txt \
+        -f json -o temporary/result/test-package-dependency.json
+"""
+
+test-static-code-analysis-security = """
+    bandit \
+        -r qlogicae_logis \
+        -f json -o temporary/result/test-static-code-analysis.json
+"""
+
+test-hardcoded-secrets-security = """
+    detect-secrets scan > \
+        temporary/result/test-hardcoded-secrets.json
+"""
+
 test-lint = """
-    ruff check qlogicae_logis/v3/console qlogicae_logis/v3/library --fix
+    ruff \
+        check qlogicae_logis/v3/console qlogicae_logis/v3/library --fix  2>&1 | \
+        python3 -c "import sys; data=sys.stdin.read(); sys.stdout.write(data); [open(p,'w').write(data) for p in sys.argv[1:]]" temporary/result/test-lint.txt 
 """
+
 test-type-check = """
-    mypy 
+    mypy 2>&1 | \
+        python3 -c "import sys; data=sys.stdin.read(); sys.stdout.write(data); [open(p,'w').write(data) for p in sys.argv[1:]]" \
+        temporary/result/test-type-check.txt 
 """
-test-unit = """
-    pytest -vv \
-        --cov \
-        --cov-branch \
-        --cov-report=term-missing \
-        --cov-report=html:\"output/test/unit/html\" \
-        --cov-report=xml:\"output/test/unit/coverage.xml\" \
-        --cov-report=json:\"output/test/unit/coverage.json\" \
-        --junitxml=\"output/test/unit/junit.xml\" \
+
+test-pip-package = """
+    twine check --strict temporary/build/release/dist/* 2>&1 | \
+        python3 -c "import sys; data=sys.stdin.read(); sys.stdout.write(data); [open(p,'w').write(data) for p in sys.argv[1:]]" \
+        temporary/result/test-pip-package.txt 
 """
-test-benchmark-memory-usage-create = """
-    memray run -o output/test/benchmark/memray-1.bin -m test.qlogicae_logis.v3.benchmark.memory_usage.test_usage ;
-"""
-# memray run -o output/test/benchmark/memray-2.bin -m test.qlogicae_logis.v3.benchmark.memory_usage.test_dynamic
-test-benchmark-memory-usage-view = """
-    memray tree output/test/benchmark/memray-1.bin
-"""
-# memray tree output/test/benchmark/memray-2.bin
-test-pip-deployment = """
-    twine check --strict output/build/release/dist/*
-"""
-deploy = """
-    twine upload output/build/release/dist/* --config-file .pypirc
+
+deploy-release = """
+    twine \
+        upload temporary/build/release/dist/* \
+        --config-file .pypirc
 """
 
 github-workflow-setup = """
-    mkdir -p output/build/release &&
-    mkdir -p output/test/unit &&
-    mkdir -p output/test/benchmark
+    mkdir -p temporary/build/release
 """
-github-workflow-test-import-references = """
+github-workflow-test-dead-code = """
     hatch run github-workflow-setup &&
-    hatch run test-import-references
+    hatch run test-dead-code
 """
 github-workflow-test-type-check = """
     hatch run github-workflow-setup &&
@@ -269,8 +371,30 @@ github-workflow-test-benchmark-memory-usage-view = """
     hatch run test-benchmark-memory-usage-view
 """
 
-# scalene run --html --outfile output/test/benchmark/scalene.html test/qlogicae_logis/v3/benchmark/memory_usage/test_static.py
-# memray run -o output/test/benchmark/memray.bin -m test.qlogicae_logis.v3.benchmark.memory_usage.test_static
-# scalene view output/test/benchmark/scalene.json
-# memray tree output/test/benchmark/memray.bin
-#     scalene view output/test/benchmark/scalene.json
+# testpaths = ["./test/qlogicae_logis/v3/unit"]
+# memray run -o ${{ qlogicae-logis-temporary-test-benchmark-filesystem-path }}/memray-2.bin -m test.qlogicae_logis.v3.benchmark.memory_usage.test_dynamic
+# memray tree ${{ qlogicae-logis-temporary-test-benchmark-filesystem-path }}/memray-2.bin
+# scalene run --html --outfile ${{ qlogicae-logis-temporary-test-benchmark-filesystem-path }}/scalene.html test/qlogicae_logis/v3/benchmark/memory_usage/test_static.py
+# memray run -o ${{ qlogicae-logis-temporary-test-benchmark-filesystem-path }}/memray.bin -m test.qlogicae_logis.v3.benchmark.memory_usage.test_static
+# scalene view ${{ qlogicae-logis-temporary-test-benchmark-filesystem-path }}/scalene.json
+# memray tree ${{ qlogicae-logis-temporary-test-benchmark-filesystem-path }}/memray.bin
+#     scalene view ${{ qlogicae-logis-temporary-test-benchmark-filesystem-path }}/scalene.json
+
+# test-unit = """
+#     pytest -vv \
+#         --cov \
+#         --cov-branch \
+#         --cov-report=term-missing \
+#         --cov-report=html:\"${{ qlogicae-logis-temporary-test-unit-filesystem-path }}/html\" \
+#         --cov-report=xml:\"${{ qlogicae-logis-temporary-test-unit-filesystem-path }}/coverage.xml\" \
+#         --cov-report=json:\"${{ qlogicae-logis-temporary-test-unit-filesystem-path }}/coverage.json\" \
+#         --junitxml=\"${{ qlogicae-logis-temporary-test-unit-filesystem-path }}/junit.xml\" \
+# """
+
+# test-benchmark-memory-usage-create = """
+#    memray run -o ${{ qlogicae-logis-temporary-test-benchmark-filesystem-path }}/memray-1.bin -m test.qlogicae_logis.v3.benchmark.memory_usage.test_usage ;
+# """
+
+# test-benchmark-memory-usage-view = """
+#    memray tree ${{ qlogicae-logis-temporary-test-benchmark-filesystem-path }}/memray-1.bin
+# """

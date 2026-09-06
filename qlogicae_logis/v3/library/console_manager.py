@@ -9,6 +9,7 @@ __all__ = (
 )
 
 _argparse: Any = None
+_LogManager: Any = None
 _TaskManager: Any = None
 _ImportManager: Any = None
 _DatabaseManager: Any = None
@@ -25,6 +26,7 @@ _DecoratorManager = DecoratorManager
 def _handle_dynamic_imports() -> None:
     global _handle_dynamic_imports
     global _argparse
+    global _LogManager
     global _TaskManager
     global _ImportManager
     global _DatabaseManager
@@ -49,11 +51,16 @@ def _handle_dynamic_imports() -> None:
         command_workspace_manager,
         database_manager,
         import_manager,
+        log_manager,
         task_manager,
         value_cache_database_manager,
     )
 
     _argparse = argparse
+    _LogManager = (
+        log_manager
+            .LogManager
+    )
     _TaskManager = task_manager.TaskManager
     _ImportManager = import_manager.ImportManager
     _DatabaseManager = database_manager.DatabaseManager
@@ -74,18 +81,19 @@ def _handle_dynamic_imports() -> None:
 
 class ConsoleManager:
     __slots__ = (
-        "_application",
         "_commands",
-        "_command_about_manager",
-        "_command_database_manager",
-        "_command_debug_manager",
-        "_command_filesystem_manager",
-        "_command_template_manager",
-        "_command_workflow_manager",
-        "_command_workspace_manager",
+        "_log_manager",
+        "_application",
         "_task_manager",
         "_import_manager",
         "_database_manager",
+        "_command_about_manager",
+        "_command_debug_manager",
+        "_command_template_manager",
+        "_command_workflow_manager",
+        "_command_database_manager",
+        "_command_workspace_manager",
+        "_command_filesystem_manager",
         "_value_cache_database_manager",
         "_raw_string_console_arguments",
     )
@@ -120,6 +128,11 @@ class ConsoleManager:
         self._import_manager = _ImportManager.read_singleton(
             _ImportManager
         )
+        self._log_manager = (
+            _ImportManager.read_singleton(
+                _LogManager
+            )
+        )
         self._database_manager = (
             _ImportManager.read_singleton(
                 _DatabaseManager
@@ -141,12 +154,8 @@ class ConsoleManager:
 
     def run(self) -> bool:
         result_value: bool = True
-        method_result: bool = True
 
-        method_result = self.setup_commands()
-        if not method_result:
-            result_value = False
-
+        result_value = self.setup_commands() and result_value
         arguments = self.read_arguments()
 
         command_handler = getattr(
@@ -155,11 +164,9 @@ class ConsoleManager:
             None,
         )
         if command_handler is not None:
-            method_result = command_handler(
+            result_value = command_handler(
                 arguments
-            )
-            if not method_result:
-                result_value = False
+            ) and result_value
 
         else:
             self._application.print_help()

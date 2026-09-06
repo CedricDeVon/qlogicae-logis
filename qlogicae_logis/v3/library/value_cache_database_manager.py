@@ -476,6 +476,17 @@ class ValueCacheDatabaseManager:
 
         return True
 
+    def write_filesystem_current_timestamp(self) -> bool:
+        self.write_any_value(
+            (
+                "filesystem-current-timestamp",
+                "value",
+            ),
+            self._import_manager.generate_current_filesystem_timestamp()
+        )
+
+        return True
+
     # def read_time_zone_name(self) -> str:
     #     result: str = self.read_any_value(
     #         (

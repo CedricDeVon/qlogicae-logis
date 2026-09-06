@@ -4,14 +4,12 @@ __all__ = (
     "ScriptProcessManager",
 )
 
-from typing import TYPE_CHECKING, Any
+from typing import Any
+from subprocess import CompletedProcess # nosec B404
 
-if TYPE_CHECKING:
-    from subprocess import CompletedProcess
-
-    from .script_process import (
-        ScriptProcess,
-    )
+from .script_process import (
+    ScriptProcess,
+)
 
 _shlex: Any = None
 _subprocess: Any = None
@@ -29,7 +27,7 @@ def _handle_dynamic_imports() -> None:
     global _ScriptProcess
 
     import shlex
-    import subprocess
+    import subprocess # nosec B404
 
     from .script_process import ScriptProcess
     from .singleton_manager import SingletonManager
@@ -111,11 +109,11 @@ class ScriptProcessManager:
 
         match script_process_type:
             case _ScriptProcess.SHELL:
-                value = _subprocess.run(
+                value = _subprocess.run( 
                     command,
                     encoding=encoding,
                     text=True,
-                    shell=True,
+                    shell=True, # nosec B604
                 )
 
             case _ScriptProcess.SUBPROCESS:

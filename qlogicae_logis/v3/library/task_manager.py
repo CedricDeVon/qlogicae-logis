@@ -95,6 +95,7 @@ class TaskManager:
     @_DecoratorManager.single_task_decorator
     def run_task_system_values(self) -> bool:
         self._value_cache_database_manager.write_current_timestamp()
+        self._value_cache_database_manager.write_filesystem_current_timestamp()
         self._value_cache_database_manager.write_current_date()
         self._value_cache_database_manager.write_current_year()
         self._value_cache_database_manager.write_default_time_zone_name()

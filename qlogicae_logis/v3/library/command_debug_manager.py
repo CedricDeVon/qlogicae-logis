@@ -8,6 +8,7 @@ __all__ = (
     "CommandDebugManager"
 )
 
+_LogManager: Any = None
 _TaskManager: Any = None
 _ImportManager: Any = None
 _DisplayManager: Any = None
@@ -20,6 +21,7 @@ _DecoratorManager = DecoratorManager
 
 def _handle_dynamic_imports() -> None:
     global _handle_dynamic_imports
+    global _LogManager
     global _TaskManager
     global _ImportManager
     global _DisplayManager
@@ -33,6 +35,7 @@ def _handle_dynamic_imports() -> None:
         database_manager,
         display_manager,
         import_manager,
+        log_manager,
         persistent_cache_database_manager,
         task_manager,
         value_cache_database_manager,
@@ -41,6 +44,10 @@ def _handle_dynamic_imports() -> None:
     _TaskManager = (
         task_manager
             .TaskManager
+    )
+    _LogManager = (
+        log_manager
+            .LogManager
     )
     _ImportManager = (
         import_manager
@@ -67,12 +74,13 @@ def _handle_dynamic_imports() -> None:
 
 class CommandDebugManager:
     __slots__ = (
-        "_command_storage_manager",
+        "_log_manager",
         "_task_manager",
         "_import_manager",
-        "_database_manager",
-        "_value_cache_database_manager",
         "_display_manager",
+        "_database_manager",
+        "_command_storage_manager",
+        "_value_cache_database_manager",
         "_persistent_cache_database_manager",
     )
 
@@ -91,6 +99,11 @@ class CommandDebugManager:
         self._task_manager = (
             _ImportManager.read_singleton(
                 _TaskManager
+            )
+        )
+        self._log_manager = (
+            _ImportManager.read_singleton(
+                _LogManager
             )
         )
         self._import_manager = (
@@ -130,7 +143,6 @@ class CommandDebugManager:
     def run_command_debug_view_value_cache(self, **kwargs: Any) -> bool:
         self._task_manager.run_task_full_debug_value_cache_setup()
 
-        result: bool = True
         key_paths = kwargs.get("key_paths", []) or []
         if len(key_paths) < 1:
             self._display_manager.display_tree_object(
@@ -140,37 +152,31 @@ class CommandDebugManager:
             )
 
         else:
-            for target in key_paths:
-                if not target:
-                    self._import_manager.log_warning_to_all(
-                        callback=f"{self.run_command_debug_view_value_cache}",
-                        message="one or more targets are null",
+            for key_path in key_paths:
+                if not key_path:
+                    self._log_manager.log_display_warning(
+                        reference=self.run_command_debug_view_value_cache,
+                        message="one or more value cache key paths are null",
                     )
-                    result = False
                     continue
 
-                method_result: bool = (
-                    self._display_manager.display_tree_object(
-                        value=self._value_cache_database_manager.read_any_value(
-                            tuple(target.split("."))
-                        ),
-                    )
+                self._display_manager.display_tree_object(
+                    value=self._value_cache_database_manager.read_any_value(
+                        tuple(key_path.split("."))
+                    ),
                 )
-                if not method_result:
-                    result = False
 
-        return result
+        return True
 
     def run_command_debug_view_disk_cache(self, **kwargs: Any) -> bool:
         self._task_manager.run_task_full_debug_disk_cache_setup()
 
-        result: bool = True
         value = self._persistent_cache_database_manager.read_all_values()
         if value and len(value) > 0:
-            result = self._display_manager.display_tree_object(
+            self._display_manager.display_tree_object(
                 value=value,
             )
 
-        return result
+        return True
 
 

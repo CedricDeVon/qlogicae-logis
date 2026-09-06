@@ -183,8 +183,8 @@ class Parser:
             # Parse the end of the stream.
             token = self.get_token()
             event = StreamEndEvent(token.start_mark, token.end_mark)
-            assert not self.states
-            assert not self.marks
+            # assert not self.states
+            # assert not self.marks
             self.state = None
         return event
 

@@ -8,6 +8,7 @@ __all__ = (
     "CommandAboutManager"
 )
 
+_LogManager: Any = None
 _TaskManager: Any = None
 _ImportManager: Any = None
 _DisplayManager: Any = None
@@ -20,6 +21,7 @@ _PersistentCacheDatabasManager: Any = None
 
 def _handle_dynamic_imports() -> None:
     global _handle_dynamic_imports
+    global _LogManager
     global _TaskManager
     global _ImportManager
     global _DisplayManager
@@ -33,6 +35,7 @@ def _handle_dynamic_imports() -> None:
         database_manager,
         display_manager,
         import_manager,
+        log_manager,
         persistent_cache_database_manager,
         task_manager,
         value_cache_database_manager,
@@ -41,6 +44,10 @@ def _handle_dynamic_imports() -> None:
     _TaskManager = (
         task_manager
             .TaskManager
+    )
+    _LogManager = (
+        log_manager
+            .LogManager
     )
     _DisplayManager = (
         display_manager.DisplayManager
@@ -67,11 +74,12 @@ def _handle_dynamic_imports() -> None:
 
 class CommandAboutManager:
     __slots__ = (
-        "_command_storage_manager",
+        "_log_manager",
         "_task_manager",
         "_import_manager",
         "_display_manager",
         "_database_manager",
+        "_command_storage_manager",
         "_value_cache_database_manager",
         "_persistent_cache_database_manager",
     )
@@ -92,6 +100,11 @@ class CommandAboutManager:
         self._task_manager = (
             _ImportManager.read_singleton(
                 _TaskManager
+            )
+        )
+        self._log_manager = (
+            _ImportManager.read_singleton(
+                _LogManager
             )
         )
         self._import_manager = (
@@ -128,11 +141,12 @@ class CommandAboutManager:
                 .read_company_project_name()
         )
         if not company_project_name:
-            self._import_manager.log_warning_to_all(
-                callback=f"{self.run_command_about_version}",
-                message="company name is null",
+            self._log_manager.log_display_warning(
+                reference=self.run_command_about_version,
+                message="utility property 'project-name.value' "
+                "does not exist",
             )
-            return False
+            return True
 
         metadata_version = (
             self._import_manager.read_metadata_version(
@@ -140,14 +154,15 @@ class CommandAboutManager:
             )
         )
         if not metadata_version:
-            self._import_manager.log_warning_to_all(
-                callback=f"{self.run_command_about_version}",
-                message="metadata version is null",
+            self._log_manager.log_display_warning(
+                reference=self.run_command_about_version,
+                message="utility property 'active-major-version-label.value' "
+                "does not exist",
             )
-            return False
+            return True
 
-        result: bool = self._display_manager.display_highlight_value(
+        self._display_manager.display_highlight_value(
             value=metadata_version
         )
 
-        return result
+        return True

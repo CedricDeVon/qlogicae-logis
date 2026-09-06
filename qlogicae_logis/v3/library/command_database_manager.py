@@ -8,6 +8,7 @@ __all__ = (
     "CommandDatabaseManager"
 )
 
+_LogManager: Any = None
 _TaskManager: Any = None
 _ImportManager: Any = None
 _DisplayManager: Any = None
@@ -19,6 +20,7 @@ _PersistentCacheDatabasManager: Any = None
 
 def _handle_dynamic_imports() -> None:
     global _handle_dynamic_imports
+    global _LogManager
     global _TaskManager
     global _ImportManager
     global _DisplayManager
@@ -32,6 +34,7 @@ def _handle_dynamic_imports() -> None:
         database_manager,
         display_manager,
         import_manager,
+        log_manager,
         persistent_cache_database_manager,
         task_manager,
         value_cache_database_manager,
@@ -40,6 +43,10 @@ def _handle_dynamic_imports() -> None:
     _TaskManager = (
         task_manager
             .TaskManager
+    )
+    _LogManager = (
+        log_manager
+            .LogManager
     )
     _DisplayManager = (
         display_manager.DisplayManager
@@ -66,11 +73,12 @@ def _handle_dynamic_imports() -> None:
 
 class CommandDatabaseManager:
     __slots__ = (
-        "_command_storage_manager",
+        "_log_manager",
         "_task_manager",
         "_import_manager",
         "_display_manager",
         "_database_manager",
+        "_command_storage_manager",
         "_value_cache_database_manager",
         "_persistent_cache_database_manager",
     )
@@ -94,6 +102,11 @@ class CommandDatabaseManager:
         self._import_manager = (
             _ImportManager.read_singleton(
                 _ImportManager
+            )
+        )
+        self._log_manager = (
+            _ImportManager.read_singleton(
+                _LogManager
             )
         )
         self._database_manager = (
@@ -136,15 +149,14 @@ class CommandDatabaseManager:
 
     def run_command_database_view_disk(self, **kwargs: Any) -> bool:
         if not kwargs:
-            self._import_manager.log_warning_to_all(
-                callback=f"{self.run_command_database_view_disk}",
-                message="kwargs object is empty or null",
+            self._log_manager.log_display_warning(
+                reference=self.run_command_database_view_disk,
+                message="kwargs is null or an empty object",
             )
-            return False
+            return True
 
         self._task_manager.run_task_full_debug_disk_cache_setup()
 
-        result: bool = True
         key_paths = kwargs.get("key_paths", []) or []
         values = self._persistent_cache_database_manager.read_all_values()
 
@@ -154,46 +166,34 @@ class CommandDatabaseManager:
             )
 
         else:
-            for target in key_paths:
-                if not target:
-                    self._import_manager.log_warning_to_all(
-                        callback=f"{self.run_command_database_view_disk}",
-                        message="one or more key paths are null",
+            for key_path in key_paths:
+                if not key_path:
+                    self._log_manager.log_display_warning(
+                reference=self.run_command_database_view_disk,
+                        message="one or more disk cache key paths are null",
                     )
-                    result = False
                     continue
 
                 for value in values:
                     if not value:
-                        self._import_manager.log_warning_to_all(
-                            callback=f"{self.run_command_database_view_disk}",
-                            message="one or more values are null",
-                        )
-                        result = False
                         continue
 
-                    if value["key"] == target:
-                        method_result: bool = (
-                            self._display_manager.display_tree_object(
-                                value=value
-                            )
+                    if value["key"] == key_path:
+                        self._display_manager.display_tree_object(
+                            value=value
                         )
-                        if not method_result:
-                            result = False
 
-        return result
+        return True
 
     def run_command_database_view_value(self, **kwargs: Any) -> bool:
         if not kwargs:
-            self._import_manager.log_warning_to_all(
-                callback=f"{self.run_command_database_view_value}",
-                message="kwargs object is empty or null",
+            self._log_manager.log_display_warning(
+                reference=self.run_command_database_view_value,
+                message="kwargs is null or an empty object",
             )
-            return False
+            return True
 
-        result: bool = True
         key_paths = kwargs.get("key_paths", []) or []
-
         if len(key_paths) < 1:
             self._display_manager.display_tree_object(
                 value=self._value_cache_database_manager.read_any_value(
@@ -202,30 +202,22 @@ class CommandDatabaseManager:
             )
 
         else:
-            for target in key_paths:
-                if not target:
-                    self._import_manager.log_warning_to_all(
-                        callback=f"{self.run_command_database_view_value}",
-                        message="one or more key paths are null",
+            for key_path in key_paths:
+                if not key_path:
+                    self._log_manager.log_display_warning(
+                        reference=self.run_command_database_view_value,
+                        message="one or more value cache key paths are null",
                     )
-                    result = False
                     continue
 
-                method_result: bool = (
-                    self._display_manager.display_tree_object(
-                        value=self._value_cache_database_manager.read_any_value(
-                            tuple(target.split("."))
-                        ),
-                    )
+                self._display_manager.display_tree_object(
+                    value=self._value_cache_database_manager.read_any_value(
+                        tuple(key_path.split("."))
+                    ),
                 )
-                if not method_result:
-                    self._import_manager.log_warning_to_all(
-                        callback=f"{self.run_command_database_view_value}",
-                        message="tree display has failed",
-                    )
-                    result = False
 
-        return result
+
+        return True
 
     def run_command_database_clear_disk(self, **kwargs: Any) -> bool:
         self._task_manager.run_task_full_debug_disk_cache_setup()
@@ -235,23 +227,17 @@ class CommandDatabaseManager:
                 .read_default_cache_disk_output_folder_path()
         ) or ""
         if not target_path:
-            self._import_manager.log_warning_to_all(
-                callback=f"{self.run_command_database_clear_disk}",
-                message="one or more target paths are null",
+            self._log_manager.log_display_warning(
+                reference=self.run_command_database_clear_disk,
+                message="disk cache target path is null",
             )
-            return False
+            return True
 
-        result: bool = True
-        result = self._import_manager.clean_filesystem_paths(
+        result: bool = self._import_manager.clean_filesystem_paths(
             target_paths=(
                 target_path,
             )
         )
-        if not result:
-            self._import_manager.log_warning_to_all(
-                callback=f"{self.run_command_database_clear_disk}",
-                message="clean filesystem operation has failed",
-            )
 
         return result
 

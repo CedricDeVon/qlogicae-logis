@@ -8,6 +8,7 @@ __all__ = (
     "CommandTemplateManager"
 )
 
+_LogManager: Any = None
 _TaskManager: Any = None
 _ImportManager: Any = None
 _DisplayManager: Any = None
@@ -19,6 +20,7 @@ _PersistentCacheDatabasManager: Any = None
 
 def _handle_dynamic_imports() -> None:
     global _handle_dynamic_imports
+    global _LogManager
     global _TaskManager
     global _ImportManager
     global _DisplayManager
@@ -32,6 +34,7 @@ def _handle_dynamic_imports() -> None:
         database_manager,
         display_manager,
         import_manager,
+        log_manager,
         persistent_cache_database_manager,
         task_manager,
         value_cache_database_manager,
@@ -40,6 +43,10 @@ def _handle_dynamic_imports() -> None:
     _TaskManager = (
         task_manager
             .TaskManager
+    )
+    _LogManager = (
+        log_manager
+            .LogManager
     )
     _DisplayManager = (
         display_manager.DisplayManager
@@ -66,6 +73,7 @@ def _handle_dynamic_imports() -> None:
 
 class CommandTemplateManager:
     __slots__ = (
+        "_log_manager",
         "_task_manager",
         "_import_manager",
         "_display_manager",
@@ -78,10 +86,16 @@ class CommandTemplateManager:
     def __init__(self) -> None:
         _handle_dynamic_imports()
 
-        self._command_storage_manager = _ImportManager.read_singleton(
-            _CommandStorageManager
+        self._command_storage_manager = (
+            _ImportManager.read_singleton(
+                _CommandStorageManager
+            )
         )
-
+        self._log_manager = (
+            _ImportManager.read_singleton(
+                _LogManager
+            )
+        )
         self._display_manager = (
             _ImportManager.read_singleton(
                 _DisplayManager
@@ -134,11 +148,12 @@ class CommandTemplateManager:
             destination_temporary_target_filesystem_path = (
                 f"{temporary_template_output_filesystem_path}/root/filesystem"
             )
-            result: bool = True
-            method_result: bool = True
             for accessibility_type in default_filesystem_accessibility_types:
                 if not accessibility_type:
-                    result = False
+                    self._log_manager.log_display_warning(
+                        reference=handle_target_root,
+                        message="one or more accessibility types are null",
+                    )
                     continue
 
                 source_all_filesystem_path = (
@@ -148,45 +163,32 @@ class CommandTemplateManager:
                     f"{root_workspace_filesystem_path}/{accessibility_type}/template/root/filesystem"
                 )
 
-                method_result = self._import_manager.setup_filesystem_tree_paths(
+                self._import_manager.setup_filesystem_tree_paths(
                     target_paths=(
                         source_all_filesystem_path,
                         source_root_filesystem_path,
                         destination_temporary_target_filesystem_path,
                     ),
                 )
-                if not method_result:
-                    result = False
-
-                method_result = self._import_manager.copy_filesystem_path(
+                self._import_manager.copy_filesystem_path(
                     source_path=source_all_filesystem_path,
                     target_path=destination_temporary_target_filesystem_path,
                 )
-                if not method_result:
-                    result = False
-
-                method_result = self._import_manager.copy_filesystem_path(
+                self._import_manager.copy_filesystem_path(
                     source_path=source_root_filesystem_path,
                     target_path=destination_temporary_target_filesystem_path,
                 )
-                if not method_result:
-                    result = False
 
-            method_result = self._import_manager.macros_parse_filesystem(
+            self._import_manager.macros_parse_filesystem(
                 filesystem_path=destination_temporary_target_filesystem_path,
                 workspace_macros=macros_data,
             )
-            if not method_result:
-                result = False
-
-            method_result = self._import_manager.copy_filesystem_path(
+            self._import_manager.copy_filesystem_path(
                 source_path=destination_temporary_target_filesystem_path,
                 target_path=root_filesystem_path,
             )
-            if not method_result:
-                result = False
 
-            return result
+            return True
 
         def handle_target_group() -> bool:
             result: bool = True
@@ -195,11 +197,9 @@ class CommandTemplateManager:
                     result = False
                     continue
 
-                method_result: bool = handle_target_group_selection(
+                result = handle_target_group_selection(
                     selection_group
-                )
-                if not method_result:
-                    result = False
+                ) and result
 
             return result
 
@@ -210,23 +210,29 @@ class CommandTemplateManager:
                     result = False
                     continue
 
-                method_result: bool = handle_target_project_selection(
+                result = handle_target_project_selection(
                     selection_project
-                )
-                if not method_result:
-                    result = False
+                ) and result
 
             return result
 
         def handle_target_group_selection(group_target: str) -> bool:
             if not group_target:
-                return False
+                self._log_manager.log_display_warning(
+                    reference=handle_target_group_selection,
+                    message="target is null",
+                )
+                return True
 
             selection_group = (
                 data_selection_groups.get(group_target, {}) or {}
             )
             if not selection_group:
-                return False
+                self._log_manager.log_display_warning(
+                    reference=handle_target_group_selection,
+                    message=f"template group '{group_target}' does not exist",
+                )
+                return True
 
             selection_group_targets = (
                 set(selection_group.get("targets", {})) or set()
@@ -234,11 +240,12 @@ class CommandTemplateManager:
             destination_temporary_target_filesystem_path = (
                 f"{temporary_template_output_filesystem_path}/group/selection/{group_target}/filesystem"
             )
-            result: bool = True
-            method_result: bool = True
             for accessibility_type in default_filesystem_accessibility_types:
                 if not accessibility_type:
-                    result = False
+                    self._log_manager.log_display_warning(
+                        reference=handle_target_group_selection,
+                        message="one or more accessibility types are null",
+                    )
                     continue
 
                 source_all_filesystem_path = (
@@ -251,7 +258,7 @@ class CommandTemplateManager:
                     f"{root_workspace_filesystem_path}/{accessibility_type}/template/group/selection/{group_target}/filesystem"
                 )
 
-                method_result = self._import_manager.setup_filesystem_tree_paths(
+                self._import_manager.setup_filesystem_tree_paths(
                     target_paths=(
                         source_all_filesystem_path,
                         source_group_filesystem_path,
@@ -259,103 +266,87 @@ class CommandTemplateManager:
                         destination_temporary_target_filesystem_path,
                     ),
                 )
-                if not method_result:
-                    result = False
-
-                method_result = self._import_manager.copy_filesystem_path(
+                self._import_manager.copy_filesystem_path(
                     source_path=source_all_filesystem_path,
                     target_path=destination_temporary_target_filesystem_path,
                 )
-                if not method_result:
-                    result = False
-
-                method_result = self._import_manager.copy_filesystem_path(
+                self._import_manager.copy_filesystem_path(
                     source_path=source_group_filesystem_path,
                     target_path=destination_temporary_target_filesystem_path,
                 )
-                if not method_result:
-                    result = False
-
-                method_result = self._import_manager.copy_filesystem_path(
+                self._import_manager.copy_filesystem_path(
                     source_path=source_target_filesystem_path,
                     target_path=destination_temporary_target_filesystem_path,
                 )
-                if not method_result:
-                    result = False
 
-            method_result = self._import_manager.macros_parse_filesystem(
+            self._import_manager.macros_parse_filesystem(
                 filesystem_path=destination_temporary_target_filesystem_path,
                 workspace_macros=macros_data,
             )
-            if not method_result:
-                result = False
 
+            result: bool = True
             for selection_group_target in selection_group_targets:
                 if not selection_group_target:
-                    result = False
+                    self._log_manager.log_display_warning(
+                        reference=handle_target_group_selection,
+                        message="one or more targets are null",
+                    )
                     continue
 
                 if selection_group_target == "root":
                     source_temporary_target_filesystem_path = (
                         f"{temporary_template_output_filesystem_path}/root/filesystem"
                     )
-                    method_result = self._import_manager.copy_filesystem_path(
+                    self._import_manager.copy_filesystem_path(
                         source_path=destination_temporary_target_filesystem_path,
                         target_path=source_temporary_target_filesystem_path,
                     )
-                    if not method_result:
-                        result = False
-
-                    method_result = handle_target_root()
-                    if not method_result:
-                        result = False
+                    result = handle_target_root() and result
 
                 elif selection_group_target in selection_projects:
                     source_temporary_target_filesystem_path = (
                         f"{temporary_template_output_filesystem_path}/project/selection/{selection_group_target}/filesystem"
                     )
-                    method_result = self._import_manager.copy_filesystem_path(
+                    self._import_manager.copy_filesystem_path(
                         source_path=destination_temporary_target_filesystem_path,
                         target_path=source_temporary_target_filesystem_path,
                     )
-                    if not method_result:
-                        result = False
-
-                    method_result = handle_target_project_selection(
+                    result = handle_target_project_selection(
                         selection_group_target
-                    )
-                    if not method_result:
-                        result = False
+                    ) and result
 
                 elif selection_group_target in selection_groups:
                     source_temporary_target_filesystem_path = (
                         f"{temporary_template_output_filesystem_path}/group/selection/{selection_group_target}/filesystem"
                     )
-                    method_result = self._import_manager.copy_filesystem_path(
+                    self._import_manager.copy_filesystem_path(
                         source_path=destination_temporary_target_filesystem_path,
                         target_path=source_temporary_target_filesystem_path,
                     )
-                    if not method_result:
-                        result = False
-
-                    method_result = handle_target_group_selection(
+                    result = handle_target_group_selection(
                         selection_group_target
-                    )
-                    if not method_result:
-                        result = False
+                    ) and result
 
             return result
 
         def handle_target_project_selection(project_target: str) -> bool:
             if not project_target:
-                return False
+                self._log_manager.log_display_warning(
+                    reference=handle_target_project_selection,
+                    message="target is null",
+                )
+                return True
 
             selection_project = (
                 data_selection_projects
                     .get(project_target, {}) or {}
             )
             if not selection_project:
-                return False
+                self._log_manager.log_display_warning(
+                    reference=handle_target_project_selection,
+                    message=f"template project '{project_target}' does not exist",
+                )
+                return True
 
             selection_project_filesystem_path_value = (
                 (selection_project
@@ -364,16 +355,17 @@ class CommandTemplateManager:
             )
 
             if not selection_project_filesystem_path_value:
-                return False
+                return True
 
             destination_target_filesystem_path = (
                 f"{temporary_template_output_filesystem_path}/project/selection/{project_target}/filesystem"
             )
-            result: bool = True
-            method_result: bool = True
             for accessibility_type in default_filesystem_accessibility_types:
                 if not accessibility_type:
-                    result = False
+                    self._log_manager.log_display_warning(
+                        reference=handle_target_project_selection,
+                        message="one or more accessibility types are null",
+                    )
                     continue
 
                 source_all_filesystem_path = (
@@ -386,7 +378,7 @@ class CommandTemplateManager:
                     f"{root_workspace_filesystem_path}/{accessibility_type}/template/project/selection/{project_target}/filesystem"
                 )
 
-                method_result = self._import_manager.setup_filesystem_tree_paths(
+                self._import_manager.setup_filesystem_tree_paths(
                     target_paths=(
                         source_all_filesystem_path,
                         source_project_filesystem_path,
@@ -394,45 +386,28 @@ class CommandTemplateManager:
                         destination_target_filesystem_path,
                     ),
                 )
-                if not method_result:
-                    result = False
-
-                method_result = self._import_manager.copy_filesystem_path(
+                self._import_manager.copy_filesystem_path(
                     source_path=source_all_filesystem_path,
                     target_path=destination_target_filesystem_path,
                 )
-                if not method_result:
-                    result = False
-
-                method_result = self._import_manager.copy_filesystem_path(
+                self._import_manager.copy_filesystem_path(
                     source_path=source_project_filesystem_path,
                     target_path=destination_target_filesystem_path,
                 )
-                if not method_result:
-                    result = False
-
-                method_result = self._import_manager.copy_filesystem_path(
+                self._import_manager.copy_filesystem_path(
                     source_path=source_target_filesystem_path,
                     target_path=destination_target_filesystem_path,
                 )
-                if not method_result:
-                    result = False
 
-            method_result = self._import_manager.macros_parse_filesystem(
+            self._import_manager.macros_parse_filesystem(
                 filesystem_path=destination_target_filesystem_path,
                 workspace_macros=macros_data,
             )
-            if not method_result:
-                result = False
-
-            method_result = self._import_manager.copy_filesystem_path(
+            self._import_manager.copy_filesystem_path(
                 source_path=destination_target_filesystem_path,
                 target_path=selection_project_filesystem_path_value,
             )
-            if not method_result:
-                result = False
-
-            return result
+            return True
 
         self._task_manager.run_task_common_setup()
         self._task_manager.run_task_workspace_default_setup()
@@ -442,10 +417,11 @@ class CommandTemplateManager:
         self._task_manager.run_task_filesystem_clean_include_setup()
 
         if not kwargs:
-            self._import_manager.log_cache_warning_to_file(
-                message="invalid arguments"
+            self._log_manager.log_display_warning(
+                reference=self.run_command_template_apply,
+                message="kwargs is null or an empty object",
             )
-            return False
+            return True
 
         targets = (kwargs.get("targets", ["all"]) or ["all"])
         if not targets or len(targets) < 1:
@@ -508,73 +484,53 @@ class CommandTemplateManager:
                 .read_con_wor_data_template_cleanup_after_is_enabled_value()
         )
         result: bool = True
-        method_result: bool = True
-
         if cleanup_before_is_enabled:
-            method_result = (
-                self._task_manager.run_task_safe_clean_filesystem_path(
-                    target_path=temporary_template_output_filesystem_path
-                )
+            self._task_manager.run_task_safe_clean_filesystem_path(
+                target_path=temporary_template_output_filesystem_path
             )
-            if not method_result:
-                result = False
 
         for target in targets:
+            if not target:
+                self._log_manager.log_display_warning(
+                    reference=self.run_command_template_apply,
+                    message="one or more targets are null",
+                )
+                continue
+
             if target == "all":
-                method_result = handle_target_root()
-                if not method_result:
-                    result = False
-
-                method_result = handle_target_group()
-                if not method_result:
-                    result = False
-
-                method_result = handle_target_project()
-                if not method_result:
-                    result = False
+                result = handle_target_root() and result
+                result = handle_target_group() and result
+                result = handle_target_project() and result
 
             elif target == "root":
-                method_result = handle_target_root()
-                if not method_result:
-                    result = False
+                result = handle_target_root() and result
 
             elif target == "group":
-                method_result = handle_target_group()
-                if not method_result:
-                    result = False
+                result = handle_target_group() and result
 
             elif target == "project":
-                method_result = handle_target_project()
-                if not method_result:
-                    result = False
+                result = handle_target_project() and result
 
             elif target in selection_groups:
-                method_result = handle_target_group_selection(
+                result = handle_target_group_selection(
                     target
-                )
-                if not method_result:
-                    result = False
+                ) and result
 
             elif target in selection_projects:
-                method_result = handle_target_project_selection(
+                result = handle_target_project_selection(
                     target
-                )
-                if not method_result:
-                    result = False
+                ) and result
 
             else:
-                self._import_manager.log_cache_warning_to_file(
-                    message=f"'{target}' is not a valid template"
+                self._log_manager.log_display_warning(
+                    reference=self.run_command_template_apply,
+                    message=f"template '{target}' does not exist",
                 )
 
         if cleanup_after_is_enabled:
-            method_result = (
-                self._task_manager.run_task_safe_clean_filesystem_path(
-                    target_path=temporary_template_output_filesystem_path
-                )
+            self._task_manager.run_task_safe_clean_filesystem_path(
+                target_path=temporary_template_output_filesystem_path
             )
-            if not method_result:
-                result = False
 
         return result
 
@@ -613,11 +569,10 @@ class CommandTemplateManager:
             value["all"] = value_all
 
         if not value:
-            return False
+            return True
 
-        result: bool = True
-        result = self._display_manager.display_tree_object(
+        self._display_manager.display_tree_object(
             value=value,
         )
 
-        return result
+        return True

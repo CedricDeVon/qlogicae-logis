@@ -8,6 +8,7 @@ __all__ = (
     "CommandFilesystemManager"
 )
 
+_LogManager: Any = None
 _TaskManager: Any = None
 _ImportManager: Any = None
 _DisplayManager: Any = None
@@ -19,6 +20,7 @@ _PersistentCacheDatabasManager: Any = None
 
 def _handle_dynamic_imports() -> None:
     global _handle_dynamic_imports
+    global _LogManager
     global _TaskManager
     global _ImportManager
     global _DisplayManager
@@ -32,6 +34,7 @@ def _handle_dynamic_imports() -> None:
         database_manager,
         display_manager,
         import_manager,
+        log_manager,
         persistent_cache_database_manager,
         task_manager,
         value_cache_database_manager,
@@ -40,6 +43,10 @@ def _handle_dynamic_imports() -> None:
     _TaskManager = (
         task_manager
             .TaskManager
+    )
+    _LogManager = (
+        log_manager
+            .LogManager
     )
     _DisplayManager = (
         display_manager.DisplayManager
@@ -66,11 +73,12 @@ def _handle_dynamic_imports() -> None:
 
 class CommandFilesystemManager:
     __slots__ = (
-        "_command_storage_manager",
+        "_log_manager",
         "_task_manager",
         "_import_manager",
         "_display_manager",
         "_database_manager",
+        "_command_storage_manager",
         "_value_cache_database_manager",
         "_persistent_cache_database_manager",
     )
@@ -89,6 +97,11 @@ class CommandFilesystemManager:
         self._task_manager = (
             _ImportManager.read_singleton(
                 _TaskManager
+            )
+        )
+        self._log_manager = (
+            _ImportManager.read_singleton(
+                _LogManager
             )
         )
         self._import_manager = (
@@ -162,50 +175,42 @@ class CommandFilesystemManager:
         self._task_manager.run_task_common_setup()
 
         if not kwargs:
-            self._import_manager.log_warning_to_all(
-                callback=f"{self.run_command_filesystem_copy}",
-                message="kwargs object is empty or null",
+            self._log_manager.log_display_warning(
+                reference=self.run_command_filesystem_copy,
+                message="kwargs is null or an empty object",
             )
-            return False
+            return True
 
         source_paths = kwargs.get("source_paths", tuple()) or tuple()
         if len(source_paths) < 1:
-            self._import_manager.log_warning_to_all(
-                callback=f"{self.run_command_filesystem_copy}",
-                message="no source paths",
+            self._log_manager.log_display_warning(
+                reference=self.run_command_filesystem_copy,
+                message="no source paths found",
             )
-            return False
+            return True
 
         target_paths = kwargs.get("target_paths", tuple()) or tuple()
         if len(target_paths) < 1:
-            self._import_manager.log_warning_to_all(
-                callback=f"{self.run_command_filesystem_copy}",
-                message="no target paths",
+            self._log_manager.log_display_warning(
+                reference=self.run_command_filesystem_copy,
+                message="no target paths found",
             )
-            return False
+            return True
 
-
-        value: bool = True
         for source_path in source_paths:
             if not source_path:
-                self._import_manager.log_warning_to_all(
-                    callback=f"{self.run_command_filesystem_copy}",
+                self._log_manager.log_display_warning(
+                reference=self.run_command_filesystem_copy,
                     message="one or more source paths are null",
                 )
-                value = False
+                continue
 
-            result: bool = self._import_manager.copy_filesystem_paths(
+            self._import_manager.copy_filesystem_paths(
                 source_path=source_path,
                 target_paths=target_paths,
             )
-            if not result:
-                self._import_manager.log_warning_to_all(
-                    callback=f"{self.run_command_filesystem_copy}",
-                    message="failed copy operation",
-                )
-                value = False
 
-        return value
+        return True
 
     def run_command_filesystem_move(
         self,
@@ -214,17 +219,17 @@ class CommandFilesystemManager:
         self._task_manager.run_task_common_setup()
 
         if not kwargs:
-            self._import_manager.log_warning_to_all(
-                callback=f"{self.run_command_filesystem_move}",
-                message="kwargs object is empty or null",
+            self._log_manager.log_display_warning(
+                reference=self.run_command_filesystem_move,
+                message="kwargs is null or an empty object",
             )
-            return False
+            return True
 
-        value: bool = self._import_manager.move_filesystem_path(
+        self._import_manager.move_filesystem_path(
             **kwargs,
         )
 
-        return value
+        return True
 
     def run_command_filesystem_rename(
         self,
@@ -233,17 +238,17 @@ class CommandFilesystemManager:
         self._task_manager.run_task_common_setup()
 
         if not kwargs:
-            self._import_manager.log_warning_to_all(
-                callback=f"{self.run_command_filesystem_rename}",
-                message="kwargs object is empty or null",
+            self._log_manager.log_display_warning(
+                reference=self.run_command_filesystem_rename,
+                message="kwargs is null or an empty object",
             )
-            return False
+            return True
 
-        value: bool = self._import_manager.rename_filesystem_entity(
+        self._import_manager.rename_filesystem_entity(
             **kwargs,
         )
 
-        return value
+        return True
 
     def run_command_filesystem_tree_setup(
         self,
@@ -252,17 +257,17 @@ class CommandFilesystemManager:
         self._task_manager.run_task_common_setup()
 
         if not kwargs:
-            self._import_manager.log_warning_to_all(
-                callback=f"{self.run_command_filesystem_tree_setup}",
-                message="kwargs object is empty or null",
+            self._log_manager.log_display_warning(
+                reference=self.run_command_filesystem_tree_setup,
+                message="kwargs is null or an empty object",
             )
-            return False
+            return True
 
-        value: bool = self._import_manager.setup_filesystem_tree_paths(
+        self._import_manager.setup_filesystem_tree_paths(
             **kwargs,
         )
 
-        return value
+        return True
 
     def run_command_filesystem_clean_path(
         self,
@@ -272,25 +277,34 @@ class CommandFilesystemManager:
         self._task_manager.run_task_filesystem_clean_exclude_setup()
 
         if not kwargs:
-            self._import_manager.log_warning_to_all(
-                callback=f"{self.run_command_filesystem_clean_path}",
-                message="kwargs object is empty or null",
+            self._log_manager.log_display_warning(
+                reference=self.run_command_filesystem_clean_path,
+                message="kwargs is null or an empty object",
             )
-            return False
+            return True
 
         target_paths = kwargs.get("target_paths", tuple()) or tuple()
         if len(target_paths) < 1:
-            self._import_manager.log_warning_to_all(
-                callback=f"{self.run_command_filesystem_clean_path}",
-                message="no target paths",
+            self._log_manager.log_display_warning(
+                reference=self.run_command_filesystem_clean_path,
+                message="no target paths found",
             )
-            return False
+            return True
 
         excluded = (
-            self._value_cache_database_manager.read_filesystem_clean_excluded()
+            self._value_cache_database_manager
+                .read_filesystem_clean_excluded()
         ) or {}
+
         for target_path in target_paths:
-            if not target_path or target_path in excluded:
+            if not target_path:
+                self._log_manager.log_display_warning(
+                    reference=self.run_command_filesystem_clean_path,
+                    message="one or more target paths are null",
+                )
+                continue
+
+            if target_path in excluded:
                 continue
 
             self._import_manager.clean_filesystem_paths(
@@ -308,11 +322,11 @@ class CommandFilesystemManager:
         self._task_manager.run_task_filesystem_clean_exclude_setup()
 
         if not kwargs:
-            self._import_manager.log_warning_to_all(
-                callback=f"{self.run_command_filesystem_clean_selection}",
-                message="kwargs object is empty or null",
+            self._log_manager.log_display_warning(
+                reference=self.run_command_filesystem_clean_selection,
+                message="kwargs is null or an empty object",
             )
-            return False
+            return True
 
         targets = kwargs.get("targets", tuple()) or tuple()
         selections = (
@@ -326,7 +340,14 @@ class CommandFilesystemManager:
             self._value_cache_database_manager.read_filesystem_clean_excluded()
         ) or {}
         for target in targets:
-            if not target or target not in included:
+            if not target:
+                self._log_manager.log_display_warning(
+                    reference=self.run_command_filesystem_clean_selection,
+                    message="one or more targets are null",
+                )
+                continue
+
+            if target not in included:
                 continue
 
             selection = (
@@ -341,9 +362,9 @@ class CommandFilesystemManager:
                     )
             )
             if not selection:
-                self._import_manager.log_warning_to_all(
-                    callback=f"{self.run_command_filesystem_clean_selection}",
-                    message="one or more selections are null",
+                self._log_manager.log_display_warning(
+                    reference=self.run_command_filesystem_clean_selection,
+                    message="selection is null",
                 )
                 continue
 
@@ -354,7 +375,14 @@ class CommandFilesystemManager:
                     )
             )
             for path in paths:
-                if not path or path in excluded:
+                if not path:
+                    self._log_manager.log_display_warning(
+                        reference=self.run_command_filesystem_clean_selection,
+                        message="one or more paths are null",
+                    )
+                    continue
+
+                if path in excluded:
                     continue
 
                 self._import_manager.clean_filesystem_paths(
