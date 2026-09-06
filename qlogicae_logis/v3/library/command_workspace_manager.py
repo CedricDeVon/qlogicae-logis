@@ -562,6 +562,7 @@ class CommandWorkspaceManager:
         self._task_manager.run_task_workspace_group_setup()
         self._task_manager.run_task_workspace_project_setup()
 
+        result: bool = True
         root_filesystem_path = (
             self._value_cache_database_manager
                 .read_root_filesystem_path()
@@ -778,6 +779,7 @@ class CommandWorkspaceManager:
             root_path=root_filesystem_path,
             tree=root_filesystem_tree,
         )
+
         for current_scope in default_filesystem_accessibility_types:
             if not current_scope:
                 self._log_manager.log_display_warning(
