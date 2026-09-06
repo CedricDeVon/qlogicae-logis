@@ -774,7 +774,7 @@ class CommandWorkspaceManager:
             ]
         )
 
-        result: bool = self._import_manager.setup_filesystem_tree(
+        self._import_manager.setup_filesystem_tree(
             root_path=root_filesystem_path,
             tree=root_filesystem_tree,
         )
