@@ -619,10 +619,10 @@ class ImportManager:
 
     #     return True
 
-    def display_all_items_via_disk_cache(self) -> bool:
-        self._disk_cache_storage_manager.display_all_items()
+    # def display_all_items_via_disk_cache(self) -> bool:
+    #     self._disk_cache_storage_manager.display_all_items()
 
-        return True
+    #     return True
 
     def write_database_path_via_disk_cache(
         self,

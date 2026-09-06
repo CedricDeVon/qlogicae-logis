@@ -11,9 +11,6 @@ workflow:
       filesystem-path:
         value: ${{ qlogicae-logis-selection-project-filesystem-path }}
       
-      is-atmoic:
-        value: true
-
       scripts:
         - run:
             value: qlogicae-logis-root-pre-workflow
@@ -286,7 +283,7 @@ macros:
           value: The project orchestration tool for QLogicae projects
 
         qlogicae-logis-current-version-number:
-          value: 3.1.0
+          value: 3.1.1
 
         qlogicae-logis-active-major-version-number:
           value: 3

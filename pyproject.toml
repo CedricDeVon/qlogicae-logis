@@ -1,6 +1,6 @@
 [project]
 name = "qlogicae-logis"
-version = "3.1.0"
+version = "3.1.1"
 description = "The project orchestration tool for QLogicae projects"
 readme = { file = "README.md", content-type = "text/markdown" }
 requires-python = ">=3.12"
@@ -204,12 +204,12 @@ exclude = [
 
 [tool.hatch.build.targets.wheel]
 packages = [
-    "temporary/build/release/minified/qlogicae_logis"
+    "temporary/build/release/minified/qlogicae_logis/qlogicae_logis"
 ]
 
 
 [tool.hatch.build.targets.wheel.force-include]
-"temporary/build/release/minified/qlogicae_logis/py.typed" = "temporary/build/release/minified/qlogicae_logis/py.typed"
+"qlogicae_logis/py.typed" = "qlogicae_logis/py.typed"
 
 [tool.hatch.envs.default.scripts]
 development-cleanup-filesystem = """
@@ -293,7 +293,7 @@ post-build-pip-package = """
 
 archive-outputs = """
     python3 -c "import shutil,sys; shutil.copytree(sys.argv[1], sys.argv[2], dirs_exist_ok=True)" \
-        temporary archive/v3.1.0/2026-09-06T09-34-47.266859128+08-00
+        temporary archive/v3.1.1/2026-09-06T10-02-24.256976329+08-00
 """
 
 test-dead-code = """

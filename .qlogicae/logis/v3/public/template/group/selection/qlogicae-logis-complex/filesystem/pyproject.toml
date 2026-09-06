@@ -204,12 +204,12 @@ exclude = [
 
 [tool.hatch.build.targets.wheel]
 packages = [
-    "${{ qlogicae-logis-temporary-build-release-minified-filesystem-path }}"
+    "${{ qlogicae-logis-temporary-build-release-minified-filesystem-path }}/${{ qlogicae-logis-source-brand-name }}"
 ]
 
 
 [tool.hatch.build.targets.wheel.force-include]
-"${{ qlogicae-logis-temporary-build-release-minified-filesystem-path }}/py.typed" = "${{ qlogicae-logis-temporary-build-release-minified-filesystem-path }}/py.typed"
+"${{ qlogicae-logis-source-brand-name }}/py.typed" = "${{ qlogicae-logis-source-brand-name }}/py.typed"
 
 [tool.hatch.envs.default.scripts]
 development-cleanup-filesystem = """
