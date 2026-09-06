@@ -433,8 +433,8 @@ class CommandWorkflowManager:
         if not value:
             return True
 
-        result: bool = self._display_manager.display_tree_object(
+        self._display_manager.display_tree_object(
             value=value,
         )
 
-        return result
+        return True

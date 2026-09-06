@@ -292,7 +292,7 @@ macros:
           value: The project orchestration tool for QLogicae projects
 
         qlogicae-logis-current-version-number:
-          value: 3.1.3
+          value: 3.1.4
 
         qlogicae-logis-active-major-version-number:
           value: 3

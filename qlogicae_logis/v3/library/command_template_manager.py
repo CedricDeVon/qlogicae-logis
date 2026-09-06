@@ -538,6 +538,7 @@ class CommandTemplateManager:
                     reference=self.run_command_template_apply,
                     message=f"template '{target}' does not exist",
                 )
+                result = False
 
         if cleanup_after_is_enabled:
             self._task_manager.run_task_safe_clean_filesystem_path(

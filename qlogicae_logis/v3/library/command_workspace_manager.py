@@ -547,12 +547,12 @@ class CommandWorkspaceManager:
             )
             return False
 
-        result: bool = self._import_manager.uncompress_zip(
+        self._import_manager.uncompress_zip(
             archive_path=input_path,
             destination_path=output_path,
         )
 
-        return result
+        return True
 
     def run_command_workspace_replenish(
         self,
