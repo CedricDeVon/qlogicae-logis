@@ -1,6 +1,6 @@
 [project]
 name = "qlogicae-logis"
-version = "3.1.1"
+version = "3.1.2"
 description = "The project orchestration tool for QLogicae projects"
 readme = { file = "README.md", content-type = "text/markdown" }
 requires-python = ">=3.12"
@@ -193,20 +193,16 @@ module = [
 ]
 ignore_errors = true
 
-
 [tool.vulture]
 exclude = [
     "qlogicae_logis/v3/_vendor/qlogicae_cor/v2/library/log_format.py",
     "qlogicae_logis/v3/_vendor/qlogicae_cor/v2/library/timestamp_manager.py",
 ]
 
-
-
 [tool.hatch.build.targets.wheel]
 packages = [
-    "temporary/build/release/minified/qlogicae_logis/qlogicae_logis"
+    "qlogicae_logis"
 ]
-
 
 [tool.hatch.build.targets.wheel.force-include]
 "qlogicae_logis/py.typed" = "qlogicae_logis/py.typed"
@@ -214,6 +210,7 @@ packages = [
 [tool.hatch.envs.default.scripts]
 development-cleanup-filesystem = """
     python3 -c "import shutil,sys; [shutil.rmtree(p, ignore_errors=True) for p in sys.argv[1:]]" \
+        dist \
         temporary
 """
 
@@ -245,7 +242,7 @@ development-clean-environment = """
     python3 -c "import shutil,sys; [shutil.rmtree(p, ignore_errors=True) for p in sys.argv[1:]]" \
         dist \
         test \
-        output \
+        output
 """
 
 development-synchronize-dependencies = """
@@ -281,6 +278,14 @@ build-minified = """
         temporary/build/release/minified/qlogicae_logis
 """
 
+pre-build-pip-package = """
+    python3 -c "import shutil,sys; [shutil.rmtree(p, ignore_errors=True) for p in sys.argv[1:]]" \
+        qlogicae_logis && \
+    python3 -c "import shutil,sys; shutil.copytree(sys.argv[1], sys.argv[2], dirs_exist_ok=True)" \
+        temporary/build/release/minified/qlogicae_logis \
+        qlogicae_logis
+"""
+
 build-pip-package = """
     hatch \
         build 
@@ -288,12 +293,16 @@ build-pip-package = """
 
 post-build-pip-package = """
     python3 -c "import shutil,sys; shutil.copytree(sys.argv[1], sys.argv[2], dirs_exist_ok=True)" \
-        dist temporary/build/release/dist
+        temporary/build/release/source/qlogicae_logis \
+        qlogicae_logis && \
+    python3 -c "import shutil,sys; shutil.copytree(sys.argv[1], sys.argv[2], dirs_exist_ok=True)" \
+        dist \
+        temporary/build/release/dist
 """
 
 archive-outputs = """
     python3 -c "import shutil,sys; shutil.copytree(sys.argv[1], sys.argv[2], dirs_exist_ok=True)" \
-        temporary archive/v3.1.1/2026-09-06T10-02-24.256976329+08-00
+        temporary archive/v3.1.2/2026-09-06T10-57-30.027779296+08-00
 """
 
 test-dead-code = """

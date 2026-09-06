@@ -193,20 +193,16 @@ module = [
 ]
 ignore_errors = true
 
-
 [tool.vulture]
 exclude = [
     "${{ qlogicae-logis-source-brand-name }}/${{ qlogicae-logis-active-major-version-label }}/_vendor/qlogicae_cor/v2/library/log_format.py",
     "${{ qlogicae-logis-source-brand-name }}/${{ qlogicae-logis-active-major-version-label }}/_vendor/qlogicae_cor/v2/library/timestamp_manager.py",
 ]
 
-
-
 [tool.hatch.build.targets.wheel]
 packages = [
-    "${{ qlogicae-logis-temporary-build-release-minified-filesystem-path }}/${{ qlogicae-logis-source-brand-name }}"
+    "${{ qlogicae-logis-source-brand-name }}"
 ]
-
 
 [tool.hatch.build.targets.wheel.force-include]
 "${{ qlogicae-logis-source-brand-name }}/py.typed" = "${{ qlogicae-logis-source-brand-name }}/py.typed"
@@ -214,6 +210,7 @@ packages = [
 [tool.hatch.envs.default.scripts]
 development-cleanup-filesystem = """
     ${{ qlogicae-logis-delete-cli-script }} \
+        dist \
         ${{ qlogicae-logis-temporary-filesystem-path }}
 """
 
@@ -245,7 +242,7 @@ development-clean-environment = """
     ${{ qlogicae-logis-delete-cli-script }} \
         dist \
         test \
-        output \
+        output
 """
 
 development-synchronize-dependencies = """
@@ -281,6 +278,14 @@ build-minified = """
         ${{ qlogicae-logis-temporary-build-release-minified-filesystem-path }}
 """
 
+pre-build-pip-package = """
+    ${{ qlogicae-logis-delete-cli-script }} \
+        ${{ qlogicae-logis-source-brand-name }} && \
+    ${{ qlogicae-logis-copy-cli-script }} \
+        ${{ qlogicae-logis-temporary-build-release-minified-filesystem-path }} \
+        ${{ qlogicae-logis-source-brand-name }}
+"""
+
 build-pip-package = """
     hatch \
         build 
@@ -288,7 +293,11 @@ build-pip-package = """
 
 post-build-pip-package = """
     ${{ qlogicae-logis-copy-cli-script }} \
-        dist ${{ qlogicae-logis-temporary-build-release-dist-filesystem-path }}
+        ${{ qlogicae-logis-temporary-build-release-source-filesystem-path }} \
+        ${{ qlogicae-logis-source-brand-name }} && \
+    ${{ qlogicae-logis-copy-cli-script }} \
+        dist \
+        ${{ qlogicae-logis-temporary-build-release-dist-filesystem-path }}
 """
 
 archive-outputs = """

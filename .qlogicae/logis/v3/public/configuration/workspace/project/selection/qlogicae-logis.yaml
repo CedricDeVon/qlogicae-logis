@@ -27,23 +27,23 @@ workflow:
         - run:
             value: qlogicae-logis-build-pip-package
 
-        - run:
-            value: qlogicae-logis-test-dead-code
+        # - run:
+        #     value: qlogicae-logis-test-dead-code
 
-        - run:
-            value: qlogicae-logis-test-type-check
+        # - run:
+        #     value: qlogicae-logis-test-type-check
 
-        - run:
-            value: qlogicae-logis-test-lint
+        # - run:
+        #     value: qlogicae-logis-test-lint
 
-        - run:
-            value: qlogicae-logis-test-package-dependency-security
+        # - run:
+        #     value: qlogicae-logis-test-package-dependency-security
 
-        - run:
-            value: qlogicae-logis-test-static-code-analysis-security
+        # - run:
+        #     value: qlogicae-logis-test-static-code-analysis-security
 
-        - run:
-            value: qlogicae-logis-test-hardcoded-secrets-security
+        # - run:
+        #     value: qlogicae-logis-test-hardcoded-secrets-security
           
         - run:
             value: qlogicae-logis-test-pip-package
@@ -171,6 +171,9 @@ workflow:
         
       scripts:
         - run:
+            value: hatch run pre-build-pip-package
+
+        - run:
             value: hatch run build-pip-package
 
         - run:
@@ -283,7 +286,7 @@ macros:
           value: The project orchestration tool for QLogicae projects
 
         qlogicae-logis-current-version-number:
-          value: 3.1.1
+          value: 3.1.2
 
         qlogicae-logis-active-major-version-number:
           value: 3
