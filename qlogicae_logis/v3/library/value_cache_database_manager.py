@@ -646,15 +646,15 @@ class ValueCacheDatabaseManager:
 
         return True
 
-    # def read_selection_filesystem_path(self) -> str:
-    #     result: str = self.read_any_value(
-    #         (
-    #             "selection-filesystem-path",
-    #             "value",
-    #         ),
-    #     )
+    def read_selection_filesystem_path(self) -> str:
+        result: str = self.read_any_value(
+            (
+                "selection-filesystem-path",
+                "value",
+            ),
+        )
 
-    #     return result
+        return result
 
     def write_selection_filesystem_path(self) -> bool:
         self.write_any_value(

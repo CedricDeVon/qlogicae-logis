@@ -1542,11 +1542,11 @@ class ImportManager:
             exist_ok=True,
         )
 
-        result: bool = True
-        method_result: bool = True
+        # result: bool = True
+        # method_result: bool = True
         for entity in tree.entities or []:
             if not entity:
-                result = False
+                # result = False
                 continue
 
             entity_path = path / entity.name
@@ -1555,17 +1555,19 @@ class ImportManager:
                 entity,
                 _FolderEntityFileSystemTreeSetupOptions,
             ):
+
                 entity_path.mkdir(
                     parents=True,
                     exist_ok=True,
                 )
 
-                method_result = self.setup_filesystem_tree(
+                # method_result =
+                self.setup_filesystem_tree(
                     root_path=entity_path,
                     tree=entity,
                 )
-                if not method_result:
-                    result = False
+                # if not method_result:
+                #     result = False
 
             elif isinstance(
                 entity,
@@ -1577,7 +1579,8 @@ class ImportManager:
                         encoding=entity.encoding,
                     )
 
-        return result
+        # return result
+        return True
 
     def move_filesystem_path(
         self,

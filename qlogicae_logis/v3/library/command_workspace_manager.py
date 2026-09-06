@@ -567,12 +567,20 @@ class CommandWorkspaceManager:
             self._value_cache_database_manager
                 .read_root_filesystem_path()
         )
+        selection_filesystem_path = (
+            self._value_cache_database_manager
+                .read_selection_filesystem_path()
+        )
         workspace_selection_project = {
             value
             for _key, value
             in self._value_cache_database_manager
                 .read_workspace_project().items()
         }
+        data_selection_projects = (
+            self._value_cache_database_manager
+                .read_configuration_workspace_data_workspace_project_selection()
+        )
         workspace_selection_group = {
             value
             for _key, value
@@ -864,6 +872,10 @@ class CommandWorkspaceManager:
                                     ]
                                 )
                             ]
+                        ),
+                        _FolderEntityFileSystemTreeSetupOptions(
+                            name="selection",
+                            entities=[],
                         )
                     ]
                 )
@@ -948,8 +960,7 @@ class CommandWorkspaceManager:
                                     ]
                                 )
                             ]
-                        ),
-                        selection_sub_tree
+                        )
                     ]
                 )
 
@@ -957,6 +968,30 @@ class CommandWorkspaceManager:
                     root_path=root_filesystem_path,
                     tree=target_filesystem_sub_tree,
                 )
+
+        for key, item in data_selection_projects.items():
+            if not item:
+                result = False
+                continue
+
+            filesystem_path = (
+                (item
+                    .get(
+                        "filesystem-path",
+                        {}
+                    ) or {})
+                    .get(
+                        "value",
+                        f"{selection_filesystem_path}/{key}"
+                    )
+            )
+            if not filesystem_path:
+                result = False
+                continue
+
+            self._import_manager.setup_filesystem_tree_path(
+                target_path=filesystem_path,
+            )
 
         return result
 

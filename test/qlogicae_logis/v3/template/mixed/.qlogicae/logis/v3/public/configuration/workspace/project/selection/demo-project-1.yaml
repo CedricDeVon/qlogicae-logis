@@ -121,7 +121,7 @@ macros:
     file:
       targets:
         demo-project-1-filesystem-path:
-          value: ${{ root-filesystem-path }}/selection/demo-project-1
+          value: ${{ selection-filesystem-path }}/demo-project-1
 
           alias:
             demo-project-1-filesystem-path-alias-1:

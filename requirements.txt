@@ -91,7 +91,7 @@ pytest-cov==7.1.0
 python-discovery==1.4.4
 python_minifier==3.2.0
 PyYAML==6.0.3
-qlogicae-logis==3.1.2
+qlogicae-logis==3.1.7
 readme_renderer==45.0
 regex==2026.7.19
 requests==2.34.2
