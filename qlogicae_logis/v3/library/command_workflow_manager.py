@@ -324,7 +324,9 @@ class CommandWorkflowManager:
                 elif workflow_selection_script_run_value in data_workflow_selections:
                     cli_output_returncode = (
                         handle_workflow_run_target(
-                            workflow_selection_script_run_value
+                            data_workflow_selections[
+                                workflow_selection_script_run_value
+                            ]
                         )
                     )
                     if (
