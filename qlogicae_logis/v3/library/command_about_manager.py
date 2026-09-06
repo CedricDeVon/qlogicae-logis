@@ -146,7 +146,7 @@ class CommandAboutManager:
                 message="utility property 'project-name.value' "
                 "does not exist",
             )
-            return True
+            return False
 
         metadata_version = (
             self._import_manager.read_metadata_version(
@@ -159,7 +159,7 @@ class CommandAboutManager:
                 message="utility property 'active-major-version-label.value' "
                 "does not exist",
             )
-            return True
+            return False
 
         self._display_manager.display_highlight_value(
             value=metadata_version

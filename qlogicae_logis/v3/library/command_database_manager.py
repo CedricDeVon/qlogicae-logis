@@ -160,6 +160,7 @@ class CommandDatabaseManager:
         key_paths = kwargs.get("key_paths", []) or []
         values = self._persistent_cache_database_manager.read_all_values()
 
+        result: bool = True
         if len(key_paths) < 1:
             self._display_manager.display_tree_object(
                 value=values,
@@ -169,13 +170,15 @@ class CommandDatabaseManager:
             for key_path in key_paths:
                 if not key_path:
                     self._log_manager.log_display_warning(
-                reference=self.run_command_database_view_disk,
+                        reference=self.run_command_database_view_disk,
                         message="one or more disk cache key paths are null",
                     )
+                    result = False
                     continue
 
                 for value in values:
                     if not value:
+                        result = False
                         continue
 
                     if value["key"] == key_path:
@@ -183,7 +186,7 @@ class CommandDatabaseManager:
                             value=value
                         )
 
-        return True
+        return result
 
     def run_command_database_view_value(self, **kwargs: Any) -> bool:
         if not kwargs:
@@ -191,8 +194,9 @@ class CommandDatabaseManager:
                 reference=self.run_command_database_view_value,
                 message="kwargs is null or an empty object",
             )
-            return True
+            return False
 
+        result: bool = True
         key_paths = kwargs.get("key_paths", []) or []
         if len(key_paths) < 1:
             self._display_manager.display_tree_object(
@@ -208,6 +212,7 @@ class CommandDatabaseManager:
                         reference=self.run_command_database_view_value,
                         message="one or more value cache key paths are null",
                     )
+                    result = False
                     continue
 
                 self._display_manager.display_tree_object(
@@ -217,7 +222,7 @@ class CommandDatabaseManager:
                 )
 
 
-        return True
+        return result
 
     def run_command_database_clear_disk(self, **kwargs: Any) -> bool:
         self._task_manager.run_task_full_debug_disk_cache_setup()
@@ -231,7 +236,7 @@ class CommandDatabaseManager:
                 reference=self.run_command_database_clear_disk,
                 message="disk cache target path is null",
             )
-            return True
+            return False
 
         result: bool = self._import_manager.clean_filesystem_paths(
             target_paths=(

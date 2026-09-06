@@ -7,7 +7,7 @@ requires-python = ">=3.12"
 license = "MIT"
 license-files = [
     "LICENSE"
-    ]
+]
 dependencies = []
 keywords = [
     "${{ main-company-base-name }}",
@@ -36,7 +36,6 @@ authors = [
 maintainers = [
     { name = "${{ main-author-full-name }}", email = "${{ main-author-base-email }}" }
 ]
-
 
 [project.optional-dependencies]
 dev = [
@@ -278,9 +277,12 @@ build-minified = """
         ${{ qlogicae-logis-temporary-build-release-minified-filesystem-path }}
 """
 
-pre-build-pip-package = """
+pre-build-pip-package-1 = """
     ${{ qlogicae-logis-delete-cli-script }} \
-        ${{ qlogicae-logis-source-brand-name }} && \
+        ${{ qlogicae-logis-source-brand-name }}
+"""
+
+pre-build-pip-package-2 = """
     ${{ qlogicae-logis-copy-cli-script }} \
         ${{ qlogicae-logis-temporary-build-release-minified-filesystem-path }} \
         ${{ qlogicae-logis-source-brand-name }}
@@ -291,10 +293,13 @@ build-pip-package = """
         build 
 """
 
-post-build-pip-package = """
+post-build-pip-package-1 = """
     ${{ qlogicae-logis-copy-cli-script }} \
         ${{ qlogicae-logis-temporary-build-release-source-filesystem-path }} \
-        ${{ qlogicae-logis-source-brand-name }} && \
+        ${{ qlogicae-logis-source-brand-name }}
+"""
+
+post-build-pip-package-2 = """
     ${{ qlogicae-logis-copy-cli-script }} \
         dist \
         ${{ qlogicae-logis-temporary-build-release-dist-filesystem-path }}
@@ -343,7 +348,7 @@ test-type-check = """
 test-pip-package = """
     twine check --strict ${{ qlogicae-logis-temporary-build-release-dist-filesystem-path }}/* 2>&1 | \
         ${{ qlogicae-logis-output-cli-script }} \
-        ${{ qlogicae-logis-temporary-result-test-pip-package-filesystem-path }} 
+        ${{ qlogicae-logis-temporary-result-test-pip-package-filesystem-path }}
 """
 
 deploy-release = """
@@ -355,31 +360,34 @@ deploy-release = """
 github-workflow-setup = """
     mkdir -p ${{ qlogicae-logis-temporary-build-release-filesystem-path }}
 """
+
 github-workflow-test-dead-code = """
     hatch run github-workflow-setup &&
     hatch run test-dead-code
 """
+
 github-workflow-test-type-check = """
     hatch run github-workflow-setup &&
     hatch run test-type-check
 """
+
 github-workflow-test-lint = """
     hatch run github-workflow-setup &&
     hatch run test-lint
 """
-github-workflow-test-unit = """
-    hatch run github-workflow-setup &&
-    hatch run test-unit
-"""
-github-workflow-test-benchmark-memory-usage-create = """
-    hatch run github-workflow-setup &&
-    hatch run test-benchmark-memory-usage-create
-"""
-github-workflow-test-benchmark-memory-usage-view = """
-    hatch run github-workflow-setup &&
-    hatch run test-benchmark-memory-usage-view
-"""
 
+# github-workflow-test-unit = """
+#     hatch run github-workflow-setup &&
+#     hatch run test-unit
+# """
+# github-workflow-test-benchmark-memory-usage-create = """
+#     hatch run github-workflow-setup &&
+#     hatch run test-benchmark-memory-usage-create
+# """
+# github-workflow-test-benchmark-memory-usage-view = """
+#     hatch run github-workflow-setup &&
+#     hatch run test-benchmark-memory-usage-view
+# """
 # testpaths = ["./test/${{ qlogicae-logis-source-brand-name }}/${{ qlogicae-logis-active-major-version-label }}/unit"]
 # memray run -o ${{ qlogicae-logis-temporary-test-benchmark-filesystem-path }}/memray-2.bin -m test.${{ qlogicae-logis-source-brand-name }}.${{ qlogicae-logis-active-major-version-label }}.benchmark.memory_usage.test_dynamic
 # memray tree ${{ qlogicae-logis-temporary-test-benchmark-filesystem-path }}/memray-2.bin
@@ -388,7 +396,6 @@ github-workflow-test-benchmark-memory-usage-view = """
 # scalene view ${{ qlogicae-logis-temporary-test-benchmark-filesystem-path }}/scalene.json
 # memray tree ${{ qlogicae-logis-temporary-test-benchmark-filesystem-path }}/memray.bin
 #     scalene view ${{ qlogicae-logis-temporary-test-benchmark-filesystem-path }}/scalene.json
-
 # test-unit = """
 #     pytest -vv \
 #         --cov \
@@ -399,11 +406,9 @@ github-workflow-test-benchmark-memory-usage-view = """
 #         --cov-report=json:\"${{ qlogicae-logis-temporary-test-unit-filesystem-path }}/coverage.json\" \
 #         --junitxml=\"${{ qlogicae-logis-temporary-test-unit-filesystem-path }}/junit.xml\" \
 # """
-
 # test-benchmark-memory-usage-create = """
 #    memray run -o ${{ qlogicae-logis-temporary-test-benchmark-filesystem-path }}/memray-1.bin -m test.${{ qlogicae-logis-source-brand-name }}.${{ qlogicae-logis-active-major-version-label }}.benchmark.memory_usage.test_usage ;
 # """
-
 # test-benchmark-memory-usage-view = """
 #    memray tree ${{ qlogicae-logis-temporary-test-benchmark-filesystem-path }}/memray-1.bin
 # """

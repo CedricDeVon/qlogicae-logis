@@ -179,7 +179,7 @@ class CommandFilesystemManager:
                 reference=self.run_command_filesystem_copy,
                 message="kwargs is null or an empty object",
             )
-            return True
+            return False
 
         source_paths = kwargs.get("source_paths", tuple()) or tuple()
         if len(source_paths) < 1:
@@ -187,7 +187,7 @@ class CommandFilesystemManager:
                 reference=self.run_command_filesystem_copy,
                 message="no source paths found",
             )
-            return True
+            return False
 
         target_paths = kwargs.get("target_paths", tuple()) or tuple()
         if len(target_paths) < 1:
@@ -195,7 +195,7 @@ class CommandFilesystemManager:
                 reference=self.run_command_filesystem_copy,
                 message="no target paths found",
             )
-            return True
+            return False
 
         for source_path in source_paths:
             if not source_path:
@@ -223,7 +223,7 @@ class CommandFilesystemManager:
                 reference=self.run_command_filesystem_move,
                 message="kwargs is null or an empty object",
             )
-            return True
+            return False
 
         self._import_manager.move_filesystem_path(
             **kwargs,
@@ -242,7 +242,7 @@ class CommandFilesystemManager:
                 reference=self.run_command_filesystem_rename,
                 message="kwargs is null or an empty object",
             )
-            return True
+            return False
 
         self._import_manager.rename_filesystem_entity(
             **kwargs,
@@ -261,7 +261,7 @@ class CommandFilesystemManager:
                 reference=self.run_command_filesystem_tree_setup,
                 message="kwargs is null or an empty object",
             )
-            return True
+            return False
 
         self._import_manager.setup_filesystem_tree_paths(
             **kwargs,
@@ -281,7 +281,7 @@ class CommandFilesystemManager:
                 reference=self.run_command_filesystem_clean_path,
                 message="kwargs is null or an empty object",
             )
-            return True
+            return False
 
         target_paths = kwargs.get("target_paths", tuple()) or tuple()
         if len(target_paths) < 1:
@@ -289,19 +289,21 @@ class CommandFilesystemManager:
                 reference=self.run_command_filesystem_clean_path,
                 message="no target paths found",
             )
-            return True
+            return False
 
         excluded = (
             self._value_cache_database_manager
                 .read_filesystem_clean_excluded()
         ) or {}
 
+        result: bool = True
         for target_path in target_paths:
             if not target_path:
                 self._log_manager.log_display_warning(
                     reference=self.run_command_filesystem_clean_path,
                     message="one or more target paths are null",
                 )
+                result = False
                 continue
 
             if target_path in excluded:
@@ -311,7 +313,7 @@ class CommandFilesystemManager:
                 target_paths=(target_path,)
             )
 
-        return True
+        return result
 
     def run_command_filesystem_clean_selection(
         self,
@@ -326,7 +328,7 @@ class CommandFilesystemManager:
                 reference=self.run_command_filesystem_clean_selection,
                 message="kwargs is null or an empty object",
             )
-            return True
+            return False
 
         targets = kwargs.get("targets", tuple()) or tuple()
         selections = (
@@ -339,15 +341,23 @@ class CommandFilesystemManager:
         excluded = (
             self._value_cache_database_manager.read_filesystem_clean_excluded()
         ) or {}
+
+        result: bool = True
         for target in targets:
             if not target:
                 self._log_manager.log_display_warning(
                     reference=self.run_command_filesystem_clean_selection,
                     message="one or more targets are null",
                 )
+                result = False
                 continue
 
             if target not in included:
+                self._log_manager.log_display_warning(
+                    reference=self.run_command_filesystem_clean_selection,
+                    message=f"clean selection '{target}' does not exist",
+                )
+                result = False
                 continue
 
             selection = (
@@ -366,6 +376,7 @@ class CommandFilesystemManager:
                     reference=self.run_command_filesystem_clean_selection,
                     message="selection is null",
                 )
+                result = False
                 continue
 
             paths = (
@@ -380,6 +391,7 @@ class CommandFilesystemManager:
                         reference=self.run_command_filesystem_clean_selection,
                         message="one or more paths are null",
                     )
+                    result = False
                     continue
 
                 if path in excluded:
@@ -389,7 +401,7 @@ class CommandFilesystemManager:
                     target_paths=(path,)
                 )
 
-        return True
+        return result
 
     def run_command_filesystem_clean_list_included(
         self,

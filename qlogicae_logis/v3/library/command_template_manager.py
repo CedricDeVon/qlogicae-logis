@@ -145,6 +145,7 @@ class CommandTemplateManager:
         **kwargs: Any
     ) -> bool:
         def handle_target_root() -> bool:
+            result: bool = True
             destination_temporary_target_filesystem_path = (
                 f"{temporary_template_output_filesystem_path}/root/filesystem"
             )
@@ -154,6 +155,7 @@ class CommandTemplateManager:
                         reference=handle_target_root,
                         message="one or more accessibility types are null",
                     )
+                    result = False
                     continue
 
                 source_all_filesystem_path = (
@@ -188,7 +190,7 @@ class CommandTemplateManager:
                 target_path=root_filesystem_path,
             )
 
-            return True
+            return result
 
         def handle_target_group() -> bool:
             result: bool = True
@@ -222,7 +224,7 @@ class CommandTemplateManager:
                     reference=handle_target_group_selection,
                     message="target is null",
                 )
-                return True
+                return False
 
             selection_group = (
                 data_selection_groups.get(group_target, {}) or {}
@@ -232,8 +234,9 @@ class CommandTemplateManager:
                     reference=handle_target_group_selection,
                     message=f"template group '{group_target}' does not exist",
                 )
-                return True
+                return False
 
+            result: bool = True
             selection_group_targets = (
                 set(selection_group.get("targets", {})) or set()
             )
@@ -246,6 +249,7 @@ class CommandTemplateManager:
                         reference=handle_target_group_selection,
                         message="one or more accessibility types are null",
                     )
+                    result = False
                     continue
 
                 source_all_filesystem_path = (
@@ -284,13 +288,13 @@ class CommandTemplateManager:
                 workspace_macros=macros_data,
             )
 
-            result: bool = True
             for selection_group_target in selection_group_targets:
                 if not selection_group_target:
                     self._log_manager.log_display_warning(
                         reference=handle_target_group_selection,
                         message="one or more targets are null",
                     )
+                    result = False
                     continue
 
                 if selection_group_target == "root":
@@ -335,7 +339,7 @@ class CommandTemplateManager:
                     reference=handle_target_project_selection,
                     message="target is null",
                 )
-                return True
+                return False
 
             selection_project = (
                 data_selection_projects
@@ -346,7 +350,7 @@ class CommandTemplateManager:
                     reference=handle_target_project_selection,
                     message=f"template project '{project_target}' does not exist",
                 )
-                return True
+                return False
 
             selection_project_filesystem_path_value = (
                 (selection_project
@@ -355,17 +359,24 @@ class CommandTemplateManager:
             )
 
             if not selection_project_filesystem_path_value:
-                return True
+                self._log_manager.log_display_warning(
+                    reference=handle_target_project_selection,
+                    message=f"template project '{project_target}' "
+                    "filesystem path does not exist",
+                )
+                return False
 
             destination_target_filesystem_path = (
                 f"{temporary_template_output_filesystem_path}/project/selection/{project_target}/filesystem"
             )
+            method_result: bool = True
             for accessibility_type in default_filesystem_accessibility_types:
                 if not accessibility_type:
                     self._log_manager.log_display_warning(
                         reference=handle_target_project_selection,
                         message="one or more accessibility types are null",
                     )
+                    method_result = False
                     continue
 
                 source_all_filesystem_path = (
@@ -407,7 +418,7 @@ class CommandTemplateManager:
                 source_path=destination_target_filesystem_path,
                 target_path=selection_project_filesystem_path_value,
             )
-            return True
+            return method_result
 
         self._task_manager.run_task_common_setup()
         self._task_manager.run_task_workspace_default_setup()
@@ -421,7 +432,7 @@ class CommandTemplateManager:
                 reference=self.run_command_template_apply,
                 message="kwargs is null or an empty object",
             )
-            return True
+            return False
 
         targets = (kwargs.get("targets", ["all"]) or ["all"])
         if not targets or len(targets) < 1:
@@ -495,6 +506,7 @@ class CommandTemplateManager:
                     reference=self.run_command_template_apply,
                     message="one or more targets are null",
                 )
+                result = False
                 continue
 
             if target == "all":

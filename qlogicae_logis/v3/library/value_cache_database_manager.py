@@ -3042,7 +3042,7 @@ class ValueCacheDatabaseManager:
     ) -> bool:
         value: bool = (
             (data.get("is-atomic", {}) or {})
-                .get("value", False)
+                .get("value", True)
         )
 
         return value

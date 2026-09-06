@@ -185,13 +185,14 @@ class CommandWorkspaceManager:
                     reference=handle_workspace_export_group,
                     message="target is null"
                 )
+                return False
 
             if target not in command_export_group:
                 self._log_manager.log_display_warning(
                     reference=handle_workspace_export_group,
                     message=f"export group '{target}' does not exist"
                 )
-                return True
+                return False
 
             export_group = (
                 command_export_group[target]
@@ -219,6 +220,7 @@ class CommandWorkspaceManager:
                         reference=handle_workspace_export_group,
                         message="key is null"
                     )
+                    result = False
                     continue
 
                 if key in command_export_group:
@@ -234,6 +236,9 @@ class CommandWorkspaceManager:
             return result
 
         def handle_workspace_export_selection(target: str) -> bool:
+            if not target:
+                return False
+
             export_selection = (
                 command_export_selection
                     .get(target, {}) or {}
@@ -340,6 +345,7 @@ class CommandWorkspaceManager:
                         reference=handle_workspace_export_selection,
                         message="include target is null"
                     )
+                    result = False
                     continue
 
                 temporary_input_path = (
@@ -362,14 +368,17 @@ class CommandWorkspaceManager:
                         reference=handle_workspace_export_selection,
                         message="item is null"
                     )
+                    result = False
                     continue
 
                 if "input" not in item or "output" not in item:
+                    result = False
                     continue
 
                 input_path = (item.get("input", "") or "")
                 output_path = (item.get("output", "") or "")
                 if not input_path or not output_path:
+                    result = False
                     continue
 
                 result = self._import_manager.copy_filesystem_paths(
@@ -383,6 +392,7 @@ class CommandWorkspaceManager:
                         reference=handle_workspace_export_selection,
                         message="target is null"
                     )
+                    result = False
                     continue
 
                 destination = (
@@ -412,7 +422,7 @@ class CommandWorkspaceManager:
                 reference=self.run_command_workspace_export,
                 message="kwargs is null or an empty object"
             )
-            return True
+            return False
 
         targets = (kwargs.get("targets", []) or [])
         if len(targets) < 1:
@@ -420,7 +430,7 @@ class CommandWorkspaceManager:
                 reference=handle_workspace_export_selection,
                 message="no targets found"
             )
-            return True
+            return False
 
         root_filesystem_path = (
             self._value_cache_database_manager
@@ -477,6 +487,7 @@ class CommandWorkspaceManager:
                     reference=handle_workspace_export_selection,
                     message="no targets found"
                 )
+                result = False
                 continue
 
             if target == "all":
@@ -513,7 +524,7 @@ class CommandWorkspaceManager:
                 reference=self.run_command_workspace_import,
                 message="kwargs is null or an empty object"
             )
-            return True
+            return False
 
         self._task_manager.run_task_common_setup()
 
@@ -525,7 +536,7 @@ class CommandWorkspaceManager:
                 message="'input_path' and 'output_path' "
                 "must be a valid filesystem path"
             )
-            return True
+            return False
 
         if not self._import_manager.is_filesystem_path_valid(
             value=input_path
@@ -534,7 +545,7 @@ class CommandWorkspaceManager:
                 reference=self.run_command_workspace_import,
                 message=f"'{input_path}' is not a valid filesystem path"
             )
-            return True
+            return False
 
         result: bool = self._import_manager.uncompress_zip(
             archive_path=input_path,
@@ -767,13 +778,13 @@ class CommandWorkspaceManager:
             root_path=root_filesystem_path,
             tree=root_filesystem_tree,
         )
-
         for current_scope in default_filesystem_accessibility_types:
             if not current_scope:
                 self._log_manager.log_display_warning(
                     reference=self.run_command_workspace_replenish,
                     message="one or more accessibility types are null"
                 )
+                result = False
                 continue
 
             for current_workspace_selection in workspace_selection_project:
@@ -782,6 +793,7 @@ class CommandWorkspaceManager:
                         reference=self.run_command_workspace_replenish,
                         message="workspace project selection is null"
                     )
+                    result = False
                     continue
 
                 target_filesystem_sub_tree = _FolderEntityFileSystemTreeSetupOptions(
@@ -864,6 +876,7 @@ class CommandWorkspaceManager:
                         reference=self.run_command_workspace_replenish,
                         message="workspace group selection is null"
                     )
+                    result = False
                     continue
 
                 target_filesystem_sub_tree = _FolderEntityFileSystemTreeSetupOptions(
@@ -993,14 +1006,14 @@ class CommandWorkspaceManager:
                     reference=handle_workspace_install,
                     message="target is null"
                 )
-                return True
+                return False
 
             if target not in selection_projects:
                 self._log_manager.log_display_warning(
                     reference=handle_workspace_install,
                     message=f"workspace '{target}' does not exist"
                 )
-                return True
+                return False
 
             selection_project_installation = (
                 (data_selection_projects
@@ -1012,7 +1025,7 @@ class CommandWorkspaceManager:
                     reference=handle_workspace_install,
                     message=f"workspace '{target}' is null or an empty object"
                 )
-                return True
+                return False
 
             selection_project_installation_is_enabled_value = (
                 self._value_cache_database_manager
@@ -1039,7 +1052,11 @@ class CommandWorkspaceManager:
                     )
             )
             if not selection_project_installation_filesystem_path_value:
-                return True
+                self._log_manager.log_display_warning(
+                    reference=handle_workspace_install,
+                    message="workspace installation filesystem path does not exist"
+                )
+                return False
 
             selection_project_installation_scripts = (
                 self._value_cache_database_manager
@@ -1065,8 +1082,9 @@ class CommandWorkspaceManager:
                 if not installation_script:
                     self._log_manager.log_display_warning(
                         reference=handle_workspace_install,
-                        message="one or more installation scripts are null"
+                        message="one or more scripts are null"
                     )
+                    result = False
                     continue
 
                 installation_script_is_enabled_value = (
@@ -1094,6 +1112,12 @@ class CommandWorkspaceManager:
                         )
                 )
                 if not installation_script_run_value:
+                    self._log_manager.log_display_warning(
+                        reference=handle_workspace_install,
+                        message="one or more workspace installation "
+                        "run scripts are null"
+                    )
+                    result = False
                     continue
 
                 installation_script_process_value = (
@@ -1142,7 +1166,7 @@ class CommandWorkspaceManager:
                 reference=self.run_command_workspace_install,
                 message="kwargs is null or an empty object"
             )
-            return True
+            return False
 
         targets = (kwargs.get("targets", []) or [])
         if not targets or len(targets) < 1:
@@ -1150,7 +1174,7 @@ class CommandWorkspaceManager:
                 reference=self.run_command_workspace_install,
                 message="no workspace targets are found"
             )
-            return True
+            return False
 
         root_filesystem_path = (
             self._value_cache_database_manager
@@ -1172,6 +1196,7 @@ class CommandWorkspaceManager:
                     reference=self.run_command_workspace_install,
                     message="one or more targets are null"
                 )
+                result = False
                 continue
 
             if target not in selection_projects:
@@ -1179,6 +1204,7 @@ class CommandWorkspaceManager:
                     reference=self.run_command_workspace_install,
                     message=f"workspace project '{target}' does not exist"
                 )
+                result = False
                 continue
 
             result = handle_workspace_install(

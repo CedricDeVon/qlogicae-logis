@@ -14,7 +14,6 @@ __all__ = (
 
 _ImportManager: Any = None
 _DatabaseManager: Any = None
-_TaskStorageManager: Any = None
 _DecoratorManager = DecoratorManager
 _ValueCacheDatabaseManager: Any = None
 _PersistentCacheDatabasManager: Any = None
@@ -23,7 +22,6 @@ def _handle_dynamic_imports() -> None:
     global _handle_dynamic_imports
     global _ImportManager
     global _DatabaseManager
-    global _TaskStorageManager
     global _ValueCacheDatabaseManager
     global _PersistentCacheDatabasManager
 
@@ -31,7 +29,6 @@ def _handle_dynamic_imports() -> None:
         database_manager,
         import_manager,
         persistent_cache_database_manager,
-        task_storage_manager,
         value_cache_database_manager,
     )
 
@@ -44,9 +41,6 @@ def _handle_dynamic_imports() -> None:
     _ValueCacheDatabaseManager = (
         value_cache_database_manager.ValueCacheDatabaseManager
     )
-    _TaskStorageManager = (
-        task_storage_manager.TaskStorageManager
-    )
     _PersistentCacheDatabasManager = (
         persistent_cache_database_manager.PersistentCacheDatabasManager
     )
@@ -58,7 +52,6 @@ class TaskManager:
     __slots__ = (
         "_import_manager",
         "_database_manager",
-        # "_task_storage_manager",
         "_value_cache_database_manager",
         "_persistent_cache_database_manager",
     )
@@ -86,11 +79,6 @@ class TaskManager:
                 _PersistentCacheDatabasManager
             )
         )
-        # self._task_storage_manager = (
-        #     _ImportManager.read_singleton(
-        #         _TaskStorageManager
-        #     )
-        # )
 
     @_DecoratorManager.single_task_decorator
     def run_task_system_values(self) -> bool:
@@ -250,9 +238,15 @@ class TaskManager:
         )
 
         for base_path in base_paths:
+            if not base_path:
+                continue
+
             for file_extension in (
                 file_extensions
             ):
+                if not file_extension:
+                    continue
+
                 file_path = (
                     f"{base_path}{file_extension}"
                 )
@@ -330,6 +324,9 @@ class TaskManager:
         for base_path in (
             base_directory_filesystem_paths
         ):
+            if not base_path:
+                continue
+
             if not self._import_manager.is_folder_path_valid(value=base_path):
                 continue
 
@@ -347,6 +344,9 @@ class TaskManager:
                     and self._import_manager.read_file_suffix(value=file_path)
                     in file_extensions
                 ):
+                    if not file_path:
+                        continue
+
                     value_metadata = (
                         self._database_manager
                             .read_file_metadata(
@@ -484,6 +484,9 @@ class TaskManager:
             )
 
             for _key, item in configuration_workspace.items():
+                if not _key or not item:
+                    continue
+
                 merged_data = (
                     self._import_manager.object_deep_merge(
                         left=merged_data,
@@ -513,6 +516,7 @@ class TaskManager:
         accessibility_type: str
     ) -> bool:
         if (
+            not accessibility_type or
             not self._value_cache_database_manager
                 .read_configuration_workspace_data_plugin_import_is_enabled_value()
         ):
@@ -597,6 +601,9 @@ class TaskManager:
         merged_data: Any = {}
 
         for _key, item in plugin_raw.items():
+            if not _key or not item:
+                continue
+
             merged_data = (
                 self._import_manager.object_deep_merge(
                     left=merged_data,

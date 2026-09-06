@@ -151,7 +151,7 @@ class CommandWorkflowManager:
                     reference=handle_workflow_run_target,
                     message="target is null",
                 )
-                return True
+                return False
 
             workflow_selection = (
                 data_workflow.get(
@@ -165,7 +165,7 @@ class CommandWorkflowManager:
                     reference=handle_workflow_run_target,
                     message=f"workflow '{workflow_target}' does not exist",
                 )
-                return True
+                return False
 
             workflow_selection_data_is_enabled_value = (
                 self._value_cache_database_manager
@@ -228,12 +228,14 @@ class CommandWorkflowManager:
                 workflow_selection_filesystem_path_value
             )
 
+            method_result: bool = True
             for workflow_selection_script in workflow_selection_scripts:
                 if not workflow_selection_script:
                     self._log_manager.log_display_warning(
                         reference=handle_workflow_run_target,
                         message="one or more scripts are null",
                     )
+                    method_result = False
                     continue
 
                 workflow_selection_script_is_enabled_value = (
@@ -261,6 +263,7 @@ class CommandWorkflowManager:
                         )
                 )
                 if not workflow_selection_script_run_value:
+                    method_result = False
                     continue
 
                 workflow_selection_script_process_value = (
@@ -349,7 +352,7 @@ class CommandWorkflowManager:
                         if workflow_selection_is_atomic_value:
                             return False
 
-            return True
+            return method_result
 
         self._task_manager.run_task_common_setup()
         self._task_manager.run_task_workflow_setup()
@@ -361,7 +364,7 @@ class CommandWorkflowManager:
                 reference=self.run_command_workflow_run,
                 message="kwargs is null or an empty object",
             )
-            return True
+            return False
 
         targets = (kwargs.get('targets', []) or [])
         if not targets or len(targets) < 1:
@@ -369,7 +372,7 @@ class CommandWorkflowManager:
                 reference=self.run_command_workflow_run,
                 message="no targets found",
             )
-            return True
+            return False
 
         root_filesystem_path = (
             self._value_cache_database_manager
@@ -395,6 +398,7 @@ class CommandWorkflowManager:
                     reference=self.run_command_workflow_run,
                     message="one or more targets are null",
                 )
+                result = False
                 continue
 
             if target not in data_workflow_selections:
@@ -402,6 +406,7 @@ class CommandWorkflowManager:
                     reference=self.run_command_workflow_run,
                     message=f"workflow '{target}' does not exist",
                 )
+                result = False
                 continue
 
             result = handle_workflow_run_target(
