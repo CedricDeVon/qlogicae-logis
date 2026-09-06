@@ -4,46 +4,46 @@ workspace:
       demo-project-1:
         filesystem-path:
           value: ${{ demo-project-1-filesystem-path }}
-      
-      installation:
-        is-enabled:
-          value: true
+        
+        installation:
+          is-enabled:
+            value: true
 
-        operating-system:
-          exclude:
-          #   Windows-x86_64:
+          operating-system:
+            exclude:
+            #   Windows-x86_64:
 
-          include:
-            Linux-x86_64:
+            include:
+              Linux-x86_64:
 
-        filesystem-path:
-          value: ${{ demo-project-1-filesystem-path }}
+          filesystem-path:
+            value: ${{ demo-project-1-filesystem-path }}
 
-        delay:
-          value: 0
+          delay:
+            value: 0
 
-        scripts:
-          - run:
-              value: git clone https://github.com/CedricDeVon/qlogicae-logis-e2e-testing-sandbox-project.git
+          scripts:
+            - run:
+                value: git clone https://github.com/CedricDeVon/qlogicae-logis-e2e-testing-sandbox-project.git
 
-            is-enabled:
-              value: true
+              is-enabled:
+                value: true
 
-            operating-system:
-              exclude:
-              #   Windows-x86_64:
+              operating-system:
+                exclude:
+                #   Windows-x86_64:
 
-              include:
-                Linux-x86_64:
+                include:
+                  Linux-x86_64:
 
-            process:
-              value: script
+              process:
+                value: script
 
-            delay:
-              value: 0
+              delay:
+                value: 0
 
-          - run:
-              value: mv qlogicae-logis-e2e-testing-sandbox-project demo-project-1
+            - run:
+                value: mv qlogicae-logis-e2e-testing-sandbox-project demo-project-1
 
 workflow:
   selection:      
