@@ -1,6 +1,6 @@
 [project]
 name = "qlogicae-logis"
-version = "3.1.8"
+version = "3.1.9"
 description = "The project orchestration tool for QLogicae projects"
 readme = { file = "README.md", content-type = "text/markdown" }
 requires-python = ">=3.12"
@@ -307,7 +307,7 @@ post-build-pip-package-2 = """
 
 archive-outputs = """
     python3 -c "import shutil,sys; shutil.copytree(sys.argv[1], sys.argv[2], dirs_exist_ok=True)" \
-        temporary archive/v3.1.8/2026-09-06T20-25-53.117070016+08-00
+        temporary archive/v3.1.9/2026-09-06T20-35-05.204894469+08-00
 """
 
 test-dead-code = """

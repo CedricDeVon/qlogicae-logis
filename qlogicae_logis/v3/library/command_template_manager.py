@@ -199,6 +199,9 @@ class CommandTemplateManager:
                     result = False
                     continue
 
+                if selection_group == "all":
+                    continue
+
                 result = handle_target_group_selection(
                     selection_group
                 ) and result
