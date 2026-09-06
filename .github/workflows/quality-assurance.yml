@@ -76,14 +76,14 @@ jobs:
       - run: qlogicae-logis workspace export -h
       - run: qlogicae-logis workspace export --help
       - run: qlogicae-logis workspace export --target all
-
-      - run: qlogicae-logis workspace install -h
-      - run: qlogicae-logis workspace install --help
-      - run: qlogicae-logis workspace install --target demo-project-1
       
       - run: qlogicae-logis workspace replenish -h
       - run: qlogicae-logis workspace replenish --help
       - run: qlogicae-logis workspace replenish
+
+      - run: qlogicae-logis workspace install -h
+      - run: qlogicae-logis workspace install --help
+      - run: qlogicae-logis workspace install --target demo-project-1
       
       - run: qlogicae-logis workspace import -h
       - run: qlogicae-logis workspace import --help
