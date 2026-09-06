@@ -951,10 +951,10 @@ class CommandWorkspaceManager:
                     ]
                 )
 
-                result = self._import_manager.setup_filesystem_tree(
+                self._import_manager.setup_filesystem_tree(
                     root_path=root_filesystem_path,
                     tree=target_filesystem_sub_tree,
-                ) and result
+                )
 
         return result
 
