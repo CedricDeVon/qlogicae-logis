@@ -1,0 +1,128 @@
+workspace:
+  project:
+    selection:
+      demo-project-1:
+        filesystem-path:
+          value: ${{ demo-project-1-filesystem-path }}
+      
+      installation:
+        is-enabled:
+          value: true
+
+        operating-system:
+          exclude:
+          #   Windows-x86_64:
+
+          include:
+            Linux-x86_64:
+
+        filesystem-path:
+          value: ${{ demo-project-1-filesystem-path }}
+
+        delay:
+          value: 0
+
+        scripts:
+          - run:
+              value: git clone https://github.com/CedricDeVon/qlogicae-logis-e2e-testing-sandbox-project.git
+
+            is-enabled:
+              value: true
+
+            operating-system:
+              exclude:
+              #   Windows-x86_64:
+
+              include:
+                Linux-x86_64:
+
+            process:
+              value: script
+
+            delay:
+              value: 0
+
+          - run:
+              value: mv qlogicae-logis-e2e-testing-sandbox-project demo-project-1
+
+workflow:
+  selection:      
+    demo-workflow-project:
+      filesystem-path:
+        value: ${{ demo-project-1-filesystem-path }}
+
+      is-enabled:
+        value: true
+
+      delay:
+        value: 0
+
+      is-atomic:
+        value: false
+
+      alias:
+        demo-workflow-project-alias-1:
+        demo-workflow-project-alias-2:
+        
+      scripts:
+        - run:
+            value: echo "demo-workflow-project"
+
+          is-enabled:
+            value: true
+
+          operating-system:
+            exclude:
+            #   Windows-x86_64:
+
+            include:
+              Linux-x86_64:
+
+          process:
+            value: shell
+
+          delay:
+            value: 0
+
+        - run:
+            value: command-debug-view-value-cache
+          argument:
+
+    demo-workflow-sub-group:
+      filesystem-path:
+        value: ${{ demo-project-1-filesystem-path-alias-1 }}
+        
+      scripts:
+        - run:
+            value: echo "demo-workflow-sub-group"
+
+        - run:
+            value: demo-workflow-project
+
+        - run:
+            value: demo-workflow-project-alias-1
+
+        - run:
+            value: demo-workflow-project-alias-2
+
+    demo-workflow-main-group:
+      filesystem-path:
+        value: ${{ demo-project-1-filesystem-path-alias-2 }}
+        
+      scripts:
+        - run:
+            value: echo "demo-workflow-main-group"
+
+        - run:
+            value: demo-workflow-sub-group
+
+macros:
+  static:  
+    file:
+      targets:
+        demo-project-1-filesystem-path:
+          value: ${{ root-filesystem-path }}/selection/demo-project-1
+
+          alias:
+            demo-project-1-filesystem-path-alias-1:
+            demo-project-1-filesystem-path-alias-2:
