@@ -143,10 +143,10 @@ class ConsoleManager:
                 _ValueCacheDatabaseManager
             )
         )
+        self._raw_string_console_arguments = ""
         self._application: _argparse.ArgumentParser = (
             _argparse.ArgumentParser()
         )
-        self._raw_string_console_arguments = ""
         self._commands = self._application.add_subparsers(
             dest="command",
             metavar="",
@@ -793,6 +793,14 @@ class ConsoleManager:
             )
             return command_result
 
+        def workspace_prune(
+            arguments: _argparse.Namespace,
+        ) -> bool:
+            command_result: bool = (
+                self._command_workspace_manager.run_command_workspace_prune()
+            )
+            return command_result
+
         def workspace_list_exports(
             arguments: _argparse.Namespace,
         ) -> bool:
@@ -902,6 +910,17 @@ class ConsoleManager:
 
         application_workspace_replenish.set_defaults(
             command_handler=workspace_replenish,
+        )
+
+        application_workspace_prune = (
+            application_workspace_commands.add_parser(
+                "prune",
+                help="Filesystem pruning.",
+            )
+        )
+
+        application_workspace_prune.set_defaults(
+            command_handler=workspace_prune,
         )
 
         application_workspace_install = (

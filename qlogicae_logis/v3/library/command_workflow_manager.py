@@ -174,6 +174,10 @@ class CommandWorkflowManager:
                     )
             )
             if not workflow_selection_data_is_enabled_value:
+                self._log_manager.log_display_info(
+                    reference=handle_workflow_run_target,
+                    message=f"workflow '{workflow_target}' is disabled",
+                )
                 return True
 
             is_operating_system_included = (
@@ -183,6 +187,11 @@ class CommandWorkflowManager:
                     )
             )
             if not is_operating_system_included:
+                self._log_manager.log_display_info(
+                    reference=handle_workflow_run_target,
+                    message=f"workflow '{workflow_target}' "
+                    "does not match os combination",
+                )
                 return True
 
             workflow_selection_scripts = (
@@ -238,6 +247,16 @@ class CommandWorkflowManager:
                     method_result = False
                     continue
 
+                workflow_selection_script_run_value = (
+                    self._value_cache_database_manager
+                        .read_object_run_value(
+                            workflow_selection_script
+                        )
+                )
+                if not workflow_selection_script_run_value:
+                    method_result = False
+                    continue
+
                 workflow_selection_script_is_enabled_value = (
                     self._value_cache_database_manager
                         .read_object_is_enabled_value(
@@ -245,6 +264,11 @@ class CommandWorkflowManager:
                         )
                 )
                 if not workflow_selection_script_is_enabled_value:
+                    self._log_manager.log_display_info(
+                        reference=handle_workflow_run_target,
+                        message=f"script '{workflow_selection_script_run_value}' "
+                        "is disabled",
+                    )
                     continue
 
                 workflow_selection_script_is_operating_system_included = (
@@ -254,16 +278,11 @@ class CommandWorkflowManager:
                         )
                 )
                 if not workflow_selection_script_is_operating_system_included:
-                    continue
-
-                workflow_selection_script_run_value = (
-                    self._value_cache_database_manager
-                        .read_object_run_value(
-                            workflow_selection_script
-                        )
-                )
-                if not workflow_selection_script_run_value:
-                    method_result = False
+                    self._log_manager.log_display_info(
+                        reference=handle_workflow_run_target,
+                        message=f"script '{workflow_selection_script_run_value}' "
+                        "does not match os combination",
+                    )
                     continue
 
                 workflow_selection_script_process_value = (

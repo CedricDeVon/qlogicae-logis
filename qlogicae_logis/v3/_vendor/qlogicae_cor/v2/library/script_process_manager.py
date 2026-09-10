@@ -5,7 +5,7 @@ __all__ = (
 )
 
 from typing import Any
-from subprocess import CompletedProcess # nosec B404
+from subprocess import CompletedProcess 
 
 from .script_process import (
     ScriptProcess,
@@ -27,7 +27,7 @@ def _handle_dynamic_imports() -> None:
     global _ScriptProcess
 
     import shlex
-    import subprocess # nosec B404
+    import subprocess 
 
     from .script_process import ScriptProcess
     from .singleton_manager import SingletonManager
@@ -64,7 +64,7 @@ class ScriptProcessManager:
             )   
         )
 
-        self._selected_script_process: str = "shell"
+        self._selected_script_process: str = "subprocess"
         self._valid_script_processes: set[str] = {
             "shell",
             "subprocess",
@@ -109,11 +109,17 @@ class ScriptProcessManager:
 
         match script_process_type:
             case _ScriptProcess.SHELL:
-                value = _subprocess.run( 
-                    command,
+                # Commented and replaced for security reasons (nosec B604)
+                # value = _subprocess.run( 
+                #     command,
+                #     encoding=encoding,
+                #     text=True,
+                #     shell=True, 
+                # )
+                value = _subprocess.run(
+                    _shlex.split(command),
                     encoding=encoding,
                     text=True,
-                    shell=True, # nosec B604
                 )
 
             case _ScriptProcess.SUBPROCESS:

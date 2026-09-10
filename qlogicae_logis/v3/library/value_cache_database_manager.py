@@ -3085,7 +3085,7 @@ class ValueCacheDatabaseManager:
     ) -> str:
         value: str = (
             (data.get("process", {}) or {})
-                .get("value", "shell")
+                .get("value", "subprocess")
         )
 
         return value

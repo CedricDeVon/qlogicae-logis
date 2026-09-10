@@ -27,23 +27,23 @@ workflow:
         - run:
             value: qlogicae-logis-build-pip-package
 
-        # - run:
-        #     value: qlogicae-logis-test-dead-code
+        - run:
+            value: qlogicae-logis-test-dead-code
 
-        # - run:
-        #     value: qlogicae-logis-test-type-check
+        - run:
+            value: qlogicae-logis-test-type-check
 
-        # - run:
-        #     value: qlogicae-logis-test-lint
+        - run:
+            value: qlogicae-logis-test-lint
+        
+        - run: 
+            value: qlogicae-logis-test-package-dependency-security
 
-        # - run:
-        #     value: qlogicae-logis-test-package-dependency-security
+        - run:
+            value: qlogicae-logis-test-static-code-analysis-security
 
-        # - run:
-        #     value: qlogicae-logis-test-static-code-analysis-security
-
-        # - run:
-        #     value: qlogicae-logis-test-hardcoded-secrets-security
+        - run:
+            value: qlogicae-logis-test-hardcoded-secrets-security
           
         - run:
             value: qlogicae-logis-test-pip-package
@@ -217,7 +217,11 @@ workflow:
         - run:
             value: hatch run test-type-check
 
+    # Possible skip due to dependency-free nature of the application
     qlogicae-logis-test-package-dependency-security:
+      is-enabled:
+        value: false
+
       filesystem-path:
         value: ${{ qlogicae-logis-selection-project-filesystem-path }}
         

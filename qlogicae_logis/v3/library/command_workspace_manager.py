@@ -165,6 +165,11 @@ class CommandWorkspaceManager:
             ),
             (
                 self._command_storage_manager
+                    .read_command_name("workspace_prune"),
+                self.run_command_workspace_prune,
+            ),
+            (
+                self._command_storage_manager
                     .read_command_name("workspace_install"),
                 self.run_command_workspace_install,
             ),
@@ -174,6 +179,12 @@ class CommandWorkspaceManager:
                 self.run_command_workspace_list_exports,
             ),
         ))
+
+    def run_command_workspace_prune(
+        self,
+        **kwargs: Any
+    ) -> bool:
+        return True
 
     def run_command_workspace_export(
         self,
@@ -204,6 +215,10 @@ class CommandWorkspaceManager:
                     )
             )
             if not is_enabled_value:
+                self._log_manager.log_display_info(
+                    reference=handle_workspace_export_group,
+                    message=f"export group '{target}' is disabled",
+                )
                 return True
 
             export_group_selections = (
@@ -257,6 +272,10 @@ class CommandWorkspaceManager:
                     )
             )
             if not export_selection_is_enabled_value:
+                self._log_manager.log_display_info(
+                    reference=handle_workspace_export_group,
+                    message=f"export selection '{target}' is disabled",
+                )
                 return True
 
             export_selection_input_exclude_targets = (
@@ -1071,6 +1090,10 @@ class CommandWorkspaceManager:
                     )
             )
             if not selection_project_installation_is_enabled_value:
+                self._log_manager.log_display_info(
+                    reference=handle_workspace_install,
+                    message=f"workspace '{target}' is disabled",
+                )
                 return True
 
             selection_project_installation_is_operating_system_included = (
@@ -1080,6 +1103,10 @@ class CommandWorkspaceManager:
                     )
             )
             if not selection_project_installation_is_operating_system_included:
+                self._log_manager.log_display_info(
+                    reference=handle_workspace_install,
+                    message=f"workspace '{target}' does not match os combination",
+                )
                 return True
 
             selection_project_installation_filesystem_path_value = (
@@ -1131,6 +1158,10 @@ class CommandWorkspaceManager:
                         )
                 )
                 if not installation_script_is_enabled_value:
+                    self._log_manager.log_display_info(
+                        reference=handle_workspace_install,
+                        message=f"script'{installation_script}' is disabled",
+                    )
                     continue
 
                 installation_script_is_operating_system_included = (
@@ -1140,6 +1171,11 @@ class CommandWorkspaceManager:
                         )
                 )
                 if not installation_script_is_operating_system_included:
+                    self._log_manager.log_display_info(
+                        reference=handle_workspace_install,
+                        message=f"script'{installation_script}' "
+                        "does not match os combination",
+                    )
                     continue
 
                 installation_script_run_value = (

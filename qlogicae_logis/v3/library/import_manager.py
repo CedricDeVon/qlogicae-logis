@@ -1,11 +1,13 @@
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Any
 
 __all__ = (
     "ImportManager"
 )
 
+_os: Any = None
 _gc: Any = None
 _sys: Any = None
 _time: Any = None
@@ -49,6 +51,7 @@ _FolderEntityFileSystemTreeSetupOptions: Any = None
 def _handle_dynamic_imports() -> None:
     global _handle_dynamic_imports
     global _gc
+    global _os
     global _sys
     global _time
     global _uuid
@@ -89,6 +92,7 @@ def _handle_dynamic_imports() -> None:
 
     import gc
     import logging
+    import os
     import resource
     import shutil
     import sys
@@ -127,6 +131,7 @@ def _handle_dynamic_imports() -> None:
         value_cache_manager,
     )
 
+    _os = os
     _gc = gc
     _sys = sys
     _uuid = uuid
@@ -901,26 +906,26 @@ class ImportManager:
 
 
     # ScriptProcess
-    def run_shell_command(
-        self,
-        **kwargs: Any,
-    ) -> Any:
-        if not kwargs:
-            return False
+    # def run_shell_command(
+    #     self,
+    #     **kwargs: Any,
+    # ) -> Any:
+    #     if not kwargs:
+    #         return False
 
-        value: Any = (
-            self._script_process_manager.execute_command(
-                command=kwargs.get(
-                    "command",
-                    ""
-                ),
-                script_process_type=(
-                    _ScriptProcess.SHELL
-                )
-            )
-        )
+    #     value: Any = (
+    #         self._script_process_manager.execute_command(
+    #             command=kwargs.get(
+    #                 "command",
+    #                 ""
+    #             ),
+    #             script_process_type=(
+    #                 _ScriptProcess.SHELL
+    #             )
+    #         )
+    #     )
 
-        return value
+    #     return value
 
     def run_subprocess_command(
         self,
@@ -967,7 +972,7 @@ class ImportManager:
 
         cli_output = {}
         if script_process == "shell":
-            cli_output = self.run_shell_command(
+            cli_output = self.run_subprocess_command(
                 command=command
             )
 
@@ -2143,6 +2148,26 @@ class ImportManager:
 
     #     return True
 
+    def log_info_to_console(
+        self,
+        **kwargs: Any,
+    ) -> bool:
+        if not kwargs:
+            return False
+
+        message: str = (
+            kwargs.get(
+                "message",
+                "",
+            )
+        )
+
+        result: bool = self._console_log_manager.log_info(
+            message=message,
+        )
+
+        return result
+
     def log_warning_to_console(
         self,
         **kwargs: Any,
@@ -2260,3 +2285,133 @@ class ImportManager:
         result: bool = self._log_manager.shutdown()
 
         return result
+
+    def dotenv_strip_inline_comment(
+        self,
+        value: str
+    ) -> str:
+        idx = None
+        for i, ch in enumerate(value):
+            if ch == "#" and (i == 0 or value[i - 1].isspace()):
+                idx = i
+                break
+        if idx is not None:
+            value = value[:idx]
+        return value.rstrip()
+
+
+    def dotenv_unescape_double_quoted(
+        self,
+        value: str
+    ) -> str:
+        result = []
+        i = 0
+        n = len(value)
+        while i < n:
+            ch = value[i]
+            if ch == "\\" and i + 1 < n:
+                nxt = value[i + 1]
+                mapping = {"n": "\n", "t": "\t", "r": "\r", '"': '"', "\\": "\\"}
+                if nxt in mapping:
+                    result.append(mapping[nxt])
+                    i += 2
+                    continue
+            result.append(ch)
+            i += 1
+        return "".join(result)
+
+
+    def dotenv_is_valid_key(
+        self,
+        key: str
+    ) -> bool:
+        if not key:
+            return False
+        if not (key[0].isalpha() or key[0] == "_"):
+            return False
+        return all(c.isalnum() or c == "_" for c in key)
+
+
+    def dotenv_parse(
+        self,
+        text: str
+    ) -> dict[str, str]:
+        values: dict[str, str] = {}
+
+        normalized = text.replace("\r\n", "\n").replace("\r", "\n")
+
+        for raw_line in normalized.split("\n"):
+            line = raw_line.strip()
+
+            if not line or line.startswith("#"):
+                continue
+
+            if line.startswith("export "):
+                line = line[len("export "):].lstrip()
+
+            if "=" not in line:
+                continue
+
+            key, _, rest = line.partition("=")
+            key = key.strip()
+
+            if not self.dotenv_is_valid_key(key):
+                continue
+
+            rest = rest.strip()
+
+            if len(rest) >= 2 and rest[0] == '"' and rest.endswith('"'):
+                value = self.dotenv_unescape_double_quoted(rest[1:-1])
+            elif len(rest) >= 2 and rest[0] == "'" and rest.endswith("'"):
+                value = rest[1:-1]
+            else:
+                value = self.dotenv_strip_inline_comment(rest).strip()
+
+            values[key] = value
+
+        return values
+
+
+    def dotenv_load_raw_values(
+        self,
+        path: str | Path = ".env",
+        *,
+        encoding: str = "utf-8",
+    ) -> dict[str, str]:
+        file_path = _Path(path)
+        text = file_path.read_text(encoding=encoding)
+        return self.dotenv_parse(text)
+
+
+    def dotenv_read_many_values(
+        self,
+        path: str | Path = ".env",
+        *,
+        override: bool = False,
+        encoding: str = "utf-8",
+    ) -> dict[str, str]:
+        values = self.dotenv_load_raw_values(path, encoding=encoding)
+        for key, value in values.items():
+            if override or key not in _os.environ:
+                _os.environ[key] = value
+        return values
+
+
+    def dotenv_find_value(
+        self,
+        filename: str = ".env",
+        *,
+        start: str | Path | None = None,
+        max_levels: int = 10,
+    ) -> _Path | None:
+        current = _Path(start if start is not None else _Path.cwd()).resolve()
+
+        for _ in range(max_levels):
+            candidate = current / filename
+            if candidate.is_file():
+                return candidate
+            if current.parent == current:
+                break
+            current = current.parent
+
+        return None

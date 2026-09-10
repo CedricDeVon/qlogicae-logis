@@ -179,3 +179,32 @@ class LogManager:
 
         return True
 
+    def log_display_info(self, **kwargs: Any) -> bool:
+        if not kwargs:
+            return False
+
+        reference = kwargs.get(
+            "reference",
+            ""
+        )
+        message = kwargs.get(
+            "message",
+            ""
+        )
+
+        console_message = (
+            message
+        )
+        file_message = ""
+        if reference:
+            file_message = f"{reference} | {message}"
+
+        self._import_manager.log_info_to_console(
+            message=console_message
+        )
+        self._import_manager.log_warning_to_file(
+            message=file_message
+        )
+
+        return True
+
