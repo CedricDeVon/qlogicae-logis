@@ -2933,6 +2933,19 @@ class ValueCacheDatabaseManager:
 
     #     return outputs
 
+
+    def read_object_configuration_workspace_targets(
+        self,
+        data: Any,
+    ) -> Any:
+        outputs: Any = (
+            ((data.get("configuration", {}) or {})
+                .get("workspace", {}) or {})
+                .get("targets", []) or []
+        )
+        return outputs
+
+
     def read_object_command_filesystem_clean_included(
         self,
         data: Any,

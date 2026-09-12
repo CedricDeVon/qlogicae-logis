@@ -336,20 +336,20 @@ class CommandWorkflowManager:
                     workflow_selection_script_filesystem_path_value
                 )
 
-                cli_output_returncode: Any = 0
+                return_code: Any = 0
                 if workflow_selection_script_run_value in commands:
-                    cli_output_returncode = (
+                    return_code = (
                         commands[workflow_selection_script_run_value](**workflow_selection_script_argument)
                     )
 
                     if (
-                        not cli_output_returncode and
+                        not return_code and
                         workflow_selection_is_atomic_value
                     ):
                         return False
 
                 elif workflow_selection_script_run_value in data_workflow_selections:
-                    cli_output_returncode = (
+                    return_code = (
                         handle_workflow_run_target(
                             data_workflow_selections[
                                 workflow_selection_script_run_value
@@ -358,7 +358,7 @@ class CommandWorkflowManager:
                     )
 
                     if (
-                        not cli_output_returncode and
+                        not return_code and
                         workflow_selection_is_atomic_value
                     ):
                         return False
@@ -373,14 +373,19 @@ class CommandWorkflowManager:
                     self._import_manager.log_cache_info_to_file(
                         message=f"{cli_output}"
                     )
-                    cli_output_returncode = (
+                    return_code = (
                         getattr(cli_output, "returncode", None)
                     )
 
                     if (
-                        cli_output_returncode not in return_code_success_targets and
+                        return_code not in return_code_success_targets and
                         workflow_selection_is_atomic_value
                     ):
+                        self._log_manager.log_display_warning(
+                            reference=handle_workflow_run_target,
+                            message=f"script '{workflow_selection_script_run_value}' "
+                            "failed",
+                        )
                         return False
 
             return method_result

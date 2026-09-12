@@ -1,11 +1,11 @@
-workspace: # Execution After Initial Config and Macros Parsing
-  configuration:
+configuration:
+  workspace:
     targets:
-      - ${{ root-filesystem-path }}/target.yaml
+      - target.yaml
 
   dotenv:
     targets:
-      - ${{ root-filesystem-path }}/.env
+      - .env
 
 command:
   template:
@@ -214,7 +214,7 @@ display:
         value: green
 
       maximum-depth:
-        value: 6
+        value: 8
 
       is-skipped:
         value: True

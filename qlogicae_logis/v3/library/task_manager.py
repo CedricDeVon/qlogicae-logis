@@ -236,6 +236,7 @@ class TaskManager:
                 accessibility_type
             )
         )
+        custom_file_paths: list[str] = []
 
         for base_path in base_paths:
             if not base_path:
@@ -320,6 +321,14 @@ class TaskManager:
                             value_metadata
                         )
                 )
+
+                custom_file_paths = [
+                    *custom_file_paths,
+                    *self._value_cache_database_manager
+                        .read_object_configuration_workspace_targets(
+                            value_data
+                        )
+                ]
 
         for base_path in (
             base_directory_filesystem_paths
@@ -413,6 +422,91 @@ class TaskManager:
                                 value_metadata
                             )
                     )
+
+                    custom_file_paths = [
+                        *custom_file_paths,
+                        *self._value_cache_database_manager
+                            .read_object_configuration_workspace_targets(
+                                value_data
+                            )
+                    ]
+
+        for file_path in custom_file_paths:
+            file_path = f"{file_path}"
+            if (
+                self._import_manager.is_file_path_valid(value=file_path)
+                and self._import_manager.read_file_suffix(value=file_path)
+                in file_extensions
+            ):
+                if not file_path:
+                    continue
+
+                value_metadata = (
+                    self._database_manager
+                        .read_file_metadata(
+                            file_path
+                        )
+                )
+
+                cached_metadata = (
+                    self._persistent_cache_database_manager.read_configuration_workspace_metadata(
+                        accessibility_type,
+                        file_path,
+                    )
+                )
+
+                value_data_timestamp_modified = (
+                    self._database_manager
+                        .read_object_property_timestamp_modified_value(
+                            value_metadata
+                        )
+                ) or 1
+                cached_timestamp_modified = (
+                    self._database_manager
+                        .read_object_property_timestamp_modified_value(
+                            cached_metadata
+                        )
+                ) or 2
+
+                if (
+                    cached_timestamp_modified != value_data_timestamp_modified
+                ):
+                    value_data = (
+                        self._database_manager
+                            .read_configuration_workspace_data_file(
+                                file_path
+                            )
+                    )
+
+                    self._persistent_cache_database_manager.write_configuration_workspace_data(
+                        accessibility_type,
+                        file_path,
+                        value_data,
+                    )
+                    self._persistent_cache_database_manager.write_configuration_workspace_metadata(
+                        accessibility_type,
+                        file_path,
+                        value_metadata,
+                    )
+
+                    is_modified = True
+
+                else:
+                    value_data = (
+                        self._persistent_cache_database_manager.read_configuration_workspace_data(
+                            accessibility_type,
+                            file_path,
+                        )
+                    )
+                    value_metadata = cached_metadata
+
+                configuration_workspace_data[file_path] = (
+                    self._value_cache_database_manager
+                        .read_file_data(
+                            value_data,
+                            value_metadata
+                        )
+                )
 
         file_count = (
             len(configuration_workspace_data)
@@ -510,6 +604,18 @@ class TaskManager:
         self._value_cache_database_manager.remove_configuration_workspace()
 
         return True
+
+    # @_DecoratorManager.single_task_decorator
+    # def run_task_configuration_workspace_object_merging(
+    #     self,
+    # ) -> bool:
+    #     return True
+
+    # @_DecoratorManager.single_task_decorator
+    # def run_task_configuration_workspace_object_merging(
+    #     self,
+    # ) -> bool:
+    #     return True
 
     def run_task_plugins(
         self,
