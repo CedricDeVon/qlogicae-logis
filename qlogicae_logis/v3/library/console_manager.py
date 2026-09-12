@@ -785,7 +785,7 @@ class ConsoleManager:
             )
             return command_result
 
-        def workspace_replenish( # Filesystem Tree Setup
+        def workspace_replenish(
             arguments: _argparse.Namespace,
         ) -> bool:
             command_result: bool = (
@@ -813,7 +813,9 @@ class ConsoleManager:
             arguments: _argparse.Namespace,
         ) -> bool:
             command_result: bool = (
-                self._command_workspace_manager.run_command_workspace_setup()
+                self._command_workspace_manager.run_command_workspace_setup(
+                    target=(arguments.target or "")
+                )
             )
             return command_result
 
@@ -895,6 +897,15 @@ class ConsoleManager:
                 "setup",
                 help="Complete workspace setup.",
             )
+        )
+
+        application_workspace_setup.add_argument(
+            "--target",
+            "-target",
+            dest="target",
+            default="",
+            type=str,
+            help="",
         )
 
         application_workspace_setup.set_defaults(

@@ -1,3 +1,12 @@
+workspace: # Execution After Initial Config and Macros Parsing
+  configuration:
+    targets:
+      - ${{ root-filesystem-path }}/target.yaml
+
+  dotenv:
+    targets:
+      - ${{ root-filesystem-path }}/.env
+
 command:
   template:
     cleanup:
@@ -216,7 +225,6 @@ display:
       vertical-count:
         value: 0
 
-
 macros:
   static:
     value-cache:
@@ -241,3 +249,4 @@ macros:
         
         main-company-base-logo-filesystem-path:
           value: ./project/asset/${{ main-company-base-name }}1.png
+

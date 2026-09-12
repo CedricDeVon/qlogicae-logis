@@ -3047,6 +3047,19 @@ class ValueCacheDatabaseManager:
 
         return value
 
+    def read_object_return_code_success_targets(
+        self,
+        data: Any,
+    ) -> Any:
+        value: Any = set(
+            ((data.get("return-code", {}) or {})
+                .get("success", {}) or {})
+                .get("targets", []) or []
+        )
+
+        return value
+
+
     # def read_object_repeat_value(
     #     self,
     #     data: Any,

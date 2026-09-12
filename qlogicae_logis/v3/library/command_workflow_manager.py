@@ -299,6 +299,13 @@ class CommandWorkflowManager:
                         )
                 )
 
+                return_code_success_targets = (
+                    self._value_cache_database_manager
+                        .read_object_return_code_success_targets(
+                            workflow_selection_script
+                        )
+                )
+
                 workflow_selection_script_delay_value = (
                     self._value_cache_database_manager
                         .read_object_delay_value(
@@ -335,6 +342,13 @@ class CommandWorkflowManager:
                         commands[workflow_selection_script_run_value](**workflow_selection_script_argument)
                     )
                     if (
+                        len(return_code_success_targets) > 0 and
+                        cli_output_returncode not in return_code_success_targets
+                    ):
+                        return False
+
+                    elif (
+                        len(return_code_success_targets) < 1 and
                         not cli_output_returncode
                     ):
                         if workflow_selection_is_atomic_value:
@@ -349,6 +363,13 @@ class CommandWorkflowManager:
                         )
                     )
                     if (
+                        len(return_code_success_targets) > 0 and
+                        cli_output_returncode not in return_code_success_targets
+                    ):
+                        return False
+
+                    elif (
+                        len(return_code_success_targets) < 1 and
                         not cli_output_returncode
                     ):
                         if workflow_selection_is_atomic_value:
@@ -367,7 +388,15 @@ class CommandWorkflowManager:
                     cli_output_returncode = (
                         getattr(cli_output, "returncode", None)
                     )
+
                     if (
+                        len(return_code_success_targets) > 0 and
+                        cli_output_returncode not in return_code_success_targets
+                    ):
+                        return False
+
+                    elif (
+                        len(return_code_success_targets) < 1 and
                         cli_output_returncode
                     ):
                         if workflow_selection_is_atomic_value:

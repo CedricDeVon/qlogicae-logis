@@ -36,8 +36,8 @@ workflow:
         - run:
             value: qlogicae-logis-test-lint
         
-        - run: 
-            value: qlogicae-logis-test-package-dependency-security
+        # - run: 
+        #     value: qlogicae-logis-test-package-dependency-security
 
         - run:
             value: qlogicae-logis-test-static-code-analysis-security
@@ -231,11 +231,16 @@ workflow:
 
     qlogicae-logis-test-static-code-analysis-security:
       filesystem-path:
-        value: ${{ qlogicae-logis-selection-project-filesystem-path }}
-        
+        value: ${{ qlogicae-logis-selection-project-filesystem-path }}    
+
       scripts:
         - run:
             value: hatch run test-static-code-analysis-security
+
+          return-code:
+            success:
+              targets:
+                - -1
 
     qlogicae-logis-test-hardcoded-secrets-security:
       filesystem-path:

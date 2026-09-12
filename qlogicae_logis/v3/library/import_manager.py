@@ -101,7 +101,6 @@ def _handle_dynamic_imports() -> None:
     import uuid
     from importlib import metadata
     from importlib.util import module_from_spec, spec_from_file_location
-    from pathlib import Path
     from zipfile import ZipFile
 
     from .._vendor.pyyaml import yaml
@@ -1311,6 +1310,19 @@ class ImportManager:
             ),
         ).suffix
 
+    def read_filesystem_stem(
+        self,
+        **kwargs: Any,
+    ) -> Any:
+        if not kwargs:
+            return False
+
+        return _Path(
+            kwargs.get(
+                "value",
+                "",
+            ),
+        ).stem
 
     def read_filesystem_modification_timestamp(
         self,
@@ -1713,45 +1725,34 @@ class ImportManager:
         if not target_paths or len(target_paths) < 1:
             return False
 
+        protected_paths = {
+            _Path(""),
+            _Path("/"),
+            _Path.home(),
+        }
+
         result: bool = True
         for target_path in target_paths:
             if not target_path:
                 result = False
                 continue
 
-            target_path = _Path(
-                target_path
-            ).resolve()
-
-            protected_paths = {
-                _Path(""),
-                _Path("/"),
-                _Path.home(),
-            }
+            target_path = _Path(target_path).resolve()
 
             if target_path in protected_paths:
-                result = False
                 continue
 
             if not target_path.exists():
-                result = False
                 continue
 
-            if target_path.is_file() or target_path.is_symlink():
-                target_path.unlink()
-                result = False
-                continue
+            try:
+                if target_path.is_file() or target_path.is_symlink():
+                    target_path.unlink()
+                elif target_path.is_dir():
+                    _shutil.rmtree(target_path)
 
-            if target_path.is_dir():
-                for item in target_path.iterdir():
-                    if not item:
-                        result = False
-                        continue
-
-                    if item.is_file() or item.is_symlink():
-                        item.unlink()
-                    elif item.is_dir():
-                        _shutil.rmtree(item)
+            except OSError:
+                pass
 
         return result
 
@@ -2286,132 +2287,132 @@ class ImportManager:
 
         return result
 
-    def dotenv_strip_inline_comment(
-        self,
-        value: str
-    ) -> str:
-        idx = None
-        for i, ch in enumerate(value):
-            if ch == "#" and (i == 0 or value[i - 1].isspace()):
-                idx = i
-                break
-        if idx is not None:
-            value = value[:idx]
-        return value.rstrip()
+    # def dotenv_strip_inline_comment(
+    #     self,
+    #     value: str
+    # ) -> str:
+    #     idx = None
+    #     for i, ch in enumerate(value):
+    #         if ch == "#" and (i == 0 or value[i - 1].isspace()):
+    #             idx = i
+    #             break
+    #     if idx is not None:
+    #         value = value[:idx]
+    #     return value.rstrip()
 
 
-    def dotenv_unescape_double_quoted(
-        self,
-        value: str
-    ) -> str:
-        result = []
-        i = 0
-        n = len(value)
-        while i < n:
-            ch = value[i]
-            if ch == "\\" and i + 1 < n:
-                nxt = value[i + 1]
-                mapping = {"n": "\n", "t": "\t", "r": "\r", '"': '"', "\\": "\\"}
-                if nxt in mapping:
-                    result.append(mapping[nxt])
-                    i += 2
-                    continue
-            result.append(ch)
-            i += 1
-        return "".join(result)
+    # def dotenv_unescape_double_quoted(
+    #     self,
+    #     value: str
+    # ) -> str:
+    #     result = []
+    #     i = 0
+    #     n = len(value)
+    #     while i < n:
+    #         ch = value[i]
+    #         if ch == "\\" and i + 1 < n:
+    #             nxt = value[i + 1]
+    #             mapping = {"n": "\n", "t": "\t", "r": "\r", '"': '"', "\\": "\\"}
+    #             if nxt in mapping:
+    #                 result.append(mapping[nxt])
+    #                 i += 2
+    #                 continue
+    #         result.append(ch)
+    #         i += 1
+    #     return "".join(result)
 
 
-    def dotenv_is_valid_key(
-        self,
-        key: str
-    ) -> bool:
-        if not key:
-            return False
-        if not (key[0].isalpha() or key[0] == "_"):
-            return False
-        return all(c.isalnum() or c == "_" for c in key)
+    # def dotenv_is_valid_key(
+    #     self,
+    #     key: str
+    # ) -> bool:
+    #     if not key:
+    #         return False
+    #     if not (key[0].isalpha() or key[0] == "_"):
+    #         return False
+    #     return all(c.isalnum() or c == "_" for c in key)
 
 
-    def dotenv_parse(
-        self,
-        text: str
-    ) -> dict[str, str]:
-        values: dict[str, str] = {}
+    # def dotenv_parse(
+    #     self,
+    #     text: str
+    # ) -> dict[str, str]:
+    #     values: dict[str, str] = {}
 
-        normalized = text.replace("\r\n", "\n").replace("\r", "\n")
+    #     normalized = text.replace("\r\n", "\n").replace("\r", "\n")
 
-        for raw_line in normalized.split("\n"):
-            line = raw_line.strip()
+    #     for raw_line in normalized.split("\n"):
+    #         line = raw_line.strip()
 
-            if not line or line.startswith("#"):
-                continue
+    #         if not line or line.startswith("#"):
+    #             continue
 
-            if line.startswith("export "):
-                line = line[len("export "):].lstrip()
+    #         if line.startswith("export "):
+    #             line = line[len("export "):].lstrip()
 
-            if "=" not in line:
-                continue
+    #         if "=" not in line:
+    #             continue
 
-            key, _, rest = line.partition("=")
-            key = key.strip()
+    #         key, _, rest = line.partition("=")
+    #         key = key.strip()
 
-            if not self.dotenv_is_valid_key(key):
-                continue
+    #         if not self.dotenv_is_valid_key(key):
+    #             continue
 
-            rest = rest.strip()
+    #         rest = rest.strip()
 
-            if len(rest) >= 2 and rest[0] == '"' and rest.endswith('"'):
-                value = self.dotenv_unescape_double_quoted(rest[1:-1])
-            elif len(rest) >= 2 and rest[0] == "'" and rest.endswith("'"):
-                value = rest[1:-1]
-            else:
-                value = self.dotenv_strip_inline_comment(rest).strip()
+    #         if len(rest) >= 2 and rest[0] == '"' and rest.endswith('"'):
+    #             value = self.dotenv_unescape_double_quoted(rest[1:-1])
+    #         elif len(rest) >= 2 and rest[0] == "'" and rest.endswith("'"):
+    #             value = rest[1:-1]
+    #         else:
+    #             value = self.dotenv_strip_inline_comment(rest).strip()
 
-            values[key] = value
+    #         values[key] = value
 
-        return values
-
-
-    def dotenv_load_raw_values(
-        self,
-        path: str | Path = ".env",
-        *,
-        encoding: str = "utf-8",
-    ) -> dict[str, str]:
-        file_path = _Path(path)
-        text = file_path.read_text(encoding=encoding)
-        return self.dotenv_parse(text)
+    #     return values
 
 
-    def dotenv_read_many_values(
-        self,
-        path: str | Path = ".env",
-        *,
-        override: bool = False,
-        encoding: str = "utf-8",
-    ) -> dict[str, str]:
-        values = self.dotenv_load_raw_values(path, encoding=encoding)
-        for key, value in values.items():
-            if override or key not in _os.environ:
-                _os.environ[key] = value
-        return values
+    # def dotenv_load_raw_values(
+    #     self,
+    #     path: str | Path = ".env",
+    #     *,
+    #     encoding: str = "utf-8",
+    # ) -> dict[str, str]:
+    #     file_path = _Path(path)
+    #     text = file_path.read_text(encoding=encoding)
+    #     return self.dotenv_parse(text)
 
 
-    def dotenv_find_value(
-        self,
-        filename: str = ".env",
-        *,
-        start: str | Path | None = None,
-        max_levels: int = 10,
-    ) -> _Path | None:
-        current = _Path(start if start is not None else _Path.cwd()).resolve()
+    # def dotenv_read_many_values(
+    #     self,
+    #     path: str | Path = ".env",
+    #     *,
+    #     override: bool = False,
+    #     encoding: str = "utf-8",
+    # ) -> dict[str, str]:
+    #     values = self.dotenv_load_raw_values(path, encoding=encoding)
+    #     for key, value in values.items():
+    #         if override or key not in _os.environ:
+    #             _os.environ[key] = value
+    #     return values
 
-        for _ in range(max_levels):
-            candidate = current / filename
-            if candidate.is_file():
-                return candidate
-            if current.parent == current:
-                break
-            current = current.parent
 
-        return None
+    # def dotenv_find_value(
+    #     self,
+    #     filename: str = ".env",
+    #     *,
+    #     start: str | Path | None = None,
+    #     max_levels: int = 10,
+    # ) -> _Path | None:
+    #     current = _Path(start if start is not None else _Path.cwd()).resolve()
+
+    #     for _ in range(max_levels):
+    #         candidate = current / filename
+    #         if candidate.is_file():
+    #             return candidate
+    #         if current.parent == current:
+    #             break
+    #         current = current.parent
+
+    #     return None
