@@ -3054,7 +3054,7 @@ class ValueCacheDatabaseManager:
         value: Any = set(
             ((data.get("return-code", {}) or {})
                 .get("success", {}) or {})
-                .get("targets", []) or []
+                .get("targets", [0]) or [0]
         )
 
         return value

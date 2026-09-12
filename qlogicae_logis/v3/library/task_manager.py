@@ -1176,6 +1176,10 @@ class TaskManager:
         return True
 
     # @_DecoratorManager.multi_task_decorator
+    # def run_task_command(self) -> bool:
+    #     return True
+
+    # @_DecoratorManager.multi_task_decorator
     # def run_task_reboot_common_setup(
     #     self,
     # ) -> bool:
