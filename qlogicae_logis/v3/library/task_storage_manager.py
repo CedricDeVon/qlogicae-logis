@@ -78,8 +78,8 @@ class TaskStorageManager:
 
         return value
 
-    # def reset_all_task_executed(self) -> bool:
-    #     for key, _item in self._tasks.items():
-    #         self._tasks[key] = False
+    def reset_all_task_executed(self) -> bool:
+        for key, _item in self._tasks.items():
+            self._tasks[key] = False
 
-    #     return True
+        return True

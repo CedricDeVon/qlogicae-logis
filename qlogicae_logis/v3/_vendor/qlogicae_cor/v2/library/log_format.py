@@ -41,16 +41,16 @@ class LogFormat(logging.Formatter):
     ) -> str:        
         match log_level:
             case logging.INFO:
-                message = f"{message}"
+                message = f"\x1b[94m{message}\x1b[0m"
 
             case logging.DEBUG:
-                message = f"\x1b[35m{message}\x1b[0m"
+                message = f"\x1b[95m{message}\x1b[0m"
 
             case logging.WARNING:
-                message = f"\x1b[33m{message}\x1b[0m"
+                message = f"\x1b[93m{message}\x1b[0m"
 
             case logging.ERROR:
-                message = f"\x1b[31m{message}\x1b[0m"
+                message = f"\x1b[91m{message}\x1b[0m"
 
             case _:
                 message = f"{message}"

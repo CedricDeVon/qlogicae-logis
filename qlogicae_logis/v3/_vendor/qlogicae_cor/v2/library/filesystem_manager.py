@@ -103,12 +103,12 @@ class FilesystemManager:
         result: bool = _Path(value).is_file()
         return result
 
-    def is_folder_path_valid(
-        self,
-        value: str,
-    ) -> bool:
-        result: bool = _Path(value).is_dir()
-        return result
+    # def is_folder_path_valid(
+    #     self,
+    #     value: str,
+    # ) -> bool:
+    #     result: bool = _Path(value).is_dir()
+    #     return result
 
     def clean_filesystem_path(
         self,

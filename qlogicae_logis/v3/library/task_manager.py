@@ -17,6 +17,7 @@ _DatabaseManager: Any = None
 _DecoratorManager = DecoratorManager
 _ValueCacheDatabaseManager: Any = None
 _PersistentCacheDatabasManager: Any = None
+_TaskStorageManager: Any = None
 
 def _handle_dynamic_imports() -> None:
     global _handle_dynamic_imports
@@ -24,11 +25,13 @@ def _handle_dynamic_imports() -> None:
     global _DatabaseManager
     global _ValueCacheDatabaseManager
     global _PersistentCacheDatabasManager
+    global _TaskStorageManager
 
     from ..library import (
         database_manager,
         import_manager,
         persistent_cache_database_manager,
+        task_storage_manager,
         value_cache_database_manager,
     )
 
@@ -44,6 +47,9 @@ def _handle_dynamic_imports() -> None:
     _PersistentCacheDatabasManager = (
         persistent_cache_database_manager.PersistentCacheDatabasManager
     )
+    _TaskStorageManager = (
+        task_storage_manager.TaskStorageManager
+    )
 
     _handle_dynamic_imports = lambda: None
 
@@ -52,6 +58,7 @@ class TaskManager:
     __slots__ = (
         "_import_manager",
         "_database_manager",
+        "_task_storage_manager",
         "_value_cache_database_manager",
         "_persistent_cache_database_manager",
     )
@@ -67,6 +74,11 @@ class TaskManager:
         self._database_manager = (
             _ImportManager.read_singleton(
                 _DatabaseManager
+            )
+        )
+        self._task_storage_manager = (
+            _ImportManager.read_singleton(
+                _TaskStorageManager
             )
         )
         self._value_cache_database_manager = (
@@ -214,6 +226,7 @@ class TaskManager:
         if not accessibility_type:
             return False
 
+        result: bool = True
         is_modified = (
             self._value_cache_database_manager
                 .read_is_configuration_workspace_modified()
@@ -226,33 +239,49 @@ class TaskManager:
 
         value_data: Any = {}
         configuration_workspace_data: Any = {}
-        base_paths = (
+        target_base_paths: Any = (
             self._database_manager.read_configuration_workspace_base_file_paths(
                 accessibility_type
             )
         )
-        base_directory_filesystem_paths = (
+        target_base_paths = (
+            f"{base_path}{file_extension}"
+            for base_path in target_base_paths
+            for file_extension in file_extensions
+        )
+
+        target_project_paths: Any = (
             self._database_manager.read_configuration_workspace_base_folder_paths(
                 accessibility_type
             )
         )
-        custom_file_paths: list[str] = []
+        target_project_paths = (
+            file_path
+            for base_path in target_project_paths
+            for file_path in self._import_manager.read_child_folder_paths(
+                value=base_path
+            )
+        )
 
-        for base_path in base_paths:
-            if not base_path:
-                continue
+        def handle_files(file_paths: Any) -> bool:
+            nonlocal value_data
+            nonlocal is_modified
 
-            for file_extension in (
-                file_extensions
-            ):
-                if not file_extension:
+            method_result: bool = True
+            for file_path in file_paths:
+                if not file_path:
+                    method_result = False
                     continue
 
-                file_path = (
-                    f"{base_path}{file_extension}"
-                )
+                file_path = f"{file_path}"
+                custom_file_paths: list[str] = []
 
-                if not self._import_manager.is_file_path_valid(value=file_path):
+                if (
+                    not self._import_manager.is_file_path_valid(value=file_path)
+                    or self._import_manager.read_file_suffix(value=file_path)
+                    not in file_extensions
+                ):
+                    method_result = False
                     continue
 
                 value_metadata = (
@@ -323,190 +352,30 @@ class TaskManager:
                 )
 
                 custom_file_paths = [
-                    *custom_file_paths,
                     *self._value_cache_database_manager
                         .read_object_configuration_workspace_targets(
                             value_data
                         )
                 ]
+                if len(custom_file_paths) > 0:
+                    for custom_file_path in custom_file_paths:
+                        if not custom_file_path:
+                            method_result = False
+                            continue
 
-        for base_path in (
-            base_directory_filesystem_paths
-        ):
-            if not base_path:
-                continue
-
-            if not self._import_manager.is_folder_path_valid(value=base_path):
-                continue
-
-            file_paths = (
-                self._import_manager.
-                    read_child_folder_paths(
-                        value=base_path
-                    )
-            )
-
-            for file_path in file_paths:
-                file_path = f"{file_path}"
-                if (
-                    self._import_manager.is_file_path_valid(value=file_path)
-                    and self._import_manager.read_file_suffix(value=file_path)
-                    in file_extensions
-                ):
-                    if not file_path:
-                        continue
-
-                    value_metadata = (
-                        self._database_manager
-                            .read_file_metadata(
-                                file_path
-                            )
-                    )
-
-                    cached_metadata = (
-                        self._persistent_cache_database_manager.read_configuration_workspace_metadata(
-                            accessibility_type,
-                            file_path,
-                        )
-                    )
-
-                    value_data_timestamp_modified = (
-                        self._database_manager
-                            .read_object_property_timestamp_modified_value(
-                                value_metadata
-                            )
-                    ) or 1
-                    cached_timestamp_modified = (
-                        self._database_manager
-                            .read_object_property_timestamp_modified_value(
-                                cached_metadata
-                            )
-                    ) or 2
-
-                    if (
-                        cached_timestamp_modified != value_data_timestamp_modified
-                    ):
-                        value_data = (
-                            self._database_manager
-                                .read_configuration_workspace_data_file(
-                                    file_path
-                                )
+                        handle_files(
+                            custom_file_path
                         )
 
-                        self._persistent_cache_database_manager.write_configuration_workspace_data(
-                            accessibility_type,
-                            file_path,
-                            value_data,
-                        )
-                        self._persistent_cache_database_manager.write_configuration_workspace_metadata(
-                            accessibility_type,
-                            file_path,
-                            value_metadata,
-                        )
+            return method_result
 
-                        is_modified = True
 
-                    else:
-                        value_data = (
-                            self._persistent_cache_database_manager.read_configuration_workspace_data(
-                                accessibility_type,
-                                file_path,
-                            )
-                        )
-                        value_metadata = cached_metadata
-
-                    configuration_workspace_data[file_path] = (
-                        self._value_cache_database_manager
-                            .read_file_data(
-                                value_data,
-                                value_metadata
-                            )
-                    )
-
-                    custom_file_paths = [
-                        *custom_file_paths,
-                        *self._value_cache_database_manager
-                            .read_object_configuration_workspace_targets(
-                                value_data
-                            )
-                    ]
-
-        for file_path in custom_file_paths:
-            file_path = f"{file_path}"
-            if (
-                self._import_manager.is_file_path_valid(value=file_path)
-                and self._import_manager.read_file_suffix(value=file_path)
-                in file_extensions
-            ):
-                if not file_path:
-                    continue
-
-                value_metadata = (
-                    self._database_manager
-                        .read_file_metadata(
-                            file_path
-                        )
-                )
-
-                cached_metadata = (
-                    self._persistent_cache_database_manager.read_configuration_workspace_metadata(
-                        accessibility_type,
-                        file_path,
-                    )
-                )
-
-                value_data_timestamp_modified = (
-                    self._database_manager
-                        .read_object_property_timestamp_modified_value(
-                            value_metadata
-                        )
-                ) or 1
-                cached_timestamp_modified = (
-                    self._database_manager
-                        .read_object_property_timestamp_modified_value(
-                            cached_metadata
-                        )
-                ) or 2
-
-                if (
-                    cached_timestamp_modified != value_data_timestamp_modified
-                ):
-                    value_data = (
-                        self._database_manager
-                            .read_configuration_workspace_data_file(
-                                file_path
-                            )
-                    )
-
-                    self._persistent_cache_database_manager.write_configuration_workspace_data(
-                        accessibility_type,
-                        file_path,
-                        value_data,
-                    )
-                    self._persistent_cache_database_manager.write_configuration_workspace_metadata(
-                        accessibility_type,
-                        file_path,
-                        value_metadata,
-                    )
-
-                    is_modified = True
-
-                else:
-                    value_data = (
-                        self._persistent_cache_database_manager.read_configuration_workspace_data(
-                            accessibility_type,
-                            file_path,
-                        )
-                    )
-                    value_metadata = cached_metadata
-
-                configuration_workspace_data[file_path] = (
-                    self._value_cache_database_manager
-                        .read_file_data(
-                            value_data,
-                            value_metadata
-                        )
-                )
+        result = handle_files(
+            target_base_paths
+        ) and result
+        result = handle_files(
+            target_project_paths
+        ) and result
 
         file_count = (
             len(configuration_workspace_data)
@@ -1188,11 +1057,11 @@ class TaskManager:
 
         return True
 
-    # @_DecoratorManager.multi_task_decorator
-    # def run_task_task_storage_shutdown(self) -> bool:
-    #     self._task_storage_manager.reset_all_task_executed()
+    @_DecoratorManager.multi_task_decorator
+    def run_task_task_storage_shutdown(self) -> bool:
+        self._task_storage_manager.reset_all_task_executed()
 
-    #     return True
+        return True
 
     @_DecoratorManager.multi_task_decorator
     def run_task_system_setup(self) -> bool:
@@ -1281,16 +1150,16 @@ class TaskManager:
 
         return True
 
+    @_DecoratorManager.multi_task_decorator
+    def run_task_reboot(
+        self,
+    ) -> bool:
+        self.run_task_full_shutdown()
+        self.run_task_task_storage_shutdown()
+        self.run_task_common_setup()
+
+        return True
+
     # @_DecoratorManager.multi_task_decorator
     # def run_task_command(self) -> bool:
-    #     return True
-
-    # @_DecoratorManager.multi_task_decorator
-    # def run_task_reboot_common_setup(
-    #     self,
-    # ) -> bool:
-    #     self.run_task_full_shutdown()
-    #     self.run_task_task_storage_shutdown()
-    #     self.run_task_common_setup()
-
     #     return True

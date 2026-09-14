@@ -220,7 +220,7 @@ class ConsoleManager:
         ) -> bool:
             command_result: bool = (
                 self._command_database_manager.run_command_database_view_disk(
-                    key_paths=(arguments.key_paths or [])
+                    key_paths=(arguments.key_paths or tuple())
                 )
             )
             return command_result
@@ -230,7 +230,7 @@ class ConsoleManager:
         ) -> bool:
             command_result: bool = (
                 self._command_database_manager.run_command_database_view_value(
-                key_paths=(arguments.key_paths or [])
+                key_paths=(arguments.key_paths or tuple())
                 )
             )
             return command_result
@@ -341,7 +341,7 @@ class ConsoleManager:
         ) -> bool:
             command_result: bool = (
                 self._command_debug_manager.run_command_debug_view_value_cache(
-                    key_paths=(arguments.key_paths or [])
+                    key_paths=(arguments.key_paths or tuple())
                 )
             )
             return command_result
@@ -351,7 +351,7 @@ class ConsoleManager:
         ) -> bool:
             command_result: bool = (
                 self._command_debug_manager.run_command_debug_view_disk_cache(
-                    key_paths=(arguments.key_paths or [])
+                    key_paths=(arguments.key_paths or tuple())
                 )
             )
             return command_result
@@ -436,7 +436,7 @@ class ConsoleManager:
             command_result: bool = (
                 self._command_filesystem_manager.run_command_filesystem_copy(
                     source_paths=arguments.source_paths,
-                    target_paths=(arguments.target_paths or []),
+                    target_paths=(arguments.target_paths or tuple()),
                 )
             )
             return command_result
@@ -468,7 +468,7 @@ class ConsoleManager:
         ) -> bool:
             command_result: bool = (
                 self._command_filesystem_manager.run_command_filesystem_tree_setup(
-                    target_paths=(arguments.target_paths or [])
+                    target_paths=(arguments.target_paths or tuple())
                 )
             )
             return command_result
@@ -479,7 +479,7 @@ class ConsoleManager:
             command_result: bool = (
                 self._command_filesystem_manager
                     .run_command_filesystem_clean_path(
-                        target_paths=(arguments.target_paths or [])
+                        target_paths=(arguments.target_paths or tuple())
                     )
             )
             return command_result
@@ -490,7 +490,7 @@ class ConsoleManager:
             command_result: bool = (
                 self._command_filesystem_manager
                     .run_command_filesystem_clean_selection(
-                        targets=(arguments.targets or [])
+                        targets=(arguments.targets or tuple())
                     )
             )
             return command_result
@@ -769,7 +769,7 @@ class ConsoleManager:
         ) -> bool:
             command_result: bool = (
                 self._command_workspace_manager.run_command_workspace_export(
-                    targets=(arguments.targets or [])
+                    targets=(arguments.targets or tuple())
                 )
             )
             return command_result
@@ -779,8 +779,8 @@ class ConsoleManager:
         ) -> bool:
             command_result: bool = (
                 self._command_workspace_manager.run_command_workspace_import(
-                    input_path=(arguments.input_path or []),
-                    output_path=(arguments.output_path or []),
+                    input_path=(arguments.input_path or tuple()),
+                    output_path=(arguments.output_path or tuple()),
                 )
             )
             return command_result
@@ -790,14 +790,6 @@ class ConsoleManager:
         ) -> bool:
             command_result: bool = (
                 self._command_workspace_manager.run_command_workspace_replenish()
-            )
-            return command_result
-
-        def workspace_prune(
-            arguments: _argparse.Namespace,
-        ) -> bool:
-            command_result: bool = (
-                self._command_workspace_manager.run_command_workspace_prune()
             )
             return command_result
 
@@ -824,7 +816,7 @@ class ConsoleManager:
         ) -> bool:
             command_result: bool = (
                 self._command_workspace_manager.run_command_workspace_install(
-                    targets=(arguments.targets or [])
+                    targets=(arguments.targets or tuple())
                 )
             )
             return command_result
@@ -923,17 +915,6 @@ class ConsoleManager:
             command_handler=workspace_replenish,
         )
 
-        application_workspace_prune = (
-            application_workspace_commands.add_parser(
-                "prune",
-                help="Filesystem pruning.",
-            )
-        )
-
-        application_workspace_prune.set_defaults(
-            command_handler=workspace_prune,
-        )
-
         application_workspace_install = (
             application_workspace_commands.add_parser(
                 "install",
@@ -991,7 +972,7 @@ class ConsoleManager:
         ) -> bool:
             command_result: bool = (
                 self._command_template_manager.run_command_template_apply(
-                    targets=(arguments.targets or [])
+                    targets=(arguments.targets or tuple())
                 )
             )
             return command_result
@@ -1075,7 +1056,7 @@ class ConsoleManager:
         ) -> bool:
             command_result: bool = (
                 self._command_workflow_manager.run_command_workflow_run(
-                    targets=(arguments.targets or [])
+                    targets=(arguments.targets or tuple())
                 )
             )
             return command_result

@@ -1310,19 +1310,19 @@ class ImportManager:
             ),
         ).suffix
 
-    def read_filesystem_stem(
-        self,
-        **kwargs: Any,
-    ) -> Any:
-        if not kwargs:
-            return False
+    # def read_filesystem_stem(
+    #     self,
+    #     **kwargs: Any,
+    # ) -> Any:
+    #     if not kwargs:
+    #         return False
 
-        return _Path(
-            kwargs.get(
-                "value",
-                "",
-            ),
-        ).stem
+    #     return _Path(
+    #         kwargs.get(
+    #             "value",
+    #             "",
+    #         ),
+    #     ).stem
 
     def read_filesystem_modification_timestamp(
         self,
@@ -1473,21 +1473,21 @@ class ImportManager:
 
         return value
 
-    def is_folder_path_valid(
-        self,
-        **kwargs: Any,
-    ) -> bool:
-        if not kwargs:
-            return False
+    # def is_folder_path_valid(
+    #     self,
+    #     **kwargs: Any,
+    # ) -> bool:
+    #     if not kwargs:
+    #         return False
 
-        value: bool = _Path(
-            kwargs.get(
-                "value",
-                "",
-            )
-        ).is_dir()
+    #     value: bool = _Path(
+    #         kwargs.get(
+    #             "value",
+    #             "",
+    #         )
+    #     ).is_dir()
 
-        return value
+    #     return value
 
     def setup_filesystem_tree_paths(
         self,

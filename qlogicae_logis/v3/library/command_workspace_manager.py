@@ -165,11 +165,6 @@ class CommandWorkspaceManager:
             ),
             (
                 self._command_storage_manager
-                    .read_command_name("workspace_prune"),
-                self.run_command_workspace_prune,
-            ),
-            (
-                self._command_storage_manager
                     .read_command_name("workspace_install"),
                 self.run_command_workspace_install,
             ),
@@ -180,101 +175,37 @@ class CommandWorkspaceManager:
             ),
         ))
 
-    def run_command_workspace_prune(
-        self,
-        **kwargs: Any
-    ) -> bool:
-        self._task_manager.run_task_common_setup()
-        self._task_manager.run_task_workspace_default_setup()
-        self._task_manager.run_task_workspace_group_setup()
-        self._task_manager.run_task_workspace_project_setup()
-        self._task_manager.run_task_filesystem_clean_exclude_setup()
-        self._task_manager.run_task_filesystem_clean_include_setup()
-
-        root_workspace_filesystem_path = (
-            self._database_manager
-                .read_root_workspace_filesystem_path()
-        )
-        accessibility_types = (
-            self._database_manager
-                .read_default_filesystem_accessibility_types()
-        )
-        selection_projects = (
-            self._value_cache_database_manager
-                .read_workspace_project()
-        )
-        selection_groups = (
-            self._value_cache_database_manager
-                .read_workspace_group()
-        )
-        layer_1_paths = (
-            "configuration/workspace",
-            "template",
-        )
-
-        result: bool = True
-        for accessibility_type in accessibility_types:
-            if not accessibility_type:
-                result = False
-                continue
-
-            for layer_1_path in layer_1_paths:
-                if not layer_1_path:
-                    result = False
-                    continue
-
-                current_root_target_paths = (
-                    self._import_manager.read_child_folder_paths(
-                        value=f"{root_workspace_filesystem_path}/{accessibility_type}/"
-                        f"{layer_1_path}/group/selection"
-                    )
-                )
-
-                for current_target_path in current_root_target_paths:
-                    if not current_target_path:
-                        result = False
-                        continue
-
-                    path_stem = (
-                        self._import_manager.read_filesystem_stem(
-                            value=current_target_path
-                        )
-                    )
-                    if path_stem not in selection_groups:
-                        self._import_manager.clean_filesystem_paths(
-                            target_paths=(current_target_path,)
-                        )
-
-                current_root_target_paths = (
-                    self._import_manager.read_child_folder_paths(
-                        value=f"{root_workspace_filesystem_path}/{accessibility_type}/"
-                        f"{layer_1_path}/project/selection"
-                    )
-                )
-                for current_target_path in current_root_target_paths:
-                    if not current_target_path:
-                        result = False
-                        continue
-
-                    path_stem = (
-                        self._import_manager.read_filesystem_stem(
-                            value=current_target_path
-                        )
-                    )
-                    if path_stem not in selection_projects:
-                        self._import_manager.clean_filesystem_paths(
-                            target_paths=(current_target_path,)
-                        )
-
-        return result
-
     def run_command_workspace_setup(
         self,
         **kwargs: Any
     ) -> bool:
-        self._task_manager.run_task_common_setup()
+        if not kwargs:
+            self._log_manager.log_display_warning(
+                reference=self.run_command_workspace_setup,
+                message="kwargs is null or an empty object"
+            )
+            return False
 
-        return True
+        target = (kwargs.get("target", "") or "")
+        if not target:
+            self._log_manager.log_display_warning(
+                reference=self.run_command_workspace_setup,
+                message="no target found"
+            )
+            return False
+
+        result: bool = True
+        result = self.run_command_workspace_import(
+            input_path=target,
+            output_path="."
+        ) and result
+        result = self._task_manager.run_task_reboot()
+        result = self.run_command_workspace_install(
+            targets=(target,)
+        ) and result
+        result = self.run_command_workspace_replenish() and result
+
+        return result
 
     def run_command_workspace_export(
         self,
