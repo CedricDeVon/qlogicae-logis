@@ -374,7 +374,7 @@ class CommandWorkspaceManager:
                     )
             )
 
-            temporary_copy_items = []
+            temporary_copy_items: list[Any] = []
             temporary_output_path = (
                 f"{export_temporary_output_filesystem_path}/{target}"
             )
@@ -464,7 +464,7 @@ class CommandWorkspaceManager:
             )
             return False
 
-        targets = (kwargs.get("targets", []) or [])
+        targets = (kwargs.get("targets", tuple()) or tuple())
         if len(targets) < 1:
             self._log_manager.log_display_warning(
                 reference=handle_workspace_export_selection,
@@ -648,7 +648,7 @@ class CommandWorkspaceManager:
 
         filesystem_sub_tree = _FolderEntityFileSystemTreeSetupOptions(
             name="filesystem",
-            entities=[],
+            entities=tuple(),
         )
 
         workspace_gitignore_file = _FileEntityFileSystemTreeSetupOptions(
@@ -677,22 +677,22 @@ class CommandWorkspaceManager:
 
         selection_sub_tree = _FolderEntityFileSystemTreeSetupOptions(
             name="selection",
-            entities=[],
+            entities=tuple(),
         )
 
         filesystem_sub_tree = _FolderEntityFileSystemTreeSetupOptions(
             name="filesystem",
-            entities=[],
+            entities=tuple(),
         )
 
         target_sub_tree = _FolderEntityFileSystemTreeSetupOptions(
             name="target",
-            entities=[],
+            entities=tuple(),
         )
 
         log_sub_tree = _FolderEntityFileSystemTreeSetupOptions(
             name="log",
-            entities=[],
+            entities=tuple(),
         )
 
         cache_disk_sub_tree = _FolderEntityFileSystemTreeSetupOptions(
@@ -915,7 +915,7 @@ class CommandWorkspaceManager:
                         ),
                         _FolderEntityFileSystemTreeSetupOptions(
                             name="selection",
-                            entities=[],
+                            entities=tuple(),
                         )
                     ]
                 )
@@ -1254,7 +1254,7 @@ class CommandWorkspaceManager:
             )
             return False
 
-        targets = (kwargs.get("targets", []) or [])
+        targets = (kwargs.get("targets", tuple()) or tuple())
         if not targets or len(targets) < 1:
             self._log_manager.log_display_warning(
                 reference=self.run_command_workspace_install,

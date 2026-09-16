@@ -2,6 +2,7 @@ from __future__ import annotations
 
 
 def main() -> int:
+
     from ..library import (
         console_manager,
         import_manager,

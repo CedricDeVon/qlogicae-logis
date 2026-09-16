@@ -437,9 +437,9 @@ class CommandTemplateManager:
             )
             return False
 
-        targets = (kwargs.get("targets", ["all"]) or ["all"])
+        targets = (kwargs.get("targets", ("all",)) or ("all",))
         if not targets or len(targets) < 1:
-            targets = ["all"]
+            targets = ("all",)
 
         macros_data = (
             self._value_cache_database_manager

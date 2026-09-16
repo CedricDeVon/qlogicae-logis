@@ -2941,7 +2941,18 @@ class ValueCacheDatabaseManager:
         outputs: Any = (
             ((data.get("configuration", {}) or {})
                 .get("workspace", {}) or {})
-                .get("targets", []) or []
+                .get("targets", tuple()) or tuple()
+        )
+        return outputs
+
+    def read_object_configuration_dotenv_targets(
+        self,
+        data: Any,
+    ) -> Any:
+        outputs: Any = (
+            ((data.get("configuration", {}) or {})
+                .get("dotenv", {}) or {})
+                .get("targets", tuple()) or tuple()
         )
         return outputs
 
@@ -3006,35 +3017,35 @@ class ValueCacheDatabaseManager:
     def read_object_output_targets(
         self,
         data: Any,
-    ) -> list[str]:
-        value: list[str] = (
+    ) -> tuple[str, ...]:
+        value: tuple[str, ...] = (
             (data.get("output", {}) or {})
-                .get("targets", [])
-        ) or []
+                .get("targets", tuple())
+        ) or tuple()
 
         return value
 
     def read_object_input_exclude_targets(
         self,
         data: Any,
-    ) -> list[str]:
-        value: list[str] = (
+    ) -> tuple[str, ...]:
+        value: tuple[str, ...] = (
             ((data.get("input", {}) or {})
                 .get("exclude", {}) or {})
-                .get("targets", [])
-        ) or []
+                .get("targets", tuple())
+        ) or tuple()
 
         return value
 
     def read_object_input_include_targets(
         self,
         data: Any,
-    ) -> list[str]:
-        value: list[str] = (
+    ) -> tuple[str, ...]:
+        value: tuple[str, ...] = (
             ((data.get("input", {}) or {})
                 .get("include", {}) or {})
-                .get("targets", [])
-        ) or []
+                .get("targets", tuple())
+        ) or tuple()
 
         return value
 
@@ -3063,11 +3074,11 @@ class ValueCacheDatabaseManager:
     def read_object_return_code_success_targets(
         self,
         data: Any,
-    ) -> Any:
-        value: Any = set(
+    ) -> set[Any]:
+        value: set[Any] = set(
             ((data.get("return-code", {}) or {})
                 .get("success", {}) or {})
-                .get("targets", [0]) or [0]
+                .get("targets", (0,)) or (0,)
         )
 
         return value
@@ -3141,10 +3152,10 @@ class ValueCacheDatabaseManager:
     def read_object_scripts(
         self,
         data: Any,
-    ) -> list[str]:
-        value: list[str] = (
-            data.get("scripts", [])
-        ) or []
+    ) -> tuple[str, ...]:
+        value: tuple[str, ...] = (
+            data.get("scripts", tuple())
+        ) or tuple()
 
         return value
 

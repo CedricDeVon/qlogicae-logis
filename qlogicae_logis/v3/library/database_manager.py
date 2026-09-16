@@ -255,6 +255,25 @@ class DatabaseManager:
 
         return data
 
+    def read_object_configuration_dotenv_targets(
+        self,
+        targets: Any,
+    ) -> Any:
+        if not targets:
+            return {}
+
+        data: Any = {}
+        for path in targets:
+            data = (
+                data |
+                self._import_manager
+                    .dotenv_read_many_values(
+                        path
+                    )
+            )
+
+        return data
+
     def read_default_disk_cache_output_file_path(
         self,
     ) -> str:
@@ -580,3 +599,4 @@ class DatabaseManager:
             ) or {}
 
         return data
+

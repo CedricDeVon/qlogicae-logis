@@ -598,7 +598,9 @@ class TaskManager:
     def run_task_static_macros_extraction(
         self,
     ) -> bool:
-        macros: Any = {}
+        macros: Any = (
+            self._value_cache_database_manager.read_macros()
+        )
         default_static_value_cache_macros_values: Any = (
             self._value_cache_database_manager
                 .read_default_object_macros_values(
@@ -620,6 +622,7 @@ class TaskManager:
         )
 
         macros = (
+            macros |
             default_static_value_cache_macros_values |
             configuration_workspace_data_macros_static_value_cache_targets |
             configuration_workspace_data_macros_static_file_targets |
@@ -640,10 +643,46 @@ class TaskManager:
             self._value_cache_database_manager.read_macros()
         )
         macros = (
+            macros |
             self._value_cache_database_manager
                 .read_object_macros(
                     macros
             )
+        )
+
+        self._value_cache_database_manager.write_macros(
+            macros
+        )
+
+        return True
+
+    @_DecoratorManager.single_task_decorator
+    def run_task_environment_variable_macros_extraction(
+        self,
+    ) -> bool:
+        configuration_workspace_data: Any = (
+            self._value_cache_database_manager
+                .read_merged_configuration_workspace_data()
+        )
+        targets: Any = (
+            self._value_cache_database_manager
+                .read_object_configuration_dotenv_targets(
+                    configuration_workspace_data
+                )
+        )
+        macros: Any = (
+            self._value_cache_database_manager.read_macros()
+        )
+        macros = (
+            macros |
+            self._import_manager.read_all_values_via_environment_variables()
+        )
+        macros = (
+            macros |
+            self._database_manager
+                .read_object_configuration_dotenv_targets(
+                    targets
+                )
         )
 
         self._value_cache_database_manager.write_macros(
@@ -659,7 +698,9 @@ class TaskManager:
         macros: Any = (
             self._value_cache_database_manager.read_macros()
         )
+
         macros = (
+            macros |
             self._import_manager
                 .macros_resolve_many(
                     values=macros
@@ -1088,6 +1129,7 @@ class TaskManager:
         self.run_task_configuration_workspace_object_merging()
         self.run_task_filesystem_values()
         self.run_task_plugin_object_merging()
+        self.run_task_environment_variable_macros_extraction()
         self.run_task_static_macros_extraction()
         self.run_task_static_macros_object_merging()
         self.run_task_static_macros_resolution()

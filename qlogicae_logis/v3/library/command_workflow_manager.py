@@ -402,7 +402,7 @@ class CommandWorkflowManager:
             )
             return False
 
-        targets = (kwargs.get('targets', []) or [])
+        targets = (kwargs.get('targets', tuple()) or tuple())
         if not targets or len(targets) < 1:
             self._log_manager.log_display_warning(
                 reference=self.run_command_workflow_run,
