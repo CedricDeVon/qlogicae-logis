@@ -68,9 +68,6 @@ class DatabaseManager:
     def read_default_dynamic_value_cache_macros(self) -> dict[str, Any]:
         return {}
 
-    # def read_default_template_types(self) -> tuple[str, ...]:
-    #     return ( "filesystem", )
-
     def read_default_filesystem_accessibility_types(self) -> tuple[str, ...]:
         return ( "private", "public", )
 
@@ -90,9 +87,6 @@ class DatabaseManager:
     def read_default_python_data_file_extensions(self) -> set[str]:
         return {".py"}
 
-    # def read_default_plugin_file_extensions(self) -> set[str]:
-    #     return {".py"}
-
     def read_default_groups(self) -> Any:
         return { "all": "all" }
 
@@ -102,18 +96,6 @@ class DatabaseManager:
             "group": "group",
             "project": "project",
         }
-
-    # def read_none(self) -> str:
-    #     return "none"
-
-    # def read_not_a_number(self) -> str:
-    #     return "nan"
-
-    # def read_redacted(self) -> str:
-    #     return "redacted"
-
-    # def read_expunged(self) -> str:
-    #     return "expunged"
 
     def read_company_project_major_version(
         self,
@@ -317,37 +299,6 @@ class DatabaseManager:
         return (
             f"{base_path}/private/temporary/export"
         )
-
-    # def read_temporary_export_targets_source_filesystem_path(
-    #     self,
-    #     target: str,
-    # ) -> str:
-    #     if not target:
-    #         raise ValueError("arguments must not be null")
-
-    #     base_path = (
-    #         self.read_root_workspace_filesystem_path()
-    #     )
-
-    #     return (
-    #         f"{base_path}/private/temporary/export/targets/{target}"
-    #     )
-
-    # def read_temporary_export_targets_output_filesystem_path(
-    #     self,
-    #     target: str,
-    #     relative_path: str,
-    # ) -> str:
-    #     if not target or not relative_path:
-    #         raise ValueError("arguments must not be null")
-
-    #     base_path = (
-    #         self.read_root_workspace_filesystem_path()
-    #     )
-
-    #     return (
-    #         f"{base_path}/private/temporary/export/targets/{target}/{relative_path}"
-    #     )
 
     def read_configuration_workspace_filesystem_path(
         self,
