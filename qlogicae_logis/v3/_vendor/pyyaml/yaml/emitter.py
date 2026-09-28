@@ -960,8 +960,7 @@ class Emitter:
             if 0 < end < len(text)-1 and (ch == ' ' or start >= end)    \
                     and self.column+(end-start) > self.best_width and split:
                 data = text[start:end]+'\\'
-                if start < end:
-                    start = end
+                start = max(start, end)
                 self.column += len(data)
                 if self.encoding:
                     data = data.encode(self.encoding)

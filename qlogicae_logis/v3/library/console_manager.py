@@ -81,21 +81,21 @@ def _handle_dynamic_imports() -> None:
 
 class ConsoleManager:
     __slots__ = (
-        "_commands",
-        "_log_manager",
         "_application",
-        "_task_manager",
-        "_import_manager",
-        "_database_manager",
         "_command_about_manager",
+        "_command_database_manager",
         "_command_debug_manager",
+        "_command_filesystem_manager",
         "_command_template_manager",
         "_command_workflow_manager",
-        "_command_database_manager",
         "_command_workspace_manager",
-        "_command_filesystem_manager",
-        "_value_cache_database_manager",
+        "_commands",
+        "_database_manager",
+        "_import_manager",
+        "_log_manager",
         "_raw_string_console_arguments",
+        "_task_manager",
+        "_value_cache_database_manager",
     )
 
     def __init__(self) -> None:
@@ -922,16 +922,6 @@ class ConsoleManager:
             )
         )
 
-        application_workspace_install.add_argument(
-            "--target",
-            "-t",
-            dest="targets",
-            nargs="*",
-            type=str,
-            help="",
-            default=[],
-        )
-
         application_workspace_install.set_defaults(
             command_handler=workspace_install,
         )
@@ -1054,9 +1044,15 @@ class ConsoleManager:
         def workflow_run(
             arguments: _argparse.Namespace,
         ) -> bool:
+            arguments.macros = (
+                self._database_manager.read_macros_cli_arguments(
+                    arguments.macros or {}
+                )
+            ) or {}
             command_result: bool = (
                 self._command_workflow_manager.run_command_workflow_run(
-                    targets=(arguments.targets or tuple())
+                    targets=(arguments.targets or tuple()),
+                    macros=(arguments.macros or {})
                 )
             )
             return command_result
@@ -1098,6 +1094,28 @@ class ConsoleManager:
             default=[],
             type=str,
             help="",
+        )
+
+        def parse_key_value(value: str) -> tuple[str, str]:
+            key, separator, item = value.partition("=")
+
+            if not separator:
+                raise Exception(
+                    "configuration must use KEY=VALUE format"
+                )
+
+            return key, item
+
+
+        application_workflow_run.add_argument(
+            "--macros",
+            "-m",
+            dest="macros",
+            action="append",
+            type=parse_key_value,
+            metavar="KEY=VALUE",
+            help="",
+            default=[],
         )
 
         application_workflow_run.set_defaults(

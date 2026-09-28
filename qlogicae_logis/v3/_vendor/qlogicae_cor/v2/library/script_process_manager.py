@@ -4,8 +4,8 @@ __all__ = (
     "ScriptProcessManager",
 )
 
+from subprocess import CompletedProcess
 from typing import Any
-from subprocess import CompletedProcess 
 
 from .script_process import (
     ScriptProcess,
@@ -27,7 +27,7 @@ def _handle_dynamic_imports() -> None:
     global _ScriptProcess
 
     import shlex
-    import subprocess 
+    import subprocess
 
     from .script_process import ScriptProcess
     from .singleton_manager import SingletonManager
@@ -51,8 +51,8 @@ def _handle_dynamic_imports() -> None:
 class ScriptProcessManager:
     __slots__ = (
         "_selected_script_process",
-        "_valid_script_processes",
         "_text_encoding_manager",
+        "_valid_script_processes",
     )
 
     def __init__(self) -> None:

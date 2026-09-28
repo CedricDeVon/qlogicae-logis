@@ -60,8 +60,8 @@ def _handle_dynamic_imports() -> None:
 class DisplayManager:
     __slots__ = (
         "_color_codes",
-        "_import_manager",
         "_database_manager",
+        "_import_manager",
         "_special_characters",
         "_value_cache_database_manager",
     )

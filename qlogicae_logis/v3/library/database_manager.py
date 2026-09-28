@@ -551,3 +551,7 @@ class DatabaseManager:
 
         return data
 
+    def read_macros_cli_arguments(self, arguments: Any) -> Any:
+        data = { item[0]: item[1] for item in arguments }
+
+        return data

@@ -4,10 +4,10 @@ __all__ = (
 
 class PlaceholderValueManager:
     __slots__ = (
+        "_expunged",
         "_none",
         "_not_a_number",
         "_redacted",
-        "_expunged",
     )
 
     def __init__(self) -> None:

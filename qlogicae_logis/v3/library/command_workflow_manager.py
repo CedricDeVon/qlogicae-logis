@@ -73,14 +73,14 @@ def _handle_dynamic_imports() -> None:
 
 class CommandWorkflowManager:
     __slots__ = (
-        "_log_manager",
-        "_task_manager",
-        "_import_manager",
-        "_display_manager",
-        "_database_manager",
         "_command_storage_manager",
-        "_value_cache_database_manager",
+        "_database_manager",
+        "_display_manager",
+        "_import_manager",
+        "_log_manager",
         "_persistent_cache_database_manager",
+        "_task_manager",
+        "_value_cache_database_manager",
     )
 
     def __init__(self) -> None:
@@ -207,9 +207,7 @@ class CommandWorkflowManager:
                     )
             )
             workflow_selection_delay_value = (
-                workflow_selection_delay_value
-                if workflow_selection_delay_value >= 0
-                else 0
+                max(workflow_selection_delay_value, 0)
             )
             workflow_selection_is_atomic_value = (
                 self._value_cache_database_manager
@@ -313,9 +311,7 @@ class CommandWorkflowManager:
                         )
                 )
                 workflow_selection_script_delay_value = (
-                    workflow_selection_script_delay_value
-                    if workflow_selection_script_delay_value >= 0
-                    else 0
+                    max(workflow_selection_script_delay_value, 0)
                 )
                 workflow_selection_script_filesystem_path_value = (
                     self._value_cache_database_manager
@@ -409,6 +405,10 @@ class CommandWorkflowManager:
                 message="no targets found",
             )
             return False
+
+        macros = (kwargs.get('macros', {}) or {})
+        if macros:
+            self._task_manager.run_task_cli_macros_setup(macros)
 
         root_filesystem_path = (
             self._value_cache_database_manager

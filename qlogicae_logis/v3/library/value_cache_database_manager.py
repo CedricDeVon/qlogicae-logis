@@ -42,8 +42,8 @@ def _handle_dynamic_imports() -> None:
 
 class ValueCacheDatabaseManager:
     __slots__ = (
-        "_import_manager",
         "_database_manager",
+        "_import_manager",
     )
 
     def __init__(self) -> None:

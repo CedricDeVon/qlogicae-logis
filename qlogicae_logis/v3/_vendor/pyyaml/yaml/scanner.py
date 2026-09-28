@@ -992,8 +992,7 @@ class Scanner:
 
         # Determine the indentation level and go to the first non-empty line.
         min_indent = self.indent+1
-        if min_indent < 1:
-            min_indent = 1
+        min_indent = max(min_indent, 1)
         if increment is None:
             breaks, max_indent, end_mark = self.scan_block_scalar_indentation()
             indent = max(min_indent, max_indent)
@@ -1115,8 +1114,7 @@ class Scanner:
                 end_mark = self.get_mark()
             else:
                 self.forward()
-                if self.column > max_indent:
-                    max_indent = self.column
+                max_indent = max(max_indent, self.column)
         return chunks, max_indent, end_mark
 
     def scan_block_scalar_breaks(self, indent):

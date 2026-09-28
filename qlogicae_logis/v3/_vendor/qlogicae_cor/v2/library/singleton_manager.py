@@ -1,5 +1,5 @@
 from collections.abc import Callable
-from typing import Any, TypeVar, cast
+from typing import Any, TypeVar
 
 __all__ = (
     "SingletonManager",

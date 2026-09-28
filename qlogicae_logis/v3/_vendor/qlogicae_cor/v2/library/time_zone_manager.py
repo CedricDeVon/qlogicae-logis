@@ -40,8 +40,8 @@ def _handle_dynamic_imports() -> None:
 class TimeZoneManager:
     __slots__ = (
         "_selected_time_zone_type",
-        "_valid_time_zone_types",
         "_time_zone_enum_manager",
+        "_valid_time_zone_types",
     )
 
     def __init__(self) -> None:

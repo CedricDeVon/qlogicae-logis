@@ -56,11 +56,11 @@ def _handle_dynamic_imports() -> None:
 
 class TaskManager:
     __slots__ = (
-        "_import_manager",
         "_database_manager",
+        "_import_manager",
+        "_persistent_cache_database_manager",
         "_task_storage_manager",
         "_value_cache_database_manager",
-        "_persistent_cache_database_manager",
     )
 
     def __init__(self) -> None:
@@ -591,6 +591,44 @@ class TaskManager:
         )
 
         self._value_cache_database_manager.remove_plugin_raw()
+
+        return True
+
+    @_DecoratorManager.multi_task_decorator
+    def run_task_cli_macros_setup(
+        self,
+        cli_macros: Any,
+    ) -> bool:
+        macros: Any = (
+            self._value_cache_database_manager.read_macros()
+        )
+        macros = (
+            macros |
+            cli_macros
+        )
+        macros = (
+            self._import_manager
+                .macros_resolve_many(
+                    values=macros
+                )
+        )
+        configuration_workspace_data: Any = (
+            self._value_cache_database_manager
+                .read_merged_configuration_workspace_data()
+        )
+        configuration_workspace_data = (
+            self._import_manager
+                .macros_parse_many(
+                    values=configuration_workspace_data,
+                    resolved=macros
+                )
+        )
+        self._value_cache_database_manager.write_macros(
+            macros
+        )
+        self._value_cache_database_manager.write_merged_configuration_workspace_data(
+            configuration_workspace_data
+        )
 
         return True
 

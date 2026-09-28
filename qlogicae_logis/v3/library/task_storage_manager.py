@@ -25,8 +25,8 @@ def _handle_dynamic_imports() -> None:
 
 class TaskStorageManager:
     __slots__ = (
-        "_tasks",
         "_import_manager",
+        "_tasks",
     )
 
     def __init__(self) -> None:

@@ -1,7 +1,13 @@
 
 __all__ = [
-    'CBaseLoader', 'CSafeLoader', 'CFullLoader', 'CUnsafeLoader', 'CLoader',
-    'CBaseDumper', 'CSafeDumper', 'CDumper'
+    'CBaseDumper',
+    'CBaseLoader',
+    'CDumper',
+    'CFullLoader',
+    'CLoader',
+    'CSafeDumper',
+    'CSafeLoader',
+    'CUnsafeLoader'
 ]
 
 from yaml._yaml import CEmitter, CParser

@@ -172,7 +172,7 @@ Resolver.add_implicit_resolver(
         'tag:yaml.org,2002:bool',
         re.compile(r'''^(?:yes|Yes|YES|no|No|NO
                     |true|True|TRUE|false|False|FALSE
-                    |on|On|ON|off|Off|OFF)$''', re.X),
+                    |on|On|ON|off|Off|OFF)$''', re.VERBOSE),
         list('yYnNtTfFoO'))
 
 Resolver.add_implicit_resolver(
@@ -181,7 +181,7 @@ Resolver.add_implicit_resolver(
                     |\.[0-9][0-9_]*(?:[eE][-+][0-9]+)?
                     |[-+]?[0-9][0-9_]*(?::[0-5]?[0-9])+\.[0-9_]*
                     |[-+]?\.(?:inf|Inf|INF)
-                    |\.(?:nan|NaN|NAN))$''', re.X),
+                    |\.(?:nan|NaN|NAN))$''', re.VERBOSE),
         list('-+0123456789.'))
 
 Resolver.add_implicit_resolver(
@@ -190,7 +190,7 @@ Resolver.add_implicit_resolver(
                     |[-+]?0[0-7_]+
                     |[-+]?(?:0|[1-9][0-9_]*)
                     |[-+]?0x[0-9a-fA-F_]+
-                    |[-+]?[1-9][0-9_]*(?::[0-5]?[0-9])+)$''', re.X),
+                    |[-+]?[1-9][0-9_]*(?::[0-5]?[0-9])+)$''', re.VERBOSE),
         list('-+0123456789'))
 
 Resolver.add_implicit_resolver(
@@ -202,7 +202,7 @@ Resolver.add_implicit_resolver(
         'tag:yaml.org,2002:null',
         re.compile(r'''^(?: ~
                     |null|Null|NULL
-                    | )$''', re.X),
+                    | )$''', re.VERBOSE),
         ['~', 'n', 'N', ''])
 
 Resolver.add_implicit_resolver(
@@ -211,7 +211,7 @@ Resolver.add_implicit_resolver(
                     |[0-9][0-9][0-9][0-9] -[0-9][0-9]? -[0-9][0-9]?
                      (?:[Tt]|[ \t]+)[0-9][0-9]?
                      :[0-9][0-9] :[0-9][0-9] (?:\.[0-9]*)?
-                     (?:[ \t]*(?:Z|[-+][0-9][0-9]?(?::[0-9][0-9])?))?)$''', re.X),
+                     (?:[ \t]*(?:Z|[-+][0-9][0-9]?(?::[0-9][0-9])?))?)$''', re.VERBOSE),
         list('0123456789'))
 
 Resolver.add_implicit_resolver(

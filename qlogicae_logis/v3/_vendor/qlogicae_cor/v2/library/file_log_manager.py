@@ -79,15 +79,15 @@ def _handle_dynamic_imports() -> None:
 
 class FileLogManager:
     __slots__ = (
-        "logger",
-        "file_handlers",
-        "log_queue",
-        "queue_handler",
-        "listener",
-        "_options",
         "_cache",
         "_log_options_manager",
+        "_options",
         "_text_encoding_manager",
+        "file_handlers",
+        "listener",
+        "log_queue",
+        "logger",
+        "queue_handler",
     )
     
     def __init__(self) -> None:

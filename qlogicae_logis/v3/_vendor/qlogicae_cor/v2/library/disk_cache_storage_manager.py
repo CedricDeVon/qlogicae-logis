@@ -20,7 +20,7 @@ def _handle_dynamic_imports() -> None:
     global _pickle
     global _time
 
-    import pickle # nosec B403
+    import pickle  # nosec B403
     import time
     from dbm import gnu
 
@@ -33,15 +33,15 @@ def _handle_dynamic_imports() -> None:
 
 class DiskCacheStorageManager:
     __slots__ = (
-        "_database",
-        "_database_path",
-        "_create_missing",
-        "_lifespan_in_seconds",
-        "_file_mode",
-        "_key_encoding",
-        "_pickle_protocol",
         "_auto_remove_expired",
         "_auto_remove_invalid",
+        "_create_missing",
+        "_database",
+        "_database_path",
+        "_file_mode",
+        "_key_encoding",
+        "_lifespan_in_seconds",
+        "_pickle_protocol",
         "_sync_on_write",
     )
 

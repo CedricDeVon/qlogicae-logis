@@ -46,10 +46,10 @@ def _handle_dynamic_imports() -> None:
 
 class ConsoleLogManager:
     __slots__ = (
-        "_logger",
-        "_options",
         "_log_format",
         "_log_options_manager",
+        "_logger",
+        "_options",
     )
 
     def __init__(self) -> None:

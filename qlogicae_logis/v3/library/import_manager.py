@@ -970,12 +970,7 @@ class ImportManager:
             return {}
 
         cli_output = {}
-        if script_process == "shell":
-            cli_output = self.run_subprocess_command(
-                command=command
-            )
-
-        elif script_process == "subprocess":
+        if script_process == "shell" or script_process == "subprocess":
             cli_output = self.run_subprocess_command(
                 command=command
             )

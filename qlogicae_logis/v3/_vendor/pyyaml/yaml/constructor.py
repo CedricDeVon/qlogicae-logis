@@ -1,11 +1,11 @@
 
 __all__ = [
     'BaseConstructor',
-    'SafeConstructor',
-    'FullConstructor',
-    'UnsafeConstructor',
     'Constructor',
-    'ConstructorError'
+    'ConstructorError',
+    'FullConstructor',
+    'SafeConstructor',
+    'UnsafeConstructor'
 ]
 
 import base64
@@ -226,7 +226,6 @@ class SafeConstructor(BaseConstructor):
 
     def construct_yaml_null(self, node):
         self.construct_scalar(node)
-        return None
 
     bool_values = {
         'yes':      True,
@@ -324,7 +323,7 @@ class SafeConstructor(BaseConstructor):
                 :(?P<second>[0-9][0-9])
                 (?:\.(?P<fraction>[0-9]*))?
                 (?:[ \t]*(?P<tz>Z|(?P<tz_sign>[-+])(?P<tz_hour>[0-9][0-9]?)
-                (?::(?P<tz_minute>[0-9][0-9]))?))?)?$''', re.X)
+                (?::(?P<tz_minute>[0-9][0-9]))?))?)?$''', re.VERBOSE)
 
     def construct_yaml_timestamp(self, node):
         value = self.construct_scalar(node)

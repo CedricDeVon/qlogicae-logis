@@ -52,8 +52,8 @@ def _handle_dynamic_imports() -> None:
 
 class LogManager:
     __slots__ = (
-        "_file_log_manager",
         "_console_log_manager",
+        "_file_log_manager",
         "_log_options_manager",
     )
 

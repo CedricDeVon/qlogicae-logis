@@ -15,7 +15,6 @@ except ImportError:
 
 import io
 
-
 #------------------------------------------------------------------------------
 # XXX "Warnings control" is now deprecated. Leaving in the API function to not
 # break code that uses it.

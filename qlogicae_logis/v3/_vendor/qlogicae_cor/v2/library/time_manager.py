@@ -4,10 +4,7 @@ __all__ = (
     "TimeManager",
 )
 
-from typing import TYPE_CHECKING, Any
-
-if TYPE_CHECKING:
-    from .time_unit import TimeUnit
+from typing import Any
 
 _time: Any = None
 _date: Any = None

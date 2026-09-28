@@ -74,14 +74,14 @@ def _handle_dynamic_imports() -> None:
 
 class CommandAboutManager:
     __slots__ = (
-        "_log_manager",
-        "_task_manager",
-        "_import_manager",
-        "_display_manager",
-        "_database_manager",
         "_command_storage_manager",
-        "_value_cache_database_manager",
+        "_database_manager",
+        "_display_manager",
+        "_import_manager",
+        "_log_manager",
         "_persistent_cache_database_manager",
+        "_task_manager",
+        "_value_cache_database_manager",
     )
 
     def __init__(self) -> None:

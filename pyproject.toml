@@ -54,6 +54,7 @@ dev = [
     "detect-secrets",
     "safety",
     "pip-audit",   
+    "python-minifier"
 ]
 
 [project.scripts]
@@ -307,7 +308,7 @@ post-build-pip-package-2 = """
 
 archive-outputs = """
     python3 -c "import shutil,sys; shutil.copytree(sys.argv[1], sys.argv[2], dirs_exist_ok=True)" \
-        temporary archive/v3.1.10/2026-09-22T20-17-17.575199154+08-00
+        temporary archive/v3.1.10/2026-09-28T23-30-34.108987003+08-00
 """
 
 test-dead-code = """
