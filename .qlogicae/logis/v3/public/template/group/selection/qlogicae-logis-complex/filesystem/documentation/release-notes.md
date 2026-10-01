@@ -12,14 +12,22 @@
 <h3>Overview</h3>
 
 <ul>
-    <li><p>Planned Initial Public Deployment</p></li>
+    <li>
+        <p>
+            Planned Initial Public Deployment
+        </p>
+    </li>
 </ul>
 
 
 <h3>Description</h3>
 
 <ul>
-    <li><p>...</p></li>
+    <li>
+        <p>
+            To be continued ...
+        </p>
+    </li>
 </ul>
 
 </br>
@@ -37,7 +45,11 @@
 <h3>Description</h3>
 
 <ul>
-    <li><p>All deployments under this category will be clasified as 'prototypes'.</p></li>
+    <li>
+        <p>
+            All deployments under this category will be clasified as 'prototypes'.
+        </p>
+    </li>
 </ul>
 
 </br>

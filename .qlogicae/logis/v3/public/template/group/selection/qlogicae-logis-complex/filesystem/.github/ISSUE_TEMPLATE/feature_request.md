@@ -1,6 +1,6 @@
 ---
 name: Feature Request
-about: Suggest an idea or feature for vsuee
+about: Suggest
 title: '[FEAT] '
 labels: enhancement
 assignees: ''

@@ -1,6 +1,6 @@
 ---
 name: Bug Report
-about: Create a report to help us improve vsuee
+about: Create
 title: '[BUG] '
 labels: bug
 assignees: ''

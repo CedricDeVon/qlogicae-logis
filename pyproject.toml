@@ -308,7 +308,7 @@ post-build-pip-package-2 = """
 
 archive-outputs = """
     python3 -c "import shutil,sys; shutil.copytree(sys.argv[1], sys.argv[2], dirs_exist_ok=True)" \
-        temporary archive/v3.1.10/2026-09-28T23-30-34.108987003+08-00
+        temporary archive/v3.1.10/2026-10-02T06-58-04.247531207+08-00
 """
 
 test-dead-code = """
