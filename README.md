@@ -1,7 +1,7 @@
 </br>
 
 <div style="width: 100%; display: flex; justify-content: center;">
-    <image alt="the qlogicae logo" src="./project/asset/qlogicae1.png" width="256px">
+    <image alt="the qlogicae logo" src="./project/asset/qlogicae.png" width="256px">
 </div>
 
 </br>
@@ -17,7 +17,7 @@
   </p>
 <div style="margin: 32px 64px;">
 
-![Project - Version](https://img.shields.io/badge/Version-v3.1.10-blue)
+![Project - Version](https://img.shields.io/badge/Version-v3.1.11-blue)
 [![Python - Versions](https://img.shields.io/badge/Python-3.12|%933.13|%933.14-blue?logo=python&logoColor=gold)](https://www.python.org/)
 ![License - MIT](https://img.shields.io/badge/License-MIT-red)
 
